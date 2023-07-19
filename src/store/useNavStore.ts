@@ -34,6 +34,50 @@ const useNavStore = create<INavItem>((set) => ({
             main: unitMainTitle, sub: unitSubTitle
         };
         set(()=>({selectUnitInfo: unitInfo}))
+    },
+
+    // admin hub
+    selectNavigationIndex: -1,
+    selectNavigationTitles: [],
+    setSelectNavigationTitles: (selectNavigationTitlesValue:string[]) => {
+        const navMenuMainValue = ['레벨 및 교재','Activity 관리','학습 관리','학습 결과 관리']
+        let currentMainMenuIndex = -1;
+        for (let i =0; i < navMenuMainValue.length;i++) {
+            if (selectNavigationTitlesValue[0]===navMenuMainValue[i]) {
+                currentMainMenuIndex=i;
+                break;
+            }
+        }
+        set(()=>({
+            selectNavigationTitles:selectNavigationTitlesValue,
+            selectNavigationIndex: currentMainMenuIndex
+        }))
+    },
+
+    // navigate block control value
+    navigateBlockFlag:false,
+    navigateBlockMessage: [],
+    navigateBlockAlertYesFn: null,
+    navigateBlockAlertNoFn: null,
+    setNavigateBlockAlertYesFn(yesFn: Function) {
+        set(()=>({
+            navigateBlockAlertYesFn:yesFn
+        }))
+    },
+    setNavigateBlockAlertNoFn(noFn: Function){
+        set(()=>({
+            navigateBlockAlertNoFn:noFn
+        }))
+    },
+    setNavigateBlockFlag(flag:boolean) {
+        set(()=>({
+            navigateBlockFlag: flag
+        }))
+    },
+    setNavigateBlockMessage(messages: string[]) {
+        set(()=>({
+            navigateBlockMessage: messages
+        }))
     }
 }))
 

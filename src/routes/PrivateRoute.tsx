@@ -17,20 +17,21 @@ export default function PrivateRoute({
         if (role === null || role === undefined || role === 'logout') {
             return <Navigate to="/" />
         } else {
-            // admin은 전체 접근
-            if (role === 'admin') {
+            
+            if (role === 'Head') {
+                // 본사 권한 접근
                 return <Outlet />
-            } else if (role === 'teacher') {
-                // teacher는 student, teacher 접근 가능
-                if (pageAuth === role || pageAuth === 'student') {
+            } else if (role === 'Campus') {
+                // 갬퍼스 권한 접근
+                if (pageAuth === role) {
                     return <Outlet />
                 } else {
                     // No auth Page 
                     return <Navigate to="/" />
                 }
-            } else if (role === 'student') {
-                // student는 student 접근 가능
-                if (pageAuth === role ) {
+            } else {
+                //  전체 접근 가능
+                if (pageAuth === role || pageAuth === 'Head' || pageAuth==='Campus' ) {
                     return <Outlet />
                 } else {
                     // No auth Page 

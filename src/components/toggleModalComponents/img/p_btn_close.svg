@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">
+  
+  <g id="p_btn_close" transform="translate(0.206)">
+    <rect id="guide" class="cls-1" fill="none" opacity="0.2" width="20" height="20" transform="translate(-0.206)"/>
+    <g id="사각형_347" data-name="사각형 347" class="cls-2" fill="#ffffff" stroke="#ffffff" transform="translate(17.356 15.973) rotate(135)">
+      <rect class="cls-3" stroke="none" width="1.717" height="18.888"/>
+      <rect class="cls-4" fill="none" x="0.5" y="0.5" width="0.717" height="17.888"/>
+    </g>
+    <g id="사각형_348" data-name="사각형 348" class="cls-2" fill="#ffffff" stroke="#ffffff" transform="translate(3.999 17.187) rotate(-135)">
+      <rect class="cls-3" stroke="none" width="1.717" height="18.888"/>
+      <rect class="cls-4" fill="none" x="0.5" y="0.5" width="0.717" height="17.888"/>
+    </g>
+  </g>
+</svg>

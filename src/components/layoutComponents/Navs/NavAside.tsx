@@ -3,12 +3,17 @@ import useLoginStore from "../../../store/useLoginStore";
 import useNavStore from "../../../store/useNavStore";
 import { useNavigate } from "react-router-dom";
 import { navItems } from "../Nav";
+import { CommonFunctions } from '../../../util/common/commonFunctions';
 
 const NavAside = () => {
-    const {setSelectMenu, selectedMenu, sidebarFlagged, setSidebarFlagged, topNavHiddenFlagged} = useNavStore();
+    const {
+        setSelectMenu, selectedMenu, sidebarFlagged, setSidebarFlagged, topNavHiddenFlagged,
+        navigateBlockFlag, navigateBlockMessage
+    } = useNavStore();
     const { companyName, name, role, setIsOpen, setUserInfo } = useLoginStore();
     // const [menuLocateValue, setMenuLocateValue] = useState("");
     const navigate = useNavigate();
+
     const handleMenuClick = async (role:TRole, menuTitle: string) => {
         if (selectedMenu === menuTitle) {
             await setSelectMenu(null);
@@ -21,8 +26,16 @@ const NavAside = () => {
 
     const goLink = async (role: TRole, link: string) => {
         console.log("link :::", link);
-        const rolePath = role==='logout'? '': (role==='admin'? 'admin': (role==='teacher'?'teacher':'student'))
-        navigate(`/${rolePath}/${link}`);
+        const rolePath = role==='logout'? '': (role==='Head'? 'Head':'Campus')
+        const path = `/${rolePath}/${link}`;
+        // navigate();
+        if (!navigateBlockFlag) {
+            console.log('test 1')
+            navigate(path);
+        } else {
+            console.log('test 2')
+            alert(navigateBlockMessage)
+        }
     }
 
     return (
@@ -47,7 +60,7 @@ const NavAside = () => {
                         return (
                             <li key={key} 
                             className='div-to-button-hover-effect'
-                            onClick={()=>handleMenuClick(role, v.path)}>
+                            onClick={async ()=>await handleMenuClick(role, v.path)}>
                                 <div className="flex items-center p-2 text-gray-900 rounded-lg dark:text-black hover:bg-gray-100 dark:hover:bg-gray-700">
                                 <span className="inline-flex items-center justify-center px-2 ml-3 text-sm font-medium text-gray-800 bg-gray-200 rounded-full dark:bg-gray-700 dark:text-gray-300">
                                     img

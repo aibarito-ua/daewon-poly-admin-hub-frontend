@@ -1,5 +1,5 @@
 {
-  "name": "poly_web_site",
+  "name": "poly_admin_hub",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -7,7 +7,10 @@
     "@emotion/styled": "^11.11.0",
     "@floating-ui/react": "^0.24.3",
     "@floating-ui/react-dom": "^2.0.1",
+    "@headlessui/react": "^1.7.15",
     "@mui/material": "^5.13.5",
+    "@tanstack/match-sorter-utils": "^8.8.4",
+    "@tanstack/react-table": "^8.9.3",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
@@ -19,17 +22,20 @@
     "diff-match-patch": "^1.0.5",
     "flowbite": "^1.6.5",
     "flowbite-react": "^0.4.4",
+    "history": "^5.3.0",
     "lodash": "^4.17.21",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.11.1",
+    "react-router-prompt": "^0.5.4",
     "react-scripts": "5.0.1",
+    "react-table": "^7.8.0",
     "typescript": "^4.9.5",
     "web-vitals": "^2.1.4",
     "zustand": "^4.3.8"
   },
   "scripts": {
-    "dev": "HOST=0.0.0.0 && PORT=25252 react-scripts start",
+    "dev": "HOST=0.0.0.0 && PORT=25250 react-scripts start",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
@@ -56,6 +62,7 @@
   "devDependencies": {
     "@types/diff-match-patch": "^1.0.32",
     "@types/lodash": "^4.14.195",
+    "@types/react-table": "^7.7.14",
     "autoprefixer": "^10.4.14",
     "postcss": "^8.4.23",
     "postcss-loader": "^7.3.0",
@@ -63,7 +70,7 @@
     "webpack": "^5.82.0",
     "webpack-cli": "^5.1.1"
   },
-  "description": "This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).",
+  "description": "Poly Admin Hub Frontend Website",
   "main": "postcss.config.js",
   "keywords": [],
   "author": "",

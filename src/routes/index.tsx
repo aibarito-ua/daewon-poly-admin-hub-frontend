@@ -1,29 +1,31 @@
-import React from 'react'
+import React from 'react';
 import { Routes, Route } from 'react-router-dom';
-import { Home } from '../pages/Home';
 import { Login } from '../pages/Login';
-import EssayWriting from '../pages/Student/EssayWriting';
-import { MyPage } from '../pages/Student/MyPage';
-import { Portfolio } from '../pages/Student/Portfolio';
-import WebViewWrap from '../pages/WebViewWrap';
-import useLoginStore from '../store/useLoginStore';
-import PrivateRoute from './PrivateRoute';
-import { Admin } from '../pages/Admin';
-import { Student } from '../pages/Student/Student';
-import { Teacher } from '../pages/Teacher';
-import {routeValues} from './routeValues';
-import SelectWritingClinic from '../pages/Student/SelectWritingClinic';
-import SelectUnit from '../pages/Student/SelectUnit';
-import PreviewSparkWriting from '../pages/Student/PreviewSparkWriting';
+import { Home } from '../pages/Home';
 
-export default function Roter() {
+import useLoginStore from '../store/useLoginStore';
+import {routeValues} from './routeValues';
+import PrivateRoute from './PrivateRoute';import LevelAndTextBookSpeakingHub from '../pages/LevelAndTextBook/LevelAndTextBookSpeakingHub';
+import LevelAndTextBookWritingHub from '../pages/LevelAndTextBook/LevelAndTextBookWritingHub';
+import ActivitySpeakHubMain from '../pages/ActivityManagement/ActivitySpeakHubMain';
+import IdeaExchange from '../pages/ActivityManagement/ActivitySHSubPages/IdeaExchange';
+import StoryVlog from '../pages/ActivityManagement/ActivitySHSubPages/StoryVlog';
+import RolePlay from '../pages/ActivityManagement/ActivitySHSubPages/RolePlay';
+import ActivityWritingHubMain from '../pages/ActivityManagement/ActivityWritingHubMain';
+import SparkWriting from '../pages/ActivityManagement/ActivityWHSubPages/SparkWriting';
+import PromptBlockComponent from '../components/toggleModalComponents/PromptBlockComponent';
+import useControlAlertStore from '../store/useControlAlertStore';
+import CommonAlertModalComponent from '../components/toggleModalComponents/CommonAlertModalComponent';
+;
+
+export default function Router() {
     const { role, isOpen } = useLoginStore();
     const publicRoutes = () => {
         const routeValue = routeValues.publicRoutes;
         // 각 권한별 기본 페이지
         const mainPage = role === 'logout' ? <Home /> : (
-            role === 'admin' ? <Admin /> : (
-                role === 'teacher' ? <Teacher /> : <SelectWritingClinic />
+            role === 'Head' ? <Home /> : (
+                role === 'Campus' ? <Home /> : <Home />
             )
         );
         return (
@@ -43,34 +45,32 @@ export default function Roter() {
 
     // }
     return (
-        <div className="max-display-screen">
+        <div className="display-page-screen">
             {isOpen && <Login />}
             <Routes>
                 {/* No Login Pages */}
                 {publicRoutes()}
-                {/* Admin 전용 페이지 */}
-                <Route element={<PrivateRoute authenticated={true} pageAuth='admin' />} >
+                {/* 본사 전용 페이지 */}
+                <Route element={<PrivateRoute authenticated={true} pageAuth='Head' />} >
                     
                 </Route>
-                {/* Teacher 전용 페이지 */}
-                <Route element={<PrivateRoute authenticated={true} pageAuth='teacher' />} >
+                {/* 캠퍼스 전용 페이지 */}
+                <Route element={<PrivateRoute authenticated={true} pageAuth='Campus' />} >
 
                 </Route>
-                {/* 학생 페이지 */}
-                <Route element={<PrivateRoute authenticated={true} pageAuth='student' />} >
-                    <Route path='/student/WritingClinic' element={<SelectWritingClinic />}></Route>
-                    <Route path='/student/WritingClinic/SparkWriting/:unit/:draft' element={ <EssayWriting />}></Route>
-                    <Route path='/student/WritingClinic/SparkWriting' element={ <SelectUnit />}></Route>
-                    <Route path='/student/MyProgress' element={<MyPage />}></Route>
-                    <Route path='/student/MyPortfolio' element={<Portfolio />}></Route>
-                    <Route path='/student/WritingClinic/SparkWriting/:unit/:draft/Preview' element={<PreviewSparkWriting />}></Route>
-
+                {/* 본사&캠퍼스 전체 페이지 */}
+                <Route element={<PrivateRoute authenticated={true} />} >
+                    <Route path={'/LevelandTextbook/SpeakingHub'} element={<LevelAndTextBookSpeakingHub />}/>
+                    <Route path={'/LevelandTextbook/WritingHub'} element={<LevelAndTextBookWritingHub />} />
+                    <Route path={'/ActivityManagement/SpeakingHub/IdeaExchange'} element={<ActivitySpeakHubMain children={<IdeaExchange />}  />}/>
+                    <Route path={'/ActivityManagement/SpeakingHub/StoryVlog'} element={<ActivitySpeakHubMain children={<StoryVlog />} />} />
+                    <Route path={'/ActivityManagement/SpeakingHub/RolePlay'} element={<ActivitySpeakHubMain children={<RolePlay />} />} />
+                    <Route path={'/ActivityManagement/WritingHub/SparkWriting'} element={<ActivityWritingHubMain children={<SparkWriting />} />} />
                 </Route>
                 {/* <Route path='' element={ }></Route> */}
 
-                {/* webview 전용 page */}
-                <Route path='/webTest' element={<WebViewWrap />}></Route>
             </Routes>
+            <CommonAlertModalComponent />
         </div>
 
     )

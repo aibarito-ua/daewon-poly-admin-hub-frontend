@@ -6,7 +6,6 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import { callDialogAPI } from '../../pages/Student/api/EssayWriting.api';
 import useLoginStore from '../../store/useLoginStore';
 import buttonImage from './img/report_image.png'
 

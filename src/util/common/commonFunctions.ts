@@ -1,6 +1,9 @@
 import { NavigateFunction } from "react-router-dom";
 import {Diff, diff_match_patch} from 'diff-match-patch'
 import { CompareDiff } from './grammars/grammarComareDiff';
+import { rankItem } from "@tanstack/match-sorter-utils";
+import { FilterFn } from "@tanstack/react-table";
+
 export const GrammarCF = {
     compareText: (origin_text:string, change_text:string) => {
         const rsp = CompareDiff.diff_lineMode(origin_text, change_text)
@@ -34,12 +37,55 @@ export const GrammarCF = {
     }
 }
 export const CommonFunctions={
-    goLink: async (linkPath: string, navigate:NavigateFunction, role?: TRole) => {
-        if (role!==undefined) {
-            const rolePath = role==='logout'? '': (role==='admin'? 'admin': (role==='teacher'?'teacher':'student'))
-            navigate(`/${rolePath}/${linkPath}`);
-        } else {
+    // goLink: async (linkPath: string, navigate:NavigateFunction, role?: TRole) => {
+    //     if (role!==undefined) {
+    //         const rolePath = role==='logout'? '': (role==='Head' ? 'Head' : 'Campus')
+    //         navigate(`/${rolePath}/${linkPath}`);
+    //     } else {
 
+    //     }
+    // },
+    customNavigate: async(linkPath: string, navigate:NavigateFunction, flag:boolean, messages:string[]) => {
+        if (!flag) {
+            navigate(linkPath);
+        } else {
+            alert(messages);
+            return false;
         }
     }
+}
+
+const customFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
+    const itemRank = rankItem(row.getValue(columnId), value)
+    return itemRank.passed;
+}
+
+
+const basicTable = {
+    customFilter,
+    levelSort: (a: string, b: string) => {
+        const gradersLevel = [
+            "GT1", "MGT1", "S1", "MAG1",
+            "GT2", "MGT2", "S2", "MAG2",
+            "GT3", "MGT3", "S3", "MAG3",
+            "GT4", "MGT4", "S4", "MAG4" 
+        ];
+        return gradersLevel.indexOf(a) - gradersLevel.indexOf(b);
+    },
+    customSort: (a: string, b: string, sortRules: string[]) => {
+        return sortRules.indexOf(a) - sortRules.indexOf(b);
+    },
+    sortByKeyBodyData: (unordered:any = {}, sortFn:(a: string, b: string, sortRules: string[]) => number, sortRules:string[]) => {
+        return Object.keys(unordered).sort((a, b) => sortFn(a,b,sortRules)).reduce((obj:any ={}, key:any) => {
+            obj[key] = unordered[key];
+            return obj;
+        }, {});
+    },
+    sortByKeyHeadData: (a: TLoadDataHeadTrans, b: TLoadDataHeadTrans, sortRules: string[]) => {
+        return sortRules.indexOf(a.accessor) - sortRules.indexOf(b.accessor);
+    }
+}
+
+export const cf = {
+    basicTable,
 }

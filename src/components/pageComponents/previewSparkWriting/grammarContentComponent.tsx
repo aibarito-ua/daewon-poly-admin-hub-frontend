@@ -211,8 +211,8 @@ const GrammarContentComponent = {
         })}</span>;
     },
     // history tool
-    undoRedoReset: (currentState: TBodyHistorys, actionType: 'UNDO'|'REDO'|'RESET') => {
-        const origin:TBodyHistorys = JSON.parse(JSON.stringify(currentState))
+    undoRedoReset: (currentState: any, actionType: 'UNDO'|'REDO'|'RESET') => {
+        const origin:any = JSON.parse(JSON.stringify(currentState))
         const isCheckTitle = origin.title.present && origin.title.present.length > 0
         switch (actionType) {
             case 'UNDO':
@@ -253,13 +253,13 @@ const GrammarContentComponent = {
 
                 }
             case 'RESET':
-                const reset_past: TbodyHistory[] =[];
+                const reset_past: any[] =[];
                 const reset_present = origin.body.past.length>0 ? origin.body.past[0] : origin.body.present
-                const reset_future: TbodyHistory[] =[];
+                const reset_future: any[] =[];
                 if (isCheckTitle) {
-                    const reset_past_title: TbodyHistory[] =[];
+                    const reset_past_title: any[] =[];
                     const reset_present_title = origin.title.past.length>0 ? origin.title.past[0] : origin.title.present
-                    const reset_future_title: TbodyHistory[] =[];
+                    const reset_future_title: any[] =[];
                     return {
                         title: {past: reset_past_title, present: reset_present_title, future: reset_future_title},
                         body: {past:reset_past, present: reset_present, future: reset_future}
@@ -272,20 +272,20 @@ const GrammarContentComponent = {
 
                 }
             default:
-                const default_past: TbodyHistory[] =[];
-                const default_present: TbodyHistory = [];
-                const default_future: TbodyHistory[] =[];
+                const default_past: any[] =[];
+                const default_present: any = [];
+                const default_future: any[] =[];
                 return {
                     title: {past: default_past, present: default_present, future: default_future},
                     body: {past: default_past, present: default_present, future: default_future}
                 }
         }
     },
-    setTbodyHistorys: (currentState: TBodyHistorys['body'], hist: TbodyHistory):{past:TbodyHistory[], present: TbodyHistory[]}|undefined => {
+    setany: (currentState: any['body'], hist: any):{past:any[], present: any[]}|undefined => {
         if (isEquel(currentState.present, hist)) return;
-        const origin:TBodyHistorys['body'] = JSON.parse(JSON.stringify(currentState))
-        let past:TbodyHistory[] = []
-        let present:TbodyHistory = [];
+        const origin:any['body'] = JSON.parse(JSON.stringify(currentState))
+        let past:any[] = []
+        let present:any = [];
         if (origin.past.length === 0) {
             if (origin.present.length > 0) {
                 // console.log('past not, present !!')
@@ -309,11 +309,11 @@ const GrammarContentComponent = {
         };
         return {past, present};
     },
-    setTTitleHistorys: (currentState: TBodyHistorys['title'], hist: TbodyHistory):{past:TbodyHistory[], present: TbodyHistory[]}|undefined => {
+    setTTitleHistorys: (currentState: any['title'], hist: any):{past:any[], present: any[]}|undefined => {
         if (isEquel(currentState.present, hist)) return;
-        const origin:TBodyHistorys['title'] = JSON.parse(JSON.stringify(currentState))
-        let past:TbodyHistory[] = []
-        let present:TbodyHistory = [];
+        const origin:any['title'] = JSON.parse(JSON.stringify(currentState))
+        let past:any[] = []
+        let present:any = [];
         if (origin.past.length === 0) {
             if (origin.present.length > 0) {
                 // console.log('past not, present !!')
@@ -338,15 +338,15 @@ const GrammarContentComponent = {
         return {past, present};
     },
     setTInitHistorys: (
-        hist:{title:TbodyHistory, body:TbodyHistory}, bodyHistory: TBodyHistorys
-    ):TBodyHistorys|undefined => {
-        const origin:TBodyHistorys = JSON.parse(JSON.stringify(bodyHistory));
+        hist:{title:any, body:any}, bodyHistory: any
+    ):any|undefined => {
+        const origin:any = JSON.parse(JSON.stringify(bodyHistory));
         if (isEqual(origin.body, hist.body) && isEqual(origin.title, hist.title)) return;
         
-        let titlePast:TbodyHistory[]=[];
-        let titlePresent:TbodyHistory=[];
-        let past:TbodyHistory[] = []
-        let present:TbodyHistory = [];
+        let titlePast:any[]=[];
+        let titlePresent:any=[];
+        let past:any[] = []
+        let present:any = [];
         if (origin.body.past.length === 0) {
             if (origin.body.present.length > 0) {
                 // console.log('past not, present !!')
@@ -388,7 +388,7 @@ const GrammarContentComponent = {
                 titlePast = []
             }
         };
-        const future: TbodyHistory[] = []
+        const future: any[] = []
         return {
             title: { past: titlePast, present: titlePresent, future: future},
             body: {past, present, future}

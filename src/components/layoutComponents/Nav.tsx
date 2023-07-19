@@ -4,13 +4,15 @@ import useLoginStore from '../../store/useLoginStore';
 import { useNavigate } from 'react-router-dom';
 import { CommonFunctions } from '../../util/common/commonFunctions';
 
+import Dropdown from './NavComponents/NavDropdown'
+
 type INavItems = {
     [key in TRole]: {
         selectedMenu: {path:string, label: string}[]
     };
 };
 export const navItems:INavItems = {
-    admin: {
+    Head: {
         selectedMenu: [
             {path: '', label: ''}
         ]
@@ -18,7 +20,7 @@ export const navItems:INavItems = {
     logout: {
         selectedMenu: []
     },
-    student: {
+    Campus: {
         selectedMenu: [
             {path: "WritingClinic", label: 'Writing Clinic'},
             {path: "StudentProgress", label: 'My Progress'},
@@ -27,79 +29,152 @@ export const navItems:INavItems = {
             // {path: "StudentHome", label: ''}
         ]
     },
-    teacher: {
+    All: {
         selectedMenu: [
-            
+            {path: '', label: ''}
         ]
     }
 }
 export const Nav = () => {
     const {role } = useLoginStore()
+    const {
+        selectNavigationTitles, selectNavigationIndex,
+        setSelectNavigationTitles
+      } = useNavStore();
     const navigate = useNavigate();
     const {sidebarFlagged, setSidebarFlagged, topNavHiddenFlagged, subNavTitleString, subRightNavTitleString} = useNavStore();
     const onClickFlaggedSidebar = (e:React.MouseEvent) => {
         e.preventDefault();
         setSidebarFlagged(!sidebarFlagged)
     }
-    const svgHome =(
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" 
-        strokeWidth={1.5} stroke="currentColor" className="w-8 h-8">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+    
+    React.useEffect(()=>{
+        console.log('title :',selectNavigationTitles,selectNavigationIndex)
+    },[selectNavigationTitles])
+    const navMenuValue = [
+        {
+            title: '레벨 및 교재',
+            subTitles: [
+                {
+                    name: 'Speaking Hub',
+                    path: 'LevelandTextbook/SpeakingHub',
+                    role: ''
+                },
+                {
+                    name: 'Writing Hub',
+                    path: 'LevelandTextbook/WritingHub',
+                    role: ''
+                }
+            ]
+        },
+        {
+            title: 'Activity 관리',
+            subTitles: [
+                {
+                    name: 'Speaking Hub',
+                    path: 'ActivityManagement/SpeakingHub/IdeaExchange',
+                    role: ''
+                },
+                {
+                    name: 'Writing Hub',
+                    path: 'ActivityManagement/WritingHub/SparkWriting',
+                    role: ''
+                }
+            ]
+        },
+        {
+            title: '학습 관리',
+            subTitles: [
+                
+                {
+                    name: 'Writing Hub',
+                    path: 'LearningManagement/WritingHub/SparkWriting',
+                    role: ''
+                }
+            ]
+        },
+        {
+            title: '학습 결과 관리',
+            subTitles: [
+                {
+                    name: 'Speaking Hub',
+                    path: '',
+                    role: ''
+                },
+                {
+                    name: 'Writing Hub',
+                    path: '',
+                    role: ''
+                }
+            ]
+        },
+
+    ]
+    const svgHome = (
+        <svg className='w-5 h-5' viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
+            <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
+            <g id="SVGRepo_iconCarrier"> 
+            <path d="M6.5 20V11H3L12 5L21 11H17.5V20H14.5V16.5C14.5 15.6716 13.8284 15 13 15H11C10.1716 15 9.5 15.6716 9.5 16.5V20H6.5Z" fill="#999999" stroke="#999999" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path> 
+            </g></svg>
+    )
+    const svgNextArrow = (
+        <svg className='inline-block' xmlns="http://www.w3.org/2000/svg" width="3" height="5.29" viewBox="0 0 3 5.29">
+            <path id="Icon_awesome-caret-right" data-name="Icon awesome-caret-right" d="M0,12.478V7.9a.356.356,0,0,1,.607-.252L2.9,9.938a.356.356,0,0,1,0,.5L.607,12.729A.356.356,0,0,1,0,12.478Z" 
+            transform="translate(0 -7.544)" 
+            fill="#999"/>
         </svg>
     )
-    
     return (
-    <nav id='navMain' className=''>
-        <div className={`absolute top-0 left-0 z-50 max-w-[1280px] w-full max-h-20 bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700 ${
-            // topNavHiddenFlagged ? 'hidden': ''
-            'hidden'
-            }`}>
-            <div className="px-[1vw] py-[2vh]">
-                <div className="flex items-center justify-between">
-                <div className="flex items-center justify-start">
-                    <button type="button"
-                    className="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
-                    onClick={(e)=>onClickFlaggedSidebar(e)}
+        
+        <nav className="block bg-[#17C5EB] h-[120px] min-w-[1920px] w-full">
+            {/* menu nav main area */}
+            <div className="max-w-screen w-full h-[80px] flex flex-row items-center mx-auto px-[40px] font-bold text-[18px]">
+                <div className="flex flex-row justify-start items-center w-[430px] h-full pl-[20px] cursor-default">
+                    <div className="flex flex-col"
                     >
-                        <span className="sr-only">Open sidebar</span>
-                        <svg className="w-6 h-6" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                        <path clipRule="evenodd" fillRule="evenodd" d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z"></path>
-                        </svg>
-                    </button>
-                    <a href="#!" className="flex ml-2 md:mr-24">
-                    {/* <img src="https://flowbite.com/docs/images/logo.svg" className="h-8 mr-3" alt="FlowBite Logo" /> */}
-                    <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">POLY</span>
-                    </a>
+                        <span className="flex self-center whitespace-nowrap text-white">Speaking &</span>
+                        <span className="flex self-center whitespace-nowrap text-white">Writing Hub</span>
+                    </div>
                 </div>
-                <div className="flex items-center">
-                    <div className="flex items-center ml-3">
-                        <div>
-                        {/* <button type="button" className="flex text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600" aria-expanded="true" data-dropdown-toggle="dropdown-user">
-                            <span className="sr-only">Open user menu</span>
-                            <img className="w-8 h-8 rounded-full" src="https://flowbite.com/docs/images/people/profile-picture-5.jpg" alt="user photo" />
-                        </button> */}
-                        </div>
-                        <div className="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded shadow dark:bg-gray-700 dark:divide-gray-600" id="dropdown-user">
+
+                <div className='flex flex-1 w-full h-full justify-center'>
+                    <ul className='flex flex-row max-w-[1320px] h-full p-0 border-none justify-start gap-[100px]'>
+                        {navMenuValue.map((navItem, navIndex)=>{
+                            return (
+                                <Dropdown 
+                                    key={navIndex}
+                                    displayButtonValue={navItem.title}
+                                    dropValueList={navItem.subTitles}
+                                    onChangeValue={()=>{}}
+                                    currentIndex={navIndex}
+                                />
+                            )
+                        })}
+                    </ul>
+                </div>
+            </div>
+            {/* menu navigate text */}
+            <div className='max-w-screen flex flex-wrap bg-white w-full h-[40px] items-center pl-4'>
+                <div
+                    className='flex w-fit h-fit pl-2 items-center'
+                >{svgHome}<span className='pl-2'>{svgNextArrow}</span></div>
+                <div className='flex flex-row text-white text-[16px] pl-2 h-[24px] cursor-default'>
+                    {selectNavigationTitles.map((navigateLocationValue, navigateLocationIndex)=>{
+                        const maxIndex = selectNavigationTitles.length - 1;
                         
-                        </div>
-                    </div>
-                    </div>
+                        return (
+                            <div key={navigateLocationIndex} 
+                            className={navigateLocationIndex===maxIndex ? 'text-[#222222]':'text-[#999999]'}>
+                                {navigateLocationValue}
+                                {navigateLocationIndex !== maxIndex && <span className='px-2'>{svgNextArrow}</span>}
+                            </div>
+                        )
+                    })}
                 </div>
             </div>
-        </div>
-        <div className={`absolute top-0 z-50 w-full h-full max-h-20 bg-white ${topNavHiddenFlagged ? '': 'hidden'}`}>
-            <div className='flex flex-row px-[1vw]'>
-            <div className='flex flex-1 gap-4 p-4 content-center items-center'>
-                <div onClick={()=>CommonFunctions.goLink('WritingClinic/SparkWriting',navigate, role)}>{svgHome}</div>
-                <div className='font-bold text-2xl p-2'>{subNavTitleString}</div>
-            </div>
-            {subRightNavTitleString !== '' && 
-                <div className='flex flex-1 flex-row-reverse gap-4 px-4 content-center items-center'>
-                    <p className='font-bold text-xl'>{subRightNavTitleString}</p>
-                </div>
-            }
-            </div>
-        </div>
-    </nav>
+        </nav>
+
     )
 }
+

@@ -14,15 +14,15 @@ export const Login = () => {
                         <div>
                             <button onClick={() => {
 
-                                setUserInfo({name: 'Henry', companyName: 'Poly',class: 'TESTCLASS', subClass: 'SUBTEST-CLASS', email: 'TEST@una.co.kr', role: "student"})
+                                setUserInfo({name: 'Henry', companyName: 'Poly',class: 'TESTCLASS', subClass: 'SUBTEST-CLASS', email: 'TEST@una.co.kr', role: "Head"})
                                 closeModal()
                             }} className="m-4 p-4 w-1/3 mx-auto bg-blue-200 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full">student</button>
                             <button onClick={() => {
-                                setUserInfo({name: 'teacher', companyName: 'Poly',class: 'TESTCLASS', subClass: 'SUBTEST-CLASS', email: 'TEST@una.co.kr', role: "teacher"})
+                                setUserInfo({name: 'teacher', companyName: 'Poly',class: 'TESTCLASS', subClass: 'SUBTEST-CLASS', email: 'TEST@una.co.kr', role: "Campus"})
                                 closeModal()
                             }} className="m-4 p-4 w-1/3 mx-auto bg-blue-200 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full">teacher</button>
                             <button onClick={() => {
-                                setUserInfo({name: 'admin', companyName: 'Poly',class: 'TESTCLASS', subClass: 'SUBTEST-CLASS', email: 'TEST@una.co.kr', role: "admin"})
+                                setUserInfo({name: 'admin', companyName: 'Poly',class: 'TESTCLASS', subClass: 'SUBTEST-CLASS', email: 'TEST@una.co.kr', role: "All"})
                                 closeModal()
                             }} className="m-4 p-4 w-1/3 mx-auto bg-blue-200 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full">admin</button>
                             {/* <button onClick={() => {

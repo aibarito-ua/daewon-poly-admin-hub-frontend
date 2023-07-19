@@ -12,6 +12,20 @@ interface INavItem {
     setSubRightNavTitleString: any;
     selectUnitInfo: TUnitTitleItem;
     setSelectUnitInfo: (unitMainTitle:string, unitSubTitle:string) =>void;
+
+    selectNavigationIndex: number;
+    selectNavigationTitles: string[];
+    setSelectNavigationTitles: (selectNavigationTitlesValue:string[]) => void;
+
+    navigateBlockFlag: boolean;
+    navigateBlockMessage: string[];
+    setNavigateBlockFlag: (flag:boolean) => void;
+    setNavigateBlockMessage: (messages:string[] ) =>void;
+
+    navigateBlockAlertYesFn: Function|null,
+    navigateBlockAlertNoFn: Function|null,
+    setNavigateBlockAlertYesFn: (yesFn: Function) =>void;
+    setNavigateBlockAlertNoFn: (noFn: Function) => void;
 }
 type TStudentNavItem = "MyPage" | "EssayWriting" | "Portfolio";
 // type TTeacherNavItem = ""

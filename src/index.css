@@ -17,8 +17,6 @@ code {
 @import "tailwindcss/utilities";
 #root {
   @apply
-  max-h-[800px]
-  max-w-[1280px]
   w-full
   h-full
 }
@@ -27,431 +25,363 @@ body {
   height: 100vh;
   background-color: black; */
   @apply
+  m-0
+  
   w-[100vw]
   h-[100vh]
-  bg-black
   flex
   items-center
   justify-center
-  
 }
-
-.wrapper {
+.display-page-screen {
   @apply
   w-full
-  h-full
-  flex
-  flex-1
-  items-center
-  justify-center
-  bg-black
+  h-[calc(100vh-120px)]
+  px-[20px]
+  py-[15.5px]
+  bg-[#EBEBEB]
 }
-.container-wrapper {
-  @apply
-  flex
-  flex-1
-  max-h-[800px]
-  max-w-[1280px]
-  h-full
-  w-full
-  bg-white
-}
-/* Route Screen */
-.max-display-screen {
-  @apply
-  mx-auto
-  items-center
-  text-center
-  w-full
-  h-full
-}
-.use-nav-aside {
-  @apply
-  pt-20
-  
-  pl-64
-}
-.use-nav-top {
-  @apply
-  pt-20
-}
-
-/* Section */
 .section-common-layout {
   @apply
-  
   w-full
   h-full
+  /* px-[20px]
+  py-[15.5px] */
+  bg-white
+}
+.section-common-aside-layout {
+  @apply
+  w-full
+  h-full
+  bg-white
 }
 
-/* Modal */
-/* PopupModal */
-.modal-popup-background-div {
-  @apply
-  absolute
-  top-1/2
-  left-1/2
-  z-50
-  bg-gray-950/60
-  p-4
-  overflow-x-hidden
-  overflow-y-auto
-  md:inset-0
-  h-full
-  max-h-full
-}
-.modal-popup-area-div {
-  @apply
-  relative
-  w-full
-  max-h-full
-  h-full
-}
-.modal-popup-area-window-div {
-  @apply
-  absolute
-  top-1/3
-  left-1/3
-  h-max
-  w-max
-  /* relative */
-  bg-[#d9e2f3]
-  rounded-lg
-  shadow-[5px_5px_5px_rgba(0,0,0,0.25)]
-}
-.modal-popup-messages-div {
-  @apply
-  mb-5
-  text-lg
-  font-normal
-  text-black
-}
-/* chatbot modal */
-.chatbot-modal-button {
+.scetion-common-filter-row-div {
   @apply
   flex
-  flex-1
-  w-fit
-  h-fit
-  /* bg-no-repeat */
-  /* bg-[url('./components/toggleModalComponents/img/buttonEllaImg.png')]; */
-  /* background: url('./components/toggleModalComponents/img/buttonEllaImg.png'); */
-}
-
-.chatbot-modal-popup-background-div {
-  @apply
-  flex
-  absolute
-  top-0
-  left-0
-  z-50
-  bg-gray-950/60
-  overflow-x-hidden
-  overflow-y-auto
-  inset-0
+  flex-row
+  min-w-fit
   w-full
-  h-full
+  /* justify-between
+  w-[521px] */
 }
-.chatbot-modal-popup-area-div {
-  @apply
-  flex
-  justify-center
-  items-center
-  relative
-  w-full
-  h-full
-}
-.chatbot-modal-popup-area-window-div {
+.scetion-common-filter-row-div-spark {
   @apply
   flex
   flex-col
-  w-[60%]
-  h-[60%]
   min-w-fit
-  relative
-  bg-[#d9e2f3]
-  rounded-lg
-  shadow-[5px_5px_5px_rgba(0,0,0,0.25)]
+  w-full
+  /* justify-between
+  w-[521px] */
 }
-.chatbot-modal-popup-messages-div {
+.section-common-filter-columns-div {
   @apply
-  mb-5
-  
-  text-lg
-  font-normal
-  text-black
+  flex gap-[24px] mr-[24px]
 }
-.chat-ai-div {
+.section-common-filter-search-normal {
+  @apply
+  bg-[#EAEAEA] text-[#999999] cursor-not-allowed
+}
+.section-common-filter-search-active {
+  @apply
+  bg-[#222222] text-white cursor-pointer
+}
+.section-common-table-wrap-div {
   @apply
   flex
-  row-auto
-}
-.chat-ai-div-child {
-  @apply bg-[#ffda66]
-    mb-2
-    ml-1
-    text-black
-    max-w-fit
-    h-min
-    inline-block
-    p-2
-    rounded-tr-lg
-    /* rounded-tl-lg */
-    rounded-br-lg
-    rounded-bl-lg
-    text-base
-    shadow-sm
-
-    /* dark:bg-blue-500 */
-}
-.chat-user-div {
-  @apply flex
-  justify-end
-  row-auto
-}
-.chat-user-div-child {
-  @apply bg-[#06b0f0]
-  border
-  mb-2
-  mr-1
-  text-white
-  max-w-fit
-  h-min
-  inline-block
-  p-2
-  rounded-tr-lg
-  rounded-tl-lg
-  /* rounded-br-lg */
-  rounded-bl-lg
-  text-base
-  shadow-sm
-
-  /* dark:bg-slate-50 */
-}
-
-/* Writing Center */
-/* 1. Select */
-.select-writing-item-button {
-  @apply flex-col
-  flex-1
-  text-black
-  bg-[#f2f2f2]
-  shadow-[5px_10px_10px_rgba(0,0,0,0.25)]
-  sm:w-2/5
-  max-sm:w-11/12
-  max-sm:mx-4
-  max-sm:mt-4
-  h-2/3
-  rounded-3xl
-  outline-none
-  sm:m-auto
-  p-10
-  hover:ring-8
-  hover:ring-yellow-400
-  focus:ring-8
-  focus:ring-yellow-400
-  /* dark:border-yellow-300 
-  dark:text-yellow-300 
-  dark:hover:text-white 
-  dark:hover:bg-yellow-400 
-  dark:focus:ring-yellow-900 */
-}
-/* 1.1. topic select button */
-.select-writing-topic-item-button {
-  @apply 
-  text-black
+  flex-col
+  min-w-fit
   w-full
-  md:h-full
-  max-md:h-fit
-  font-bold
-  shadow-[5px_10px_10px_rgba(0,0,0,0.25)]
-  rounded-2xl
-  outline-none
+  h-full
+  overflow-auto
+}
+
+/* level & Textbook */
+.section-common-canvas {
+  @apply
+  flex
+  flex-1
+  flex-col
+  w-full
+  h-full
+  justify-center
   
+}
+
+/* Dropdown  */
+.CSS-dropdown-menu-button {
+  @apply inline-flex
+  max-w-[230px]
+  /* w-[230px] */
+  w-full
+  h-full
+  justify-center
+  items-center
+  rounded-md
+  shadow-sm
+  border-none
+  font-bold text-[18px]
+  text-[#E9E9E9]
+}
+.CSS-dropdown-menu-button-active {
+  @apply inline-flex
+  max-w-[230px]
+  /* w-[230px] */
+  w-full
+  h-full
+  justify-center
+  items-center
+  
+  shadow-sm
+  
+  font-bold text-[18px]
+  text-white
+  border-transparent
+  border-b-[4px]
+  border-b-white
+}
+
+.CSS-dropdown-menu-items {
+  @apply 
+  absolute 
+  w-[230px]
+  left-0
+  -mt-[4px]
+  z-10
+  origin-top-right 
+  rounded-bl-md
+  rounded-br-md
+  bg-white
+  shadow-lg 
+  ring-1 
+  ring-black 
+  ring-opacity-5 
+  focus:outline-none
+  border-t-[4px]
+  border-white
+}
+.CSS-dropdown-munu-item-a-default {
+  @apply block px-4 py-2 text-[14px]
+  bg-white
+  text-[#999999]
+  font-sans
+  font-light
+  text-left
+  w-full
+  h-[34px]
+}
+.CSS-dropdown-munu-item-a-select {
+  @apply block px-4 py-2 text-[14px]
+  bg-[#EBEBEB]
+  text-[@222222]
+  font-sans
+  font-normal
+  text-left
+  w-full
+  h-[34px]
+}
+.CSS-backup-table-item-default {
+  @apply bg-white
+}
+.CSS-backup-table-item-select {
+  @apply 
+  bg-slate-500
+}
+
+/* Filter Dropdown */
+/* Dropdown  */
+.Filter-CSS-dropdown-menu-button {
+  @apply inline-flex
+  w-[140px]
+  h-[36px]
+  justify-between
+  items-center
+  rounded-md
+  shadow-sm
+  ml-4
+  px-4 py-1 text-sm font-medium
+  border
+}
+
+.Filter-CSS-dropdown-menu-items {
+  @apply 
+  absolute 
+  w-full
+  left-0 
+  text-[#0070c0]
+  z-10
+  origin-top-right 
+  rounded-bl-md
+  rounded-br-md
+  bg-white
+  shadow-lg 
+  ring-1 
+  ring-black 
+  ring-opacity-5 
+  focus:outline-none
+}
+.Filter-CSS-dropdown-munu-item-a-default {
+  @apply block px-4 py-2 text-sm 
+  bg-white
+  text-left
+  w-full
+  h-full
+}
+.Filter-CSS-dropdown-munu-item-a-select {
+  @apply block px-4 py-2 text-sm 
+  bg-gray-200 
+  text-left
+  w-full
+  h-full
+}
+.Filter-CSS-backup-table-item-default {
+  @apply bg-white
+}
+.Filter-CSS-backup-table-item-select {
+  @apply 
+  bg-slate-500
+}
+
+.Filter-search-button {
+  @apply flex
+  
+  justify-center
+  items-center
+  w-[117px]
+  h-[36px]
+  text-[14px]
+  gap-2
+  rounded-md
+  border
+  border-[#BBBBBB]
+}
+
+/* Table */
+
+/* table wrapping div */
+.table-wrap-div {
+  @apply
+  flex
+  flex-1
+  w-full
+  h-full
+  relative
+}
+/* table */
+.table-basic {
+  @apply
+  text-left
+  w-full
+  h-fit
+  border-collapse
+}
+.table-aside {
+  @apply
+  text-left
+  max-w-[calc(100vw-274px)]
+  w-full
+  h-fit
+  border-collapse
+}
+
+/* thead */
+.table-thead-basic {
+  @apply
+  capitalize
+}
+.table-thead-tr-basic {
+  @apply
+  bg-[#F6FDFF]
+}
+.table-thead-tr-th-basic {
+  @apply
+  h-[34px]
+  text-center
+  text-[#222222]
+  text-[14px]
+  leading-[1.79]
+  font-sans
+  font-normal
+  border
+  whitespace-nowrap
+}
+
+/* tbody */
+.table-tbody-basic {
+  @apply
+  h-fit
+  text-[#444444]
+}
+/* tr */
+.table-tbody-tr-basic {
+  @apply
+  max-h-[2.5rem]
+  h-[38px]
+}
+
+/* td */
+.table-tbody-tr-td-basic {
+  @apply
+  h-[38px]
+  text-[13px]
+  font-sans
+  whitespace-nowrap
+  border
+}
+.table-tbody-tr-td-gray {
+  @apply
+  h-[38px]
+  text-[13px]
+  font-sans
+  whitespace-nowrap
+  border
+  bg-[#F9F9F9]
 }
 
 /*  */
-.div-to-button-hover-effect {
-  @apply
-  hover:cursor-pointer
-}
-.outline-key-div {
-  @apply
-  absolute
-  left-0
-  top-[40%]
-  text-white
-  text-start
-  text-xl
-  w-full
-  h-full
-  pl-[20%]
-}
-.outline-content-box {
-  @apply
-  flex flex-1 flex-col
-  justify-start
-  text-start
-  bg-transparent
-  h-fit
-  z-0
-  relative
-  /* bg-[url('/src/util/png/outlinTextSubBox.png')] */
 
-}
-.outline-content-box-item {
+/* StoryVlog table */
+/* thead */
+/* th */
+.story-vlog-table-thead-th {
   @apply
-  p-2
+  w-fit
+  py-2
+  px-2
+  text-center
 }
 
-.outline-content-box-sub-item {
+/* Role-play table */
+/* thead */
+/* th */
+.role-play-table-thead-th {
   @apply
-  pl-4
+  min-w-fit
+  w-16
+  py-2
+  px-2
+  text-center
+  whitespace-nowrap
 }
-
-.buttons-div {
+/* td */
+.role-play-table-td-elipsis {
   @apply
-  absolute
-  bottom-10
-  right-10
-  flex
-  flex-row
-  gap-4
-}
-.save-button {
-  @apply
-  border-black
+  text-sm
+  font-medium
   border
-  rounded-md
-  px-5
-  py-1
-  text-[#0070c0]
-  font-bold
-  shadow-[5px_5px_5px_rgba(0,0,0,0.25)]
-  bg-white
+  overflow-ellipsis
+  whitespace-nowrap
+  py-2
+  px-2
+  w-[300px]
 }
-
-/* Preview Page */
-/* Buttons */
-.not-disabled-button {
+.role-play-table-td-basic {
   @apply
-  border-black
+  text-sm
+  font-medium
   border
-  rounded-md
-  px-5
-  py-1
-  text-[#0070c0]
-  font-bold
-  shadow-[5px_5px_5px_rgba(0,0,0,0.25)]
-  bg-white
-}
-.disabled-button {
-  @apply
-  border-black
-  border
-  rounded-md
-  px-5
-  py-1
-  text-[#0070c0]
-  font-bold
-  shadow-[5px_5px_5px_rgba(0,0,0,0.25)]
-  bg-[#bfbfbf]
-}
-
-.tooltip {
-  /* position: relative; */
-  display: inline-block;
-  /* border-bottom: 1px dotted black; */
-  
-}
-
-.tooltip .tooltiptext {
-  /* visibility: hidden;
-  max-width: 200px;
-  background-color: #dae3f3;
-  color: #0070c0;
-  text-align: center;
-  border-radius: 6px;
-  padding: 5px 0;
-  border: 1px solid #32538f; */
-
-  /* Position the tooltip */
-  /* position: absolute;
-  z-index: 50;
-  top: 100%;
-  left: 50%;
-  margin-left: -60px; */
-  display: none;
-  position: absolute;
-  max-width: 200px;
-  border: 1px solid #32538f;
-  border-radius: 5px;
-  padding: 5px;
-  font-size: 0.8em;
-  color: #0070c0;
-  background-color: #dae3f3;
-  
-}
-
-.tooltip .tooltiptext::after {
-  content: " ";
-  position: absolute;
-  bottom: 100%;  /* At the top of the tooltip */
-  left: 10%;
-  margin-left: -5px;
-  border-width: 5px;
-  border-style: solid;
-  border-color: transparent transparent #32538f transparent;
-}
-
-.tooltip:hover .tooltiptext {
-  display: block;
-  visibility: visible;
-}
-
-/* Custom Grammar Tooltip by floating-react */
-.grammar-tooltip-custom {
-  /* width: max-content; */
-  min-width: 220px;
-  background-color: #dae3f3;
-  color: #0070c0;
-  font-size: 90%;
-  padding: 8px 8px;
-  border-radius: 10%;
-  border: 1px solid #32538f;
-}
-.grammar-tooltip-custom-popup {
-  @apply
-  flex
-  flex-1
-  flex-row
-  gap-4
-  justify-end
-  
-}
-.grammar-tooltip-custom-popup-accept {
-  @apply
-  flex
-  bg-white
-  text-black
-  border
-  border-solid
-  border-black
-  rounded-md
-  px-1
-  shadow-[2px_2px_2px_rgba(0,0,0,0.25)]
-}
-.grammar-tooltip-custom-popup-ignore {
-  @apply
-  flex
-  bg-white
-  text-black
-  border
-  border-solid
-  border-black
-  rounded-md
-  px-1
-  shadow-[2px_2px_2px_rgba(0,0,0,0.25)]
+  whitespace-nowrap
+  text-center
 }
 
 /* Outlint Format Button Custom */
@@ -506,3 +436,41 @@ body {
   clip-path: polygon(0 0, 100% 0%, 100% 50%, 50% 100%, 0% 50%);
 }
 
+.buttons-div {
+  @apply
+  
+  
+  bottom-[15px]
+  right-[20px]
+  flex
+  gap-4
+  w-full
+  h-[81px]
+  bg-[#fff]
+  justify-end
+  py-[20px]
+  px-[23px]
+}
+.buttons-div-button {
+  @apply
+  border-0
+  text-[14px]
+  text-[#fff]
+  bg-[#0fa9cb]
+  rounded-[2px]
+  hover:cursor-pointer
+  px-[28px]
+  py-[10px]
+}
+.buttons-div-button-disabled {
+  @apply
+  border-[1px]
+  border-[#bbb]
+  text-[14px]
+  text-[#999999]
+  bg-[#eaeaea]
+  rounded-[2px]
+  px-[28px]
+  py-[10px]
+  hover:cursor-not-allowed
+}

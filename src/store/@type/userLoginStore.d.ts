@@ -18,4 +18,4 @@ interface IUserLoginInfo {
     role:TRole;
 }
 
-type TRole = "student" | "teacher" | "admin" | "logout";
+type TRole = "Head" | "Campus" | "All" |"logout";
