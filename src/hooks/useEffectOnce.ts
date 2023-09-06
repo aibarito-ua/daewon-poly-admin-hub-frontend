@@ -28,3 +28,9 @@ export const useEffectOnce = (effect: ()=>void | (()=>void)) => {
         }
     }, []);
 }
+
+export const useComponentWillMount = (func: () => void) => {
+    const willMount = React.useRef(true);
+    if (willMount.current) func()
+    willMount.current = false;
+}

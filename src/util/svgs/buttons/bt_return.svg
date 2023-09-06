@@ -1,0 +1,17 @@
+<svg id="bt_return" xmlns="http://www.w3.org/2000/svg" width="111" height="40" viewBox="0 0 111 40">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #ee4e4e;
+      }
+
+      .cls-2 {
+        fill: #fff;
+        font-size: 14px;
+        font-family: NotoSansCJKkr-Regular, Noto Sans CJK KR;
+      }
+    </style>
+  </defs>
+  <rect id="사각형_3223" data-name="사각형 3223" class="cls-1" width="111" height="40" rx="2"/>
+  <text id="RETURN" class="cls-2" transform="translate(28 26)"><tspan x="0" y="0">RETURN</tspan></text>
+</svg>

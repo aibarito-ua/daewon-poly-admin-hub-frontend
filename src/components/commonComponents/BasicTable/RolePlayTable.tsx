@@ -1,18 +1,19 @@
 import React from 'react';
-import { Table } from "@tanstack/react-table";
+import { cf } from '../../../util/common/commonFunctions';
 
-const TableHeader = (props: {table:Table<any>, sortEventTargetHeaderKeys?: string[] }) => {
-    let tableHeadDatas = props.table.getHeaderGroups()[0].headers;
+const TableHeader = (props: {table:TLoadDataHeadTrans[], sortEventTargetHeaderKeys?: string[] }) => {
+    let tableHeadDatas = props.table;
+    console.log('header role play =',tableHeadDatas)
     return (
         <thead className='table-thead-basic'>
             <tr className='table-thead-tr-basic'>
                 {tableHeadDatas.map((header, hIndex)=>{
-                    const headerText = header.column.columnDef.header?.toString();
-                    const maxWidthCheck = (header.id==='year'||header.id==='semester'||header.id==='grade'||header.id==='level'||header.id==='month') ? true:false;
+                    const headerText = header.header;
+                    const maxWidthCheck = (header.accessor==='year'||header.accessor==='semester'||header.accessor==='grade'||header.accessor==='level'||header.accessor==='month') ? true:false;
 
                     return (
                         <th
-                            key={header.id}
+                            key={header.accessor+hIndex}
                             className={`table-thead-tr-th-basic 
                                 ${hIndex>8 && 'hidden'}
                                 ${maxWidthCheck ? 'max-w-[80px]':'max-w-[100px]'}
@@ -35,7 +36,7 @@ const TableBody = (props:{dataModel:{key:string, value:any, rowspan:number, prin
                         {row.map((cell, cIdx) => {
                             
                             if (cell.print === true) {
-                                console.log('key =',cell.key, ', idx =',cIdx)
+                                // console.log('key =',cell.key, ', idx =',cIdx)
                                 const textValue:string = typeof(cell.value)==='string' ? cell.value:'';
                                 const textLength = textValue.length;
                                 const tdValue = (cell.key==='topic_title_1st'||cell.key==='topic_title_2nd') ? (
@@ -72,41 +73,31 @@ const TableBody = (props:{dataModel:{key:string, value:any, rowspan:number, prin
 }
 
 export default function RolePlayTableComponent (props:{
-    table:Table<any>,
+    table:{body: TRolePlayBooks[], head: TLoadDataHeadTrans[]},
     options?:{sortEventTargetHeaderKeys?: string[],mergeRowSpanKeys?: string[]}
 }) {
+    console.log('role data =',props.table.body)
+    console.log('role header data =',props.table.head)
     // table row datas
-    let tableDatas = props.table.getRowModel().rows;
-    const rowMergeKey = ['year','semester','grade','level']
+    let tableDatas = props.table.body.sort((a,b) => b.year-a.year || b.semester - a.semester || a.grade - b.grade || cf.basicTable.levelSort(a.level, b.level))
+    const rowMergeKey = props.options ? (props.options.mergeRowSpanKeys ? props.options.mergeRowSpanKeys: []) : ['year','semester','grade','level','book'];
+    const headerData = props.table.head;
 
     let dataModel:{key:string, value:any, rowspan:number, print:boolean}[][] = [];
     for (let dataIndex = 0; dataIndex < tableDatas.length; dataIndex++) {
-        const rowD = tableDatas[dataIndex].getAllCells();
+        const rowD = tableDatas[dataIndex];
         let pushRowData:{key:string, value:any, rowspan:number, print:boolean}[] = [];
         
-        for (let rowDIndex = 0; rowDIndex < rowD.length; rowDIndex++) {
-            const check = rowD[rowDIndex].id.match(/^[0-9]/gm);
-            if (check) {
-                if (rowD[rowDIndex].column.id === 'lesson') {
-                    const pushCellData = {
-                        key: rowD[rowDIndex].column.id,
-                        value:rowD[rowDIndex].getValue(),
-                        rowspan:1,
-                        print:true
-                    }
-                    pushRowData.push(pushCellData)
-                } else {
-                    const pushCellData = {
-                        key: rowD[rowDIndex].column.id,
-                        value:rowD[rowDIndex].getValue(),
-                        rowspan:1,
-                        print:true
-                    }
-                    pushRowData.push(pushCellData)
-
-                }
-                
+        for (let rowDIndex = 0; rowDIndex < headerData.length; rowDIndex++) {
+            const currentValue = rowD[headerData[rowDIndex].accessor];
+            
+            const pushCellData = {
+                key: headerData[rowDIndex].accessor,
+                value:currentValue,
+                rowspan:1,
+                print:true
             }
+            pushRowData.push(pushCellData)
         }
         dataModel.push(pushRowData);
     }
@@ -142,12 +133,13 @@ export default function RolePlayTableComponent (props:{
     } // for row
     // font-size: 1rem/* 16px */;
     // line-height: 1.5rem/* 24px */;
+    console.log('data table =',dataModel)
 
     if (dataModel.length > 0) {
         return (
             <div className='table-wrap-div'>
                 <table className='table-basic'>
-                    <TableHeader table={props.table} sortEventTargetHeaderKeys={props.options?props.options.sortEventTargetHeaderKeys:[]}/>
+                    <TableHeader table={headerData} sortEventTargetHeaderKeys={props.options?props.options.sortEventTargetHeaderKeys:[]}/>
                     <TableBody dataModel={dataModel} />
                 </table>
             </div>)

@@ -1,5 +1,4 @@
 import { create } from 'zustand';
-import { IActivitySHStore } from './@type/useActivitySpeakHubStore';
 
 const useActivitySpeakHubStore = create<IActivitySHStore>((set) => ({
     sideNav: {
@@ -26,7 +25,7 @@ const useActivitySpeakHubStore = create<IActivitySHStore>((set) => ({
             role_play: [
                 "year", "semester", "grade", "level", "month",
                 "topic_title_1st", "topic_lv_1st", "topic_title_2nd", "topic_lv_2nd",
-                "topic_title_3rd", "topic_lv_3rd", "topic_title_4th", "topic_lv_4th"
+                //"topic_title_3rd", //"topic_lv_3rd", //"topic_title_4th", //"topic_lv_4th"
             ]
         },
         body: {
@@ -39,7 +38,7 @@ const useActivitySpeakHubStore = create<IActivitySHStore>((set) => ({
             role_play: [
                 "year", "semester", "grade", "level", "month",
                 "topic_title_1st", "topic_lv_1st", "topic_title_2nd", "topic_lv_2nd",
-                "topic_title_3rd", "topic_lv_3rd", "topic_title_4th", "topic_lv_4th"
+                //"topic_title_3rd", //"topic_lv_3rd", //"topic_title_4th", //"topic_lv_4th"
             ]
         }
     },
@@ -163,31 +162,31 @@ const useActivitySpeakHubStore = create<IActivitySHStore>((set) => ({
                 accessor: "topic_lv_2nd",
                 header: '2nd topic lv.'
             },
-            {
-                accessor: "topic_title_3rd",
-                header: '3rd topic title'
-            },
-            {
-                accessor: "topic_lv_3rd",
-                header: '3rd topic lv.'
-            },{
-                accessor: "topic_title_4th",
-                header: '4th topic title'
-            },
-            {
-                accessor: "topic_lv_4th",
-                header: '4th topic lv.'
-            },
+            // {
+            //     accessor: //"topic_title_3rd",
+            //     header: '3rd topic title'
+            // },
+            // {
+            //     accessor: //"topic_lv_3rd",
+            //     header: '3rd topic lv.'
+            // },{
+            //     accessor: //"topic_title_4th",
+            //     header: '4th topic title'
+            // },
+            // {
+            //     accessor: //"topic_lv_4th",
+            //     header: '4th topic lv.'
+            // },
         ],
     },
     loadData: {
         idea_exchange: [
             {
                 "book": "Wonders_into the Horizon",
-                "year": "2020",
-                "grade": "3",
+                "year": 2020,
+                "grade": 3,
                 "level": "GT3",
-                "semester": "2",
+                "semester": 2,
                 "lesson": {
                     "viewIndex": 0,
                     "title": "",
@@ -198,13 +197,13 @@ const useActivitySpeakHubStore = create<IActivitySHStore>((set) => ({
                 },
                 "expression": {
                     "url": "",
-                    "fileName": "",
+                    "filename": "",
                 },
             },
             {
-                "year": "2020",
-                "semester": "2",
-                "grade": "3",
+                "year": 2020,
+                "semester": 2,
+                "grade": 3,
                 "level": "GT3",
                 "book": "Wonders_into the Horizon",
                 "lesson": {
@@ -217,13 +216,13 @@ const useActivitySpeakHubStore = create<IActivitySHStore>((set) => ({
                 },
                 "expression": {
                     "url": "",
-                    "fileName": "",
+                    "filename": "",
                 },
             },
             {
-                "year": "2020",
-                "semester": "2",
-                "grade": "3",
+                "year": 2020,
+                "semester": 2,
+                "grade": 3,
                 "level": "GT3",
                 "book": "Wonders_into the Horizon",
                 "lesson": {
@@ -236,15 +235,15 @@ const useActivitySpeakHubStore = create<IActivitySHStore>((set) => ({
                 },
                 "expression": {
                     "url": "http://",
-                    "fileName": "text.jpg",
+                    "filename": "text.jpg",
                     // "url": "",
-                    // "fileName": "",
+                    // "filename": "",
                 },
             },
             {
-                "year": "2020",
-                "semester": "2",
-                "grade": "3",
+                "year": 2020,
+                "semester": 2,
+                "grade": 3,
                 "level": "GT3",
                 "book": "Wonders_into the Horizon",
                 "lesson": {
@@ -257,14 +256,14 @@ const useActivitySpeakHubStore = create<IActivitySHStore>((set) => ({
                 },
                 "expression": {
                     "url": "",
-                    "fileName": "",
+                    "filename": "",
                 },
             },
     
             {
-                "year": "2020",
-                "semester": "2",
-                "grade": "3",
+                "year": 2020,
+                "semester": 2,
+                "grade": 3,
                 "level": "GT3",
                 "book": "Wonders_into the Horizon",
                 "lesson": {
@@ -277,14 +276,14 @@ const useActivitySpeakHubStore = create<IActivitySHStore>((set) => ({
                 },
                 "expression": {
                     "url": "",
-                    "fileName": "",
+                    "filename": "",
                 },
             },
     
             {
-                "year": "2020",
-                "semester": "2",
-                "grade": "3",
+                "year": 2020,
+                "semester": 2,
+                "grade": 3,
                 "level": "GT3",
                 "book": "Wonders_into the Horizon",
                 "lesson": {
@@ -297,13 +296,13 @@ const useActivitySpeakHubStore = create<IActivitySHStore>((set) => ({
                 },
                 "expression": {
                     "url": "",
-                    "fileName": "",
+                    "filename": "",
                 },
             },
             {
-                "year": "2020",
-                "semester": "2",
-                "grade": "3",
+                "year": 2020,
+                "semester": 2,
+                "grade": 3,
                 "level": "GT3",
                 "book": "Wonders_into the Horizon",
                 "lesson": {
@@ -316,14 +315,14 @@ const useActivitySpeakHubStore = create<IActivitySHStore>((set) => ({
                 },
                 "expression": {
                     "url": "",
-                    "fileName": "",
+                    "filename": "",
                 },
             },
     
             {
-                "year": "2020",
-                "semester": "2",
-                "grade": "3",
+                "year": 2020,
+                "semester": 2,
+                "grade": 3,
                 "level": "GT3",
                 "book": "Wonders_into the Horizon",
                 "lesson": {
@@ -336,13 +335,13 @@ const useActivitySpeakHubStore = create<IActivitySHStore>((set) => ({
                 },
                 "expression": {
                     "url": "",
-                    "fileName": "",
+                    "filename": "",
                 },
             },
             {
-                "year": "2020",
-                "semester": "2",
-                "grade": "3",
+                "year": 2020,
+                "semester": 2,
+                "grade": 3,
                 "level": "GT3",
                 "book": "Wonders_into the Horizon",
                 "lesson": {
@@ -355,13 +354,13 @@ const useActivitySpeakHubStore = create<IActivitySHStore>((set) => ({
                 },
                 "expression": {
                     "url": "",
-                    "fileName": "",
+                    "filename": "",
                 },
             },
             {
-                "year": "2020",
-                "semester": "2",
-                "grade": "3",
+                "year": 2020,
+                "semester": 2,
+                "grade": 3,
                 "level": "GT3",
                 "book": "Wonders_into the Horizon",
                 "lesson": {
@@ -374,13 +373,13 @@ const useActivitySpeakHubStore = create<IActivitySHStore>((set) => ({
                 },
                 "expression": {
                     "url": "",
-                    "fileName": "",
+                    "filename": "",
                 },
             },
             {
-                "year": "2020",
-                "semester": "2",
-                "grade": "3",
+                "year": 2020,
+                "semester": 2,
+                "grade": 3,
                 "level": "GT3",
                 "book": "Wonders_into the Horizon",
                 "lesson": {
@@ -393,13 +392,13 @@ const useActivitySpeakHubStore = create<IActivitySHStore>((set) => ({
                 },
                 "expression": {
                     "url": "",
-                    "fileName": "",
+                    "filename": "",
                 },
             },
             {
-                "year": "2020",
-                "semester": "2",
-                "grade": "3",
+                "year": 2020,
+                "semester": 2,
+                "grade": 3,
                 "level": "GT3",
                 "book": "Wonders_into the Horizon",
                 "lesson": {
@@ -412,13 +411,13 @@ const useActivitySpeakHubStore = create<IActivitySHStore>((set) => ({
                 },
                 "expression": {
                     "url": "",
-                    "fileName": "",
+                    "filename": "",
                 },
             },
             {
-                "year": "2020",
-                "semester": "2",
-                "grade": "3",
+                "year": 2020,
+                "semester": 2,
+                "grade": 3,
                 "level": "GT3",
                 "book": "Wonders_into the Horizon",
                 "lesson": {
@@ -431,14 +430,14 @@ const useActivitySpeakHubStore = create<IActivitySHStore>((set) => ({
                 },
                 "expression": {
                     "url": "",
-                    "fileName": "",
+                    "filename": "",
                 },
             },
     
             {
-                "year": "2020",
-                "semester": "2",
-                "grade": "3",
+                "year": 2020,
+                "semester": 2,
+                "grade": 3,
                 "level": "GT3",
                 "book": "Wonders_into the Horizon",
                 "lesson": {
@@ -451,13 +450,13 @@ const useActivitySpeakHubStore = create<IActivitySHStore>((set) => ({
                 },
                 "expression": {
                     "url": "",
-                    "fileName": "",
+                    "filename": "",
                 },
             },
             {
-                "year": "2020",
-                "semester": "2",
-                "grade": "3",
+                "year": 2020,
+                "semester": 2,
+                "grade": 3,
                 "level": "GT3",
                 "book": "Wonders_into the Horizon",
                 "lesson": {
@@ -470,13 +469,13 @@ const useActivitySpeakHubStore = create<IActivitySHStore>((set) => ({
                 },
                 "expression": {
                     "url": "",
-                    "fileName": "",
+                    "filename": "",
                 },
             },
             {
-                "year": "2020",
-                "semester": "2",
-                "grade": "3",
+                "year": 2020,
+                "semester": 2,
+                "grade": 3,
                 "level": "GT3",
                 "book": "Wonders_into the Horizon",
                 "lesson": {
@@ -489,15 +488,15 @@ const useActivitySpeakHubStore = create<IActivitySHStore>((set) => ({
                 },
                 "expression": {
                     "url": "",
-                    "fileName": "",
+                    "filename": "",
                 },
             },        
         ],
         story_vlog: [
             {
-                "year": "2020",
-                "semester": "2",
-                "grade": "3",
+                "year": 2020,
+                "semester": 2,
+                "grade": 3,
                 "level": "GT3",
                 "book": "Wonders_into the Horizon",
                 "lesson": {
@@ -506,9 +505,9 @@ const useActivitySpeakHubStore = create<IActivitySHStore>((set) => ({
                 },
             },
             {
-                "year": "2020",
-                "semester": "2",
-                "grade": "3",
+                "year": 2020,
+                "semester": 2,
+                "grade": 3,
                 "level": "GT3",
                 "book": "Wonders_into the Horizon",
                 "lesson": {
@@ -517,9 +516,9 @@ const useActivitySpeakHubStore = create<IActivitySHStore>((set) => ({
                 },
             },
             {
-                "year": "2020",
-                "semester": "2",
-                "grade": "3",
+                "year": 2020,
+                "semester": 2,
+                "grade": 3,
                 "level": "GT3",
                 "book": "Wonders_into the Horizon",
                 "lesson": {
@@ -528,9 +527,9 @@ const useActivitySpeakHubStore = create<IActivitySHStore>((set) => ({
                 },
             },
             {
-                "year": "2020",
-                "semester": "2",
-                "grade": "3",
+                "year": 2020,
+                "semester": 2,
+                "grade": 3,
                 "level": "GT3",
                 "book": "Wonders_into the Horizon",
                 "lesson": {
@@ -540,9 +539,9 @@ const useActivitySpeakHubStore = create<IActivitySHStore>((set) => ({
             },
     
             {
-                "year": "2020",
-                "semester": "2",
-                "grade": "3",
+                "year": 2020,
+                "semester": 2,
+                "grade": 3,
                 "level": "GT3",
                 "book": "Wonders_into the Horizon",
                 "lesson": {
@@ -552,9 +551,9 @@ const useActivitySpeakHubStore = create<IActivitySHStore>((set) => ({
             },
     
             {
-                "year": "2020",
-                "semester": "2",
-                "grade": "3",
+                "year": 2020,
+                "semester": 2,
+                "grade": 3,
                 "level": "GT3",
                 "book": "Wonders_into the Horizon",
                 "lesson": {
@@ -563,9 +562,9 @@ const useActivitySpeakHubStore = create<IActivitySHStore>((set) => ({
                 },
             },
             {
-                "year": "2020",
-                "semester": "2",
-                "grade": "3",
+                "year": 2020,
+                "semester": 2,
+                "grade": 3,
                 "level": "GT3",
                 "book": "Wonders_into the Horizon",
                 "lesson": {
@@ -575,9 +574,9 @@ const useActivitySpeakHubStore = create<IActivitySHStore>((set) => ({
             },
     
             {
-                "year": "2020",
-                "semester": "2",
-                "grade": "3",
+                "year": 2020,
+                "semester": 2,
+                "grade": 3,
                 "level": "GT3",
                 "book": "Wonders_into the Horizon",
                 "lesson": {
@@ -586,9 +585,9 @@ const useActivitySpeakHubStore = create<IActivitySHStore>((set) => ({
                 },
             },
             {
-                "year": "2020",
-                "semester": "2",
-                "grade": "3",
+                "year": 2020,
+                "semester": 2,
+                "grade": 3,
                 "level": "GT3",
                 "book": "Wonders_into the Horizon",
                 "lesson": {
@@ -597,9 +596,9 @@ const useActivitySpeakHubStore = create<IActivitySHStore>((set) => ({
                 },
             },
             {
-                "year": "2020",
-                "semester": "2",
-                "grade": "3",
+                "year": 2020,
+                "semester": 2,
+                "grade": 3,
                 "level": "GT3",
                 "book": "Wonders_into the Horizon",
                 "lesson": {
@@ -608,9 +607,9 @@ const useActivitySpeakHubStore = create<IActivitySHStore>((set) => ({
                 },
             },
             {
-                "year": "2020",
-                "semester": "2",
-                "grade": "3",
+                "year": 2020,
+                "semester": 2,
+                "grade": 3,
                 "level": "GT3",
                 "book": "Wonders_into the Horizon",
                 "lesson": {
@@ -619,9 +618,9 @@ const useActivitySpeakHubStore = create<IActivitySHStore>((set) => ({
                 },
             },
             {
-                "year": "2020",
-                "semester": "2",
-                "grade": "3",
+                "year": 2020,
+                "semester": 2,
+                "grade": 3,
                 "level": "GT3",
                 "book": "Wonders_into the Horizon",
                 "lesson": {
@@ -630,9 +629,9 @@ const useActivitySpeakHubStore = create<IActivitySHStore>((set) => ({
                 },
             },
             {
-                "year": "2020",
-                "semester": "2",
-                "grade": "3",
+                "year": 2020,
+                "semester": 2,
+                "grade": 3,
                 "level": "GT3",
                 "book": "Wonders_into the Horizon",
                 "lesson": {
@@ -642,9 +641,9 @@ const useActivitySpeakHubStore = create<IActivitySHStore>((set) => ({
             },
     
             {
-                "year": "2020",
-                "semester": "2",
-                "grade": "4",
+                "year": 2020,
+                "semester": 2,
+                "grade": 4,
                 "level": "GT3",
                 "book": "Journeys_Ready To Roll",
                 "lesson": {
@@ -653,9 +652,9 @@ const useActivitySpeakHubStore = create<IActivitySHStore>((set) => ({
                 },
             },
             {
-                "year": "2020",
-                "semester": "2",
-                "grade": "4",
+                "year": 2020,
+                "semester": 2,
+                "grade": 4,
                 "level": "GT3",
                 "book": "Journeys_Ready To Roll",
                 "lesson": {
@@ -664,9 +663,9 @@ const useActivitySpeakHubStore = create<IActivitySHStore>((set) => ({
                 },
             },
             {
-                "year": "2020",
-                "semester": "2",
-                "grade": "4",
+                "year": 2020,
+                "semester": 2,
+                "grade": 4,
                 "level": "GT3",
                 "book": "Journeys_Ready To Roll",
                 "lesson": {
@@ -675,9 +674,9 @@ const useActivitySpeakHubStore = create<IActivitySHStore>((set) => ({
                 },
             },
             {
-                "year": "2020",
-                "semester": "1",
-                "grade": "3",
+                "year": 2020,
+                "semester": 1,
+                "grade": 3,
                 "level": "GT3",
                 "book": "Journeys_Ready To Roll",
                 "lesson": {
@@ -686,9 +685,9 @@ const useActivitySpeakHubStore = create<IActivitySHStore>((set) => ({
                 },
             },
             {
-                "year": "2020",
-                "semester": "1",
-                "grade": "3",
+                "year": 2020,
+                "semester": 1,
+                "grade": 3,
                 "level": "GT3",
                 "book": "Journeys_Ready To Roll",
                 "lesson": {
@@ -697,9 +696,9 @@ const useActivitySpeakHubStore = create<IActivitySHStore>((set) => ({
                 },
             },
             {
-                "year": "2020",
-                "semester": "1",
-                "grade": "3",
+                "year": 2020,
+                "semester": 1,
+                "grade": 3,
                 "level": "GT3",
                 "book": "Journeys_Ready To Roll",
                 "lesson": {
@@ -708,9 +707,9 @@ const useActivitySpeakHubStore = create<IActivitySHStore>((set) => ({
                 },
             },       
             {
-                "year": "2021",
-                "semester": "1",
-                "grade": "3",
+                "year": 2021,
+                "semester": 1,
+                "grade": 3,
                 "level": "GT3",
                 "book": "Journeys_Ready To Roll",
                 "lesson": {
@@ -719,9 +718,9 @@ const useActivitySpeakHubStore = create<IActivitySHStore>((set) => ({
                 },
             },
             {
-                "year": "2021",
-                "semester": "1",
-                "grade": "3",
+                "year": 2021,
+                "semester": 1,
+                "grade": 3,
                 "level": "GT3",
                 "book": "Journeys_Ready To Roll",
                 "lesson": {
@@ -730,9 +729,9 @@ const useActivitySpeakHubStore = create<IActivitySHStore>((set) => ({
                 },
             },
             {
-                "year": "2021",
-                "semester": "1",
-                "grade": "3",
+                "year": 2021,
+                "semester": 1,
+                "grade": 3,
                 "level": "GT3",
                 "book": "Journeys_Ready To Roll",
                 "lesson": {
@@ -743,274 +742,274 @@ const useActivitySpeakHubStore = create<IActivitySHStore>((set) => ({
         ],
         role_play: [
             {
-                "year": "2024",
-                "semester": "2",
-                "grade": "1",
+                "year": 2024,
+                "semester": 2,
+                "grade": 1,
                 "level": "GT1",
                 "month": "9월",
                 "topic_title_1st": "text text text text text text text text .",
                 "topic_lv_1st": "하",
                 "topic_title_2nd": "text text text text text text text text text text",
                 "topic_lv_2nd": "하",
-                "topic_title_3rd": "text text text text text text text text .",
-                "topic_lv_3rd": "하",
-                "topic_title_4th": "text text text text text text text text text text",
-                "topic_lv_4th": "하"
+                //"topic_title_3rd": "text text text text text text text text .",
+                //"topic_lv_3rd": "하",
+                //"topic_title_4th": "text text text text text text text text text text",
+                //"topic_lv_4th": "하"
             },
             {
-                "year": "2024",
-                "semester": "2",
-                "grade": "1",
+                "year": 2024,
+                "semester": 2,
+                "grade": 1,
                 "level": "GT1",
                 "month": "10월",
                 "topic_title_1st": "Magic Carpet Ride, Winter Wonderland",
                 "topic_lv_1st": "하",
                 "topic_title_2nd": "Magic Carpet Ride, Winter Wonderland",
                 "topic_lv_2nd": "하",
-                "topic_title_3rd": "Magic Carpet Ride, Winter Wonderland",
-                "topic_lv_3rd": "하",
-                "topic_title_4th": "Magic Carpet Ride, Winter Wonderland",
-                "topic_lv_4th": "하"
+                //"topic_title_3rd": "Magic Carpet Ride, Winter Wonderland",
+                //"topic_lv_3rd": "하",
+                //"topic_title_4th": "Magic Carpet Ride, Winter Wonderland",
+                //"topic_lv_4th": "하"
             },
             {
-                "year": "2024",
-                "semester": "2",
-                "grade": "1",
+                "year": 2024,
+                "semester": 2,
+                "grade": 1,
                 "level": "GT1",
                 "month": "11월",
                 "topic_title_1st": "What's the Most Difficult Job in the World?",
                 "topic_lv_1st": "하",
                 "topic_title_2nd": "What's the Most Difficult Job in the World?",
                 "topic_lv_2nd": "하",
-                "topic_title_3rd": "Magic Carpet Ride, Winter Wonderland",
-                "topic_lv_3rd": "하",
-                "topic_title_4th": "Magic Carpet Ride, Winter Wonderland",
-                "topic_lv_4th": "하"
+                //"topic_title_3rd": "Magic Carpet Ride, Winter Wonderland",
+                //"topic_lv_3rd": "하",
+                //"topic_title_4th": "Magic Carpet Ride, Winter Wonderland",
+                //"topic_lv_4th": "하"
             },
             {
-                "year": "2024",
-                "semester": "2",
-                "grade": "1",
+                "year": 2024,
+                "semester": 2,
+                "grade": 1,
                 "level": "GT1",
                 "month": "12월",
                 "topic_title_1st": "Magic Carpet Ride, Winter Wonderland",
                 "topic_lv_1st": "하",
                 "topic_title_2nd": "Magic Carpet Ride, Winter Wonderland",
                 "topic_lv_2nd": "하",
-                "topic_title_3rd": "Magic Carpet Ride, Winter Wonderland",
-                "topic_lv_3rd": "하",
-                "topic_title_4th": "Magic Carpet Ride, Winter Wonderland",
-                "topic_lv_4th": "하"
+                //"topic_title_3rd": "Magic Carpet Ride, Winter Wonderland",
+                //"topic_lv_3rd": "하",
+                //"topic_title_4th": "Magic Carpet Ride, Winter Wonderland",
+                //"topic_lv_4th": "하"
             },
             {
-                "year": "2024",
-                "semester": "2",
-                "grade": "1",
+                "year": 2024,
+                "semester": 2,
+                "grade": 1,
                 "level": "GT1",
                 "month": "1월",
                 "topic_title_1st": "Magic Carpet Ride, Winter Wonderland",
                 "topic_lv_1st": "하",
                 "topic_title_2nd": "Magic Carpet Ride, Winter Wonderland",
                 "topic_lv_2nd": "하",
-                "topic_title_3rd": "Magic Carpet Ride, Winter Wonderland",
-                "topic_lv_3rd": "하",
-                "topic_title_4th": "Magic Carpet Ride, Winter Wonderland",
-                "topic_lv_4th": "하"
+                //"topic_title_3rd": "Magic Carpet Ride, Winter Wonderland",
+                //"topic_lv_3rd": "하",
+                //"topic_title_4th": "Magic Carpet Ride, Winter Wonderland",
+                //"topic_lv_4th": "하"
             },
             {
-                "year": "2024",
-                "semester": "2",
-                "grade": "1",
+                "year": 2024,
+                "semester": 2,
+                "grade": 1,
                 "level": "GT1",
                 "month": "2월",
                 "topic_title_1st": "Magic Carpet Ride, Winter Wonderland",
                 "topic_lv_1st": "하",
                 "topic_title_2nd": "Magic Carpet Ride, Winter Wonderland",
                 "topic_lv_2nd": "하",
-                "topic_title_3rd": "Magic Carpet Ride, Winter Wonderland",
-                "topic_lv_3rd": "하",
-                "topic_title_4th": "Magic Carpet Ride, Winter Wonderland",
-                "topic_lv_4th": "하"
+                //"topic_title_3rd": "Magic Carpet Ride, Winter Wonderland",
+                //"topic_lv_3rd": "하",
+                //"topic_title_4th": "Magic Carpet Ride, Winter Wonderland",
+                //"topic_lv_4th": "하"
             },
             {
-                "year": "2024",
-                "semester": "1",
-                "grade": "1",
+                "year": 2024,
+                "semester": 1,
+                "grade": 1,
                 "level": "GT1",
                 "month": "9월",
                 "topic_title_1st": "What's the Most Difficult Job in the World?",
                 "topic_lv_1st": "하",
                 "topic_title_2nd": "What's the Most Difficult Job in the World?",
                 "topic_lv_2nd": "하",
-                "topic_title_3rd": "Magic Carpet Ride, Winter Wonderland",
-                "topic_lv_3rd": "하",
-                "topic_title_4th": "Magic Carpet Ride, Winter Wonderland",
-                "topic_lv_4th": "하"
+                //"topic_title_3rd": "Magic Carpet Ride, Winter Wonderland",
+                //"topic_lv_3rd": "하",
+                //"topic_title_4th": "Magic Carpet Ride, Winter Wonderland",
+                //"topic_lv_4th": "하"
             },
             {
-                "year": "2024",
-                "semester": "1",
-                "grade": "1",
+                "year": 2024,
+                "semester": 1,
+                "grade": 1,
                 "level": "GT1",
                 "month": "10월",
                 "topic_title_1st": "Magic Carpet Ride, Winter Wonderland",
                 "topic_lv_1st": "하",
                 "topic_title_2nd": "Magic Carpet Ride, Winter Wonderland",
                 "topic_lv_2nd": "하",
-                "topic_title_3rd": "Magic Carpet Ride, Winter Wonderland",
-                "topic_lv_3rd": "하",
-                "topic_title_4th": "Magic Carpet Ride, Winter Wonderland",
-                "topic_lv_4th": "하"
+                //"topic_title_3rd": "Magic Carpet Ride, Winter Wonderland",
+                //"topic_lv_3rd": "하",
+                //"topic_title_4th": "Magic Carpet Ride, Winter Wonderland",
+                //"topic_lv_4th": "하"
             },
             {
-                "year": "2024",
-                "semester": "1",
-                "grade": "1",
+                "year": 2024,
+                "semester": 1,
+                "grade": 1,
                 "level": "GT1",
                 "month": "11월",
                 "topic_title_1st": "What's the Most Difficult Job in the World?",
                 "topic_lv_1st": "하",
                 "topic_title_2nd": "What's the Most Difficult Job in the World?",
                 "topic_lv_2nd": "하",
-                "topic_title_3rd": "Magic Carpet Ride, Winter Wonderland",
-                "topic_lv_3rd": "하",
-                "topic_title_4th": "Magic Carpet Ride, Winter Wonderland",
-                "topic_lv_4th": "하"
+                //"topic_title_3rd": "Magic Carpet Ride, Winter Wonderland",
+                //"topic_lv_3rd": "하",
+                //"topic_title_4th": "Magic Carpet Ride, Winter Wonderland",
+                //"topic_lv_4th": "하"
             },
             {
-                "year": "2024",
-                "semester": "1",
-                "grade": "1",
+                "year": 2024,
+                "semester": 1,
+                "grade": 1,
                 "level": "GT1",
                 "month": "12월",
                 "topic_title_1st": "Magic Carpet Ride, Winter Wonderland",
                 "topic_lv_1st": "하",
                 "topic_title_2nd": "Magic Carpet Ride, Winter Wonderland",
                 "topic_lv_2nd": "하",
-                "topic_title_3rd": "Magic Carpet Ride, Winter Wonderland",
-                "topic_lv_3rd": "하",
-                "topic_title_4th": "Magic Carpet Ride, Winter Wonderland",
-                "topic_lv_4th": "하"
+                //"topic_title_3rd": "Magic Carpet Ride, Winter Wonderland",
+                //"topic_lv_3rd": "하",
+                //"topic_title_4th": "Magic Carpet Ride, Winter Wonderland",
+                //"topic_lv_4th": "하"
             },
             {
-                "year": "2024",
-                "semester": "1",
-                "grade": "1",
+                "year": 2024,
+                "semester": 1,
+                "grade": 1,
                 "level": "GT1",
                 "month": "1월",
                 "topic_title_1st": "Magic Carpet Ride, Winter Wonderland",
                 "topic_lv_1st": "하",
                 "topic_title_2nd": "Magic Carpet Ride, Winter Wonderland",
                 "topic_lv_2nd": "하",
-                "topic_title_3rd": "Magic Carpet Ride, Winter Wonderland",
-                "topic_lv_3rd": "하",
-                "topic_title_4th": "Magic Carpet Ride, Winter Wonderland",
-                "topic_lv_4th": "하"
+                //"topic_title_3rd": "Magic Carpet Ride, Winter Wonderland",
+                //"topic_lv_3rd": "하",
+                //"topic_title_4th": "Magic Carpet Ride, Winter Wonderland",
+                //"topic_lv_4th": "하"
             },
             {
-                "year": "2024",
-                "semester": "1",
-                "grade": "1",
+                "year": 2024,
+                "semester": 1,
+                "grade": 1,
                 "level": "GT1",
                 "month": "2월",
                 "topic_title_1st": "Magic Carpet Ride, Winter Wonderland",
                 "topic_lv_1st": "하",
                 "topic_title_2nd": "Magic Carpet Ride, Winter Wonderland",
                 "topic_lv_2nd": "하",
-                "topic_title_3rd": "Magic Carpet Ride, Winter Wonderland",
-                "topic_lv_3rd": "하",
-                "topic_title_4th": "Magic Carpet Ride, Winter Wonderland",
-                "topic_lv_4th": "하"
+                //"topic_title_3rd": "Magic Carpet Ride, Winter Wonderland",
+                //"topic_lv_3rd": "하",
+                //"topic_title_4th": "Magic Carpet Ride, Winter Wonderland",
+                //"topic_lv_4th": "하"
             },
             {
-                "year": "2025",
-                "semester": "1",
-                "grade": "1",
+                "year": 2025,
+                "semester": 1,
+                "grade": 1,
                 "level": "GT1",
                 "month": "9월",
                 "topic_title_1st": "What's the Most Difficult Job in the World?",
                 "topic_lv_1st": "하",
                 "topic_title_2nd": "What's the Most Difficult Job in the World?",
                 "topic_lv_2nd": "하",
-                "topic_title_3rd": "Magic Carpet Ride, Winter Wonderland",
-                "topic_lv_3rd": "하",
-                "topic_title_4th": "Magic Carpet Ride, Winter Wonderland",
-                "topic_lv_4th": "하"
+                //"topic_title_3rd": "Magic Carpet Ride, Winter Wonderland",
+                //"topic_lv_3rd": "하",
+                //"topic_title_4th": "Magic Carpet Ride, Winter Wonderland",
+                //"topic_lv_4th": "하"
             },
             {
-                "year": "2025",
-                "semester": "1",
-                "grade": "1",
+                "year": 2025,
+                "semester": 1,
+                "grade": 1,
                 "level": "GT1",
                 "month": "10월",
                 "topic_title_1st": "Magic Carpet Ride, Winter Wonderland",
                 "topic_lv_1st": "하",
                 "topic_title_2nd": "Magic Carpet Ride, Winter Wonderland",
                 "topic_lv_2nd": "하",
-                "topic_title_3rd": "Magic Carpet Ride, Winter Wonderland",
-                "topic_lv_3rd": "하",
-                "topic_title_4th": "Magic Carpet Ride, Winter Wonderland",
-                "topic_lv_4th": "하"
+                //"topic_title_3rd": "Magic Carpet Ride, Winter Wonderland",
+                //"topic_lv_3rd": "하",
+                //"topic_title_4th": "Magic Carpet Ride, Winter Wonderland",
+                //"topic_lv_4th": "하"
             },
             {
-                "year": "2025",
-                "semester": "1",
-                "grade": "1",
+                "year": 2025,
+                "semester": 1,
+                "grade": 1,
                 "level": "GT1",
                 "month": "11월",
                 "topic_title_1st": "What's the Most Difficult Job in the World?",
                 "topic_lv_1st": "하",
                 "topic_title_2nd": "What's the Most Difficult Job in the World?",
                 "topic_lv_2nd": "하",
-                "topic_title_3rd": "Magic Carpet Ride, Winter Wonderland",
-                "topic_lv_3rd": "하",
-                "topic_title_4th": "Magic Carpet Ride, Winter Wonderland",
-                "topic_lv_4th": "하"
+                //"topic_title_3rd": "Magic Carpet Ride, Winter Wonderland",
+                //"topic_lv_3rd": "하",
+                //"topic_title_4th": "Magic Carpet Ride, Winter Wonderland",
+                //"topic_lv_4th": "하"
             },
             {
-                "year": "2025",
-                "semester": "1",
-                "grade": "1",
+                "year": 2025,
+                "semester": 1,
+                "grade": 1,
                 "level": "GT1",
                 "month": "12월",
                 "topic_title_1st": "Magic Carpet Ride, Winter Wonderland",
                 "topic_lv_1st": "하",
                 "topic_title_2nd": "Magic Carpet Ride, Winter Wonderland",
                 "topic_lv_2nd": "하",
-                "topic_title_3rd": "Magic Carpet Ride, Winter Wonderland",
-                "topic_lv_3rd": "하",
-                "topic_title_4th": "Magic Carpet Ride, Winter Wonderland",
-                "topic_lv_4th": "하"
+                //"topic_title_3rd": "Magic Carpet Ride, Winter Wonderland",
+                //"topic_lv_3rd": "하",
+                //"topic_title_4th": "Magic Carpet Ride, Winter Wonderland",
+                //"topic_lv_4th": "하"
             },
             {
-                "year": "2025",
-                "semester": "1",
-                "grade": "1",
+                "year": 2025,
+                "semester": 1,
+                "grade": 1,
                 "level": "GT1",
                 "month": "1월",
                 "topic_title_1st": "Magic Carpet Ride, Winter Wonderland",
                 "topic_lv_1st": "하",
                 "topic_title_2nd": "Magic Carpet Ride, Winter Wonderland",
                 "topic_lv_2nd": "하",
-                "topic_title_3rd": "Magic Carpet Ride, Winter Wonderland",
-                "topic_lv_3rd": "하",
-                "topic_title_4th": "Magic Carpet Ride, Winter Wonderland",
-                "topic_lv_4th": "하"
+                //"topic_title_3rd": "Magic Carpet Ride, Winter Wonderland",
+                //"topic_lv_3rd": "하",
+                //"topic_title_4th": "Magic Carpet Ride, Winter Wonderland",
+                //"topic_lv_4th": "하"
             },
             {
-                "year": "2025",
-                "semester": "1",
-                "grade": "1",
+                "year": 2025,
+                "semester": 1,
+                "grade": 1,
                 "level": "GT1",
                 "month": "2월",
                 "topic_title_1st": "Magic Carpet Ride, Winter Wonderland",
                 "topic_lv_1st": "하",
                 "topic_title_2nd": "Magic Carpet Ride, Winter Wonderland",
                 "topic_lv_2nd": "하",
-                "topic_title_3rd": "Magic Carpet Ride, Winter Wonderland",
-                "topic_lv_3rd": "하",
-                "topic_title_4th": "Magic Carpet Ride, Winter Wonderland",
-                "topic_lv_4th": "하"
+                //"topic_title_3rd": "Magic Carpet Ride, Winter Wonderland",
+                //"topic_lv_3rd": "하",
+                //"topic_title_4th": "Magic Carpet Ride, Winter Wonderland",
+                //"topic_lv_4th": "하"
             },
         ]
     }

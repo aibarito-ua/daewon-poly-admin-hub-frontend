@@ -1,0 +1,6 @@
+<svg id="bt_del" xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30">
+  <rect id="guide" class="cls-1" fill="none" opacity="0.12" width="16" height="16" transform="translate(7 7)"/>
+  <rect id="guide-2" data-name="guide" class="cls-1" fill="none" opacity="0.12" width="30" height="30"/>
+  <line id="모양_1_복사" data-name="모양 1 복사" class="cls-2" fill="#3f3f3f" stroke="#333" strokeLinecap="round" strokeWidth="2px" x2="9.402" y2="0.085" transform="translate(11.618 18.787) rotate(-45)"/>
+  <line id="모양_1_복사-2" data-name="모양 1 복사" class="cls-2" fill="#3f3f3f" stroke="#333" strokeLinecap="round" strokeWidth="2px" y1="0.085" x2="9.402" transform="translate(11.678 12.138) rotate(45)"/>
+</svg>

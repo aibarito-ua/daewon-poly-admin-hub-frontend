@@ -22,6 +22,7 @@ export default function CommonAlertModalComponent(
     commonAlertNoLabel,
     commonAlertYesLabel,
     commonAlertOneButton,
+    commonAlertType,
 
     setCommonAlertHeadTitle,
     commonAlertClose,
@@ -58,7 +59,9 @@ export default function CommonAlertModalComponent(
     if (commonAlertYesFunctionEvent!==null) {
       commonAlertYesFunctionEvent();
     }
-    commonAlertClose();
+    if (commonAlertType!=='continue') {
+      commonAlertClose();
+    }
   };
 
   const handleClose = () => {
@@ -124,7 +127,7 @@ export default function CommonAlertModalComponent(
                     onClick={handleClickYes}
                   >{commonAlertYesLabel}</div>
                   <div className='flex flex-1 h-full justify-center text-[18px] bg-[#e5e5e5] text-[#222222] hover:cursor-pointer items-center'
-                    onClick={handleClose}
+                    onClick={commonAlertCloseEvent!==null? ()=>commonAlertCloseEvent(): handleClose}
                   >{commonAlertNoLabel}</div>
                 </div>
             )}

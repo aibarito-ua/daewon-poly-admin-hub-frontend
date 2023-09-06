@@ -11,14 +11,15 @@ import useLoginStore from '../../store/useLoginStore';
 import buttonImage from './img/buttonEllaImg.png'
 import { SvgDocumentSearchIcon } from '../commonComponents/BasicTable/svgs/DocumentSearch';
 import { IconButton } from '@mui/material';
-import { TActivitySparkWritingBooks } from '../../store/@type/useActivityWritingHubStore';
-import { TRubricTypeData, TRubricTypeDataItem, TRubricTypeHeader, rubric_type_datas } from '../../utils/EssayWriting/rubricTypeData';
+// import { TActivitySparkWritingBooks } from '../../store/@type/useActivityWritingHubStore';
+// import { TRubricTypeData, TRubricTypeDataItem, TRubricTypeHeader, rubric_type_datas } from '../../utils/EssayWriting/rubricTypeData';
 import btnPreview from '../../util/png/btn_preview.png';
 import CloseButtonIcon from './img/p_btn_close.svg'
 
 interface IRubricTypeModalComponentProps {
   keyValue: string|number;
   rubric_type:string;
+  rubric_type_datas:TRubricTypeData
 }
 interface IRubricTableDataItem {
   key:string;
@@ -30,7 +31,7 @@ interface IRubricTableDataItem {
 export default function RubricTypeModalComponent(props:IRubricTypeModalComponentProps) {
 
   const {
-    keyValue, rubric_type
+    keyValue, rubric_type, rubric_type_datas
   } = props;
     
   const [open, setOpen] = React.useState(false);
@@ -47,8 +48,8 @@ export default function RubricTypeModalComponent(props:IRubricTypeModalComponent
       const splitRubricTypeTextArr = rubric_type.toLowerCase().split(' ');
       const targetText = `${splitRubricTypeTextArr[0]}_${splitRubricTypeTextArr[1]}_${splitRubricTypeTextArr[2]}`;
       // rubric_type_datas
-      const targetData = rubric_type_datas[targetText];
-      console.log('target =',targetData)
+      const targetData = rubric_type_datas;
+      // console.log('target =',targetData)
       // table type으로 변환!! 
       processTableData(targetData);
 
@@ -57,6 +58,7 @@ export default function RubricTypeModalComponent(props:IRubricTypeModalComponent
 
   // process table data 
   const processTableData = (allDatas:TRubricTypeData ) => {
+    // console.log('test ==',allDatas)
     const tableDatas = allDatas.data;
     const tableHeadDatas = allDatas.dataHead;
     let dataModel:IRubricTableDataItem[][] = [];
@@ -76,7 +78,7 @@ export default function RubricTypeModalComponent(props:IRubricTypeModalComponent
       } // make cell
       dataModel.push(pushRow)
     } // make row
-    console.log('make all data =',dataModel)
+    // console.log('make all data =',dataModel)
     setViewRubric(dataModel);
     setViewRubricHead(tableHeadDatas);
   }
@@ -96,10 +98,10 @@ export default function RubricTypeModalComponent(props:IRubricTypeModalComponent
               rowSpan={checkSpan ? 2:1}
               >
                 {checkSpan ? tableHead.header:(
-                  tableHead.accessor==='1' ? '1~2' : (
-                    tableHead.accessor==='2' ? '3~4' : (
-                      tableHead.accessor==='3' ? '5~6' : (
-                        tableHead.accessor==='4' ? '7~8': '9~10'
+                  tableHead.accessor==='poor' ? '1~2' : (
+                    tableHead.accessor==='fair' ? '3~4' : (
+                      tableHead.accessor==='good' ? '5~6' : (
+                        tableHead.accessor==='very_good' ? '7~8': '9~10'
                       )
                     )
                   )
@@ -127,7 +129,8 @@ export default function RubricTypeModalComponent(props:IRubricTypeModalComponent
   }
 
   const RubricTableBody = (props: {dataModel: IRubricTableDataItem[][]}) => {
-    const {dataModel} = props;
+    // const {dataModel} = props;
+    const dataModel = viewRubric;
     return (
       <tbody >
         {dataModel && dataModel.map((rowItem, rowIndex)=>{

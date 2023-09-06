@@ -1,45 +1,27 @@
 import React from 'react';
-import DebouncedDropdowFilter from '../../../components/commonComponents/BasicTable/debouncedDropdown';
+import DebouncedDropdowFilter from '../../../components/commonComponents/BasicTable/stateDebouncedDropdown';
 import TableComponent from '../../../components/commonComponents/BasicTable/SparkWritingTable';
 import { SvgSearchIcon } from '../../../components/commonComponents/BasicTable/svgs/SearchIcon';
 import useNavStore from '../../../store/useNavStore';
-import { 
-    ColumnDef,
-    ColumnFiltersState,
-    FilterFn,
-    GroupingState,
-    createColumnHelper,
-    getCoreRowModel,
-    getExpandedRowModel,
-    getFacetedUniqueValues,
-    getFilteredRowModel,
-    getGroupedRowModel,
-    getSortedRowModel,
-    useReactTable
-} from '@tanstack/react-table';
 import { cf } from '../../../util/common/commonFunctions';
 import useActivityWritingHubStore from '../../../store/useActivityWritingHubStore';
-import { PopupModalComponent } from '../../../components/toggleModalComponents/popupModalComponent';
-import { TActivitySparkWritingBooks } from '../../../store/@type/useActivityWritingHubStore';
-import PopupCustomModalComponent from '../../../components/toggleModalComponents/PopupCustomModalComponent';
+// import { PopupModalComponent } from '../../../components/toggleModalComponents/popupModalComponent';
+// import PopupCustomModalComponent from '../../../components/toggleModalComponents/PopupCustomModalComponent';
 import {createBrowserHistory} from 'history'
 import { useCallbackPrompt } from '../../../hooks/useCallbackPrompt';
 import PromptBlockComponent from '../../../components/toggleModalComponents/PromptBlockComponent';
 import useControlAlertStore from '../../../store/useControlAlertStore';
-import { useEffectOnce } from '../../../hooks/useEffectOnce';
+import { useComponentWillMount, useEffectOnce } from '../../../hooks/useEffectOnce';
+import { getActivityManagementSparkWritingDataAPI, setActivityManagementSparkWritingOutlineAPI } from '../../../api/ActivityManagement/ActivityManagementWriting.api';
 
-declare module '@tanstack/table-core' {
-    interface FilterFns {
-        yearCustomFilter: FilterFn<unknown>,
-    }
-}
-const customFilter: FilterFn<any> = (row, columnId, value, addMeta) => cf.basicTable.customFilter(row, columnId, value, addMeta);
 export type TTableDataModel = {
     key: string,
     value: any,
     rowspan: number,
     print: boolean,
-    originIndex: number
+    originIndex: number,
+    unitId?:number,
+    outlineFormatIndex?:number
 }[][]
 export const history = createBrowserHistory();
 const SparkWriting = () => {
@@ -53,17 +35,45 @@ const SparkWriting = () => {
         setNavigateBlockFlag, setNavigateBlockMessage,
         setNavigateBlockAlertYesFn, setNavigateBlockAlertNoFn,
     } = useNavStore();
-    const {loadData, loadDataHeadKor, openControlBox, loadDataUpdateFlag,loadDataUpdateFlagInit} = useActivityWritingHubStore();
+    const {
+        loadData, loadDataHeadKor, sortRules, 
+        loadDataUpdateFlag,loadDataUpdateFlagInit,
+        setSparkWritingData, setSparkWritingHeadData,
+        setLoadDataSparkWritingInput
+    } = useActivityWritingHubStore();
 
     // page states
-    const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
+    // Table Data 
+    const [data, setData] = React.useState<{body:TActivitySparkWritingBooks[], head: TLoadDataHeadTrans[]}>({body:[],head:[]});
+    
+    // search values
     const [selectFIlterValues, setSelectFilterValues] = React.useState<any[]>(['','','']);
-    const [globalFilter, setGlobalFilter] = React.useState('');
-    const [grouping, setGrouping] = React.useState<GroupingState>([]);
+
+    // select search target value list
+    const [selectFilterYearList, setSelectFilterYearList] = React.useState<string[]>([]);
+    const [selectFilterSemesterList, setSelectFilterSemesterList] = React.useState<string[]>([]);
+    const [selectFilterLevelList, setSelectFilterLevelList] = React.useState<string[]>([]);
+    
+    // merge in table body value's keys
+    const [grouping, setGrouping] = React.useState<string[]>([]);
+    // isFilter data selected complete flag
     const [isAllSelected, setIsAllSelected] = React.useState<boolean>(false);
+    // is started search check flag
     const [isSearch, setIsSearch] = React.useState<boolean>(false);
 
-    const [tableDataModel, setTableDataModel] = React.useState<TTableDataModel>([])
+    // table control
+    const [tableDataModel, setTableDataModel] = React.useState<TTableDataModel>([]);
+    const setInputChangeTableDataModelState = (text:string, pageStateIndex:{
+        rowIndex:number, cellIndex:number
+    }, storeIndex: {
+        unitId:number, outlineFormatIndex:number
+    }) => {
+        let dumpPageStateData = JSON.parse(JSON.stringify(tableDataModel));
+        dumpPageStateData[pageStateIndex.rowIndex][pageStateIndex.cellIndex].value = text;
+
+        setLoadDataSparkWritingInput(text, storeIndex.unitId, storeIndex.outlineFormatIndex)
+        setTableDataModel(dumpPageStateData)
+    }
 
     // page input control
     const [startUpdateInputsFlag, setStartUpdateInputsFlag] = React.useState<boolean>(false); 
@@ -72,20 +82,35 @@ const SparkWriting = () => {
 
     const [showPrompt, confirmNavigation, cancelNavigation] = useCallbackPrompt(isInputEmpty);
 
-    // useEffectOnce( () => {
-    //     // did mount
-    //     console.log('did mount !')
+    // initialize setting before render screen
+    const beforRenderedFn = async () => {
+        const loadDataFromAPI = await getActivityManagementSparkWritingDataAPI(sortRules);
+        console.log('response data =',loadDataFromAPI)
+        const yearFilterValues:string[] = cf.basicTable.setFilterProperty(loadDataFromAPI.body, 'year')
+        const semesterFilterValues:string[] = cf.basicTable.setFilterProperty(loadDataFromAPI.body, 'semester')
+        const levelFilterValues:string[] = cf.basicTable.setFilterProperty(loadDataFromAPI.body, 'level')
+        setSelectFilterYearList(yearFilterValues)
+        setSelectFilterSemesterList(semesterFilterValues)
+        setSelectFilterLevelList(levelFilterValues)
+        setSparkWritingData(loadDataFromAPI.body)
+        setSparkWritingHeadData(loadDataFromAPI.head)
 
-    //     return ()=>{
-    //         // did unmount
-    //         if (!navigateBlockFlag) {
-    //             window.stop();
-    //             alert('nooop')
-    //             console.log('did unmount test!')
-                
-    //         }
-    //     }
-    // })
+        setData({
+            body: loadDataFromAPI.body,
+            head: loadDataFromAPI.head
+        })
+    }
+
+    useComponentWillMount(()=>{
+        console.log('component will mount')
+        beforRenderedFn();
+    })
+    React.useEffect(()=>{
+        console.log('component did mount')
+        // if (data.body.length===0) {
+        //     beforRenderedFn();
+        // }
+    },[])
     
     // input check effect
     React.useEffect(()=>{
@@ -194,41 +219,6 @@ const SparkWriting = () => {
         setStartUpdateInputsFlag(false)
     }, [selectFIlterValues])
 
-    // Table Data 
-    const [data, setData] = React.useState([...JSON.parse(JSON.stringify(loadData.spark_writing))]);
-
-    // columns
-    const levelSort = (a:string, b:string) => cf.basicTable.levelSort(a,b);
-    const columnHelper = createColumnHelper<any>();
-    const columns:ColumnDef<any,any>[] = loadDataHeadKor.spark_writing.map((value) => {
-        const keyStr:string = value.accessor;
-        if (keyStr === 'level') {
-            return columnHelper.accessor( keyStr , { 
-                header: value.header,
-                enableColumnFilter: false,
-                filterFn: customFilter,
-                enableSorting:true,
-                sortingFn:  (rowA, rowB, columnID) => {
-                    const a:string = rowA.getValue(columnID);
-                    const b:string = rowB.getValue(columnID);
-                    return levelSort(a, b);
-                },
-                enableMultiSort:true,
-                
-            });
-
-        } else {
-            return columnHelper.accessor( keyStr , { 
-                header: value.header,
-                enableColumnFilter: keyStr==='year' ? true : (keyStr==='semester' ? true : false),
-                filterFn: customFilter,
-                enableSorting:true,
-                
-                enableMultiSort:true,
-            });
-        }
-    })
-
     const makeTableData = ():{
         key: string;
         value: any;
@@ -239,41 +229,142 @@ const SparkWriting = () => {
         
         let tableDatas:TActivitySparkWritingBooks[]=[];
         tableDatas = loadData.spark_writing;
+        console.log('originData =',loadData)
 
-        let dataModel:{key:string, value:any, rowspan:number, print:boolean, originIndex:number }[][] = [];
-    
+        let dataModel:TTableDataModel = [];
+        
         const headers = loadDataHeadKor.spark_writing;
-        for (let dataIndex = 0; dataIndex < tableDatas.length; dataIndex++) {
-            let pushRowData:{key:string, value:any, rowspan:number, print:boolean, originIndex: number }[] = [];
-            const rowD = tableDatas[dataIndex];
-            for (let rowDIndex = 0; rowDIndex < headers.length; rowDIndex++) {
-                const valueC = rowD[headers[rowDIndex].accessor]
-                const keyC = headers[rowDIndex].accessor
-                const pushCellData = {
-                    key: keyC,
-                    value: valueC,
+        const initRowData = headers.map((headItem)=>{
+            const keyC = headItem.accessor
+            if (headItem.accessor === 'year'|| headItem.accessor==='semester'||headItem.accessor==='level'||headItem.accessor==='book') {
+                return {
+                    key:keyC,
+                    value: tableDatas[0][headItem.accessor],
                     rowspan:1,
                     print:true,
-                    originIndex: dataIndex
+                    originIndex: 0
                 }
-                pushRowData.push(pushCellData)
+            } else {
+                return {
+                    key:keyC,
+                    value: '',
+                    rowspan:1,
+                    print:true,
+                    originIndex: 0
+                }
             }
-            dataModel.push(pushRowData);
+            
+        })
+        dataModel.push(initRowData)
+        // unit row
+        for (let dataIndex = 0; dataIndex < tableDatas.length; dataIndex++) {
+            // unit data
+            const rowD = tableDatas[dataIndex];
+            const addRowOLForm = rowD.outline_format.outline_format;
+
+            for (let rowIndex = 0; rowIndex < addRowOLForm.length; rowIndex++) {
+                if (rowIndex===0) {
+                    const unitHeadRow = headers.map((headItem)=>{
+                        const dataModelIndex = dataModel.length;
+                        const keyC = headItem.accessor
+                        let pushValue:any = '';
+                        if (keyC === 'year'||keyC==='semester'||keyC==='level'||keyC==='book'||keyC==='topic'||keyC==='rubric') {
+                            pushValue=tableDatas[dataIndex][keyC];
+                        } else if (keyC==='unit') {
+                            pushValue=tableDatas[dataIndex]['unit_index']
+                        } else {
+                            pushValue=''
+                        }
+                        return {
+                            key:keyC,
+                            value: pushValue,
+                            rowspan:1,
+                            print:true,
+                            originIndex: dataModelIndex
+                        }
+                    })
+                    dataModel.push(unitHeadRow)
+                }
+                const unitRow = headers.map((headItem) => {
+                    const dataModelIndex = dataModel.length;
+                    const pushKey = headItem.accessor;
+                    const outlineData = tableDatas[dataIndex].outline_format.outline_format[rowIndex];
+                    let pushValue:any = ''
+                    let unitId:number|undefined=undefined;
+                    let outlineFormatIndex:number|undefined=undefined;
+                    if (pushKey==='unit') {
+                        pushValue = tableDatas[dataIndex]['unit_index']
+                    } else if (pushKey==='outline_form') {
+                        pushValue=outlineData.name;
+                    } else if (pushKey==='outline_index') {
+                        pushValue=outlineData.order_index
+                    } else if (pushKey==='outline_text') {
+                        pushValue=outlineData.content
+                        unitId=rowD.unit_id;
+                        outlineFormatIndex=outlineData.order_index-1;
+                    } else if (pushKey==='outline_format_type'||pushKey==='rubric_type') {
+                        pushValue=''
+                    } else {
+                        pushValue=tableDatas[dataIndex][pushKey]
+                    }
+
+                    return {
+                        key:pushKey,
+                        value: pushValue,
+                        rowspan:1,
+                        print:true,
+                        originIndex: dataModelIndex,
+                        unitId: unitId!==undefined ? unitId:undefined,
+                        outlineFormatIndex: outlineFormatIndex!==undefined ? outlineFormatIndex: undefined
+                    }
+                });
+                dataModel.push(unitRow)
+            }
         }
-        // console.log('dataModal: ',dataModel)
         dataModel = dataModel.filter((v,i) => {
             if (v.length!==0) return v;
         });
-
+        
+        
+        console.log('filter =',selectFIlterValues)
         // search filter
         dataModel = dataModel.filter((item, idx) => {
-            const search1 = item[0].value === selectFIlterValues[0];
-            const search2 = item[1].value === selectFIlterValues[1];
-            const search3 = item[2].value === selectFIlterValues[2];
+            const search1 = item[0].value.toString() === selectFIlterValues[0];
+            const search2 = item[1].value.toString() === selectFIlterValues[1];
+            const search3 = item[2].value.toString() === selectFIlterValues[2];
             if (search1 && search2 && search3) {
                 return item;
             }
         })
+
+        const rowMergeKey = ['year','semester','level','book','unit']
+        for (let i = 1; i< dataModel.length; i++) {
+            for (let j = 0; j < dataModel[i].length; j++) {
+                let flagMerge = false;
+                for (let z = 0; z < rowMergeKey.length; z++) {
+                    if (dataModel[i][j].key === rowMergeKey[z]) {
+                        flagMerge=true;
+                        break;
+                    }
+                }
+                if (flagMerge) {
+                    if (j>0) {
+                        // row cell merge (row span) 
+                        for (let k = i-1; k >= 0&&dataModel[i][j].value===dataModel[k][j].value&&dataModel[k+1][j-1].print===false; k--) {
+                            dataModel[k][j].rowspan = dataModel[k][j].rowspan+1;
+                            dataModel[k+1][j].print = false;
+                        } // turn print
+                    } else {
+                        // row cell merge (row span)
+                        for (let k = i-1; k >= 0&&dataModel[i][j].value===dataModel[k][j].value; k--) {
+                            dataModel[k][j].rowspan = dataModel[k][j].rowspan+1;
+                            dataModel[k+1][j].print = false;
+                        } // turn print
+                    }
+                }
+            }// for cell
+        } // for row
+        console.log('dataModal: ',dataModel)
         return dataModel;
     }
 
@@ -293,13 +384,11 @@ const SparkWriting = () => {
                 }
             }
             if (check) {
-                selectFIlterValues.forEach((v, i)=>{
-                    table.getHeaderGroups()[0].headers[i].column.setFilterValue(selectFIlterValues[i])
-                })
                 const makeTableDataModel = makeTableData();
+                console.log('modal =',makeTableDataModel)
                 if (makeTableDataModel.length > 0) {
                     setStartUpdateInputsFlag(true)
-                    setTableDataModel(makeTableDataModel)
+                    setTableDataModel(JSON.parse(JSON.stringify(makeTableDataModel)))
                 } else {
                     setStartUpdateInputsFlag(false)
                 }
@@ -313,53 +402,11 @@ const SparkWriting = () => {
         };
     }
 
-    const table = useReactTable({
-        data,
-        columns,
-        filterFns: {
-            yearCustomFilter: customFilter
-        },
-        state: {
-            grouping,
-            columnFilters,
-            globalFilter,
-        },
-        onColumnFiltersChange: setColumnFilters,
-        onGlobalFilterChange: setGlobalFilter,
-        globalFilterFn: customFilter,
-        getCoreRowModel: getCoreRowModel(),
-        getFilteredRowModel: getFilteredRowModel(),
-        getSortedRowModel: getSortedRowModel(),
-        getFacetedUniqueValues: getFacetedUniqueValues(),
-        onGroupingChange: setGrouping,
-        getGroupedRowModel: getGroupedRowModel(),
-        getExpandedRowModel: getExpandedRowModel(),
-        getIsRowExpanded: (row) => {return true},
-        autoResetExpanded: false
-    })
-
-    React.useEffect(()=>{
-        table.getHeaderGroups()[0].headers[3].column.toggleSorting();
-        table.toggleAllRowsExpanded(true)
-    },[data])
     React.useEffect(()=>{
         if (selectNavigationTitles.length === 0) {
             setSelectNavigationTitles(['Activity 관리', 'Writing Hub', 'Spark Writing'])
         }
     }, [selectNavigationTitles])
-
-    // table effects
-    React.useEffect(()=>{
-        if (table.getState().columnFilters[0]?.id === 'year') {
-            if (table.getState().sorting[0]?.id !== 'year') {
-                table.setSorting([
-                    { id: 'year', desc: false},
-                    {id:'semester', desc:false},
-                    { id: 'level', desc: false}
-                ])
-            }
-        }
-    }, [table.getState().columnFilters[0]?.id])
 
     return (
         
@@ -371,21 +418,20 @@ const SparkWriting = () => {
                         {/* filter 1 : Year */}
                         <DebouncedDropdowFilter 
                             filterTitleLabel='년도'
-                            column={table.getHeaderGroups()[0].headers[0].column}
+                            column={selectFilterYearList}
                             onChange={value=>{
                                 let dumySelectFilterValues = JSON.parse(JSON.stringify(selectFIlterValues));
                                 dumySelectFilterValues[0] = value
                                 setSelectFilterValues(dumySelectFilterValues)
-                                // table.toggleAllRowsExpanded(true)
                             }}
                             value={selectFIlterValues[0]}
-                            originData={loadData}
-                            table={table}
+                            originData={data}
+                            table={data}
                         />
                         {/* filter 2 : Semester */}
                         <DebouncedDropdowFilter 
                             filterTitleLabel='학기'
-                            column={table.getHeaderGroups()[0].headers[1].column}
+                            column={selectFilterSemesterList}
                             onChange={value=>{
                                 let dumySelectFilterValues = JSON.parse(JSON.stringify(selectFIlterValues));
                                 dumySelectFilterValues[1] = value
@@ -393,13 +439,13 @@ const SparkWriting = () => {
                                 
                             }}
                             value={selectFIlterValues[1]}
-                            originData={loadData}
-                            table={table}
+                            originData={data}
+                            table={data}
                         />
                         {/* filter 3 : Level */}
                         <DebouncedDropdowFilter 
                             filterTitleLabel='Level'
-                            column={table.getHeaderGroups()[0].headers[2].column}
+                            column={selectFilterLevelList}
                             onChange={value=>{
                                 let dumySelectFilterValues = JSON.parse(JSON.stringify(selectFIlterValues));
                                 dumySelectFilterValues[2] = value
@@ -407,8 +453,8 @@ const SparkWriting = () => {
                                 
                             }}
                             value={selectFIlterValues[2]}
-                            originData={loadData}
-                            table={table}
+                            originData={data}
+                            table={data}
                         />
                     </div>
                         
@@ -431,17 +477,20 @@ const SparkWriting = () => {
                 </div>
                 <div className='section-common-table-wrap-div'>
                 {/* table */}
-                {isSearch ? <TableComponent 
+                {isSearch ? 
+                <TableComponent 
                     enableSaveButtonFlag={enableSaveButtonFlag}
                     dataModel={tableDataModel}
-                    table={table}
+                    table={data}
                     filterValues={ isSearch ? selectFIlterValues: []}
                     isSearch={isSearch}
                     options={{
                         sortEventTargetHeaderKeys:['level'],
                         mergeRowSpanKeys: grouping,
                     }}
-                />: null}
+                    updateInputText={setInputChangeTableDataModelState}
+                />
+                : null}
 
 
                 <div className={`justify-center items-center ${isSearch ? 'w-0 h-0' :'w-full h-full flex flex-1'}`}>
@@ -467,16 +516,27 @@ const SparkWriting = () => {
                             }
                         }}
                     >{'수정'}</div>
-                    {/* <div className='buttons-div-button'>{'수정'}</div> */}
                     <div className={enableSaveButtonFlag ? 'buttons-div-button':'buttons-div-button-disabled'} 
                         onClick={()=>{
                             if (enableSaveButtonFlag) {
                                 commonAlertOpen({
                                     head: 'outline format - text input',
                                     messages: ['입력한 내용을 저장하시겠습니까?'],
-                                    yesEvent: ()=>{
-                                        setEnableSaveButtonFlag(false);
-                                        setNavigateBlockFlag(false);
+                                    yesEvent: async ()=>{
+                                        const unitId = tableDataModel[2][8].unitId;
+                                        if (unitId!==undefined) {
+                                            let outline_format:TOLContentItem[] = [];
+                                            const targetDataDumy = loadData.spark_writing;
+                                            for (let i = 0; i < targetDataDumy.length; i++) {
+                                                if (targetDataDumy[i].unit_id === unitId) {
+                                                    outline_format = targetDataDumy[i].outline_format.outline_format;
+                                                }
+                                            }
+                                            await setActivityManagementSparkWritingOutlineAPI(unitId, outline_format );
+                                            
+                                            setEnableSaveButtonFlag(false);
+                                            setNavigateBlockFlag(false);
+                                        }
                                     },
                                     closeEvent: () => {
                                         setEnableSaveButtonFlag(false);

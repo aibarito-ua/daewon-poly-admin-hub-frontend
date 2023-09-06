@@ -14,20 +14,25 @@ export default function DebouncedDropdowFilter({
     filterTitleLabel: string
     value: string
     onChange: (value:string) => void
-    column: Column<any, unknown>
+    column: Column<any, unknown>|undefined
     table: Table<any>
     originData:any
     debounce?: number
 }) {
     
-    const stateDropNameList = ['', ...Array.from(column.getFacetedUniqueValues().keys()).sort()]
+    // const stateDropNameList = ['', ...Array.from(column.getFacetedUniqueValues().keys()).sort()]
 
     const [selectActive, setSelectActive] = React.useState<number|undefined>(undefined);
     const [clickButtonFlag, setClickButtonFlag] = React.useState<boolean>(false);
+    const [stateDropNameList, setStateDropNameList] = React.useState<any[]>([]);
 
     // input setting
     const [value, setValue] = React.useState(initialValue);
-    
+    React.useEffect(()=>{
+        if (column !== undefined) {
+            setStateDropNameList(['', ...Array.from(column.getFacetedUniqueValues().keys()).sort()]);
+        }
+    }, [column])
     React.useEffect(()=>{
         setValue(initialValue)
     },[initialValue])
@@ -71,7 +76,7 @@ export default function DebouncedDropdowFilter({
             >
                 <Menu.Items className="Filter-CSS-dropdown-menu-items">
                 <div className="py-1 overflow-y-auto" style={{'maxHeight':'55vh'}}>
-                    {stateDropNameList && stateDropNameList.map((nameItem, i)=>{
+                    {stateDropNameList!==undefined && stateDropNameList.map((nameItem, i)=>{
                         const nameLabels = filterTitleLabel==='학기' ? nameItem+'학기': (
                             filterTitleLabel==='Grade' ? 'Grade'+nameItem : nameItem
                         )

@@ -1,31 +1,33 @@
 import React from 'react';
-import { Table } from "@tanstack/react-table"
 import ExpressionModalComponent from "../../toggleModalComponents/ExpressionModalComponent";
+import { cf } from '../../../util/common/commonFunctions';
 
-const TableHeader = (props: {table:Table<any>, sortEventTargetHeaderKeys?: string[] }) => {
-    let tableHeadDatas = props.table.getHeaderGroups()[0].headers;
+const TableHeader = (props: {table:TLoadDataHeadTrans[], sortEventTargetHeaderKeys?: string[] }) => {
+    let tableHeadDatas = props.table;
+    console.log('header :',tableHeadDatas)
     return (
         <thead className='table-thead-basic'>
             <tr className='table-thead-tr-basic'>
                 {tableHeadDatas.map((header, hIndex)=>{
+                    const headerText = header.header
                     if (hIndex < 6) {
                         return (
                             <th
-                                key={header.id}
+                                key={header.accessor+hIndex}
                                 className={`table-thead-tr-th-basic max-w-[100px]`}
 
                             >
-                                {header.column.columnDef.header?.toString()}
+                                {headerText}
                             </th>
                         )
                     } else if (hIndex === 6) {
                         return (
                             <th
-                                key={header.id}
+                                key={header.accessor+hIndex}
                                 className="table-thead-tr-th-basic w-14"
                                 colSpan={4}
                             >
-                                {header.column.columnDef.header?.toString()}
+                                {headerText}
                             </th>
                         )
                     }
@@ -41,14 +43,27 @@ const TableBody = (props:{dataModel:{key:string, value:any, rowspan:number, prin
             {dataModel&& dataModel.map((row, rIdx)=>{
                 const rowKey = 'row-data-'+rIdx;
                 const rowMaxIndex = row.length-1;
-                
                 // isLesson===true -> enable lesson title 
                 // isLesson===false -> set book title
-                const isLesson = row[5].value.viewIndex > 0;
                 // isQuestion===true -> enable questions
                 // isQuestion===false -> book or lesson
-                const isQuestion = row[6].value.viewIndex > 0;
-
+                let isLesson = false;
+                let isQuestion = false;
+                for (let checkIdx =0; checkIdx< row.length; checkIdx++) {
+                    const target = row[checkIdx];
+                    const targetKey = target.key;
+                    const targetValue = target.value;
+                    if (targetKey==='lesson') {
+                        if (targetValue.viewIndex>0) {
+                            isLesson=true;
+                        } else break;
+                    } else if (targetKey==='question') {
+                        if (targetValue.viewIndex > 0) {
+                            isQuestion=true;
+                        }
+                    }
+                }
+                console.log(`datamodel [${rIdx}] -> isLesson: ${isLesson}, isQuestion: ${isQuestion}`)
                 if (!isLesson) {
                     
                     return (
@@ -102,6 +117,7 @@ const TableBody = (props:{dataModel:{key:string, value:any, rowspan:number, prin
                         const questionViewIndex = row[6].value.viewIndex===1;
                         const rowBgSprite = questionViewIndex ? 'bg-[#f9f9f9]':'bg-[#ffffff]';
                         const borderTrans = questionViewIndex ? 'border-b-transparent':'border-t-transparent'
+                        
                         return (
                             <tr key={rowKey} className={`table-tbody-tr-basic ${rowBgSprite}`}>
                                 
@@ -124,7 +140,7 @@ const TableBody = (props:{dataModel:{key:string, value:any, rowspan:number, prin
                                     className={`h-fit table-tbody-tr-td-basic pl-[20px] border-r-transparent ${borderTrans}`}
                                     colSpan={1}
                                 ><ExpressionModalComponent keyValue={row[5].key} 
-                                    btnLabel={row[7].value.fileName}
+                                    btnLabel={row[7].value.filename}
                                     lesson={`lesson ${row[5].value.viewIndex}`}
                                     question={`question ${row[6].value.viewIndex}`}
                                 /></td>
@@ -136,40 +152,91 @@ const TableBody = (props:{dataModel:{key:string, value:any, rowspan:number, prin
         </tbody>
     )
 }
-export default function IdeaExchangeTableComponent (props:{table:Table<any>, options?:{sortEventTargetHeaderKeys?: string[],mergeRowSpanKeys?: string[]}}) {
+export default function IdeaExchangeTableComponent (props:{table:{
+    body: TIdeaExchangeBooks[];
+    head: TLoadDataHeadTrans[];
+}, options?:{sortEventTargetHeaderKeys?: string[],mergeRowSpanKeys?: string[]}}) {
     // table row datas
-    let tableDatas = props.table.getRowModel().rows;
-    // const rowMergeKey = props.rowMergeKeyList? props.rowMergeKeyList : [];
-    const rowMergeKey = ['year','semester','grade','level','book']
+    let tableDatas = props.table.body.sort((a,b) => b.year-a.year || b.semester - a.semester || a.grade - b.grade || cf.basicTable.levelSort(a.level, b.level))
+    const rowMergeKey = props.options ? (props.options.mergeRowSpanKeys ? props.options.mergeRowSpanKeys: []) : ['year','semester','grade','level','book'];
+    const headerData = props.table.head;
 
     let dataModel:{key:string, value:any, rowspan:number, print:boolean}[][] = [];
     for (let dataIndex = 0; dataIndex < tableDatas.length; dataIndex++) {
-        const rowD = tableDatas[dataIndex].getAllCells();
-        let pushRowData:{key:string, value:any, rowspan:number, print:boolean}[] = [];
-        
-        for (let rowDIndex = 0; rowDIndex < rowD.length; rowDIndex++) {
-            const check = rowD[rowDIndex].id.match(/^[0-9]/gm);
-            if (check) {
-                if (rowD[rowDIndex].column.id === 'lesson') {
-                    const pushCellData = {
-                        key: rowD[rowDIndex].column.id,
-                        value:rowD[rowDIndex].getValue(),
-                        rowspan:1,
-                        print:true
+        const rowD = tableDatas[dataIndex];
+        if (dataIndex===0) {
+            // book
+            let pushFirstRowData:{key:string, value:any, rowspan:number, print:boolean}[] = [];
+    
+            for (let rowDIndex = 0; rowDIndex < headerData.length; rowDIndex++) {
+                const currentValue = rowD[headerData[rowDIndex].accessor];
+                let pushValue:any;
+                if (headerData[rowDIndex].accessor==='lesson') {
+                    pushValue={
+                        "viewIndex": 0, "title": ""
                     }
-                    pushRowData.push(pushCellData)
+                } else if (headerData[rowDIndex].accessor==='question') {
+                    pushValue={
+                        "viewIndex": 0, "title": ""
+                    }
+                } else if (headerData[rowDIndex].accessor==='expression') {
+                    pushValue={
+                        "url": "", "filename": ""
+                    }
                 } else {
-                    const pushCellData = {
-                        key: rowD[rowDIndex].column.id,
-                        value:rowD[rowDIndex].getValue(),
-                        rowspan:1,
-                        print:true
-                    }
-                    pushRowData.push(pushCellData)
-
+                    pushValue= currentValue
                 }
-                
+                const pushCellData = {
+                    key: headerData[rowDIndex].accessor,
+                    value:pushValue,
+                    rowspan:1,
+                    print:true
+                }
+                pushFirstRowData.push(pushCellData)
             }
+            dataModel.push(pushFirstRowData);
+        }
+
+        if (rowD.question.viewIndex===1) {
+            let pushLessonRowData:{key:string, value:any, rowspan:number, print:boolean}[] = [];
+    
+            for (let rowDIndex = 0; rowDIndex < headerData.length; rowDIndex++) {
+                const currentValue = rowD[headerData[rowDIndex].accessor];
+                let pushValue:any;
+                if (headerData[rowDIndex].accessor==='question') {
+                    pushValue={
+                        "viewIndex": 0, "title": ""
+                    }
+                } else if (headerData[rowDIndex].accessor==='expression') {
+                    pushValue={
+                        "url": "", "filename": ""
+                    }
+                } else {
+                    pushValue= currentValue
+                }
+                const pushCellData = {
+                    key: headerData[rowDIndex].accessor,
+                    value:pushValue,
+                    rowspan:1,
+                    print:true
+                }
+                pushLessonRowData.push(pushCellData)
+            }
+            dataModel.push(pushLessonRowData);
+        }
+
+        let pushRowData:{key:string, value:any, rowspan:number, print:boolean}[] = [];
+
+        for (let rowDIndex = 0; rowDIndex < headerData.length; rowDIndex++) {
+            const currentValue = rowD[headerData[rowDIndex].accessor];
+            
+            const pushCellData = {
+                key: headerData[rowDIndex].accessor,
+                value:currentValue,
+                rowspan:1,
+                print:true
+            }
+            pushRowData.push(pushCellData)
         }
         dataModel.push(pushRowData);
     }
@@ -207,11 +274,13 @@ export default function IdeaExchangeTableComponent (props:{table:Table<any>, opt
         }// for cell
     } // for row
 
+    console.log('table data =',dataModel)
+
     if (dataModel.length > 0 ) {
         return (
             <div className='table-wrap-div'>
                 <table className='table-aside'>
-                    <TableHeader table={props.table} sortEventTargetHeaderKeys={props.options?props.options.sortEventTargetHeaderKeys:[]}/>
+                    <TableHeader table={headerData} sortEventTargetHeaderKeys={props.options?props.options.sortEventTargetHeaderKeys:[]}/>
                     <TableBody dataModel={dataModel}/>
                 </table>
             </div>

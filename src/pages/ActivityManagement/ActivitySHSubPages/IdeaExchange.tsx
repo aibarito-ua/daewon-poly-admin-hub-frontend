@@ -1,50 +1,71 @@
 import React from 'react';
-import DebouncedDropdowFilter from '../../../components/commonComponents/BasicTable/debouncedDropdown';
+import DebouncedDropdowFilter from '../../../components/commonComponents/BasicTable/stateDebouncedDropdown';
 import TableComponent from '../../../components/commonComponents/BasicTable/IdeaExchangeTable';
 import { SvgSearchIcon } from '../../../components/commonComponents/BasicTable/svgs/SearchIcon';
 import useNavStore from '../../../store/useNavStore';
-import useLevelAndTextbookSpeakingStore from '../../../store/useLevelAndTextbookSpeakingStore';
-import { 
-    ColumnDef,
-    ColumnFiltersState,
-    FilterFn,
-    GroupingState,
-    createColumnHelper,
-    getCoreRowModel,
-    getExpandedRowModel,
-    getFacetedUniqueValues,
-    getFilteredRowModel,
-    getGroupedRowModel,
-    getSortedRowModel,
-    useReactTable
-} from '@tanstack/react-table';
 import { cf } from '../../../util/common/commonFunctions';
 import useActivitySpeakHubStore from '../../../store/useActivitySpeakHubStore';
-
-declare module '@tanstack/table-core' {
-    interface FilterFns {
-        yearCustomFilter: FilterFn<unknown>,
-    }
-}
-const customFilter: FilterFn<any> = (row, columnId, value, addMeta) => cf.basicTable.customFilter(row, columnId, value, addMeta);
+import { getActivityManagementSpeakingDataAPI } from '../../../api/ActivityManagement/ActivityManagementSpeaking.api';
+import { useComponentWillMount } from '../../../hooks/useEffectOnce';
 
 const IdeaExchange = () => {
     // page usehook zustand
     const {
         selectNavigationTitles, setSelectNavigationTitles
     } = useNavStore();
-    const {loadData, loadDataHeadKor,sortRules } = useActivitySpeakHubStore();
-    // re-sorting for table
-    const newLoadData = loadData.idea_exchange.map((bArr)=>{ return cf.basicTable.sortByKeyBodyData(bArr, cf.basicTable.customSort, sortRules.body.idea_exchange); })
-    const newDataHeadData = loadDataHeadKor.idea_exchange.sort((a,b) =>cf.basicTable.sortByKeyHeadData(a,b, sortRules.head.idea_exchange));
-    
+    const {
+        loadData,
+        loadDataHeadKor,
+        sortRules
+    } = useActivitySpeakHubStore();
+    // Table Data 
+    const [data, setData] = React.useState<{body: TIdeaExchangeBooks[], head: TLoadDataHeadTrans[]}>({ body: [], head: [] });
+    const [selectedData, setSelectedData] = React.useState<TIdeaExchangeBooks[]>([]);
     // page states
-    const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
+    // searchValue
     const [selectFIlterValues, setSelectFilterValues] = React.useState<any[]>(['','','','']);
-    const [globalFilter, setGlobalFilter] = React.useState('');
-    const [grouping, setGrouping] = React.useState<GroupingState>([]);
+    // select search target value list
+    const [selectFilterYearList, setSelectFilterYearList] = React.useState<string[]>([]);
+    const [selectFilterSemesterList, setSelectFilterSemesterList] = React.useState<string[]>([]);
+    const [selectFilterGradeList, setSelectFilterGradeList] = React.useState<string[]>([]);
+    const [selectFilterLevelList, setSelectFilterLevelList] = React.useState<string[]>([]);
+    
+    // merge in table body value's keys
+    const [grouping, setGrouping] = React.useState<string[]>([]);
+    // isFilter data selected complete flag
     const [isAllSelected, setIsAllSelected] = React.useState<boolean>(false);
+    // is started search check flag
     const [isSearch, setIsSearch] = React.useState<boolean>(false);
+
+    // initialize setting before render screen
+    const beforRenderedFn = async () => {
+        const loadDataFromAPI = await getActivityManagementSpeakingDataAPI('idea_exchange', sortRules.head.idea_exchange);
+        const yearFilterValues:string[] = cf.basicTable.setFilterProperty(loadDataFromAPI.body, 'year')
+        const semesterFilterValues:string[] = cf.basicTable.setFilterProperty(loadDataFromAPI.body, 'semester')
+        const gradeFilterValues:string[] = cf.basicTable.setFilterProperty(loadDataFromAPI.body, 'grade')
+        const levelFilterValues:string[] = cf.basicTable.setFilterProperty(loadDataFromAPI.body, 'level')
+
+        setSelectFilterYearList(yearFilterValues)
+        setSelectFilterSemesterList(semesterFilterValues)
+        setSelectFilterGradeList(gradeFilterValues)
+        setSelectFilterLevelList(levelFilterValues)
+        const bodyData = loadDataFromAPI.body
+        setData({
+            body: loadDataFromAPI.body,
+            head: loadDataFromAPI.head
+        })
+    }
+    
+    useComponentWillMount(()=>{
+        console.log('component will mount')
+        beforRenderedFn();
+    })
+    React.useEffect(()=>{
+        console.log('component did mount')
+        if (data.body.length===0) {
+            beforRenderedFn();
+        }
+    },[])
 
     React.useEffect(()=>{
         if (grouping.length === 0) {
@@ -70,42 +91,12 @@ const IdeaExchange = () => {
             setIsAllSelected(true);
         }
     }, [selectFIlterValues])
-    
-    // Table Data 
-    const [data, setData] = React.useState([...JSON.parse(JSON.stringify(newLoadData))]);
-    
-    // columns
-    const levelSort = (a:string, b:string) => cf.basicTable.levelSort(a,b);
-    const columnHelper = createColumnHelper<any>();
-    const columns:ColumnDef<any,any>[] = newDataHeadData.map((value) => {
-        const keyStr:string = value.accessor;
-        if (keyStr === 'level') {
-            return columnHelper.accessor( keyStr , { 
-                header: value.header,
-                enableColumnFilter: false,
-                filterFn: customFilter,
-                enableSorting:true,
-                sortingFn:  (rowA, rowB, columnID) => {
-                    const a:string = rowA.getValue(columnID);
-                    const b:string = rowB.getValue(columnID);
-                    return levelSort(a, b);
-                },
-                enableMultiSort:true,
-                
-            });
-
-        } else {
-            return columnHelper.accessor( keyStr , { 
-                header: value.header,
-                enableColumnFilter: keyStr==='year' ? true : (keyStr==='semester' ? true : false),
-                filterFn: customFilter,
-                enableSorting:true,
-                
-                enableMultiSort:true,
-            });
+    React.useEffect(()=>{
+        if (selectNavigationTitles.length === 0) {
+            setSelectNavigationTitles(['Activity 관리', 'Speaking Hub', 'Idea Exchange'])
         }
-    })
-
+    }, [selectNavigationTitles])
+    
     const searchEventFunction = (e:React.MouseEvent<HTMLButtonElement, MouseEvent>)=>{
         e.preventDefault();
         console.log('is test =',isAllSelected)
@@ -115,16 +106,24 @@ const IdeaExchange = () => {
             const maxLength = selectFIlterValues.length;
             for (let selectIndex=0; selectIndex < maxLength; selectIndex++) {
                 const currentSelectValue = selectFIlterValues[selectIndex];
-                console.log('currentSelectValue =',currentSelectValue, ', idx =',selectIndex)
                 if (currentSelectValue===''||currentSelectValue===null) {
                     check = false;
                     break;
                 }
             }
             if (check) {
-                selectFIlterValues.forEach((v, i)=>{
-                    table.getHeaderGroups()[0].headers[i].column.setFilterValue(selectFIlterValues[i])
-                })
+                let selectedTableData:TIdeaExchangeBooks[] = [];
+                for (let i = 0; i < data.body.length; i++) {
+                    const item = data.body[i];
+                    const checkYear = item.year.toString() === selectFIlterValues[0];
+                    const checkSemester = item.semester.toString() === selectFIlterValues[1];
+                    const checkGrade = item.grade.toString()=== selectFIlterValues[2];
+                    const checkLevel = item.level === selectFIlterValues[3];
+                    if (checkYear&&checkSemester&&checkGrade&&checkLevel) {
+                        selectedTableData.push(item)
+                    }
+                }
+                setSelectedData(selectedTableData);
                 setIsSearch(true)
             } else {
                 setIsSearch(false)
@@ -134,148 +133,92 @@ const IdeaExchange = () => {
             setIsSearch(false)
         };
     }
-    
-    const table = useReactTable({
-        data,
-        columns,
-        filterFns: {
-            yearCustomFilter: customFilter
-        },
-        state: {
-            grouping,
-            columnFilters,
-            globalFilter,
-        },
-        onColumnFiltersChange: setColumnFilters,
-        onGlobalFilterChange: setGlobalFilter,
-        globalFilterFn: customFilter,
-        getCoreRowModel: getCoreRowModel(),
-        getFilteredRowModel: getFilteredRowModel(),
-        getSortedRowModel: getSortedRowModel(),
-        getFacetedUniqueValues: getFacetedUniqueValues(),
-        onGroupingChange: setGrouping,
-        getGroupedRowModel: getGroupedRowModel(),
-        getExpandedRowModel: getExpandedRowModel(),
-        getIsRowExpanded: (row) => {return true},
-        autoResetExpanded: false
-    })
-
-    React.useEffect(()=>{
-        table.getHeaderGroups()[0].headers[3].column.toggleSorting();
-        table.toggleAllRowsExpanded(true)
-    },[data])
-    React.useEffect(()=>{
-        if (selectNavigationTitles.length === 0) {
-            setSelectNavigationTitles(['Activity 관리', 'Speaking Hub', 'Idea Exchange'])
-        }
-    }, [selectNavigationTitles])
-
-    // table effects
-    React.useEffect(()=>{
-        if (table.getState().columnFilters[0]?.id === 'year') {
-            if (table.getState().sorting[0]?.id !== 'year') {
-                table.setSorting([
-                    { id: 'year', desc: false},
-                    {id:'semester', desc:false},
-                    { id: 'level', desc: false}
-                ])
-            }
-        }
-    }, [table.getState().columnFilters[0]?.id])
 
     return (
-        
-            // <div className='flex flex-1 w-full h-full justify-center items-center'>
-                <div className='section-common-canvas'>
-                    {/* filter row */}
-                    <div className='scetion-common-filter-row-div py-[11px] pl-[20px] border-b-[1px] border-b-[#111] bg-white'>
-                        <div className='section-common-filter-columns-div'>
-                                {/* filter 1 : Year */}
-                                <DebouncedDropdowFilter 
-                                    filterTitleLabel='년도'
-                                    column={table.getHeaderGroups()[0].headers[0].column}
-                                    onChange={value=>{
-                                        let dumySelectFilterValues = JSON.parse(JSON.stringify(selectFIlterValues));
-                                        dumySelectFilterValues[0] = value
-                                        setSelectFilterValues(dumySelectFilterValues)
-                                        table.toggleAllRowsExpanded(true)
-                                    }}
-                                    value={selectFIlterValues[0]}
-                                    originData={loadData}
-                                    table={table}
-                                />
-                                {/* filter 2 : Semester */}
-                                <DebouncedDropdowFilter 
-                                    filterTitleLabel='학기'
-                                    column={table.getHeaderGroups()[0].headers[1].column}
-                                    onChange={value=>{
-                                        let dumySelectFilterValues = JSON.parse(JSON.stringify(selectFIlterValues));
-                                        dumySelectFilterValues[1] = value
-                                        setSelectFilterValues(dumySelectFilterValues)
-                                        
-                                    }}
-                                    value={selectFIlterValues[1]}
-                                    originData={loadData}
-                                    table={table}
-                                />
-                                {/* filter 3 : Grade */}
-                                <DebouncedDropdowFilter 
-                                    filterTitleLabel='Grade'
-                                    column={table.getHeaderGroups()[0].headers[2].column}
-                                    onChange={value=>{
-                                        let dumySelectFilterValues = JSON.parse(JSON.stringify(selectFIlterValues));
-                                        dumySelectFilterValues[2] = value
-                                        setSelectFilterValues(dumySelectFilterValues)
-                                        
-                                    }}
-                                    value={selectFIlterValues[2]}
-                                    originData={loadData}
-                                    table={table}
-                                />
-                                {/* filter 4 : Level */}
-                                <DebouncedDropdowFilter 
-                                    filterTitleLabel='Level'
-                                    column={table.getHeaderGroups()[0].headers[3].column}
-                                    onChange={value=>{
-                                        let dumySelectFilterValues = JSON.parse(JSON.stringify(selectFIlterValues));
-                                        dumySelectFilterValues[3] = value
-                                        setSelectFilterValues(dumySelectFilterValues)
-                                        
-                                    }}
-                                    value={selectFIlterValues[3]}
-                                    originData={loadData}
-                                    table={table}
-                                />
-                        </div>
-                        
-                        <button className={`Filter-search-button ${
-                            isAllSelected ? 'section-common-filter-search-active': 'section-common-filter-search-normal'
-                        }`}
-                            disabled={!isAllSelected}
-                            onClick={(e:React.MouseEvent<HTMLButtonElement, MouseEvent>)=>searchEventFunction(e)}
-                        ><span className='flex'><SvgSearchIcon className='w-5 h-5'/></span><span className=''>{'Search'}</span>
-                        </button>
-                        
-                    </div>
-
-                    <div className='section-common-table-wrap-div'>
-                        {/* table */}
-                        {isSearch ? (
-                            <TableComponent 
-                                table={table}
-                                options={{
-                                    sortEventTargetHeaderKeys:['level'],
-                                    mergeRowSpanKeys: grouping
-                                }}
-                            />
-                        ): null}
-                        <div className={`justify-center items-center ${isSearch ? 'w-0 h-0' :'w-full h-full flex flex-1'}`}>
-                            <p className='flex flex-row text-[#bfbfbf] text-2xl'>{isSearch ? '':'검색 값을 선택 후 조회하세요.'}</p>
-                        </div>
-                    </div>
+        <div className='section-common-canvas'>
+            {/* filter row */}
+            <div className='scetion-common-filter-row-div py-[11px] pl-[20px] border-b-[1px] border-b-[#111] bg-white'>
+                <div className='section-common-filter-columns-div'>
+                    {/* filter 1 : Year */}
+                    <DebouncedDropdowFilter 
+                        filterTitleLabel='년도'
+                        column={selectFilterYearList}
+                        onChange={value=>{
+                            let dumySelectFilterValues = JSON.parse(JSON.stringify(selectFIlterValues));
+                            dumySelectFilterValues[0] = value
+                            setSelectFilterValues(dumySelectFilterValues)
+                        }}
+                        value={selectFIlterValues[0]}
+                        originData={data}
+                        table={data}
+                    />
+                    {/* filter 2 : Semester */}
+                    <DebouncedDropdowFilter 
+                        filterTitleLabel='학기'
+                        column={selectFilterSemesterList}
+                        onChange={value=>{
+                            let dumySelectFilterValues = JSON.parse(JSON.stringify(selectFIlterValues));
+                            dumySelectFilterValues[1] = value
+                            setSelectFilterValues(dumySelectFilterValues)
+                            
+                        }}
+                        value={selectFIlterValues[1]}
+                        originData={data}
+                        table={data}
+                    />
+                    {/* filter 3 : Grade */}
+                    <DebouncedDropdowFilter 
+                        filterTitleLabel='Grade'
+                        column={selectFilterGradeList}
+                        onChange={value=>{
+                            let dumySelectFilterValues = JSON.parse(JSON.stringify(selectFIlterValues));
+                            dumySelectFilterValues[2] = value
+                            setSelectFilterValues(dumySelectFilterValues)
+                            
+                        }}
+                        value={selectFIlterValues[2]}
+                        originData={data}
+                        table={data}
+                    />
+                    {/* filter 4 : Level */}
+                    <DebouncedDropdowFilter 
+                        filterTitleLabel='Level'
+                        column={selectFilterLevelList}
+                        onChange={value=>{
+                            let dumySelectFilterValues = JSON.parse(JSON.stringify(selectFIlterValues));
+                            dumySelectFilterValues[3] = value
+                            setSelectFilterValues(dumySelectFilterValues)
+                            
+                        }}
+                        value={selectFIlterValues[3]}
+                        originData={data}
+                        table={data}
+                    />
                 </div>
-            // </div> 
-        
+                <button className={`Filter-search-button ${
+                    isAllSelected ? 'section-common-filter-search-active': 'section-common-filter-search-normal'
+                }`}
+                    disabled={!isAllSelected}
+                    onClick={(e:React.MouseEvent<HTMLButtonElement, MouseEvent>)=>searchEventFunction(e)}
+                ><span className='flex'><SvgSearchIcon className='w-5 h-5'/></span><span className=''>{'Search'}</span>
+                </button>
+            </div>
+            <div className='section-common-table-wrap-div'>
+                {/* table */}
+                {isSearch ? (
+                    <TableComponent 
+                        table={{body:selectedData, head: data.head}}
+                        options={{
+                            sortEventTargetHeaderKeys:['level'],
+                            mergeRowSpanKeys: grouping
+                        }}
+                    />
+                ): null}
+                <div className={`justify-center items-center ${isSearch ? 'w-0 h-0' :'w-full h-full flex flex-1'}`}>
+                    <p className='flex flex-row text-[#bfbfbf] text-2xl'>{isSearch ? '':'검색 값을 선택 후 조회하세요.'}</p>
+                </div>
+            </div>
+        </div>
     )
 }
 export default IdeaExchange;

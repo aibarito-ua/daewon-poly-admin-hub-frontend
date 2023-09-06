@@ -1,8 +1,9 @@
 import React from 'react';
 import { Table } from "@tanstack/react-table"
+import { cf } from '../../../util/common/commonFunctions';
 
-const TableHeader = (props: {table:Table<any>, sortEventTargetHeaderKeys?: string[] }) => {
-    let tableHeadDatas = props.table.getHeaderGroups()[0].headers;
+const TableHeader = (props: {table:TLoadDataHeadTrans[], sortEventTargetHeaderKeys?: string[] }) => {
+    let tableHeadDatas = props.table;
     return (
         <thead className='table-thead-basic'>
             <tr className='table-thead-tr-basic'>
@@ -10,21 +11,21 @@ const TableHeader = (props: {table:Table<any>, sortEventTargetHeaderKeys?: strin
                     if (hIndex < 6) {
                         return (
                             <th
-                                key={header.id}
+                                key={header.accessor}
                                 className={`table-thead-tr-th-basic max-w-[100px]`}
 
                             >
-                                {header.column.columnDef.header?.toString()}
+                                {header.header}
                             </th>
                         )
                     } else if (hIndex === 6) {
                         return (
                             <th
-                                key={header.id}
+                                key={header.accessor}
                                 className="table-thead-tr-th-basic w-14"
                                 colSpan={4}
                             >
-                                {header.column.columnDef.header?.toString()}
+                                {header.header}
                             </th>
                         )
                     }
@@ -143,39 +144,46 @@ const TableBody = (props:{dataModel:{key:string, value:any, rowspan:number, prin
         </tbody>
     )
 }
-export default function StoryVlogTableComponent (props:{table:Table<any>, options?:{sortEventTargetHeaderKeys?: string[],mergeRowSpanKeys?: string[]}}) {
+export default function StoryVlogTableComponent (props:{table:{body: TStoryVlogBook[], head: TLoadDataHeadTrans[]}, options?:{sortEventTargetHeaderKeys?: string[],mergeRowSpanKeys?: string[]}}) {
     // table row datas
-    let tableDatas = props.table.getRowModel().rows;
+    let tableDatas = props.table.body.sort((a,b)=>cf.basicTable.sortByLessonInStoryVLogBodyData(a,b));
+    const headerData = props.table.head;
     const rowMergeKey = ['year','semester','grade','level','book']
 
     let dataModel:{key:string, value:any, rowspan:number, print:boolean}[][] = [];
     for (let dataIndex = 0; dataIndex < tableDatas.length; dataIndex++) {
-        const rowD = tableDatas[dataIndex].getAllCells();
+        const rowD = tableDatas[dataIndex]
+        if (dataIndex===0) {
+            let pushFirstRowData:{key:string, value:any, rowspan:number, print:boolean}[] = [];
+            for (let firstCellIndex=0;firstCellIndex<headerData.length; firstCellIndex++) {
+                let pushValue:any = '';
+                if (headerData[firstCellIndex].accessor === 'lesson') {
+                    pushValue= {
+                        title:'', viewIndex: 0
+                    }
+                } else {
+                    pushValue = rowD[headerData[firstCellIndex].accessor];
+                }
+                const pushFirstCellData = {
+                    key: headerData[firstCellIndex].accessor,
+                    value: pushValue,
+                    rowspan:1,
+                    print:true
+                }
+                pushFirstRowData.push(pushFirstCellData)
+            }
+            dataModel.push(pushFirstRowData)
+        }
         let pushRowData:{key:string, value:any, rowspan:number, print:boolean}[] = [];
         
-        for (let rowDIndex = 0; rowDIndex < rowD.length; rowDIndex++) {
-            const check = rowD[rowDIndex].id.match(/^[0-9]/gm);
-            if (check) {
-                if (rowD[rowDIndex].column.id === 'lesson') {
-                    const pushCellData = {
-                        key: rowD[rowDIndex].column.id,
-                        value:rowD[rowDIndex].getValue(),
-                        rowspan:1,
-                        print:true
-                    }
-                    pushRowData.push(pushCellData)
-                } else {
-                    const pushCellData = {
-                        key: rowD[rowDIndex].column.id,
-                        value:rowD[rowDIndex].getValue(),
-                        rowspan:1,
-                        print:true
-                    }
-                    pushRowData.push(pushCellData)
-
-                }
-                
+        for (let cellIndex = 0; cellIndex < headerData.length; cellIndex++) {
+            const pushCellData = {
+                key: headerData[cellIndex].accessor,
+                value: rowD[headerData[cellIndex].accessor],
+                rowspan:1,
+                print:true
             }
+            pushRowData.push(pushCellData)
         }
         dataModel.push(pushRowData);
     }
@@ -212,11 +220,12 @@ export default function StoryVlogTableComponent (props:{table:Table<any>, option
             }
         }// for cell
     } // for row
+    console.log('story vlog =',dataModel)
     if (dataModel.length > 0) {
         return (
             <div className='table-wrap-div'>
                 <table className='table-basic'>
-                    <TableHeader table={props.table} sortEventTargetHeaderKeys={props.options?props.options.sortEventTargetHeaderKeys:[]}/>
+                    <TableHeader table={headerData} sortEventTargetHeaderKeys={props.options?props.options.sortEventTargetHeaderKeys:[]}/>
                     <TableBody dataModel={dataModel}/>
                 </table>
             </div>

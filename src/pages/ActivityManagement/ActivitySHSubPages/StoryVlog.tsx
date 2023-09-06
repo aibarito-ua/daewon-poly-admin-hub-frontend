@@ -1,32 +1,12 @@
 import React from 'react';
-import DebouncedDropdowFilter from '../../../components/commonComponents/BasicTable/debouncedDropdown';
+import DebouncedDropdowFilter from '../../../components/commonComponents/BasicTable/stateDebouncedDropdown';
 import TableComponent from '../../../components/commonComponents/BasicTable/StoryVLogTable';
 import { SvgSearchIcon } from '../../../components/commonComponents/BasicTable/svgs/SearchIcon';
 import useNavStore from '../../../store/useNavStore';
-import useLevelAndTextbookSpeakingStore from '../../../store/useLevelAndTextbookSpeakingStore';
-import { 
-    ColumnDef,
-    ColumnFiltersState,
-    FilterFn,
-    GroupingState,
-    createColumnHelper,
-    getCoreRowModel,
-    getExpandedRowModel,
-    getFacetedUniqueValues,
-    getFilteredRowModel,
-    getGroupedRowModel,
-    getSortedRowModel,
-    useReactTable
-} from '@tanstack/react-table';
 import { cf } from '../../../util/common/commonFunctions';
 import useActivitySpeakHubStore from '../../../store/useActivitySpeakHubStore';
-
-declare module '@tanstack/table-core' {
-    interface FilterFns {
-        yearCustomFilter: FilterFn<unknown>,
-    }
-}
-const customFilter: FilterFn<any> = (row, columnId, value, addMeta) => cf.basicTable.customFilter(row, columnId, value, addMeta);
+import { getActivityManagementSpeakingDataAPI } from '../../../api/ActivityManagement/ActivityManagementSpeaking.api';
+import { useComponentWillMount } from '../../../hooks/useEffectOnce';
 
 const StoryVlog = () => {
     // page usehook zustand
@@ -34,17 +14,55 @@ const StoryVlog = () => {
         selectNavigationTitles, setSelectNavigationTitles
     } = useNavStore();
     const {loadData, loadDataHeadKor, sortRules} = useActivitySpeakHubStore();
-    // re-sorting for table
-    const newLoadData = loadData.story_vlog.map((bArr)=>{ return cf.basicTable.sortByKeyBodyData(bArr, cf.basicTable.customSort, sortRules.body.story_vlog); })
-    const newDataHeadData = loadDataHeadKor.story_vlog.sort((a,b) =>cf.basicTable.sortByKeyHeadData(a,b, sortRules.head.story_vlog));
+    // // re-sorting for table
+    // const newLoadData = loadData.story_vlog.map((bArr: any)=>{ return cf.basicTable.sortByKeyBodyData(bArr, cf.basicTable.customSort, sortRules.body.story_vlog); })
+    // const newDataHeadData = loadDataHeadKor.story_vlog.sort((a: TLoadDataHeadTrans,b: TLoadDataHeadTrans) =>cf.basicTable.sortByKeyHeadData(a,b, sortRules.head.story_vlog));
 
+    // Table Data 
+    const [data, setData] = React.useState<{body: TStoryVlogBook[], head: TLoadDataHeadTrans[]}>({ body: [], head: [] });
+    const [selectedData, setSelectedData] = React.useState<TStoryVlogBook[]>([]);
     // page states
-    const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
+    // searchValue
     const [selectFIlterValues, setSelectFilterValues] = React.useState<any[]>(['','','','']);
-    const [globalFilter, setGlobalFilter] = React.useState('');
-    const [grouping, setGrouping] = React.useState<GroupingState>([]);
+    // select search target value list
+    const [selectFilterYearList, setSelectFilterYearList] = React.useState<string[]>([]);
+    const [selectFilterSemesterList, setSelectFilterSemesterList] = React.useState<string[]>([]);
+    const [selectFilterGradeList, setSelectFilterGradeList] = React.useState<string[]>([]);
+    const [selectFilterLevelList, setSelectFilterLevelList] = React.useState<string[]>([]);
+    
+    // page states
+    const [grouping, setGrouping] = React.useState<string[]>([]);
     const [isAllSelected, setIsAllSelected] = React.useState<boolean>(false);
     const [isSearch, setIsSearch] = React.useState<boolean>(false);
+
+    // initialize setting before render screen
+    const beforRenderedFn = async () => {
+        const loadDataFromAPI = await getActivityManagementSpeakingDataAPI('story_vlog', sortRules.head.story_vlog);
+        const yearFilterValues:string[] = cf.basicTable.setFilterProperty(loadDataFromAPI.body, 'year')
+        const semesterFilterValues:string[] = cf.basicTable.setFilterProperty(loadDataFromAPI.body, 'semester')
+        const gradeFilterValues:string[] = cf.basicTable.setFilterProperty(loadDataFromAPI.body, 'grade')
+        const levelFilterValues:string[] = cf.basicTable.setFilterProperty(loadDataFromAPI.body, 'level')
+
+        setSelectFilterYearList(yearFilterValues)
+        setSelectFilterSemesterList(semesterFilterValues)
+        setSelectFilterGradeList(gradeFilterValues)
+        setSelectFilterLevelList(levelFilterValues)
+        
+        setData({
+            body: loadDataFromAPI.body,
+            head: loadDataFromAPI.head
+        })
+    }
+    useComponentWillMount(()=>{
+        console.log('component will mount')
+        beforRenderedFn();
+    })
+    React.useEffect(()=>{
+        console.log('component did mount')
+        if (data.body.length===0) {
+            beforRenderedFn();
+        }
+    },[])
 
     React.useEffect(()=>{
         if (grouping.length === 0) {
@@ -72,41 +90,6 @@ const StoryVlog = () => {
         }
     }, [selectFIlterValues])
 
-    // Table Data 
-    const [data, setData] = React.useState([...JSON.parse(JSON.stringify(newLoadData))]);
-
-    // columns
-    const levelSort = (a:string, b:string) => cf.basicTable.levelSort(a,b);
-    const columnHelper = createColumnHelper<any>();
-    const columns:ColumnDef<any,any>[] = newDataHeadData.map((value) => {
-        const keyStr:string = value.accessor;
-        if (keyStr === 'level') {
-            return columnHelper.accessor( keyStr , { 
-                header: value.header,
-                enableColumnFilter: false,
-                filterFn: customFilter,
-                enableSorting:true,
-                sortingFn:  (rowA, rowB, columnID) => {
-                    const a:string = rowA.getValue(columnID);
-                    const b:string = rowB.getValue(columnID);
-                    return levelSort(a, b);
-                },
-                enableMultiSort:true,
-                
-            });
-
-        } else {
-            return columnHelper.accessor( keyStr , { 
-                header: value.header,
-                enableColumnFilter: keyStr==='year' ? true : (keyStr==='semester' ? true : false),
-                filterFn: customFilter,
-                enableSorting:true,
-                
-                enableMultiSort:true,
-            });
-        }
-    })
-
     const searchEventFunction = (e:React.MouseEvent<HTMLButtonElement, MouseEvent>)=>{
         e.preventDefault();
         console.log('is test =',isAllSelected)
@@ -123,9 +106,20 @@ const StoryVlog = () => {
                 }
             }
             if (check) {
-                selectFIlterValues.forEach((v, i)=>{
-                    table.getHeaderGroups()[0].headers[i].column.setFilterValue(selectFIlterValues[i])
-                })
+                let selectedTableData:TStoryVlogBook[]=[];
+                console.log('select filter =',selectFIlterValues)
+                for (let i =0; i<data.body.length; i++) {
+                    const item = data.body[i];
+                    console.log('item [',i,'] :',item)
+                    const checkYear = item.year.toString() === selectFIlterValues[0];
+                    const checkSemester = item.semester.toString() === selectFIlterValues[1];
+                    const checkGrade = item.grade.toString()=== selectFIlterValues[2];
+                    const checkLevel = item.level === selectFIlterValues[3];
+                    if (checkYear&&checkSemester&&checkGrade&&checkLevel) {
+                        selectedTableData.push(item)
+                    }
+                }
+                setSelectedData(selectedTableData);
                 setIsSearch(true)
             } else {
                 setIsSearch(false)
@@ -136,53 +130,13 @@ const StoryVlog = () => {
         };
     }
 
-    const table = useReactTable({
-        data,
-        columns,
-        filterFns: {
-            yearCustomFilter: customFilter
-        },
-        state: {
-            grouping,
-            columnFilters,
-            globalFilter,
-        },
-        onColumnFiltersChange: setColumnFilters,
-        onGlobalFilterChange: setGlobalFilter,
-        globalFilterFn: customFilter,
-        getCoreRowModel: getCoreRowModel(),
-        getFilteredRowModel: getFilteredRowModel(),
-        getSortedRowModel: getSortedRowModel(),
-        getFacetedUniqueValues: getFacetedUniqueValues(),
-        onGroupingChange: setGrouping,
-        getGroupedRowModel: getGroupedRowModel(),
-        getExpandedRowModel: getExpandedRowModel(),
-        getIsRowExpanded: (row) => {return true},
-        autoResetExpanded: false
-    })
-
-    React.useEffect(()=>{
-        table.getHeaderGroups()[0].headers[3].column.toggleSorting();
-        table.toggleAllRowsExpanded(true)
-    },[data])
+    
     React.useEffect(()=>{
         if (selectNavigationTitles.length === 0) {
             setSelectNavigationTitles(['Activity 관리', 'Speaking Hub', 'Idea Exchange'])
         }
     }, [selectNavigationTitles])
 
-    // table effects
-    React.useEffect(()=>{
-        // if (table.getState().columnFilters[0]?.id === 'year') {
-        //     if (table.getState().sorting[0]?.id !== 'year') {
-        //         table.setSorting([
-        //             { id: 'year', desc: false},
-        //             {id:'semester', desc:false},
-        //             { id: 'level', desc: false}
-        //         ])
-        //     }
-        // }
-    }, [table.getState().columnFilters[0]?.id])
 
     return (
         
@@ -193,21 +147,21 @@ const StoryVlog = () => {
                     {/* filter 1 : Year */}
                     <DebouncedDropdowFilter 
                         filterTitleLabel='년도'
-                        column={table.getHeaderGroups()[0].headers[0].column}
+                        column={selectFilterYearList}
                         onChange={value=>{
                             let dumySelectFilterValues = JSON.parse(JSON.stringify(selectFIlterValues));
                             dumySelectFilterValues[0] = value
                             setSelectFilterValues(dumySelectFilterValues)
-                            table.toggleAllRowsExpanded(true)
+                            // table.toggleAllRowsExpanded(true)
                         }}
                         value={selectFIlterValues[0]}
-                        originData={newLoadData}
-                        table={table}
+                        originData={data}
+                        table={data}
                     />
                     {/* filter 2 : Semester */}
                     <DebouncedDropdowFilter 
                         filterTitleLabel='학기'
-                        column={table.getHeaderGroups()[0].headers[1].column}
+                        column={selectFilterSemesterList}
                         onChange={value=>{
                             let dumySelectFilterValues = JSON.parse(JSON.stringify(selectFIlterValues));
                             dumySelectFilterValues[1] = value
@@ -215,13 +169,13 @@ const StoryVlog = () => {
                             
                         }}
                         value={selectFIlterValues[1]}
-                        originData={newLoadData}
-                        table={table}
+                        originData={data}
+                        table={data}
                     />
                     {/* filter 3 : Grade */}
                     <DebouncedDropdowFilter 
                         filterTitleLabel='Grade'
-                        column={table.getHeaderGroups()[0].headers[2].column}
+                        column={selectFilterGradeList}
                         onChange={value=>{
                             let dumySelectFilterValues = JSON.parse(JSON.stringify(selectFIlterValues));
                             dumySelectFilterValues[2] = value
@@ -229,13 +183,13 @@ const StoryVlog = () => {
                             
                         }}
                         value={selectFIlterValues[2]}
-                        originData={newLoadData}
-                        table={table}
+                        originData={data}
+                        table={data}
                     />
                     {/* filter 4 : Level */}
                     <DebouncedDropdowFilter 
                         filterTitleLabel='Level'
-                        column={table.getHeaderGroups()[0].headers[3].column}
+                        column={selectFilterLevelList}
                         onChange={value=>{
                             let dumySelectFilterValues = JSON.parse(JSON.stringify(selectFIlterValues));
                             dumySelectFilterValues[3] = value
@@ -243,8 +197,8 @@ const StoryVlog = () => {
                             
                         }}
                         value={selectFIlterValues[3]}
-                        originData={newLoadData}
-                        table={table}
+                        originData={data}
+                        table={data}
                     />
                 </div>
                 <button className={`Filter-search-button ${
@@ -257,10 +211,10 @@ const StoryVlog = () => {
                 
             </div>
             <div className='flex flex-col w-full h-full overflow-y-auto rounded-md'>
-                {/* table */}
+                {/* table 230725 story vlog table re-make */}
                 {isSearch ? (
                     <TableComponent 
-                        table={table}
+                        table={{body: selectedData, head: data.head}}
                         options={{
                             sortEventTargetHeaderKeys:['level'],
                             mergeRowSpanKeys: grouping

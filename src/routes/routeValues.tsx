@@ -9,6 +9,9 @@ import StoryVlog from '../pages/ActivityManagement/ActivitySHSubPages/StoryVlog'
 import RolePlay from '../pages/ActivityManagement/ActivitySHSubPages/RolePlay';
 import ActivityWritingHubMain from '../pages/ActivityManagement/ActivityWritingHubMain';
 import SparkWriting from '../pages/ActivityManagement/ActivityWHSubPages/SparkWriting';
+import LearningManagementWritingHub from '../pages/LearningManagement/LearningManagementWritingHub';
+import LMSparkWriting from '../pages/LearningManagement/LearningManagementWritingSubPages/SparkWriting';
+import LearningManagementSparkWritingFeedbackPage from '../pages/LearningManagement/LearningManagementSparkWritingFeedbackPage';
 
 
 export const routeValues = {
@@ -35,6 +38,8 @@ export const routeValues = {
         {path: '/ActivityManagement/SpeakingHub/StoryVlog', element: <ActivitySpeakHubMain children={<StoryVlog />} />},
         {path: '/ActivityManagement/SpeakingHub/RolePlay', element: <ActivitySpeakHubMain children={<RolePlay />} />},
         {path: '/ActivityManagement/WritingHub/SparkWriting', element: <ActivityWritingHubMain children={<SparkWriting />} />},
+        {path: '/LearningManagement/WritingHub/SparkWriting', element: <LearningManagementWritingHub children={<LMSparkWriting/>}/>},
+        {path: '/LearningManagement/WritingHub/SparkWriting/feedback/:studentCode/:DraftId', element: <LearningManagementSparkWritingFeedbackPage />}
     ],
     webViewRoutes: [
         // {path: '/webTest', element: <WebViewWrap />},

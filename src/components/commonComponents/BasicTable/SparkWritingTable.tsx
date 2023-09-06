@@ -3,39 +3,36 @@ import { Table } from "@tanstack/react-table"
 import { TextField } from '@mui/material';
 import { BootstrapInput } from '../customComponents/customTextField';
 import useActivityWritingHubStore from '../../../store/useActivityWritingHubStore';
-import { TActivitySparkWritingBooks } from '../../../store/@type/useActivityWritingHubStore';
 import OutlineFormatModalComponent from '../../toggleModalComponents/OutlineFormatModalComponent';
 import { TTableDataModel } from '../../../pages/ActivityManagement/ActivityWHSubPages/SparkWriting';
 import RubricTypeModalComponent from '../../toggleModalComponents/RubricTypeModalComponent';
 
-const TableHeader = (props: {table:Table<any>, sortEventTargetHeaderKeys?: string[] }) => {
-    let tableHeadDatas = props.table.getHeaderGroups()[0].headers;
+const TableHeader = (props: {table:TLoadDataHeadTrans[], sortEventTargetHeaderKeys?: string[] }) => {
+    let tableHeadDatas = props.table
     return (
         <thead className='table-thead-basic'>
             <tr className='table-thead-tr-basic'>
                 {tableHeadDatas.map((header, hIndex)=>{
                     if (hIndex<6 || hIndex>8){
-                        const headerText = header.column.columnDef.header?.toString();
-                            const checkInputSpan = header.id === 'topic'
-                            // console.log('header text =',header.column)
-                            if (checkInputSpan) {
-                                return (
-                                    <th
-                                        key={header.id}
-                                        className="table-thead-tr-th-basic w-1/2"
-                                        colSpan={4}
-                                        
-                                    >{headerText}</th>
-                                )
-                            } else {
-                                return (
-                                    <th
-                                        key={header.id}
-                                        className="table-thead-tr-th-basic "
-                                    >{headerText}</th>
-                                )
-                            }
-                        
+                        const headerText = header.header;
+                        const checkInputSpan = header.accessor === 'topic'
+                        if (checkInputSpan) {
+                            return (
+                                <th
+                                    key={header.accessor}
+                                    className="table-thead-tr-th-basic w-1/2"
+                                    colSpan={4}
+                                    
+                                >{headerText}</th>
+                            )
+                        } else {
+                            return (
+                                <th
+                                    key={header.accessor}
+                                    className="table-thead-tr-th-basic "
+                                >{headerText}</th>
+                            )
+                        }
                     }
                 })}
             </tr>
@@ -46,78 +43,12 @@ const TableBody = (props:{
     filterValues: string[],
     dataModel: TTableDataModel,
     enableSaveButtonFlag: boolean,
+    updateInputText:Function,
 }) => {
-    const { loadData, loadDataHeadKor, setLoadDataSparkWritingInput} = useActivityWritingHubStore();
-    const {filterValues, enableSaveButtonFlag} = props;
+    const { loadData, rubricDataHead} = useActivityWritingHubStore();
+    const {filterValues, enableSaveButtonFlag, dataModel, updateInputText} = props;
     let tableDatas:TActivitySparkWritingBooks[]=[]
     tableDatas = loadData.spark_writing;
-    
-    // table row datas
-    const rowMergeKey = ['year','semester','level','book','unit']
-
-    let dataModel:{key:string, value:any, rowspan:number, print:boolean, originIndex:number }[][] = [];
-    
-    const headers = loadDataHeadKor.spark_writing;
-    for (let dataIndex = 0; dataIndex < tableDatas.length; dataIndex++) {
-        let pushRowData:{key:string, value:any, rowspan:number, print:boolean, originIndex: number }[] = [];
-        const rowD = tableDatas[dataIndex];
-        for (let rowDIndex = 0; rowDIndex < headers.length; rowDIndex++) {
-            const valueC = rowD[headers[rowDIndex].accessor]
-            const keyC = headers[rowDIndex].accessor
-            const pushCellData = {
-                key: keyC,
-                value: valueC,
-                rowspan:1,
-                print:true,
-                originIndex: dataIndex
-            }
-            pushRowData.push(pushCellData)
-        }
-        dataModel.push(pushRowData);
-    }
-    // console.log('dataModal: ',dataModel)
-    dataModel = dataModel.filter((v,i) => {
-        if (v.length!==0) return v;
-    });
-
-    // search filter
-    dataModel = dataModel.filter((item, idx) => {
-        const search1 = item[0].value === filterValues[0];
-        const search2 = item[1].value === filterValues[1];
-        const search3 = item[2].value === filterValues[2];
-        if (search1 && search2 && search3) {
-            return item;
-        }
-    })
-    // console.log('dataModel =',dataModel)
-
-    for (let i = 1; i< dataModel.length; i++) {
-        for (let j = 0; j < dataModel[i].length; j++) {
-            let flagMerge = false;
-            for (let z = 0; z < rowMergeKey.length; z++) {
-                if (dataModel[i][j].key === rowMergeKey[z]) {
-                    flagMerge=true;
-                    break;
-                }
-            }
-            if (flagMerge) {
-                if (j>0) {
-                    // row cell merge (row span) 
-                    for (let k = i-1; k >= 0&&dataModel[i][j].value===dataModel[k][j].value&&dataModel[k+1][j-1].print===false; k--) {
-                        dataModel[k][j].rowspan = dataModel[k][j].rowspan+1;
-                        dataModel[k+1][j].print = false;
-                    } // turn print
-                } else {
-                    // row cell merge (row span)
-                    for (let k = i-1; k >= 0&&dataModel[i][j].value===dataModel[k][j].value; k--) {
-                        dataModel[k][j].rowspan = dataModel[k][j].rowspan+1;
-                        dataModel[k+1][j].print = false;
-                    } // turn print
-                }
-            }
-        }// for cell
-    } // for row
-    // console.log('after merge =',dataModel)
 
     let gradeHaveCell:any = {};
     let gradesKey:number[] = [];
@@ -129,13 +60,16 @@ const TableBody = (props:{
             for (let cellIdx = 0; cellIdx < currentRow.length; cellIdx++) {
                 const currentCell = currentRow[cellIdx];
                 if (cellIdx === 4) {
-                    const checkKey = Object.keys(gradeHaveCell).includes(currentCell.value)
+                    // console.log('4 - gradeCell: ',gradeHaveCell, ', ::, ',currentCell.value)
+                    const checkKey = Object.keys(gradeHaveCell).includes(currentCell.value.toString())
+                    // console.log('check key =',checkKey)
                     if (!checkKey) {
                         pIdx = 0;
                         gradesKey.push(pIdx)
                         gradeHaveCell[currentCell.value] = [];
                         gradeHaveCell[currentCell.value] = [currentRow]
                     } else {
+                        // console.log('current Row =',currentRow)
                         pIdx+=1;
                         gradesKey.push(pIdx)
                         gradeHaveCell[currentCell.value].push(currentRow)
@@ -172,14 +106,14 @@ const TableBody = (props:{
                         const currentParentValue = row[4].value;
                         const currentParentMaxLength = gradeHaveCell[currentParentValue].length;
                         const currentParentHaveKey = gradesKey[rIdx];
-
+                        
                         const cellBg = currentParentHaveKey>0 && (
                             currentParentHaveKey%2 === 1 ? 'bg-[#f9f9f9]': 'bg-[#fff]'
                         )
                         return (
                             <tr key={rowKey} className={`table-tbody-tr-basic ${cellBg}`}>
                                 
-                                {(row[6].value==='title') &&<td
+                                {(row[6].value.toLocaleLowerCase()==='title') &&<td
                                 className='table-tbody-tr-td-basic capitalize bg-[#fff]'
                                 rowSpan={row[4].rowspan}
                                 >{``}</td>}
@@ -204,9 +138,13 @@ const TableBody = (props:{
                                         onChange={(e)=>{
                                             e.preventDefault();
                                             const text = e.currentTarget.value
-                                            const originalIdx = row[8].originIndex;
+                                            const unitId = row[8].unitId;
+                                            const outlineFormatIndex = row[8].outlineFormatIndex
                                             // console.log('rIdx =',originalIdx,',test==',text)
-                                            setLoadDataSparkWritingInput(text, originalIdx)
+                                            if (unitId!==undefined && outlineFormatIndex!==undefined) {
+                                                updateInputText(text, {rowIndex: rIdx, cellIndex: 8}, {unitId, outlineFormatIndex});
+                                                // setLoadDataSparkWritingInput(text, unitId, outlineFormatIndex);
+                                            }
                                         }}
                                     />
                                 </td>
@@ -222,15 +160,19 @@ const TableBody = (props:{
                         )
                     } else {
                         // topic row
+                        const rubric = row[10].value;
+                        console.log('row =',row)
+                        const unitId = dataModel[2][8].unitId? dataModel[2][8].unitId:-1;
+                        
                         return (
                             <tr key={rowKey} className='table-tbody-tr-basic'>
-                                {row[4].value==='1' && <td
+                                {row[4].value.toString()==='1' && <td
                                 className='table-tbody-tr-td-basic'
                                 rowSpan={row[3].rowspan}
                                 >{}</td>}
                                 <td
                                 className='table-tbody-tr-td-basic capitalize px-[20px]'
-                                // rowSpan={row[5].rowspan}
+                                rowSpan={row[5].rowspan}
                                 >{`unit ${row[4].value}`}</td>
                                 <td
                                 className='table-tbody-tr-td-basic pl-[20px]'
@@ -248,9 +190,11 @@ const TableBody = (props:{
                                         level={row[2].value}
                                         book={row[3].value}
                                         unit={row[4].value}
+
+                                        unitId={unitId}
+                                        
                                         wholeData={tableDatas}
                                     />
-                                    {/* {row[9].value} */}
                                 </td>
                                 <td
                                 className='table-tbody-tr-td-basic'
@@ -258,7 +202,11 @@ const TableBody = (props:{
                                 >
                                     <RubricTypeModalComponent 
                                         keyValue={row[10].key}
-                                        rubric_type={row[10].value}
+                                        rubric_type={rubric.name}
+                                        rubric_type_datas={{
+                                            data: rubric['rubric_description'],
+                                            dataHead: rubricDataHead,
+                                        }}
                                     />
                                 </td>
                             </tr>
@@ -299,11 +247,12 @@ const TableBody = (props:{
     )
 }
 export default function SparkWritingTableComponent (props:{
-    table:Table<any>, 
+    table:{body:TActivitySparkWritingBooks[], head: TLoadDataHeadTrans[]}, 
     filterValues: string[],
     isSearch: boolean,
     dataModel: TTableDataModel,
     enableSaveButtonFlag: boolean,
+    updateInputText: Function,
     options?:{
         sortEventTargetHeaderKeys?: string[],
         mergeRowSpanKeys?: string[]
@@ -314,10 +263,11 @@ export default function SparkWritingTableComponent (props:{
         return (
             <div className='table-wrap-div'>
                 <table className='table-aside'>
-                    <TableHeader table={props.table}/>
+                    <TableHeader table={props.table.head}/>
                     <TableBody dataModel={props.dataModel} 
                         filterValues={props.isSearch ? props.filterValues: []} 
                         enableSaveButtonFlag={props.enableSaveButtonFlag}
+                        updateInputText={props.updateInputText}
                     />
                 </table>
             </div>

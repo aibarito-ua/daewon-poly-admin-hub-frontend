@@ -1,0 +1,17 @@
+<svg id="bt_close" xmlns="http://www.w3.org/2000/svg" width="102" height="40" viewBox="0 0 102 40">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #888;
+      }
+
+      .cls-2 {
+        fill: #fff;
+        font-size: 14px;
+        font-family: NotoSansCJKkr-Regular, Noto Sans CJK KR;
+      }
+    </style>
+  </defs>
+  <rect id="사각형_3216" data-name="사각형 3216" class="cls-1" width="102" height="40" rx="2"/>
+  <text id="CLOSE" class="cls-2" transform="translate(51 26)"><tspan x="-21.546" y="0">CLOSE</tspan></text>
+</svg>

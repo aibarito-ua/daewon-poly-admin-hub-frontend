@@ -15,10 +15,285 @@ code {
 @import "tailwindcss/base";
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
+
+/* Font : Noto Sans CJK KR */
+@font-face {
+  font-family: "NotoSansCJKKR";
+  font-style: thin;
+  font-weight: 100;
+  src: local("NotoSansCJKKR"),
+      url('./font/NotoSansCJKkr/NotoSansCJKkr-Thin.otf') format('woff2'),
+      url('./font/NotoSansCJKkr/NotoSansCJKkr-Thin.otf') format('woff'),
+      url('./font/NotoSansCJKkr/NotoSansCJKkr-Thin.otf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: "NotoSansCJKKR";
+  font-style: demi-light;
+  font-weight: 200;
+  src: local("NotoSansCJKKR"),
+      url('./font/NotoSansCJKkr/NotoSansCJKkr-DemiLight.otf') format('woff2'),
+      url('./font/NotoSansCJKkr/NotoSansCJKkr-DemiLight.otf') format('woff'),
+      url('./font/NotoSansCJKkr/NotoSansCJKkr-DemiLight.otf') format('truetype');
+}
+@font-face {
+  font-family: "NotoSansCJKKR-italic";
+  font-style: italic;
+  font-weight: 300;
+  src: local("NotoSansCJKKR"),
+      url('./font/NotoSansCJKkr/NotoSansCJKkr-Light.otf') format('woff2'),
+      url('./font/NotoSansCJKkr/NotoSansCJKkr-Light.otf') format('woff'),
+      url('./font/NotoSansCJKkr/NotoSansCJKkr-Light.otf') format('truetype');
+}
+@font-face {
+  font-family: "NotoSansCJKKR";
+  font-style: normal;
+  font-weight: 400;
+  src: local("NotoSansCJKKR"),
+      url('./font/NotoSansCJKkr/NotoSansCJKkr-Regular.otf') format('woff2'),
+      url('./font/NotoSansCJKkr/NotoSansCJKkr-Regular.otf') format('woff'),
+      url('./font/NotoSansCJKkr/NotoSansCJKkr-Regular.otf') format('truetype');
+}
+@font-face {
+  font-family: "NotoSansCJKKR";
+  font-style: medium;
+  font-weight: 500;
+  src: local("NotoSansCJKKR"),
+      url('./font/NotoSansCJKkr/NotoSansCJKkr-Medium.otf') format('woff2'),
+      url('./font/NotoSansCJKkr/NotoSansCJKkr-Medium.otf') format('woff'),
+      url('./font/NotoSansCJKkr/NotoSansCJKkr-Medium.otf') format('truetype');
+}
+@font-face {
+  font-family: "NotoSansCJKKR";
+  font-style: bold;
+  font-weight: 700;
+  src: local("NotoSansCJKKR"),
+      url('./font/NotoSansCJKkr/NotoSansCJKkr-Bold.otf') format('woff2'),
+      url('./font/NotoSansCJKkr/NotoSansCJKkr-Bold.otf') format('woff'),
+      url('./font/NotoSansCJKkr/NotoSansCJKkr-Bold.otf') format('truetype');
+}
+@font-face {
+  font-family: "NotoSansCJKKR";
+  font-style: black;
+  font-weight: 900;
+  src: local("NotoSansCJKKR"),
+      url('./font/NotoSansCJKkr/NotoSansCJKkr-Black.otf') format('woff2'),
+      url('./font/NotoSansCJKkr/NotoSansCJKkr-Black.otf') format('woff'),
+      url('./font/NotoSansCJKkr/NotoSansCJKkr-Black.otf') format('truetype');
+}
+/* Font : GothamRounded */
+@font-face {
+  font-family: "GothamRounded";
+  font-style: light;
+  font-weight: 100;
+  src: local("GothamRounded"),
+      url('./font/GothamRnd/GothamRnd-Light.otf') format('woff2'),
+      url('./font/GothamRnd/GothamRnd-Light.otf') format('woff'),
+      url('./font/GothamRnd/GothamRnd-Light.otf') format('truetype');
+}
+@font-face {
+  font-family: "GothamRounded-italic";
+  font-style: italic;
+  font-weight: 100;
+  src: local("GothamRounded"),
+      url('./font/GothamRnd/GothamRnd-LightIta.otf') format('woff2'),
+      url('./font/GothamRnd/GothamRnd-LightIta.otf') format('woff'),
+      url('./font/GothamRnd/GothamRnd-LightIta.otf') format('truetype');
+}
+@font-face {
+  font-family: "GothamRounded";
+  font-style: normal;
+  font-weight: 300;
+  src: local("GothamRounded"),
+      url('./font/GothamRnd/GothamRnd-Book.otf') format('woff2'),
+      url('./font/GothamRnd/GothamRnd-Book.otf') format('woff'),
+      url('./font/GothamRnd/GothamRnd-Book.otf') format('truetype');
+}
+@font-face {
+  font-family: "GothamRounded-italic";
+  font-style: italic;
+  font-weight: 300;
+  src: local("GothamRounded"),
+      url('./font/GothamRnd/GothamRnd-BookIta.otf') format('woff2'),
+      url('./font/GothamRnd/GothamRnd-BookIta.otf') format('woff'),
+      url('./font/GothamRnd/GothamRnd-BookIta.otf') format('truetype');
+}
+@font-face {
+  font-family: "GothamRounded";
+  font-style: medium;
+  font-weight: 500;
+  src: local("GothamRounded"),
+      url('./font/GothamRnd/GothamRnd-Medium.otf') format('woff2'),
+      url('./font/GothamRnd/GothamRnd-Medium.otf') format('woff'),
+      url('./font/GothamRnd/GothamRnd-Medium.otf') format('truetype');
+}
+@font-face {
+  font-family: "GothamRounded-italic";
+  font-style: italic;
+  font-weight: 500;
+  src: local("GothamRounded"),
+      url('./font/GothamRnd/GothamRnd-MedIta.otf') format('woff2'),
+      url('./font/GothamRnd/GothamRnd-MedIta.otf') format('woff'),
+      url('./font/GothamRnd/GothamRnd-MedIta.otf') format('truetype');
+}
+@font-face {
+  font-family: "GothamRounded";
+  font-style: bold;
+  font-weight: 700;
+  src: local("GothamRounded"),
+      url('./font/GothamRnd/GothamRnd-Bold.otf') format('woff2'),
+      url('./font/GothamRnd/GothamRnd-Bold.otf') format('woff'),
+      url('./font/GothamRnd/GothamRnd-Bold.otf') format('truetype');
+}
+@font-face {
+  font-family: "GothamRounded-italic";
+  font-style:italic;
+  font-weight: 700;
+  src: local("GothamRounded"),
+      url('./font/GothamRnd/GothamRnd-BoldIta.otf') format('woff2'),
+      url('./font/GothamRnd/GothamRnd-BoldIta.otf') format('woff'),
+      url('./font/GothamRnd/GothamRnd-BoldIta.otf') format('truetype');
+}
+/* Font : Roboto */
+@font-face {
+  font-family: "Roboto";
+  font-style: thin;
+  font-weight: 100;
+  src: local("Roboto"),
+      url('./font/Roboto/Roboto-Thin.ttf') format('woff2'),
+      url('./font/Roboto/Roboto-Thin.ttf') format('woff'),
+      url('./font/Roboto/Roboto-Thin.ttf') format('truetype');
+}
+@font-face {
+  font-family: "Roboto-italic";
+  font-style: italic;
+  font-weight: 100;
+  src: local("Roboto"),
+      url('./font/Roboto/Roboto-ThinItalic.ttf') format('woff2'),
+      url('./font/Roboto/Roboto-ThinItalic.ttf') format('woff'),
+      url('./font/Roboto/Roboto-ThinItalic.ttf') format('truetype');
+}
+@font-face {
+  font-family: "Roboto";
+  font-style: light;
+  font-weight: 300;
+  src: local("Roboto"),
+      url('./font/Roboto/Roboto-Light.ttf') format('woff2'),
+      url('./font/Roboto/Roboto-Light.ttf') format('woff'),
+      url('./font/Roboto/Roboto-Light.ttf') format('truetype');
+}
+@font-face {
+  font-family: "Roboto-italic";
+  font-style: italic;
+  font-weight: 300;
+  src: local("Roboto"),
+      url('./font/Roboto/Roboto-LightItalic.ttf') format('woff2'),
+      url('./font/Roboto/Roboto-LightItalic.ttf') format('woff'),
+      url('./font/Roboto/Roboto-LightItalic.ttf') format('truetype');
+}
+@font-face {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 400;
+  src: local("Roboto"),
+      url('./font/Roboto/Roboto-Regular.ttf') format('woff2'),
+      url('./font/Roboto/Roboto-Regular.ttf') format('woff'),
+      url('./font/Roboto/Roboto-Regular.ttf') format('truetype');
+}
+@font-face {
+  font-family: "Roboto";
+  font-style: medium;
+  font-weight: 500;
+  src: local("Roboto"),
+      url('./font/Roboto/Roboto-Medium.ttf') format('woff2'),
+      url('./font/Roboto/Roboto-Medium.ttf') format('woff'),
+      url('./font/Roboto/Roboto-Medium.ttf') format('truetype');
+}
+@font-face {
+  font-family: "Roboto-italic";
+  font-style: italic;
+  font-weight: 500;
+  src: local("Roboto"),
+      url('./font/Roboto/Roboto-MediumItalic.ttf') format('woff2'),
+      url('./font/Roboto/Roboto-MediumItalic.ttf') format('woff'),
+      url('./font/Roboto/Roboto-MediumItalic.ttf') format('truetype');
+}
+@font-face {
+  font-family: "Roboto";
+  font-style: bold;
+  font-weight: 700;
+  src: local("Roboto"),
+      url('./font/Roboto/Roboto-Bold.ttf') format('woff2'),
+      url('./font/Roboto/Roboto-Bold.ttf') format('woff'),
+      url('./font/Roboto/Roboto-Bold.ttf') format('truetype');
+}
+@font-face {
+  font-family: "Roboto-italic";
+  font-style: italic;
+  font-weight: 700;
+  src: local("Roboto"),
+      url('./font/Roboto/Roboto-BoldItalic.ttf') format('woff2'),
+      url('./font/Roboto/Roboto-BoldItalic.ttf') format('woff'),
+      url('./font/Roboto/Roboto-BoldItalic.ttf') format('truetype');
+}
+@font-face {
+  font-family: "Roboto";
+  font-weight: 900;
+  src: local("Roboto"),
+      url('./font/Roboto/Roboto-Black.ttf') format('woff2'),
+      url('./font/Roboto/Roboto-Black.ttf') format('woff'),
+      url('./font/Roboto/Roboto-Black.ttf') format('truetype');
+}
+@font-face {
+  font-family: "Roboto-italic";
+  font-style: italic;
+  font-weight: 900;
+  src: local("Roboto"),
+      url('./font/Roboto/Roboto-BlackItalic.ttf') format('woff2'),
+      url('./font/Roboto/Roboto-BlackItalic.ttf') format('woff'),
+      url('./font/Roboto/Roboto-BlackItalic.ttf') format('truetype');
+}
+/* pathfinder */
+@font-face {
+  font-family: "Pathfinder";
+  font-style: normal;
+  font-weight: 400;
+  src: local("Roboto"),
+      url('./font/Pathfinder/Pathfinder-R.otf') format('woff2'),
+      url('./font/Pathfinder/Pathfinder-R.otf') format('woff'),
+      url('./font/Pathfinder/Pathfinder-R.otf') format('truetype');
+}
+@font-face {
+  font-family: "Pathfinder";
+  font-style: bold;
+  font-weight: 700;
+  src: local("Roboto"),
+      url('./font/Pathfinder/Pathfinder-B.otf') format('woff2'),
+      url('./font/Pathfinder/Pathfinder-B.otf') format('woff'),
+      url('./font/Pathfinder/Pathfinder-B.otf') format('truetype');
+}
+/* font */
+.font-notoSansCJKKR {
+  font-family: 'NotoSansCJKKR';
+}
+.font-gothamRounded {
+  font-family: GothamRounded;
+}
+.font-roboto {
+  font-family: 'Roboto';
+}
+.font-pathfinder {
+  font-family: 'PathFinder';
+}
+
 #root {
+  font-family: "Noto Sans CJK KR";
+  font-weight: 400;
+  font-style: normal;
   @apply
   w-full
   h-full
+  
 }
 body {
   /* width: 100vw;
@@ -105,9 +380,19 @@ body {
   w-full
   h-full
   justify-center
-  
 }
-
+/* feedback canvas */
+.section-feedback-canvas {
+  @apply
+  flex
+  flex-1
+  flex-col
+  w-full
+  min-w-fit
+  h-full
+  justify-start
+  bg-white
+}
 /* Dropdown  */
 .CSS-dropdown-menu-button {
   @apply inline-flex
@@ -191,16 +476,29 @@ body {
 /* Filter Dropdown */
 /* Dropdown  */
 .Filter-CSS-dropdown-menu-button {
+  letter-spacing: normal;
+  text-align: left;
   @apply inline-flex
-  w-[140px]
+  min-w-[140px]
+  w-fit
   h-[36px]
   justify-between
   items-center
   rounded-md
   shadow-sm
   ml-4
-  px-4 py-1 text-sm font-medium
+  px-4 py-1 
+  font-notoSansCJKKR
+  text-[14px]
+  text-[#222]
+  font-medium
+  leading-[1.43]
+  
+
   border
+  disabled:bg-[#eaeaea]
+  disabled:text-[#999999]
+  disabled:border-[#bbbbbb]
 }
 
 .Filter-CSS-dropdown-menu-items {
@@ -473,4 +771,369 @@ body {
   px-[28px]
   py-[10px]
   hover:cursor-not-allowed
+}
+
+/* charts */
+.pie-button-effect-none *{
+  border: none;
+  outline: none;
+}
+.legend-ul-custom {
+  @apply
+  flex
+  flex-row
+  justify-center
+  gap-4
+}
+
+/* 학습 관리 */
+/* writing hub */
+/* student filter datas page */
+.learning-management-class-info-text {
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: 400;
+  color: #222;
+  @apply
+  flex flex-1
+  font-notoSansCJKKR
+}
+.learning-management-book-info-text {
+  font-size: 16px;
+  line-height: 18px;
+  font-weight: 500;
+  color: #222;
+  @apply
+  flex flex-1
+  font-notoSansCJKKR
+}
+.learning-management-class-table-text {
+  font-size: 13px;
+  text-align: center;
+  line-height: 1.23;
+  @apply
+  flex
+  font-notoSansCJKKR
+  text-[#444]
+  h-[19px]
+}
+.learning-management-class-table-empty-draft {
+  @apply
+  border-l-[1px]
+  border-l-[#e2e3e6]
+  border-r-[1px]
+  border-r-[#e2e3e6]
+  text-center
+}
+.learning-management-class-table-empty-report {
+  @apply
+  border-l-[1px]
+  border-l-[#e2e3e6]
+  border-r-[1px]
+  border-r-[#aaa]
+  text-center
+}
+
+.learning-management-class-table-no {
+  font-size: 13px;
+  text-align: center;
+  line-height: 1.92;
+  @apply
+  flex
+  font-notoSansCJKKR
+  text-[#444]
+  h-[19px]
+}
+.learning-management-class-table-item-wrap {
+  @apply
+  w-full
+  inline-flex
+  flex-col
+  justify-center
+  items-center
+  h-[76px] gap-[7px]
+}
+.learning-management-class-table-button {
+  @apply
+  w-[82px]
+  h-[36px]
+  rounded-[2px]
+  flex
+  justify-center
+  items-center
+  hover:cursor-pointer
+}
+.learning-management-class-table-button-status-2 {
+  @apply
+  w-[82px]
+  h-[36px]
+  bg-svg-bt-correct
+  bg-no-repeat
+  hover:bg-svg-bt-correct-over
+}
+.learning-management-class-table-button-status-3 {
+  @apply
+  w-[82px]
+  h-[36px]
+  bg-svg-bt-correct-save
+  bg-no-repeat
+  hover:bg-svg-bt-correct-save-over
+}
+.learning-management-class-table-button-status-4 {
+  @apply
+  w-[82px]
+  h-[36px]
+  bg-svg-bt-done
+  bg-no-repeat
+  hover:bg-svg-bt-done
+}
+.learning-management-class-table-button-status-5 {
+  @apply
+  w-[82px]
+  h-[36px]
+  bg-svg-bt-returned
+  bg-no-repeat
+  hover:bg-svg-bt-returned-over
+}
+/* feedback page */
+.learning-management-feedback-info-box {
+  @apply
+  flex
+  flex-row
+  bg-[#f9f9f9]
+  w-full
+  min-w-fit
+  h-[60px]
+  items-center
+  font-notoSansCJKKR
+  text-[14px]
+  leading-[1.43]
+  text-[#222]
+  border-[1px]
+  border-[#ddd]
+}
+.learning-management-feedback-return-button {
+  @apply
+  absolute
+  right-[20px]
+  bottom-[20px]
+  w-[111px]
+  h-[40px]
+  bg-svg-bt-return
+  bg-no-repeat
+  hover:cursor-pointer
+  hover:bg-svg-bt-return-over
+}
+.learning-management-advisor-open-button {
+  @apply
+  block
+  
+  w-[54px]
+  h-[187px]
+  bg-svg-bt-advisor
+  bg-no-repeat
+  hover:cursor-pointer
+  hover:bg-svg-bt-advisor-over
+}
+
+.draft-viewer-container-title {
+  @apply
+  flex w-full h-[42px] bg-[#f9f9f9] px-[15px] pt-[12px]
+  rounded-[2px]
+}
+
+.update-words {
+  @apply
+  h-fit
+}
+.comment-wrapper {
+  @apply
+  flex
+  flex-row
+  relative
+  w-full
+  pl-[10px]
+  h-[40px]
+  border-[1px]
+  border-[#dbdbdb]
+}
+.comment-input {
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.77;
+  @apply
+  flex w-[calc(100%-30px)] 
+  outline-none
+  font-notoSansCJKKR
+}
+.comment-overall-wrap-div {
+  @apply
+  flex
+  flex-col
+  w-full
+  h-full
+  max-h-[179px]
+  px-[20px]
+}
+.comment-overall-label {
+  @apply
+  flex
+  flex-row
+  capitalize
+}
+.comment-overall-textarea {
+  @apply
+  flex
+  h-full
+  max-h-[145px]
+  border-[1px]
+  border-[#dbdbdb]
+  outline-none
+  focus:outline-none
+  focus:ring-0
+  focus:border-[#dbdbdb]
+}
+.comment-close {
+  @apply
+  absolute
+  right-[0px]
+  top-[3px]
+  w-[30px]
+  h-[30px]
+}
+.comment-button-wrap-div {
+  @apply
+  flex
+  flex-row
+  justify-end
+  items-center
+  gap-[10px]
+  p-[20px]
+  w-full
+  h-[80px]
+  min-h-[80px]
+  max-h-[80px]
+  border-t-[1px]
+  border-t-[#e2e3e6]
+}
+.comment-button {
+  font-size: 14px;
+  text-align: center;
+  font-weight: 400;
+  @apply
+  flex
+  h-[40px]
+  uppercase
+  px-[29px]
+  items-center
+  font-notoSansCJKKR
+}
+.comment-button-close {
+  @apply
+  h-[40px]
+  w-[102px]
+  bg-svg-bt-close
+  bg-no-repeat
+  hover:bg-svg-bt-close-over
+}
+.comment-button-save {
+  @apply
+  h-[40px]
+  w-[102px]
+  bg-svg-bt-save
+  bg-no-repeat
+  hover:bg-svg-bt-save-over
+}
+.comment-button-save-disabled {
+  @apply
+  h-[40px]
+  w-[102px]
+  bg-svg-bt-save-disabled
+  bg-no-repeat
+}
+.comment-button-send {
+  @apply
+  h-[40px]
+  w-[102px]
+  bg-svg-bt-send
+  bg-no-repeat
+  hover:bg-svg-bt-send-over
+}
+.comment-button-send-disabled {
+  @apply
+  h-[40px]
+  w-[102px]
+  bg-svg-bt-send-disabled
+  bg-no-repeat
+}
+.comment-button-add {
+  @apply
+  h-[47px]
+  w-[119px]
+  bg-svg-bt-comment-add
+  bg-no-repeat
+}
+.comment-div-title-label-wrap {
+  @apply
+  flex
+  flex-row
+  items-center
+  h-[24px]
+  gap-[8px]
+}
+.comment-div-title-label-before-bar {
+  @apply
+  flex w-[3px] h-[12px] bg-[#0fa9cb]
+}
+.comment-div-title-label-text {
+  @apply
+  flex
+  font-notoSansCJKKR
+  leading-[1.13]
+  text-left
+  text-[16px]
+  text-[#222]
+  font-medium
+}
+.comment-advisor-label-wrap {
+  @apply
+  flex
+  flex-row
+  h-[42px]
+  text-white
+  capitalize
+  items-center
+  hover:cursor-pointer
+  pl-[15px]
+  rounded-t-[2px]
+}
+.comment-advisor-wrap-text {
+  font-size: 13px;
+  line-height: 1.92;
+  @apply
+  flex flex-col border-[1px] px-[15px] py-[12px]
+  font-notoSansCJKKR
+  text-[#222]
+  gap-[13px]
+  min-h-[144px]
+  overflow-y-auto 
+}
+.comment-advisor-div {
+  @apply
+  flex
+  flex-col
+  max-h-[calc(100vh-320px)]
+  px-[20px] py-[20px] gap-[20px]
+}
+.comment-advisor-contents {
+  @apply
+  flex
+  flex-col
+  gap-[10px]
+  /* max-h-[calc(100vh-380px)] */
+  overflow-y-auto
+}
+.comment-review-contents {
+  @apply
+  flex flex-row h-[calc(100vh-320px)] w-full min-w-[1200px]
 }

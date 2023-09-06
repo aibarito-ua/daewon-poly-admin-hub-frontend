@@ -15,7 +15,7 @@ interface IActivitySHStore {
         }
     }
     loadData: {
-        idea_exchange: TBooks[],
+        idea_exchange: TIdeaExchangeBooks[],
         story_vlog: TStoryVlogBook[],
         role_play: TRolePlayBooks[],
     };
@@ -25,61 +25,74 @@ interface IActivitySHStore {
         role_play: TLoadDataHeadTrans[],
     }
 }
-export type TLoadDataHeadTrans = {
+
+// type header
+type TLoadDataHeadTrans = {
     accessor: string,
     header: string
 }
-export type TStoryVlogBook = {
-    "year": string,
-    "semester":string,
-    "grade": string,
+
+// type story vlog
+type TStoryVlogBook = {
+    "year": number,
+    "semester":number,
+    "grade": number,
     "level": string,
     "book": string,
-    "lesson": {
-        "viewIndex": number,
-        "title": string,
-    },
+    "lesson": TStoryVlogBookLesson,
+    [key:string]: string|number|TStoryVlogBookLesson
 }
-export type TBooks = {
-    "year": string,
-    "semester":string,
-    "grade": string,
+type TStoryVlogBookLesson = {
+    "viewIndex":number,
+    "title": string
+}
+
+// type idea exchange
+type TIdeaExchangeBooks = {
+    "year": number,
+    "semester":number,
+    "grade": number,
     "level": string,
     "book": string,
-    "lesson": {
-        "viewIndex": number,
-        "title": string,
-    },
-    "question": {
-        "viewIndex": number,
-        "text": string,
-    },
-    "expression": {
-        "url": string,
-        "fileName": string
-    } 
+    "lesson": TIdeaExchangeBooksLesson,
+    "question": TIdeaExchengeBooksQuestion,
+    "expression": TIdeaExchengeBooksExpression,
+    [key:string]: string|number|TIdeaExchangeBooksLesson|TIdeaExchengeBooksQuestion|TIdeaExchengeBooksExpression
 }
-export type TRolePlayBooks = {
-    "year": string,
-    "semester": string,
-    "grade": string,
+type TIdeaExchangeBooksLesson = {
+    "viewIndex": number,
+    "title": string,
+}
+type TIdeaExchengeBooksQuestion = {
+    "viewIndex": number,
+    "text": string,
+}
+type TIdeaExchengeBooksExpression = {
+    "url": string,
+    "filename": string
+}
+type TRolePlayBooks = {
+    "year": number,
+    "semester": number,
+    "grade": number,
     "level": string,
     "month": string,
     "topic_title_1st": string,
     "topic_lv_1st": string,
     "topic_title_2nd": string,
-    "topic_lv_2nd": string
+    "topic_lv_2nd": string,
+    [key:string]:string|number,
 }
 
-export type TLesson = {
-    "title": string,
-    "questions": [
-        {
-            "question": string,
-            "expressions": string
-        }, {
-            "question": string,
-            "expressions": string
-        }
-    ]
-}
+// type TLesson = {
+//     "title": string,
+//     "questions": [
+//         {
+//             "question": string,
+//             "expressions": string
+//         }, {
+//             "question": string,
+//             "expressions": string
+//         }
+//     ]
+// }

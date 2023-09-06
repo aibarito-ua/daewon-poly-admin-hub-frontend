@@ -37,14 +37,14 @@ export const GrammarCF = {
     }
 }
 export const CommonFunctions={
-    // goLink: async (linkPath: string, navigate:NavigateFunction, role?: TRole) => {
-    //     if (role!==undefined) {
-    //         const rolePath = role==='logout'? '': (role==='Head' ? 'Head' : 'Campus')
-    //         navigate(`/${rolePath}/${linkPath}`);
-    //     } else {
+    goLink: async (linkPath: string, navigate:NavigateFunction, role?: TRole) => {
+        if (role!==undefined) {
+            // const rolePath = role==='logout'? '': (role==='Head' ? 'Head' : 'Campus')
+            navigate(linkPath);
+        } else {
 
-    //     }
-    // },
+        }
+    },
     customNavigate: async(linkPath: string, navigate:NavigateFunction, flag:boolean, messages:string[]) => {
         if (!flag) {
             navigate(linkPath);
@@ -75,14 +75,41 @@ const basicTable = {
     customSort: (a: string, b: string, sortRules: string[]) => {
         return sortRules.indexOf(a) - sortRules.indexOf(b);
     },
-    sortByKeyBodyData: (unordered:any = {}, sortFn:(a: string, b: string, sortRules: string[]) => number, sortRules:string[]) => {
-        return Object.keys(unordered).sort((a, b) => sortFn(a,b,sortRules)).reduce((obj:any ={}, key:any) => {
+    sortByKeyBodyData: (unordered:any, sortFn:(a: string, b: string, sortRules: string[]) => number, sortRules:string[]) => {
+        
+        return Object.keys(unordered).sort((a, b) => sortFn(a,b,sortRules)).reduce((obj:any ={}, key:string) => {
+            // console.log('obj =',obj)
+            // console.log('keys = ',key)
             obj[key] = unordered[key];
             return obj;
         }, {});
     },
+    sortByLessonInStoryVLogBodyData: (a:TStoryVlogBook, b:TStoryVlogBook)=>{
+        return a.lesson.viewIndex - b.lesson.viewIndex;
+    },
     sortByKeyHeadData: (a: TLoadDataHeadTrans, b: TLoadDataHeadTrans, sortRules: string[]) => {
         return sortRules.indexOf(a.accessor) - sortRules.indexOf(b.accessor);
+    },
+    setFilterProperty: (bodyData:any, targetKey: string) => {
+        let returnFilterValues:string[]=[];
+        let pushTargetData = '';
+        for (let i = 0; i < bodyData.length; i++) {
+            const currentData = bodyData[i];
+            let checkTarget = false;
+            if (i > 0) {
+                for (let filterIndex = 0; filterIndex < returnFilterValues.length; filterIndex++) {
+                    if (returnFilterValues[filterIndex] === currentData[targetKey].toString()) {
+                        checkTarget = true;
+                        break;
+                    }
+                }
+            }
+            if (!checkTarget) {
+                pushTargetData=currentData[targetKey].toString();
+                returnFilterValues.push(currentData[targetKey].toString());
+            }
+        }
+        return returnFilterValues;
     }
 }
 

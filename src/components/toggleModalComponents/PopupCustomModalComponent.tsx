@@ -11,7 +11,6 @@ import useLoginStore from '../../store/useLoginStore';
 import buttonImage from './img/buttonEllaImg.png'
 import { SvgDocumentSearchIcon } from '../commonComponents/BasicTable/svgs/DocumentSearch';
 import { IconButton } from '@mui/material';
-import { TActivitySparkWritingBooks } from '../../store/@type/useActivityWritingHubStore';
 
 interface IOutlineFormatModalComponentProps {
   keyValue: string|number;

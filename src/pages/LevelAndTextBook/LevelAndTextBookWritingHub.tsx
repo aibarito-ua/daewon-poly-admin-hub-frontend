@@ -1,55 +1,78 @@
 import React from 'react'
 import useLevelAndTextbookSpeakingStore from '../../store/useLevelAndTextbookSpeakingStore';
 
-import { 
-    ColumnDef,
-    ColumnFiltersState,
-    FilterFn,
-    GroupingState,
-    createColumnHelper,
-    getCoreRowModel,
-    getExpandedRowModel,
-    getFacetedUniqueValues,
-    getFilteredRowModel,
-    getGroupedRowModel,
-    getSortedRowModel,
-    useReactTable
-} from '@tanstack/react-table';
-
 import useNavStore from '../../store/useNavStore';
 import { SvgSearchIcon } from '../../components/commonComponents/BasicTable/svgs/SearchIcon';
-import DebouncedDropdowFilter from '../../components/commonComponents/BasicTable/debouncedDropdown';
+import DebouncedDropdowFilter from '../../components/commonComponents/BasicTable/stateDebouncedDropdown';
 
 import { cf } from '../../util/common/commonFunctions';
 import LevelAndTextbookWritingTableComponent from '../../components/commonComponents/BasicTable/LevelandTextbookWritingTable';
-
-declare module '@tanstack/table-core' {
-    interface FilterFns {
-        yearCustomFilter: FilterFn<unknown>,
-    }
-}
-const customFilter: FilterFn<any> = (row, columnId, value, addMeta) => cf.basicTable.customFilter(row, columnId, value, addMeta);
+import { useComponentWillMount } from '../../hooks/useEffectOnce';
+import { getLevelAndTextbookSpeakingDataAPI } from '../../api/LevelAndTextBook/LevelAndTextBookSpeaking.api';
+import { getLevelAndTextbookWritingDataAPI } from '../../api/LevelAndTextBook/LevelAndTextBookWriting.api';
 
 const LevelAndTextBookWritingHub = () => {
     // page usehook zustand
     const {
-        selectNavigationTitles, setSelectNavigationTitles
+        selectNavigationTitles,
+        setSelectNavigationTitles
     } = useNavStore();
-    const {loadData, loadDataHeadKor, sortRules} = useLevelAndTextbookSpeakingStore();
+    const {
+        loadData,
+        sortRules,
+        setLoadData,
+        setLoadDataHead
+    } = useLevelAndTextbookSpeakingStore();
+    
+    // initialize setting before render screen
+    const beforeRendereredFn = async () => {
+        const loadDataFromAPI = await getLevelAndTextbookWritingDataAPI(sortRules);
+        const yearFilterValues:string[] = cf.basicTable.setFilterProperty(loadDataFromAPI.loadData, 'year');
+        const semesterFilterValues:string[] = cf.basicTable.setFilterProperty(loadDataFromAPI.loadData, 'semester');
 
-    const newLoadData = loadData.writing.map((bArr: any)=>{ return cf.basicTable.sortByKeyBodyData(bArr, cf.basicTable.customSort, sortRules.body.writing); })
-    const newDataHeadData = loadDataHeadKor.sort((a,b) =>cf.basicTable.sortByKeyHeadData(a,b, sortRules.head.writing));
+        setSelectFilterYearList(yearFilterValues)
+        setSelectFilterSemesterList(semesterFilterValues);
 
+        setLoadDataHead(loadDataFromAPI.loadDataHeadKor);
+        setLoadData(loadDataFromAPI.loadData, undefined);
+        
+        setData({
+            body:loadDataFromAPI.loadData,
+            head: loadDataFromAPI.loadDataHeadKor
+        })
+    }
+    useComponentWillMount(()=>{
+        console.log('component will mount')
+        beforeRendereredFn();
+    })
+    React.useEffect(()=>{
+        console.log('component did mount')
+        if (data.body.length===0) {
+            // if data not found at refresh or reconnection, should set init
+            beforeRendereredFn();
+        }
+    },[])
+
+    // Table Data 
+    const [data, setData] = React.useState<{body: TLoadDataItem[], head: TLoadDataHeadTrans[]}>({ body: [], head: [] });
+    
     // page states
-    const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
+    // searchValue
     const [selectFIlterValues, setSelectFilterValues] = React.useState<any[]>(['','']);
-    const [globalFilter, setGlobalFilter] = React.useState('');
-    const [grouping, setGrouping] = React.useState<GroupingState>([]);
+    // select search target value list
+    const [selectFilterYearList, setSelectFilterYearList] = React.useState<string[]>([]);
+    const [selectFilterSemesterList, setSelectFilterSemesterList] = React.useState<string[]>([]);
+    
+    // merge in table body value's keys
+    const [grouping, setGrouping] = React.useState<string[]>([]);
+    // isFilter data selected complete flag
     const [isAllSelected, setIsAllSelected] = React.useState<boolean>(false);
+    // is started search check flag
     const [isSearch, setIsSearch] = React.useState<boolean>(false);
+    
     React.useEffect(()=>{
         if (grouping.length === 0) {
-            setGrouping(['year','semester','grade','level'])
+            setGrouping(['year','semester','grade'])
         }
         return () => {
             setSelectNavigationTitles([])
@@ -72,46 +95,15 @@ const LevelAndTextBookWritingHub = () => {
             setIsAllSelected(true);
         }
     }, [selectFIlterValues])
-    
-    // Table Data 
-    const [data, setData] = React.useState([...JSON.parse(JSON.stringify(newLoadData))]);
-    
-    // columns
-    const levelSort = (a:string, b:string) => cf.basicTable.levelSort(a,b);
-    const columnHelper = createColumnHelper<any>();
-    const columns:ColumnDef<any,any>[] = newDataHeadData.map((value) => {
-        const keyStr:string = value.accessor;
-        if (keyStr === 'level') {
-            return columnHelper.accessor( keyStr , { 
-                header: value.header,
-                enableColumnFilter: false,
-                filterFn: customFilter,
-                enableSorting:true,
-                sortingFn:  (rowA, rowB, columnID) => {
-                    const a:string = rowA.getValue(columnID);
-                    const b:string = rowB.getValue(columnID);
-                    return levelSort(a, b);
-                },
-                enableMultiSort:true,
-            });
-
-        } else {
-            return columnHelper.accessor( keyStr , { 
-                header: value.header,
-                enableColumnFilter: keyStr==='year' ? true : (keyStr==='semester' ? true : false),
-                filterFn: customFilter,
-                enableSorting:true,
-                
-                enableMultiSort:true,
-            });
+    React.useEffect(()=>{
+        if (selectNavigationTitles.length === 0) {
+            setSelectNavigationTitles(['레벨 및 교재', 'Writing Hub'])
         }
-    })
+    }, [selectNavigationTitles])
     
     const searchEventFunction = (e:React.MouseEvent<HTMLButtonElement, MouseEvent>)=>{
         e.preventDefault();
-        console.log('is test =',isAllSelected)
         if (isAllSelected) {
-
             let check = true;
             const maxLength = selectFIlterValues.length;
             for (let selectIndex=0; selectIndex < maxLength; selectIndex++) {
@@ -123,9 +115,10 @@ const LevelAndTextBookWritingHub = () => {
                 }
             }
             if (check) {
-                selectFIlterValues.forEach((v, i)=>{
-                    table.getHeaderGroups()[0].headers[i].column.setFilterValue(selectFIlterValues[i])
-                })
+                const filterData = loadData.speaking.filter((originItem, originIndex) => {
+                    if ( originItem.year.toString() === selectFIlterValues[0] &&originItem.semester.toString() === selectFIlterValues[1]) return originItem;
+                });
+                setData({body:filterData, head:  data.head})
                 setIsSearch(true)
             } else {
                 setIsSearch(false)
@@ -136,55 +129,6 @@ const LevelAndTextBookWritingHub = () => {
         };
     }
 
-    const table = useReactTable({
-        data,
-        columns,
-        filterFns: {
-            yearCustomFilter: customFilter
-        },
-        state: {
-            grouping,
-            columnFilters,
-            globalFilter,
-        },
-        onColumnFiltersChange: setColumnFilters,
-        onGlobalFilterChange: setGlobalFilter,
-        globalFilterFn: customFilter,
-        getCoreRowModel: getCoreRowModel(),
-        getFilteredRowModel: getFilteredRowModel(),
-        getSortedRowModel: getSortedRowModel(),
-        getFacetedUniqueValues: getFacetedUniqueValues(),
-        onGroupingChange: setGrouping,
-        getGroupedRowModel: getGroupedRowModel(),
-        getExpandedRowModel: getExpandedRowModel(),
-        getIsRowExpanded: (row) => {return true},
-        autoResetExpanded: false
-    })
-
-    React.useEffect(()=>{
-        table.getHeaderGroups()[0].headers[3].column.toggleSorting();
-        table.toggleAllRowsExpanded(true)
-    },[data])
-
-    React.useEffect(()=>{
-        if (selectNavigationTitles.length === 0) {
-            setSelectNavigationTitles(['레벨 및 교재', 'Writing Hub'])
-        }
-    }, [selectNavigationTitles])
-
-    // table effects
-    React.useEffect(()=>{
-        if (table.getState().columnFilters[0]?.id === 'year') {
-            if (table.getState().sorting[0]?.id !== 'year') {
-                table.setSorting([
-                    { id: 'year', desc: false},
-                    {id:'semester', desc:false},
-                    { id: 'level', desc: false}
-                ])
-            }
-        }
-    }, [table.getState().columnFilters[0]?.id])
-
     return (
         <section className="section-common-layout px-[20px]">
             <div className='section-common-canvas'>
@@ -194,46 +138,44 @@ const LevelAndTextBookWritingHub = () => {
                         {/* filter 1 : Year */}
                         <DebouncedDropdowFilter 
                             filterTitleLabel='년도'
-                            column={table.getHeaderGroups()[0].headers[0].column}
+                            column={selectFilterYearList}
                             onChange={value=>{
                                 let dumySelectFilterValues = JSON.parse(JSON.stringify(selectFIlterValues));
                                 dumySelectFilterValues[0] = value
                                 setSelectFilterValues(dumySelectFilterValues)
-                                table.toggleAllRowsExpanded(true)
                             }}
                             value={selectFIlterValues[0]}
-                            originData={newLoadData}
-                            table={table}
+                            originData={data}
+                            table={data}
                         />
                         {/* filter 2 : Semester */}
                         <DebouncedDropdowFilter 
                             filterTitleLabel='학기'
-                            column={table.getHeaderGroups()[0].headers[1].column}
+                            column={selectFilterSemesterList}
                             onChange={value=>{
                                 let dumySelectFilterValues = JSON.parse(JSON.stringify(selectFIlterValues));
                                 dumySelectFilterValues[1] = value
                                 setSelectFilterValues(dumySelectFilterValues)
-                                
                             }}
                             value={selectFIlterValues[1]}
-                            originData={newLoadData}
-                            table={table}
+                            originData={data}
+                            table={data}
                         />
                     </div>
                     <button className={`Filter-search-button ${
-                        isAllSelected ? 'section-common-filter-search-active': 'section-common-filter-search-normal'
-                    }`}
+                            isAllSelected ? 'section-common-filter-search-active': 'section-common-filter-search-normal'
+                        }`}
                         disabled={!isAllSelected}
                         onClick={(e:React.MouseEvent<HTMLButtonElement, MouseEvent>)=>searchEventFunction(e)}
                     ><span className='flex'><SvgSearchIcon className='w-5 h-5'/></span><span className=''>{'Search'}</span>
                     </button>
                 </div>
-                
                 <div className='flex flex-col w-full h-full overflow-y-auto'>
                     {/* table */}
-                    {isSearch ? (
+                    { // conditional render table or information screen
+                    isSearch ? ( 
                         <LevelAndTextbookWritingTableComponent
-                            table={table}
+                            table={data}
                             options={{
                                 sortEventTargetHeaderKeys:['level'],
                                 mergeRowSpanKeys: grouping
@@ -244,9 +186,7 @@ const LevelAndTextBookWritingHub = () => {
                         <p className='flex flex-row text-[#bfbfbf] text-2xl'>{isSearch ? '':'검색 값을 선택 후 조회하세요.'}</p>
                     </div>
                 </div>
-                
-            </div> 
-                
+            </div>
         </section>
     )
 }

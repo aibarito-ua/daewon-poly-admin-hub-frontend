@@ -1,0 +1,17 @@
+<svg id="bt_returned" xmlns="http://www.w3.org/2000/svg" width="82" height="36" viewBox="0 0 82 36">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #f17f7f;
+      }
+
+      .cls-2 {
+        fill: #fff;
+        font-size: 13px;
+        font-family: NotoSansCJKkr-Regular, Noto Sans CJK KR;
+      }
+    </style>
+  </defs>
+  <rect id="사각형_3209" data-name="사각형 3209" class="cls-1" width="82" height="36" rx="2"/>
+  <text id="Returned" class="cls-2" transform="translate(41 24)"><tspan x="-28.106" y="0">Returned</tspan></text>
+</svg>

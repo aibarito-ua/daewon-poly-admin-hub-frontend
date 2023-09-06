@@ -16,6 +16,9 @@ import SparkWriting from '../pages/ActivityManagement/ActivityWHSubPages/SparkWr
 import PromptBlockComponent from '../components/toggleModalComponents/PromptBlockComponent';
 import useControlAlertStore from '../store/useControlAlertStore';
 import CommonAlertModalComponent from '../components/toggleModalComponents/CommonAlertModalComponent';
+import LearningManagementWritingHub from '../pages/LearningManagement/LearningManagementWritingHub';
+import LMSparkWriting from '../pages/LearningManagement/LearningManagementWritingSubPages/SparkWriting';
+import LearningManagementSparkWritingFeedbackPage from '../pages/LearningManagement/LearningManagementSparkWritingFeedbackPage';
 ;
 
 export default function Router() {
@@ -66,6 +69,8 @@ export default function Router() {
                     <Route path={'/ActivityManagement/SpeakingHub/StoryVlog'} element={<ActivitySpeakHubMain children={<StoryVlog />} />} />
                     <Route path={'/ActivityManagement/SpeakingHub/RolePlay'} element={<ActivitySpeakHubMain children={<RolePlay />} />} />
                     <Route path={'/ActivityManagement/WritingHub/SparkWriting'} element={<ActivityWritingHubMain children={<SparkWriting />} />} />
+                    <Route path={'/LearningManagement/WritingHub/SparkWriting'} element={<LearningManagementWritingHub children={<LMSparkWriting />}/>} />
+                    <Route path={'/LearningManagement/WritingHub/SparkWriting/feedback/:studentCode/:DraftId'} element={<LearningManagementSparkWritingFeedbackPage/>} />
                 </Route>
                 {/* <Route path='' element={ }></Route> */}
 

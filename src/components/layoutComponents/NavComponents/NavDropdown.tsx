@@ -43,7 +43,7 @@ export default function TextareaDropdown (props: {
         role==='Head'? 'Head': (role==='Campus' ? 'Campus': '')
       ) : ''
       const pathString = rolePath === '' ? `/${link}` : `/${rolePath}/${link}`
-      console.log(pathString)
+      console.log('path test =',pathString)
       if (!navigateBlockFlag) {
         navigate(pathString);
       } else {
@@ -107,6 +107,7 @@ export default function TextareaDropdown (props: {
                                     onChangeValue(nameItem)
                                     setSelectActive(i)
                                     const navigationValues = [selectName, nameItem.name]
+                                    console.log('test check nav side depth =',navigationValues)
                                     setSelectNavigationTitles(navigationValues)
                                     if (nameItem.role !== '') {
                                       console.log('have role')
@@ -114,6 +115,7 @@ export default function TextareaDropdown (props: {
                                       goLink(nameItem.path, troleValue);
                                     } else {
                                       console.log('no role')
+                                      console.log('name item path =',nameItem.path)
                                       goLink(nameItem.path, '');
                                     }
                                 }}

@@ -9,6 +9,7 @@ interface IUseControlAlertStore {
     commonAlertYesFunctionEvent: Function|null;
     commonAlertCloseEvent:Function|null;
     commonAlertOneButton: boolean;
+    commonAlertType: ''|'warning'|'continue';
 
     setCommonAlertMessage: (messages: string[]) => void;
     setCommonAlertHeadTitle: (title:string) =>void;
@@ -23,6 +24,7 @@ type TCommonAlertOpenOptions = {
     yesEvent?:Function,
     closeEvent?:Function,
     useOneButton?:boolean,
+    alertType?: ''|'warning'|'continue',
 }
 const useControlAlertStore = create<IUseControlAlertStore>((set, get) => ({
     commonAlertOpenFlag: false,
@@ -34,6 +36,7 @@ const useControlAlertStore = create<IUseControlAlertStore>((set, get) => ({
     commonAlertYesFunctionEvent: null,
     commonAlertCloseEvent: null,
     commonAlertOneButton: false,
+    commonAlertType:'',
 
     setCommonAlertMessage: (messages: string[]) => {
         set(()=>({
@@ -53,6 +56,7 @@ const useControlAlertStore = create<IUseControlAlertStore>((set, get) => ({
         const commonAlertYesFunctionEvent=option?.yesEvent ? option.yesEvent:null;
         const commonAlertCloseEvent = option?.closeEvent ? option.closeEvent: null;
         const commonAlertOneButton=option?.useOneButton ? option.useOneButton:false;
+        const commonAlertType=option?.alertType ? option.alertType:'';
         
         set(()=>({
             commonAlertHeadTitle,
@@ -62,7 +66,8 @@ const useControlAlertStore = create<IUseControlAlertStore>((set, get) => ({
             commonAlertCloseEvent,
             commonAlertYesFunctionEvent,
             commonAlertOneButton,
-            commonAlertOpenFlag:true
+            commonAlertOpenFlag:true,
+            commonAlertType,
         }))
     },
     commonAlertClose: () => {

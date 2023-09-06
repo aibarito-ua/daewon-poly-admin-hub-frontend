@@ -1,0 +1,29 @@
+<svg id="bt_return_disable" xmlns="http://www.w3.org/2000/svg" width="111" height="40" viewBox="0 0 111 40">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #eaeaea;
+        stroke: #bbb;
+      }
+
+      .cls-2 {
+        fill: #999;
+        font-size: 14px;
+        font-family: NotoSansCJKkr-Regular, Noto Sans CJK KR;
+      }
+
+      .cls-3 {
+        stroke: none;
+      }
+
+      .cls-4 {
+        fill: none;
+      }
+    </style>
+  </defs>
+  <g id="사각형_3225" data-name="사각형 3225" class="cls-1">
+    <rect class="cls-3" width="111" height="40" rx="2"/>
+    <rect class="cls-4" x="0.5" y="0.5" width="110" height="39" rx="1.5"/>
+  </g>
+  <text id="RETURN" class="cls-2" transform="translate(28 26)"><tspan x="0" y="0">RETURN</tspan></text>
+</svg>

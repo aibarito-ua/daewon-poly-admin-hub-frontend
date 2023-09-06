@@ -1,50 +1,73 @@
 import React from 'react';
-import DebouncedDropdowFilter from '../../../components/commonComponents/BasicTable/debouncedDropdown';
+import DebouncedDropdowFilter from '../../../components/commonComponents/BasicTable/stateDebouncedDropdown';
 import TableComponent from '../../../components/commonComponents/BasicTable/RolePlayTable';
 import { SvgSearchIcon } from '../../../components/commonComponents/BasicTable/svgs/SearchIcon';
 import useNavStore from '../../../store/useNavStore';
-import { 
-    ColumnDef,
-    ColumnFiltersState,
-    FilterFn,
-    GroupingState,
-    createColumnHelper,
-    getCoreRowModel,
-    getExpandedRowModel,
-    getFacetedUniqueValues,
-    getFilteredRowModel,
-    getGroupedRowModel,
-    getSortedRowModel,
-    useReactTable
-} from '@tanstack/react-table';
 import { cf } from '../../../util/common/commonFunctions';
 import useActivitySpeakHubStore from '../../../store/useActivitySpeakHubStore';
-
-declare module '@tanstack/table-core' {
-    interface FilterFns {
-        yearCustomFilter: FilterFn<unknown>,
-    }
-}
-const customFilter: FilterFn<any> = (row, columnId, value, addMeta) => cf.basicTable.customFilter(row, columnId, value, addMeta);
+import { useComponentWillMount } from '../../../hooks/useEffectOnce';
+import { getActivityManagementSpeakingDataAPI } from '../../../api/ActivityManagement/ActivityManagementSpeaking.api';
 
 const RolePlay = () => {
     // page usehook zustand
     const {
-        selectNavigationTitles, setSelectNavigationTitles
+        selectNavigationTitles,
+        setSelectNavigationTitles
     } = useNavStore();
-    const {loadData, loadDataHeadKor, sortRules} = useActivitySpeakHubStore();
-    // data sort
-    
-    const newLoadData = loadData.role_play.map((bArr)=>{ return cf.basicTable.sortByKeyBodyData(bArr, cf.basicTable.customSort, sortRules.body.role_play); })
-    const newDataHeadData = loadDataHeadKor.role_play.sort((a,b) =>cf.basicTable.sortByKeyHeadData(a,b, sortRules.head.role_play));
+    const {
+        loadData,
+        loadDataHeadKor,
+        sortRules
+    } = useActivitySpeakHubStore();
 
+    // Table Data 
+    const [data, setData] = React.useState<{body: TRolePlayBooks[], head: TLoadDataHeadTrans[]}>({ body: [], head: [] });
+    const [selectedData, setSelectedData] = React.useState<TRolePlayBooks[]>([]);
     // page states
-    const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
-    const [selectFIlterValues, setSelectFilterValues] = React.useState<string[]>(['','','','']);
-    const [globalFilter, setGlobalFilter] = React.useState('');
-    const [grouping, setGrouping] = React.useState<GroupingState>([]);
+    // searchValue
+    const [selectFIlterValues, setSelectFilterValues] = React.useState<any[]>(['','','','']);
+    // select search target value list
+    const [selectFilterYearList, setSelectFilterYearList] = React.useState<string[]>([]);
+    const [selectFilterSemesterList, setSelectFilterSemesterList] = React.useState<string[]>([]);
+    const [selectFilterGradeList, setSelectFilterGradeList] = React.useState<string[]>([]);
+    const [selectFilterLevelList, setSelectFilterLevelList] = React.useState<string[]>([]);
+    
+    // merge in table body value's keys
+    const [grouping, setGrouping] = React.useState<string[]>([]);
+    // isFilter data selected complete flag
     const [isAllSelected, setIsAllSelected] = React.useState<boolean>(false);
+    // is started search check flag
     const [isSearch, setIsSearch] = React.useState<boolean>(false);
+
+    // initialize setting before render screen
+    const beforRenderedFn = async () => {
+        const loadDataFromAPI = await getActivityManagementSpeakingDataAPI('role_play', sortRules.head.role_play);
+        // const loadDataFromAPI = loadData.role_play;
+        const yearFilterValues:string[] = cf.basicTable.setFilterProperty(loadDataFromAPI.body, 'year')
+        const semesterFilterValues:string[] = cf.basicTable.setFilterProperty(loadDataFromAPI.body, 'semester')
+        const gradeFilterValues:string[] = cf.basicTable.setFilterProperty(loadDataFromAPI.body, 'grade')
+        const levelFilterValues:string[] = cf.basicTable.setFilterProperty(loadDataFromAPI.body, 'level')
+        
+        setSelectFilterYearList(yearFilterValues)
+        setSelectFilterSemesterList(semesterFilterValues)
+        setSelectFilterGradeList(gradeFilterValues)
+        setSelectFilterLevelList(levelFilterValues)
+        console.log('role play data =',loadDataFromAPI)
+        setData({
+            body: loadDataFromAPI.body,
+            head: loadDataFromAPI.head
+        })
+    }
+    useComponentWillMount(()=>{
+        console.log('component will mount')
+        beforRenderedFn();
+    })
+    React.useEffect(()=>{
+        console.log('component did mount')
+        if (data.body.length===0) {
+            beforRenderedFn();
+        }
+    },[])
 
     React.useEffect(()=>{
         if (grouping.length === 0) {
@@ -71,43 +94,11 @@ const RolePlay = () => {
             setIsAllSelected(true);
         }
     }, [selectFIlterValues])
-
-    // Table Data 
-    const [data, setData] = React.useState([...JSON.parse(JSON.stringify(newLoadData))]);
-
-    // columns
-    const levelSort = (a:string, b:string) => cf.basicTable.levelSort(a,b);
-    const columnHelper = createColumnHelper<any>();
-    const columns:ColumnDef<any,any>[] = newDataHeadData.map((value) => {
-        const keyStr:string = value.accessor;
-        if (keyStr === 'level') {
-            return columnHelper.accessor( keyStr , { 
-                header: value.header,
-                enableColumnFilter: false,
-                filterFn: customFilter,
-                enableSorting:true,
-                enableHiding:true,
-                sortingFn:  (rowA, rowB, columnID) => {
-                    const a:string = rowA.getValue(columnID);
-                    const b:string = rowB.getValue(columnID);
-                    return levelSort(a, b);
-                },
-                enableMultiSort:true,
-                
-                
-            });
-
-        } else {
-            return columnHelper.accessor( keyStr , { 
-                header: value.header,
-                enableColumnFilter: keyStr==='year' ? true : (keyStr==='semester' ? true : false),
-                filterFn: customFilter,
-                enableSorting:true,
-                
-                enableMultiSort:true,
-            });
+    React.useEffect(()=>{
+        if (selectNavigationTitles.length === 0) {
+            setSelectNavigationTitles(['Activity 관리', 'Speaking Hub', 'Role-play'])
         }
-    })
+    }, [selectNavigationTitles])
 
     const searchEventFunction = (e:React.MouseEvent<HTMLButtonElement, MouseEvent>)=>{
         e.preventDefault();
@@ -118,16 +109,25 @@ const RolePlay = () => {
             const maxLength = selectFIlterValues.length;
             for (let selectIndex=0; selectIndex < maxLength; selectIndex++) {
                 const currentSelectValue = selectFIlterValues[selectIndex];
-                console.log('currentSelectValue =',currentSelectValue, ', idx =',selectIndex)
                 if (currentSelectValue===''||currentSelectValue===null) {
                     check = false;
                     break;
                 }
             }
             if (check) {
-                selectFIlterValues.forEach((v, i)=>{
-                    table.getHeaderGroups()[0].headers[i].column.setFilterValue(selectFIlterValues[i])
-                })
+                let selectedTableData:TRolePlayBooks[]=[];
+                for (let i =0; i < data.body.length; i++) {
+                    const item = data.body[i];
+                    const checkYear = item.year.toString() === selectFIlterValues[0];
+                    const checkSemester = item.semester.toString() === selectFIlterValues[1];
+                    const checkGrade = item.grade.toString()=== selectFIlterValues[2];
+                    const checkLevel = item.level === selectFIlterValues[3];
+                    if (checkYear&&checkSemester&&checkGrade&&checkLevel) {
+                        selectedTableData.push(item)
+                    }
+                }
+                console.log('searched data =',selectedTableData)
+                setSelectedData(selectedTableData);
                 setIsSearch(true)
             } else {
                 setIsSearch(false)
@@ -138,56 +138,6 @@ const RolePlay = () => {
         };
     }
 
-    const table = useReactTable({
-        data,
-        columns,
-        filterFns: {
-            yearCustomFilter: customFilter
-        },
-        state: {
-            grouping,
-            columnFilters,
-            globalFilter,
-        },
-        
-        onColumnFiltersChange: setColumnFilters,
-        onGlobalFilterChange: setGlobalFilter,
-        globalFilterFn: customFilter,
-        getCoreRowModel: getCoreRowModel(),
-        getFilteredRowModel: getFilteredRowModel(),
-        getSortedRowModel: getSortedRowModel(),
-        getFacetedUniqueValues: getFacetedUniqueValues(),
-        onGroupingChange: setGrouping,
-        getGroupedRowModel: getGroupedRowModel(),
-        getExpandedRowModel: getExpandedRowModel(),
-        getIsRowExpanded: (row) => {return true},
-        autoResetExpanded: false,
-        
-    })
-
-    React.useEffect(()=>{
-        table.getHeaderGroups()[0].headers[3].column.toggleSorting();
-        table.toggleAllRowsExpanded(true)
-    },[data])
-    React.useEffect(()=>{
-        if (selectNavigationTitles.length === 0) {
-            setSelectNavigationTitles(['Activity 관리', 'Speaking Hub', 'Role-play'])
-        }
-    }, [selectNavigationTitles])
-
-    // table effects
-    React.useEffect(()=>{
-        // if (table.getState().columnFilters[0]?.id === 'year') {
-        //     if (table.getState().sorting[0]?.id !== 'year') {
-        //         table.setSorting([
-        //             { id: 'year', desc: false},
-        //             {id:'semester', desc:false},
-        //             { id: 'level', desc: false}
-        //         ])
-        //     }
-        // }
-    }, [table.getState().columnFilters[0]?.id])
-
     return (
         
         <div className='section-common-canvas'>
@@ -197,21 +147,20 @@ const RolePlay = () => {
                                 {/* filter 1 : Year */}
                                 <DebouncedDropdowFilter 
                                     filterTitleLabel='년도'
-                                    column={table.getHeaderGroups()[0].headers[0].column}
+                                    column={selectFilterYearList}
                                     onChange={value=>{
                                         let dumySelectFilterValues = JSON.parse(JSON.stringify(selectFIlterValues));
                                         dumySelectFilterValues[0] = value
                                         setSelectFilterValues(dumySelectFilterValues)
-                                        table.toggleAllRowsExpanded(true)
                                     }}
                                     value={selectFIlterValues[0]}
-                                    originData={newLoadData}
-                                    table={table}
+                                    originData={data}
+                                    table={data}
                                 />
                                 {/* filter 2 : Semester */}
                                 <DebouncedDropdowFilter 
                                     filterTitleLabel='학기'
-                                    column={table.getHeaderGroups()[0].headers[1].column}
+                                    column={selectFilterSemesterList}
                                     onChange={value=>{
                                         let dumySelectFilterValues = JSON.parse(JSON.stringify(selectFIlterValues));
                                         dumySelectFilterValues[1] = value
@@ -219,13 +168,13 @@ const RolePlay = () => {
                                         
                                     }}
                                     value={selectFIlterValues[1]}
-                                    originData={newLoadData}
-                                    table={table}
+                                    originData={data}
+                                    table={data}
                                 />
                                 {/* filter 3 : Grade */}
                                 <DebouncedDropdowFilter 
                                     filterTitleLabel='Grade'
-                                    column={table.getHeaderGroups()[0].headers[2].column}
+                                    column={selectFilterGradeList}
                                     onChange={value=>{
                                         let dumySelectFilterValues = JSON.parse(JSON.stringify(selectFIlterValues));
                                         dumySelectFilterValues[2] = value
@@ -233,13 +182,13 @@ const RolePlay = () => {
                                         
                                     }}
                                     value={selectFIlterValues[2]}
-                                    originData={newLoadData}
-                                    table={table}
+                                    originData={data}
+                                    table={data}
                                 />
                                 {/* filter 4 : Level */}
                                 <DebouncedDropdowFilter 
                                     filterTitleLabel='Level'
-                                    column={table.getHeaderGroups()[0].headers[3].column}
+                                    column={selectFilterLevelList}
                                     onChange={value=>{
                                         let dumySelectFilterValues = JSON.parse(JSON.stringify(selectFIlterValues));
                                         dumySelectFilterValues[3] = value
@@ -247,8 +196,8 @@ const RolePlay = () => {
                                         
                                     }}
                                     value={selectFIlterValues[3]}
-                                    originData={newLoadData}
-                                    table={table}
+                                    originData={data}
+                                    table={data}
                                 />
                             
                         </div>
@@ -264,7 +213,10 @@ const RolePlay = () => {
                     {/* table */}
                         {isSearch ? (
                             <TableComponent 
-                                table={table}
+                                table={{
+                                    body: selectedData,
+                                    head: data.head
+                                }}
                                 options={{
                                     mergeRowSpanKeys: grouping
                                 }}

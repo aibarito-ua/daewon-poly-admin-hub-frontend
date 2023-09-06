@@ -1,15 +1,15 @@
-import { Table } from "@tanstack/react-table"
+import React from "react";
+import { cf } from "../../../util/common/commonFunctions";
 
-const TableHeader = (props: {table:Table<any>, sortEventTargetHeaderKeys?: string[] }) => {
-    let tableHeadDatas = props.table.getHeaderGroups()[0].headers;
+const TableHeader = (props: {table:TLoadDataHeadTrans[], sortEventTargetHeaderKeys?: string[] }) => {
     return (
         <thead className='table-thead-basic'>
             <tr className='table-thead-tr-basic'>
-                {tableHeadDatas.map((header, hIndex)=>{
-                    const headerText = header.column.columnDef.header?.toString();
+                {props.table.map((header, hIndex)=>{
+                    const headerText = header.header;
                         return (
                             <th
-                                key={header.id}
+                                key={header.accessor+hIndex}
                                 className={`table-thead-tr-th-basic`}
                             >{headerText}</th>
                         )
@@ -23,7 +23,6 @@ const TableBody = (props:{dataModel:{key:string, value:any, rowspan:number, prin
     const originModel = props.dataModel;
     let gradeHaveCell:any = {};
     let gradesKey:number[] = [];
-
     let pIdx = 0;
     for (let rowIdx = 0; rowIdx < originModel.length; rowIdx ++) {
         const currentRow = originModel[rowIdx];
@@ -55,8 +54,6 @@ const TableBody = (props:{dataModel:{key:string, value:any, rowspan:number, prin
             }
         }
     }
-    // console.log('gradeHaveCell =',gradeHaveCell)
-    // console.log('gradesKey =',gradesKey)
     
     return (
         <tbody className="table-tbody-basic">
@@ -102,27 +99,26 @@ const TableBody = (props:{dataModel:{key:string, value:any, rowspan:number, prin
         </tbody>
     )
 }
-export default function LevelAndTextbookSpeakingTableComponent (props:{table:Table<any>, options?:{sortEventTargetHeaderKeys?: string[],mergeRowSpanKeys?: string[]}}) {
+export default function LevelAndTextbookSpeakingTableComponent (props:{table:{body: TLoadDataItem[], head: TLoadDataHeadTrans[]}, options?:{sortEventTargetHeaderKeys?: string[],mergeRowSpanKeys?: string[]}}) {
     // table row datas
-    let tableDatas = props.table.getRowModel().rows;
+    let tableDatas = props.table.body.sort((a,b) => b.year-a.year || b.semester - a.semester || a.grade - b.grade || cf.basicTable.levelSort(a.level, b.level))
     const rowMergeKey = props.options ? (props.options.mergeRowSpanKeys ? props.options.mergeRowSpanKeys: []) : [];
-    // console.log('merge keys =',rowMergeKey)
 
     let dataModel:{key:string, value:unknown, rowspan:number, print:boolean}[][] = [];
     for (let dataIndex = 0; dataIndex < tableDatas.length; dataIndex++) {
-        const rowD = tableDatas[dataIndex].getAllCells();
+        const rowData = tableDatas[dataIndex];
         let pushRowData:{key:string, value:unknown, rowspan:number, print:boolean}[] = [];
-        for (let rowDIndex = 0; rowDIndex < rowD.length; rowDIndex++) {
-            const check = rowD[rowDIndex].id.match(/^[0-9]/gm);
-            if (check) {
-                const pushCellData = {
-                    key: rowD[rowDIndex].column.id,
-                    value:rowD[rowDIndex].getValue(),
-                    rowspan:1,
-                    print:true
-                }
-                pushRowData.push(pushCellData)
+        const headerData = props.table.head;
+        for (let rowDIndex = 0; rowDIndex < headerData.length; rowDIndex++) {
+            const targetValue = rowData[headerData[rowDIndex].accessor];
+            const currentValue = targetValue!==null ? rowData[headerData[rowDIndex].accessor].toString():null;
+            const pushCellData = {
+                key: headerData[rowDIndex].accessor,
+                value:currentValue,
+                rowspan:1,
+                print:true
             }
+            pushRowData.push(pushCellData)
         }
         dataModel.push(pushRowData);
     }
@@ -143,30 +139,25 @@ export default function LevelAndTextbookSpeakingTableComponent (props:{table:Tab
                 if (j>0) {
                     // row cell merge (row span) 
                     for (let k = i-1; k >= 0&&dataModel[i][j].value===dataModel[k][j].value&&dataModel[k+1][j-1].print===false; k--) {
-                        // console.log(`k test == k: [ ${k} ], i: [ ${i} ], j: [ ${j} ]`)
                         dataModel[k][j].rowspan = dataModel[k][j].rowspan+1;
                         dataModel[k+1][j].print = false;
-                        
                     } // turn print
                 } else {
                     // row cell merge (row span)
                     for (let k = i-1; k >= 0&&dataModel[i][j].value===dataModel[k][j].value; k--) {
                         dataModel[k][j].rowspan = dataModel[k][j].rowspan+1;
                         dataModel[k+1][j].print = false;
-                        
                     } // turn print
                 }
             }
         }// for cell
     } // for row
 
-    console.log('test =',dataModel)
-
     if (dataModel.length > 0) {
         return (
             <div className='table-wrap-div'>
                 <table className='table-basic'>
-                    <TableHeader table={props.table} sortEventTargetHeaderKeys={props.options?props.options.sortEventTargetHeaderKeys:[]}/>
+                    <TableHeader table={props.table.head} sortEventTargetHeaderKeys={props.options?props.options.sortEventTargetHeaderKeys:[]}/>
                     <TableBody dataModel={dataModel} rowMergeKey={rowMergeKey}/>
                 </table>
             </div>
