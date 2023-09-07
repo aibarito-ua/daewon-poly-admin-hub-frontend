@@ -39,6 +39,7 @@ export const BootstrapInput = styled(InputBase)(({ theme }) => ({
     borderColor: theme.palette.mode === 'light' ? '#E0E3E7' : '#2D3843',
     fontSize: 14,
     width: '100%',
+    minWidth: '542px',
     padding: '0.5rem 0.5rem',
     transition: theme.transitions.create([
       'border-color',

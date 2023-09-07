@@ -5,8 +5,6 @@ import { SvgSearchIcon } from '../../../components/commonComponents/BasicTable/s
 import useNavStore from '../../../store/useNavStore';
 import { cf } from '../../../util/common/commonFunctions';
 import useActivityWritingHubStore from '../../../store/useActivityWritingHubStore';
-// import { PopupModalComponent } from '../../../components/toggleModalComponents/popupModalComponent';
-// import PopupCustomModalComponent from '../../../components/toggleModalComponents/PopupCustomModalComponent';
 import {createBrowserHistory} from 'history'
 import { useCallbackPrompt } from '../../../hooks/useCallbackPrompt';
 import PromptBlockComponent from '../../../components/toggleModalComponents/PromptBlockComponent';
@@ -89,6 +87,7 @@ const SparkWriting = () => {
         const yearFilterValues:string[] = cf.basicTable.setFilterProperty(loadDataFromAPI.body, 'year')
         const semesterFilterValues:string[] = cf.basicTable.setFilterProperty(loadDataFromAPI.body, 'semester')
         const levelFilterValues:string[] = cf.basicTable.setFilterProperty(loadDataFromAPI.body, 'level')
+        
         setSelectFilterYearList(yearFilterValues)
         setSelectFilterSemesterList(semesterFilterValues)
         setSelectFilterLevelList(levelFilterValues)
@@ -234,12 +233,24 @@ const SparkWriting = () => {
         let dataModel:TTableDataModel = [];
         
         const headers = loadDataHeadKor.spark_writing;
+        let checkFirstData = 0;
+        // selectFIlterValues
+        for (let i = 0; i < tableDatas.length; i++) {
+            const target = tableDatas[i];
+            const yearTarget = target.year.toString() === selectFIlterValues[0];
+            const semesterTarget = target.semester.toString() === selectFIlterValues[1]
+            const levelTarget = target.level.toString() === selectFIlterValues[2];
+            if (yearTarget && semesterTarget && levelTarget) {
+                checkFirstData = i;
+                break;
+            }
+        }
         const initRowData = headers.map((headItem)=>{
             const keyC = headItem.accessor
             if (headItem.accessor === 'year'|| headItem.accessor==='semester'||headItem.accessor==='level'||headItem.accessor==='book') {
                 return {
                     key:keyC,
-                    value: tableDatas[0][headItem.accessor],
+                    value: tableDatas[checkFirstData][headItem.accessor],
                     rowspan:1,
                     print:true,
                     originIndex: 0
@@ -253,9 +264,9 @@ const SparkWriting = () => {
                     originIndex: 0
                 }
             }
-            
         })
         dataModel.push(initRowData)
+        
         // unit row
         for (let dataIndex = 0; dataIndex < tableDatas.length; dataIndex++) {
             // unit data
@@ -322,11 +333,14 @@ const SparkWriting = () => {
             }
         }
         dataModel = dataModel.filter((v,i) => {
-            if (v.length!==0) return v;
+            if (i!==0) {
+                if (v.length!==0) {
+                    return v;
+                }
+            } else {return v;}
         });
         
-        
-        console.log('filter =',selectFIlterValues)
+        // console.log('filter =',selectFIlterValues)
         // search filter
         dataModel = dataModel.filter((item, idx) => {
             const search1 = item[0].value.toString() === selectFIlterValues[0];
@@ -336,7 +350,7 @@ const SparkWriting = () => {
                 return item;
             }
         })
-
+        
         const rowMergeKey = ['year','semester','level','book','unit']
         for (let i = 1; i< dataModel.length; i++) {
             for (let j = 0; j < dataModel[i].length; j++) {
@@ -364,7 +378,7 @@ const SparkWriting = () => {
                 }
             }// for cell
         } // for row
-        console.log('dataModal: ',dataModel)
+        
         return dataModel;
     }
 
@@ -385,9 +399,10 @@ const SparkWriting = () => {
             }
             if (check) {
                 const makeTableDataModel = makeTableData();
-                console.log('modal =',makeTableDataModel)
                 if (makeTableDataModel.length > 0) {
                     setStartUpdateInputsFlag(true)
+                    
+                    console.log('modal =',makeTableDataModel)
                     setTableDataModel(JSON.parse(JSON.stringify(makeTableDataModel)))
                 } else {
                     setStartUpdateInputsFlag(false)

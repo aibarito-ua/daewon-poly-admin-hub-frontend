@@ -216,13 +216,14 @@ const TableBody = (props:{
                 } else {
                     // book first row
                     // book 까지, 이후 병합
+                    console.log('row data first row =',row)
                     return (
                         <tr key={rowKey} className='table-tbody-tr-basic'>
                             {row.map((cell, cellIdx) => {
                                 if (cellIdx < 3) {
                                     if (cell.print) {
-                                        const cellValue = typeof(cell.value)==='string' && cell.key!=='semester' ? (
-                                            cell.value
+                                        const cellValue = cell.key!=='semester' ? (
+                                            cell.key==='year'? cell.value+'년도':cell.value
                                         ) : cell.value+'학기'
                                         return (
                                             <td key={cell.key}
@@ -260,6 +261,7 @@ export default function SparkWritingTableComponent (props:{
 
 
     if (props.dataModel.length > 0) {
+
         return (
             <div className='table-wrap-div'>
                 <table className='table-aside'>
