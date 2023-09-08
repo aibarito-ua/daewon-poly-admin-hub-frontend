@@ -924,10 +924,19 @@ body {
   hover:cursor-pointer
   hover:bg-svg-bt-return-over
 }
+.learning-management-feedback-return-button-disabled {
+  @apply
+  absolute
+  right-[20px]
+  bottom-[20px]
+  w-[111px]
+  h-[40px]
+  bg-svg-bt-return-disable
+  bg-no-repeat
+}
 .learning-management-advisor-open-button {
   @apply
   block
-  
   w-[54px]
   h-[187px]
   bg-svg-bt-advisor
@@ -1136,4 +1145,19 @@ body {
 .comment-review-contents {
   @apply
   flex flex-row h-[calc(100vh-320px)] w-full min-w-[1200px]
+}
+.return-feedback-modal-buttons {
+  @apply
+  flex
+  w-[80px]
+  h-[36px]
+  rounded-[2px]
+  justify-center
+  hover:cursor-pointer
+  items-center
+  font-notoSansCJKKR
+  font-[400]
+  text-[14px]
+  leading-normal
+  text-center
 }

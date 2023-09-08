@@ -7,6 +7,7 @@ import draftViewBox from '../../components/commonComponents/customComponents/Dra
 import useControlAlertStore from '../../store/useControlAlertStore';
 import { commonSvgIcons } from '../../util/svgs/commonSvgIcons';
 import { draftFeedbackSend, draftFeedbackTemporarySave, getSparkWritingAdvisor } from '../../api/LearningManagement/LearningManagementSparkWriting.api';
+import ReturnFeedbackModalComponent from '../../components/toggleModalComponents/ReturnFeedbackModalComponent';
 
 type TDivsControlConfig = {
     advisor: {
@@ -107,12 +108,14 @@ const LearningManagementSparkWritingFeedbackPage = () => {
         draft_outline:[]
     });
 
-    // make data form for temporary save
+    // flag === undefined --> make data form for temporary save
+    // flag === "send" ---> make data form for submit save
     const makeData = async (flag?:string) => {
         const draft_id = parseInt(draftId);
         const overall_comment = overallComment;
         const feedback_return = returnFeedback;
         const comment:TCommentDataList = allBodySelectedText.map((commentItem) => {
+            // console.log('all text =',document.getElementById(commentItem.paraghragh_name)?.textContent?.length)
             return {
                 comment: commentItem.comment,
                 comment_className: commentItem.comment_className,
@@ -123,168 +126,153 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                 target_text: commentItem.target_text
             }
         });
-        // screen data update
         const outlines = feedbackDataInStudent.draft_data.draft_outline;
-        console.log('outline =',feedbackDataInStudent)
         
-        // all screen datas
-        let allCharScreenData:TParagraphScreenData[][] = [];
         // paragraph name for mapping
         let paragraphNames:string[] = []
-
         // screen data all full text
-        let fullTextByScreenData:any[] = [];
-        const remakeScreenData = outlines.map((outline, outlineIndex) => {
-            paragraphNames.push(outline.name);
-            let currentFullTextInScreenData = ''
-            let returnScreenDataByCharSplit:TParagraphScreenData[] = [];
-            const currentScreenData = outline.screen_data.map((screenData,screenDataIndex) => {
-                let originalText = '';
-                if (screenDataIndex > 0) {
-                    const bf_data = outline.screen_data[screenDataIndex-1];
-                    if (!bf_data.text.match(/(^\s)|(\s$)/gmi) && !screenData.text.match(/(^\s)|(\s$)/gmi)) {
-                        // replace text기능에 띄어쓰기 없을때
-                        if (bf_data.type===-1 && screenData.type===1) {
-                            currentFullTextInScreenData += ' ';
-                            const emptyScreenDataChar = {
-                                text: ' ',
-                                comment_index: -1,
-                                type: 1
-                            }
-                            returnScreenDataByCharSplit.push(emptyScreenDataChar)
-                        }
-                    }
-                }
-                currentFullTextInScreenData += screenData.text;
-                
-                const spliteCharByText:TParagraphScreenData[] = screenData.text.split('').map((charData) => {
-                    return {
-                        text:charData,
-                        comment_index:-1,
-                        type: screenData.type
-                    }
-                })
-                returnScreenDataByCharSplit.push(...spliteCharByText)
-                return screenData;
-            });
-            if (currentScreenData) {
-                fullTextByScreenData.push(currentFullTextInScreenData);
-            }
-            allCharScreenData.push(returnScreenDataByCharSplit);
-        });
-        // screen data split char replace comment index
-        allCharScreenData=allCharScreenData.map((paragraphCharItem,paragraphCharIndex) => {
-            // console.log('paragraph_index =',paragraphCharIndex)
-            return paragraphCharItem.map((charItem,charIndex) => {
-                // 모든 char를 순회하면서 comment start,end index와 맞는 데이터는 comment_index변경
-                for (let i = 0; i < comment.length; i++) {
-                    const currentName = comment[i].paragraph_name;
-                    let findNameIndex = -1;
-                    paragraphNames.map((v,i) => {
-                        if (v===currentName) {findNameIndex=i};
-                    });
-                    if (findNameIndex === paragraphCharIndex) {
-                        const st_index = comment[i].start_index;
-                        const ed_index = comment[i].end_index;
-                        if (charIndex >= st_index && charIndex <= ed_index) {
-                            console.log('title =',findNameIndex)
-                            console.log('st =',st_index,' , ed =',ed_index)
-                            charItem.comment_index=comment[i].comment_index;
-                        } else {
-                            charItem.comment_index=-1;
-                        }
-                    }
-                }
-                return charItem;
-            })
-        })
-
-        // 정리된 데이터를 전체 순회하면서 재정렬
-        let replceAllScreenDataChartoString:TParagraphScreenData[][] = [];
+        let fullTextByScreenData:string[] = [];
         
-        for (let pIdx = 0; pIdx < allCharScreenData.length; pIdx++) {
-            // paragraph arr
-            const pItem = allCharScreenData[pIdx];
-            let currentParagraphScreenData:TParagraphScreenData[] = [];
+        // all screen datas
+        let allCharScreenDataFirstStep:TParagraphScreenData[][] = outlines.map((outline) => {
+            // for mapping
+            paragraphNames.push(outline.name);
 
+            let currentFullTextInScreenData = '';
+            let returnScreenDataByCharSplit:TParagraphScreenData[]=[];
+            for (let screen_data_index =0; screen_data_index < outline.screen_data.length; screen_data_index++) {
+                const screenData = outline.screen_data[screen_data_index];
+                if (screen_data_index > 0) {
+                    // type -1 + 1인 경우 사이에 빈값 추가
+                    const before_screenData = outline.screen_data[screen_data_index-1];
+                    if (screenData.type === 1 && before_screenData.type === -1) {
+                        const textMatchStartEmptySpaceBeforeData = before_screenData.text.match(/^\s/gmi);
+                        const textMatchEndEmptySpaceBeforeData = before_screenData.text.match(/\s$/gmi);
+                        const textMatchStartEmptySpaceCurrentData = screenData.text.match(/^\s/gmi);
+                        const textMatchEndEmptySpaceCurrentData = screenData.text.match(/\s$/gmi);
+                        if ( !textMatchStartEmptySpaceBeforeData && !textMatchEndEmptySpaceBeforeData 
+                            && !textMatchStartEmptySpaceCurrentData && !textMatchEndEmptySpaceCurrentData
+                        ) {
+                            currentFullTextInScreenData+=' ';
+                            const emptyScreenDataChar = { text: ' ', comment_index: -1, type: 1}
+                            returnScreenDataByCharSplit.push(emptyScreenDataChar);
+                        }
+                    };    
+                };
+                // text 추가
+                currentFullTextInScreenData+= screenData.text;
+                // text data split to char
+                const splitText = screenData.text.split('');
+                const splitCharByText: TParagraphScreenData[] = splitText.map((charText) => {
+                    return { text: charText, comment_index: -1, type: screenData.type }
+                });
+                returnScreenDataByCharSplit.push(...splitCharByText);
+            }; // for loop end
+            fullTextByScreenData.push(currentFullTextInScreenData);
+            return returnScreenDataByCharSplit;
+        });
+
+        console.log('all char =',allCharScreenDataFirstStep,fullTextByScreenData);
+        // console.log('fullTextByScreenData =\n1 > ',fullTextByScreenData[0].length,
+        //     '2 >',fullTextByScreenData[1].length, '3 >', fullTextByScreenData[2].length, '4 >',fullTextByScreenData[3].length,'5 >',fullTextByScreenData[4].length)
+
+        let allCharScreenData:TParagraphScreenData[][] = []
+        // screen char data replace comment index
+        // outline index for loop
+        for (let outline_index = 0; outline_index < outlines.length; outline_index++) {
+            const allCharDataInOutline = allCharScreenDataFirstStep[outline_index];
+            const currentOutlineName = outlines[outline_index].name;
+            const currentParentText = fullTextByScreenData[outline_index];
+            allCharScreenData.push([]);
+
+            // char data for loop start
+            for (let char_index = 0; char_index < allCharDataInOutline.length; char_index ++) {
+                let charItem = allCharDataInOutline[char_index];
+
+                // comment for loop start
+                for (let comment_idx = 0; comment_idx < comment.length; comment_idx++) {
+                    const currentCommentOutlineName = comment[comment_idx].paragraph_name;
+                    // is there comment check
+                    if (currentOutlineName === currentCommentOutlineName) {
+                        const currentCommentData = comment[comment_idx];
+                        const currentCommentStartIndex = currentCommentData.start_index;
+                        const currentCommentEndIndex = currentCommentData.end_index;
+                        const findTargetText = currentParentText.substring(currentCommentStartIndex, currentCommentEndIndex);
+                        // console.log('')
+                        // console.log('findTargetText =',findTargetText)
+                        if (char_index >= currentCommentStartIndex && char_index < currentCommentEndIndex+2) {
+                            charItem.comment_index = currentCommentData.comment_index;
+                            break;
+                        }
+                    }
+                };
+                allCharScreenData[outline_index].push(charItem);
+            };
+        };
+        console.log('allCharScreenData==',allCharScreenData);
+        // 정리된 char 데이터를 전체 순회하면서 merge하기
+        let replaceAllScreenDataChartoString:TCommentAllParagraphData=[];
+        for (let pIdx = 0; pIdx < allCharScreenData.length; pIdx++) {
+            const pItem = allCharScreenData[pIdx];
+            let currentOutlineScreenData:TParagraphScreenData[] = [];
+            // init values
             let text = '';
             let commentIdx:number=-1;
             let type:number=2;
-            
             for (let cIdx = 0; cIdx < pItem.length; cIdx++) {
                 const pItemText = pItem[cIdx].text;
                 const pItemCommentIndex = pItem[cIdx].comment_index;
                 const pItemType = pItem[cIdx].type;
-                // char arr
-                if (cIdx===0) {
+                if (cIdx === 0) {
+                    // start char
                     text+=pItemText;
                     commentIdx = pItemCommentIndex;
                     type=pItemType;
                 } else if (cIdx === pItem.length-1) {
-                    // 이전 누적 데이터 푸쉬
-                    text+=pItemText;
-                    const pushData:TParagraphScreenData = {
+                    // end char
+                    text+= pItemText;
+                    const pushData: TParagraphScreenData = {
                         text,
                         comment_index:commentIdx,
                         type
-                    }
-                    currentParagraphScreenData.push(pushData)
+                    };
+                    currentOutlineScreenData.push(pushData)
                 } else {
-                    if (type === pItemType) {
-                        if (commentIdx === pItemCommentIndex) {
-                            text += pItemText;
-                        } else {
-                            // 이전 누적 데이터 푸쉬
-                            const pushData:TParagraphScreenData = {
-                                text,
-                                comment_index:commentIdx,
-                                type
-                            }
-                            currentParagraphScreenData.push(pushData)
+                    // type check
+                    const typeCheck = type === pItemType;
+                    // comment index check
+                    const commentIndexCheck = commentIdx === pItemCommentIndex;
 
-                            // push 후 누적값 초기화
-                            // 새로운 데이터 누적 시작
-                            text = pItemText;
-                            commentIdx=pItemCommentIndex;
-                            type=pItemType;
-                        }
+                    if (typeCheck && commentIndexCheck) {
+                        text+=pItemText;
                     } else {
-                        // 이전 누적 데이터 푸쉬
+                        // 누적된 데이터 우선 푸쉬
                         const pushData:TParagraphScreenData = {
-                            text,
-                            comment_index:commentIdx,
-                            type
-                        }
-                        currentParagraphScreenData.push(pushData)
+                            text, comment_index:commentIdx, type
+                        };
+                        currentOutlineScreenData.push(pushData);
 
-                        // push 후 누적값 초기화
-                        // 새로운 데이터 누적 시작
+                        // 누적 데이터 초기화
                         text = pItemText;
-                        commentIdx=pItemCommentIndex;
+                        commentIdx = pItemCommentIndex;
                         type=pItemType;
                     };
                 };
-            }; // for loop ended..
-            replceAllScreenDataChartoString.push(currentParagraphScreenData);
-        }
-        // complete all data
-        // console.log('replceAllScreenDataChartoString = ',replceAllScreenDataChartoString)
-        // console.log('paragraphNames =',paragraphNames )
-        const data:TCommentAllParagraphData = paragraphNames.map((paragraph, paragraphIdx) => {
-            return {
-                name: paragraph,
-                screen_data: replceAllScreenDataChartoString[paragraphIdx]
+            };// for loop ended
+            const replaceOLData = {
+                name: outlines[pIdx].name,
+                screen_data: currentOutlineScreenData
             }
-        });
-        
+            replaceAllScreenDataChartoString.push(replaceOLData);
+        }//for loop ended
+        console.log('ended===',replaceAllScreenDataChartoString)
         const responseData:TAdminDraft1stCommentData = {
             comment,
-            data,
+            data:replaceAllScreenDataChartoString,
             draft_id,
-            feedback_return,
-            overall_comment
+            overall_comment,
+            feedback_return
         };
-        console.log('data ==',responseData)
         if (flag==='send') {
             console.log('send!')
             return await draftFeedbackSend(responseData);
@@ -292,8 +280,30 @@ const LearningManagementSparkWritingFeedbackPage = () => {
             // temporary save data 
             return await draftFeedbackTemporarySave(responseData);
         }
-        // return false;
     };
+
+    // return
+    const returnFeed = async (feedback_return:TReturnFeedback) => {
+        const comment:TCommentDataList=[];
+        const data:TCommentAllParagraphData=[];
+        const overall_comment = '';
+        const draft_id = parseInt(draftId);
+        // const feedback_return:TReturnFeedback = {
+        //     reason: returnFeedback.reason,
+        //     teacher_comment: returnFeedback.teacher_comment,
+        //     is_return: true,
+        // }
+        const responseData:TAdminDraft1stCommentData = {
+            comment,
+            data,
+            draft_id,
+            overall_comment,
+            feedback_return
+        };
+        console.log('return =',responseData)
+        const rsp = await draftFeedbackSend(responseData);
+        return rsp;
+    }
     
     // title select text
     const titleDragHandlerSelection = (e:React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -710,7 +720,52 @@ const LearningManagementSparkWritingFeedbackPage = () => {
             setBodySelectedText('')
         }
     }
-    
+    // send button event
+    const sendButtonEvent = ()=>{
+        commonAlertOpen({
+            head: 'Review 1st Draft',
+            messages: [
+                'Do you want to send your feedback to the student?'
+            ],
+            yesButtonLabel: 'Yes',
+            noButtonLabel: 'No',
+            alertType: 'continue',
+            yesEvent: async ()=>{
+                const save = await makeData('send');
+                if (save) {
+                    commonAlertOpen({
+                        head: 'Review 1st Draft',
+                        messages: ['Sent.','Return to the main menu.'],
+                        useOneButton: true,
+                        yesButtonLabel: 'OK',
+                        yesEvent: async () => {
+                            navigate(`/LearningManagement/WritingHub/SparkWriting`);
+                            window.location.reload();
+                            commonAlertClose();
+                        }
+                    })
+                }
+            }
+        })
+    }
+    // save button event
+    const saveButtonEvent = ()=>{
+        commonAlertOpen({
+            head: 'Review 1st Draft',
+            messages: [
+                'Do you want to save your current progress and return to the main menu?'
+            ],
+            yesButtonLabel: 'Yes',
+            noButtonLabel: 'No',
+            yesEvent: async ()=>{
+                const save = await makeData();
+                if (save) {
+                    navigate(`/LearningManagement/WritingHub/SparkWriting`);
+                    window.location.reload();
+                }
+            }
+        })
+    }
     const [advisorOpen, setAdvisorOpen] = React.useState<boolean>(false);
     // div width
     // divide state
@@ -848,6 +903,7 @@ const LearningManagementSparkWritingFeedbackPage = () => {
             window.removeEventListener('click', handleTitleCommentClick)
         }
     },[])
+
     const divideH10 = <div className='w-[1px] h-[10px] bg-[#aaa]'/>
     const divideH29 = <div className='w-[1px] h-[29px] bg-[#ccc]'/>
     const TopInfomationBar = () => {
@@ -922,13 +978,21 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                     <span>{`Highlight the selected parts you want to correct, then right-click to leave a correction comment.`}</span>
                     <span>{`Writing Advisor will also provide correction advice for you to refer to when writing correction comments.`}</span>
                 </div>
-                <div className='learning-management-feedback-return-button' />
+                {/* returns */}
+                {draftStatus>3 && <div className='learning-management-feedback-return-button-disabled'/>}
+                {draftStatus < 4 && 
+                    <ReturnFeedbackModalComponent 
+                        returnFeedbackValue={returnFeedback}
+                        setReturnFeedbackValue={setReturnFeedback}
+                        returnFeedFunction={returnFeed}
+                    />
+                }
             </div>
 
             <div className='comment-review-contents'
                 ref={boundaryRef}
                 >
-                {!advisorOpen && (
+                {!advisorOpen && draftStatus!==5 && (
                     <div className='absolute left-[14px] top-[60%]'>
                         <div className='learning-management-advisor-open-button'
                             onClick={async () => {
@@ -952,7 +1016,6 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                                         setAdvisorOpen(true)
                                     }
                                 }
-
                             }}
                         />
                     </div>
@@ -1115,10 +1178,10 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                             <div className='flex'>Title: </div>
                             <div className='draft-viewer-container-title'
                                 ref={containerTitleRef}
-                                onContextMenu={(e)=>titleDragHandlerSelection(e)}
+                                onContextMenu={(e)=>draftStatus>3 ? ()=>{}:titleDragHandlerSelection(e)}
                             >
-                                { feedbackDataInStudent && draftStatus===2 && draftViewBox.draftTitle({feedbackDataInStudent})}
-                                { feedbackDataInStudent && draftStatus>2 && draftViewBox.loadTemporaryDraftTitle({feedbackDataInStudent, setCommentFocusId})}
+                                {feedbackDataInStudent && (draftStatus===2||draftStatus===5) && draftViewBox.draftTitle({feedbackDataInStudent})}
+                                { feedbackDataInStudent && (draftStatus>2&&draftStatus!==5) && draftViewBox.loadTemporaryDraftTitle({feedbackDataInStudent, setCommentFocusId})}
 
                                 {titleCommentBoxVisible && (
                                     <div style={commentBoxStyle}
@@ -1138,12 +1201,12 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                             <div className='flex flex-col gap-[13px] mt-[10px] p-[35px] w-full h-full bg-[#f9f9f9] justify-start'
                             // flex flex-col justify-start
                                 ref={containerBodyRef}
-                                onContextMenu={(e) => bodyDragHandlerSelection(e)}
+                                onContextMenu={(e)=>draftStatus>3 ? ()=>{}: bodyDragHandlerSelection(e)}
                             >
                                 {/* 화면 처음 초기화면 사용 */}
-                                {feedbackDataInStudent && draftStatus===2 && draftViewBox.draftBody({feedbackDataInStudent})}
+                                {feedbackDataInStudent && (draftStatus===2||draftStatus===5) && draftViewBox.draftBody({feedbackDataInStudent})}
                                 {/* 임시 저장 후 사용 */}
-                                {feedbackDataInStudent && draftStatus>2 && draftViewBox.loadTemporaryDraftBody({feedbackDataInStudent,setCommentFocusId})}
+                                { feedbackDataInStudent && (draftStatus>2&&draftStatus!==5) && draftViewBox.loadTemporaryDraftBody({feedbackDataInStudent,setCommentFocusId})}
                                 {/* feedback 완료 후 사용 */}
 
                                 {bodyCommentBoxVisible && (
@@ -1225,7 +1288,8 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                                         )
                                         setCommentFocusId('');
                                     }}>
-                                        <input className='comment-input'
+                                        <input className='comment-input disabled:bg-white'
+                                            disabled={draftStatus < 4 ? false:true}
                                             onChange={(e)=>{
                                                 const value = e.currentTarget.value;
                                                 let dumyAllValues:TComment[] = JSON.parse(JSON.stringify(allBodySelectedText));
@@ -1239,6 +1303,8 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                                             }}
                                             value={commentItem.comment}
                                         />
+                                        
+                                        {draftStatus<4 && 
                                         <commonSvgIcons.CloseImageSVGIcon className='comment-close' onClick={(e)=>{
                                             // comment 삭제
                                             // background color redo before
@@ -1301,6 +1367,7 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                                                 console.log('parent is not.')
                                             }
                                         }}/>
+                                        }
                                     </div>
                                 )
                             })}
@@ -1310,7 +1377,8 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                     {/* overall comments */}
                     <div className='comment-overall-wrap-div'>
                         <div className='comment-overall-label'>{'overall comments'}</div>
-                        <textarea className='comment-overall-textarea'
+                        <textarea className='comment-overall-textarea resize-none disabled:bg-white'
+                            disabled={(draftStatus===2||draftStatus===3) ? false:true}
                             onChange={(e)=>setOverallComment(e.currentTarget.value)}
                             value={overallComment}
                         ></textarea>
@@ -1333,58 +1401,24 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                                 })
                             }}
                         />
-                        <div className={(allBodySelectedText.length > 0 || overallComment.length > 0) ? 'comment-button-save':'comment-button-save-disabled'} 
-                            onClick={(allBodySelectedText.length > 0 || overallComment.length > 0) ? ()=>{
-                                commonAlertOpen({
-                                    head: 'Review 1st Draft',
-                                    messages: [
-                                        'Do you want to save your current progress and return to the main menu?'
-                                    ],
-                                    yesButtonLabel: 'Yes',
-                                    noButtonLabel: 'No',
-                                    yesEvent: async ()=>{
-                                        const save = await makeData();
-                                        if (save) {
-                                            navigate(`/LearningManagement/WritingHub/SparkWriting`);
-                                            window.location.reload();
-                                        }
-                                    }
-                                })
-                            }:()=>{}}
+                        <div className={(allBodySelectedText.length > 0 || overallComment.length > 0) ? (
+                            draftStatus < 4 ? 'comment-button-save': 'comment-button-save-disabled'
+                        ):'comment-button-save-disabled'} 
+                            onClick={(allBodySelectedText.length > 0 || overallComment.length > 0) ? (
+                                draftStatus < 4 ? saveButtonEvent:()=>{}
+                            ):()=>{}}
                         />
-                        <div className={(allBodySelectedText.length > 0 && overallComment.length>0)? 'comment-button-send':'comment-button-send-disabled'} 
-                            onClick={(allBodySelectedText.length > 0 || overallComment.length > 0) ? ()=>{
-                                commonAlertOpen({
-                                    head: 'Review 1st Draft',
-                                    messages: [
-                                        'Do you want to send your feedback to the student?'
-                                    ],
-                                    yesButtonLabel: 'Yes',
-                                    noButtonLabel: 'No',
-                                    alertType: 'continue',
-                                    yesEvent: async ()=>{
-                                        const save = await makeData('send');
-                                        if (save) {
-                                            commonAlertOpen({
-                                                head: 'Review 1st Draft',
-                                                messages: ['Sent.','Return to the main menu.'],
-                                                useOneButton: true,
-                                                yesButtonLabel: 'OK',
-                                                yesEvent: async () => {
-                                                    navigate(`/LearningManagement/WritingHub/SparkWriting`);
-                                                    window.location.reload();
-                                                    commonAlertClose();
-                                                }
-                                            })
-                                        }
-                                    }
-                                })
-                            }:()=>{}}
+                        <div className={(allBodySelectedText.length > 0 && overallComment.length>0)? (
+                            draftStatus < 4 ? 'comment-button-send': 'comment-button-send-disabled'
+                        ):'comment-button-send-disabled'}
+                            onClick={(allBodySelectedText.length > 0 || overallComment.length > 0) ? (
+                                draftStatus < 4 ? sendButtonEvent: ()=>{}
+                            ):()=>{}}
                         />
                     </div>
                 </div>
             </div>
-
+            
         </section>
     )
 }

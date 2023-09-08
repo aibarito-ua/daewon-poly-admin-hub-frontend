@@ -34,6 +34,7 @@ module.exports = {
         'svg-bt-advisor-over': "url('/src/util/svgs/buttons/bt_advisor_over.svg')",
         'svg-bt-return': "url('/src/util/svgs/buttons/bt_return.svg')",
         'svg-bt-return-over': "url('/src/util/svgs/buttons/bt_return_over.svg')",
+        'svg-bt-return-disable': "url('/src/util/svgs/buttons/bt_return_disable.svg')",
         'svg-bt-close': "url('/src/util/svgs/buttons/bt_close.svg')",
         'svg-bt-close-over': "url('/src/util/svgs/buttons/bt_close_over.svg')",
         'svg-bt-save': "url('/src/util/svgs/buttons/bt_save.svg')",

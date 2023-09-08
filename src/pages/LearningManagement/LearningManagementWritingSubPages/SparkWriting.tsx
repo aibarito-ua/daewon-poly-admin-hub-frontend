@@ -64,17 +64,18 @@ const LMSparkWriting = () => {
         setSelectFilterCampusList(campus_list);
         setFilterData(loadFilterData);
         setFilterStates(loadFilterData);
+        console.log('beforeRenderedFn complete')
     }
     
     useComponentWillMount(()=>{
         console.log('component will mount')
-        beforRenderedFn();
+        if (!filterStates) {
+            beforRenderedFn();
+        }
+        
     })
     React.useEffect(()=>{
         console.log('component did mount')
-        if (filterData===null) {
-            beforRenderedFn();
-        }
         console.log('filterStates = ',filterStates)
     },[])
 
@@ -257,12 +258,18 @@ const LMSparkWriting = () => {
             const targetCampus=filterStates.campus
             let name = '';
             let code = '';
+            const serviceLevel = ['MAG3','GT4','MGT4','R4','MAG4']
             for (let campusIndex= 0; campusIndex < targetCampus.length; campusIndex++) {
                 if (targetCampus[campusIndex].name === value) {
-                    levelFilterList=targetCampus[campusIndex].level.map((levelItem) => {
-                        setSelectCampusCode({name: value, code: targetCampus[campusIndex].code})
-                        return levelItem.name
-                    });
+                    setSelectCampusCode({name: value, code: targetCampus[campusIndex].code})
+                    const levelsAtSelectCampus = targetCampus[campusIndex].level;
+                    for (let i = 0; i < levelsAtSelectCampus.length; i++) {
+                        const levelTarget = levelsAtSelectCampus[i].name;
+                        const findTarget = serviceLevel.includes(levelTarget);
+                        if (findTarget) {
+                            levelFilterList.push(levelTarget);
+                        }
+                    }
                 }
             }
             setSelectFilterLevelList(levelFilterList);

@@ -227,82 +227,50 @@ const loadTemporaryDraftTitle = (
                 const currentCommentIdx = wordItem.comment_index;
                 const currentType = wordItem.type;
                 const mainTagKey = `title-`+wordIndex+'-'+currentType;
-                const bf_item = wordIndex>0?screenData[wordIndex-1]:null;
+                // const bf_item = wordIndex>0?screenData[wordIndex-1]:null;
                 const af_item = wordIndex<screenData.length?screenData[wordIndex+1]:null;
                 // 'update-words'
-                if (commentIdx === currentCommentIdx) {
-
-                    if (currentCommentIdx!==-1) {
-                        // type check
-                        if (currentType === -1) {
-                            const jsxTag=<span key={mainTagKey} className='update-words'>
-                                <span className='text-[#eb3a3a] line-through h-fit'>{wordItem.text}</span></span>
-                            returnValue.push(jsxTag);
-                            
-                        } else if (currentType === 1) {
-                            const jsxTag = <span key={mainTagKey} className='update-words'>
-                                <span className='text-[#00be91]'>{wordItem.text}</span></span>
-                            returnValue.push(jsxTag);
-                        } else {
-                            // type 0
-                            const jsxTag=<span className='update-words' key={mainTagKey}>{wordItem.text}</span>
-                            returnValue.push(jsxTag);
-                        }
-                        if (af_item?.comment_index !== currentCommentIdx) {
-                            const currentCommentItem = findCommentByCommentIndex(currentCommentIdx);
-                            const createSpan = <span className={currentCommentItem.comment_className}
-                            id={currentCommentItem.comment_className}
-                            key={currentCommentItem.comment_className}
-                            style={{
-                                backgroundColor:'yellow',
-                                userSelect:'none',
-                                height: 'fit-content',
-                                cursor: 'pointer'
-                            }}
-                            onMouseOver={(e)=>{
-                                e.currentTarget.style.cursor='pointer';
-                                e.currentTarget.style.border = '2px solid #f1b02e';
-                                setCommentFocusId(currentCommentItem.comment_className);
-                            }}
-                            onMouseOut={(e)=>{
-                                e.currentTarget.style.border = '';
-                                setCommentFocusId('');
-                            }}
-                            >{returnValue}</span>;
-                            jsxElements.push(createSpan);
-                            returnValue=[];
-                        }
-                    } else {
-                        // type check
-                        if (currentType === -1) {
-                            const jsxTag=<span key={mainTagKey} className='update-words'>
-                                <span className='text-[#eb3a3a] line-through h-fit'>{wordItem.text}</span></span>
-                            jsxElements.push(jsxTag);
-                        } else if (currentType === 1) {
-                            const jsxTag = <span key={mainTagKey} className='update-words'>
-                                <span className='text-[#00be91]'>{wordItem.text}</span></span>
-                            jsxElements.push(jsxTag);
-                        } else {
-                            // type 0
-                            const jsxTag=<span className='update-words' key={mainTagKey}>{wordItem.text}</span>
-                            jsxElements.push(jsxTag);
-                        }
-                    }
+                if (currentType === -1) {
+                    const jsxTag=<span key={mainTagKey} className='update-words'>
+                        <span className='text-[#eb3a3a] line-through h-fit'>{wordItem.text}</span></span>
+                    returnValue.push(jsxTag);
+                    
+                } else if (currentType === 1) {
+                    const jsxTag = <span key={mainTagKey} className='update-words'>
+                        <span className='text-[#00be91]'>{wordItem.text}</span></span>
+                    returnValue.push(jsxTag);
                 } else {
-                    commentIdx = currentCommentIdx;
-                    // type check
-                    if (currentType === -1) {
-                        const jsxTag=<span key={mainTagKey} className='update-words'>
-                            <span className='text-[#eb3a3a] line-through h-fit'>{wordItem.text}</span></span>
-                        jsxElements.push(jsxTag);
-                    } else if (currentType === 1) {
-                        const jsxTag = <span key={mainTagKey} className='update-words'>
-                            <span className='text-[#00be91]'>{wordItem.text}</span></span>
-                        jsxElements.push(jsxTag);
+                    // type 0
+                    const jsxTag=<span className='update-words' key={mainTagKey}>{wordItem.text}</span>
+                    returnValue.push(jsxTag);
+                }
+                // comment check
+                if (af_item?.comment_index !== currentCommentIdx) {
+                    if (currentCommentIdx===-1) {
+                        jsxElements.push(...returnValue)
                     } else {
-                        // type 0
-                        const jsxTag=<span className='update-words' key={mainTagKey}>{wordItem.text}</span>
-                        jsxElements.push(jsxTag);
+                        const currentCommentItem = findCommentByCommentIndex(currentCommentIdx);
+                        const createSpan = <span className={currentCommentItem.comment_className}
+                        id={currentCommentItem.comment_className}
+                        key={currentCommentItem.comment_className}
+                        style={{
+                            backgroundColor:'yellow',
+                            userSelect:'none',
+                            height: 'fit-content',
+                            cursor: 'pointer'
+                        }}
+                        onMouseOver={(e)=>{
+                            e.currentTarget.style.cursor='pointer';
+                            e.currentTarget.style.border = '2px solid #f1b02e';
+                            setCommentFocusId(currentCommentItem.comment_className);
+                        }}
+                        onMouseOut={(e)=>{
+                            e.currentTarget.style.border = '';
+                            setCommentFocusId('');
+                        }}
+                        >{returnValue}</span>;
+                        jsxElements.push(createSpan);
+                        returnValue=[];
                     }
                 }
             });
@@ -362,82 +330,53 @@ const loadTemporaryDraftBody = (
                 const currentCommentIdx = wordItem.comment_index;
                 const currentType = wordItem.type;
                 const mainTagKey = 'body-'+paragraphIndex+wordIndex+'-'+wordItem.type;
-                const bf_item = wordIndex>0?screenData[wordIndex-1]: null;
+                // const bf_item = wordIndex>0?screenData[wordIndex-1]: null;
                 const af_item = wordIndex<screenData.length? screenData[wordIndex+1]:null;
-
-                if (commentIdx === currentCommentIdx) {
+                // make value => cover span tag
+                // make word value
+                // type check
+                if (currentType === -1) {
+                    const jsxTag = <span key={mainTagKey} className='text-[#eb3a3a]'>{wordItem.text}</span>;
+                    returnValue.push(jsxTag);
                     
-                    if (currentCommentIdx!==-1) {
-                        // type check
-                        if (currentType === -1) {
-                            const jsxTag = <span key={mainTagKey} className='text-[#eb3a3a]'>{wordItem.text}</span>;
-                            returnValue.push(jsxTag);
-                            
-                        } else if (currentType === 1) {
-                            const jsxTag=<span key={mainTagKey} className='text-[#00be91]'>{wordItem.text}</span>;
-                            returnValue.push(jsxTag);
-                        } else {
-                            // type 0
-                            const jsxTag=<span key={mainTagKey} className='h-fit'>{wordItem.text}</span>;
-                            returnValue.push(jsxTag);
-                        }
-                        if (af_item?.comment_index !== currentCommentIdx) {
-                            const currentCommentItem = findCommentByCommentIndex(currentCommentIdx);
-                            const createSpan = <span className={currentCommentItem.comment_className}
-                            id={currentCommentItem.comment_className}
-                            key={currentCommentItem.comment_className}
-                            style={{
-                                backgroundColor:'yellow',
-                                userSelect:'none',
-                                height: 'fit-content',
-                                cursor: 'pointer'
-                            }}
-                            onMouseOver={(e)=>{
-                                e.currentTarget.style.cursor='pointer';
-                                e.currentTarget.style.border = '2px solid #f1b02e';
-                                setCommentFocusId(currentCommentItem.comment_className);
-                            }}
-                            onMouseOut={(e)=>{
-                                e.currentTarget.style.border = '';
-                                setCommentFocusId('');
-                            }}
-                            >{returnValue}</span>;
-                            jsxElements.push(createSpan);
-                            returnValue=[];
-                        }
-                    } else {
-                        // type check
-                        if (currentType === -1) {
-                            const jsxTag = <span key={mainTagKey} className='text-[#eb3a3a]'>{wordItem.text}</span>;
-                            jsxElements.push(jsxTag);
-                        } else if (currentType === 1) {
-                            const jsxTag=<span key={mainTagKey} className='text-[#00be91]'>{wordItem.text}</span>;
-                            jsxElements.push(jsxTag);
-                        } else {
-                            // type 0
-                            const jsxTag=<span key={mainTagKey} className='h-fit'>{wordItem.text}</span>;
-                            jsxElements.push(jsxTag);
-                        }
-
-                    }
+                } else if (currentType === 1) {
+                    const jsxTag=<span key={mainTagKey} className='text-[#00be91]'>{wordItem.text}</span>;
+                    returnValue.push(jsxTag);
                 } else {
-                    commentIdx = currentCommentIdx;
-                    // type check
-                    if (currentType === -1) {
-                        const jsxTag = <span key={mainTagKey} className='text-[#eb3a3a]'>{wordItem.text}</span>;
-                        jsxElements.push(jsxTag);
-                        
-                    } else if (currentType === 1) {
-                        const jsxTag=<span key={mainTagKey} className='text-[#00be91]'>{wordItem.text}</span>;
-                        jsxElements.push(jsxTag);
-                    } else {
-                        // type 0
-                        const jsxTag=<span key={mainTagKey} className='h-fit'>{wordItem.text}</span>;
-                        jsxElements.push(jsxTag);
-                    }
-
+                    // type 0
+                    const jsxTag=<span key={mainTagKey} className='h-fit'>{wordItem.text}</span>;
+                    returnValue.push(jsxTag);
                 }
-                // jsxElements.push(returnValue);
+                // comment check
+                if (af_item?.comment_index!==currentCommentIdx) {
+                    if (currentCommentIdx===-1) {
+                        jsxElements.push(...returnValue);
+                        returnValue=[]
+                    } else {
+                        const currentCommentItem = findCommentByCommentIndex(currentCommentIdx);
+                        const createSpan = <span className={currentCommentItem.comment_className}
+                        id={currentCommentItem.comment_className}
+                        key={currentCommentItem.comment_className}
+                        style={{
+                            backgroundColor:'yellow',
+                            userSelect:'none',
+                            height: 'fit-content',
+                            cursor: 'pointer'
+                        }}
+                        onMouseOver={(e)=>{
+                            e.currentTarget.style.cursor='pointer';
+                            e.currentTarget.style.border = '2px solid #f1b02e';
+                            setCommentFocusId(currentCommentItem.comment_className);
+                        }}
+                        onMouseOut={(e)=>{
+                            e.currentTarget.style.border = '';
+                            setCommentFocusId('');
+                        }}
+                        >{returnValue}</span>;
+                        jsxElements.push(createSpan);
+                        returnValue=[];
+                    }
+                } else {}// else 경우는 다음 턴에서 푸쉬
             })
             return <div className='flow-root justify-start draft-1-body-paragragh'
             id={paragraphItem.name} key={paragraphKey}

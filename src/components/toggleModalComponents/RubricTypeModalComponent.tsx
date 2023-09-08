@@ -1,20 +1,9 @@
 import * as React from 'react';
-import {} from 'react-router-dom';
-import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import useLoginStore from '../../store/useLoginStore';
-import buttonImage from './img/buttonEllaImg.png'
-import { SvgDocumentSearchIcon } from '../commonComponents/BasicTable/svgs/DocumentSearch';
 import { IconButton } from '@mui/material';
-// import { TActivitySparkWritingBooks } from '../../store/@type/useActivityWritingHubStore';
-// import { TRubricTypeData, TRubricTypeDataItem, TRubricTypeHeader, rubric_type_datas } from '../../utils/EssayWriting/rubricTypeData';
 import btnPreview from '../../util/png/btn_preview.png';
-import CloseButtonIcon from './img/p_btn_close.svg'
 
 interface IRubricTypeModalComponentProps {
   keyValue: string|number;
