@@ -1,15 +1,15 @@
 import React from "react";
-import useActivitySpeakHubStore from "../../../store/useActivitySpeakHubStore";
-import useNavStore from "../../../store/useNavStore";
-import { cf } from "../../../util/common/commonFunctions";
-import { useComponentWillMount } from "../../../hooks/useEffectOnce";
-import DebouncedDropdowFilter from "../../../components/commonComponents/BasicTable/stateDebouncedDropdown";
-import { SvgSearchIcon } from "../../../components/commonComponents/BasicTable/svgs/SearchIcon";
-import { getLMSparkWritingFilterDataAPI, getLMSparkWritingStudents } from "../../../api/LearningManagement/LearningManagementSparkWriting.api";
-import useLearningManagementSparkWritingStore from "../../../store/useLearningManagementSparkWritingStore";
-import LearningManagementStudentsTable from "../../../components/commonComponents/BasicTable/LearningManagementStudentsTable";
+import useActivitySpeakHubStore from "../../../../store/useActivitySpeakHubStore";
+import useNavStore from "../../../../store/useNavStore";
+import { cf } from "../../../../util/common/commonFunctions";
+import { useComponentWillMount } from "../../../../hooks/useEffectOnce";
+import DebouncedDropdowFilter from "../../../../components/commonComponents/BasicTable/stateDebouncedDropdown";
+import { SvgSearchIcon } from "../../../../components/commonComponents/BasicTable/svgs/SearchIcon";
+import { getLMSparkWritingFilterDataAPI, getLMSparkWritingStudents } from "../../../../api/LearningManagement/LearningManagementSparkWriting.api";
+import useLearningManagementSparkWritingStore from "../../../../store/useLearningManagementSparkWritingStore";
+import LearningManagementStudentsTable from "../../../../components/commonComponents/BasicTable/LearningManagementStudentsTable";
 
-const LMSparkWriting = () => {
+const ReportAndPortfolio = () => {
     // page usehook zustand
     const {
         selectNavigationTitles, setSelectNavigationTitles
@@ -403,4 +403,4 @@ const LMSparkWriting = () => {
     )
 
 }
-export default LMSparkWriting;
+export default ReportAndPortfolio;

@@ -36,8 +36,20 @@ export default function DebouncedDropdowFilter({
     const [value, setValue] = React.useState(initialValue);
     React.useEffect(()=>{
         if (column !== undefined) {
-            setStateDropNameList(['', ...Array.from(column).sort()]);
+            if (filterTitleLabel==='level') {
+                const gradersLevel = [
+                    'GT1', 'MGT1', 'S1','MAG1',
+                    'GT2', 'MGT2', 'S2','MAG2',
+                    'GT3', 'MGT3', 'S3','R3','MAG3',
+                    'GT4', 'MGT4', 'S4','R4','MAG4',
+                ];
+                const levels = Array.from(column).sort((a,b) => gradersLevel.indexOf(a) - gradersLevel.indexOf(b))
+                setStateDropNameList(['', ...levels]);
+            } else {
+                setStateDropNameList(['', ...Array.from(column).sort()]);
+            }
         }
+        
     }, [column])
     React.useEffect(()=>{
         setValue(initialValue)

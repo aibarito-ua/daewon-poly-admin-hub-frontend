@@ -98,12 +98,12 @@ export const Nav = () => {
             subTitles: [
                 {
                     name: 'Speaking Hub',
-                    path: '',
+                    path: 'LearningResultManagement/SpeakingHub/IdeaExchange/Progress',
                     role: ''
                 },
                 {
                     name: 'Writing Hub',
-                    path: '',
+                    path: 'LearningResultManagement/WritingHub/SparkWriting/ReportAndPortfolio',
                     role: ''
                 }
             ]

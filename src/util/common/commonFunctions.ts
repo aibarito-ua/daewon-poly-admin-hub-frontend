@@ -67,8 +67,8 @@ const basicTable = {
         const gradersLevel = [
             "GT1", "MGT1", "S1", "MAG1",
             "GT2", "MGT2", "S2", "MAG2",
-            "GT3", "MGT3", "S3", "MAG3",
-            "GT4", "MGT4", "S4", "MAG4" 
+            "GT3", "MGT3", "S3","R3", "MAG3",
+            "GT4", "MGT4", "S4","R4", "MAG4" 
         ];
         return gradersLevel.indexOf(a) - gradersLevel.indexOf(b);
     },

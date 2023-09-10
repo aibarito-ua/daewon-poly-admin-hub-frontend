@@ -1,15 +1,15 @@
 import React from "react";
-import useActivitySpeakHubStore from "../../../store/useActivitySpeakHubStore";
-import useNavStore from "../../../store/useNavStore";
-import { cf } from "../../../util/common/commonFunctions";
-import { useComponentWillMount } from "../../../hooks/useEffectOnce";
-import DebouncedDropdowFilter from "../../../components/commonComponents/BasicTable/stateDebouncedDropdown";
-import { SvgSearchIcon } from "../../../components/commonComponents/BasicTable/svgs/SearchIcon";
-import { getLMSparkWritingFilterDataAPI, getLMSparkWritingStudents } from "../../../api/LearningManagement/LearningManagementSparkWriting.api";
-import useLearningManagementSparkWritingStore from "../../../store/useLearningManagementSparkWritingStore";
-import LearningManagementStudentsTable from "../../../components/commonComponents/BasicTable/LearningManagementStudentsTable";
+import useActivitySpeakHubStore from "../../../../store/useActivitySpeakHubStore";
+import useNavStore from "../../../../store/useNavStore";
+import { cf } from "../../../../util/common/commonFunctions";
+import { useComponentWillMount } from "../../../../hooks/useEffectOnce";
+import DebouncedDropdowFilter from "../../../../components/commonComponents/BasicTable/stateDebouncedDropdown";
+import { SvgSearchIcon } from "../../../../components/commonComponents/BasicTable/svgs/SearchIcon";
+import { getLMSparkWritingFilterDataAPI, getLMSparkWritingStudents, getLMSpeakingFilterDataAPI } from "../../../../api/LearningManagement/LearningManagementSparkWriting.api";
+import useLearningManagementSparkWritingStore from "../../../../store/useLearningManagementSparkWritingStore";
+import LearningManagementStudentsTable from "../../../../components/commonComponents/BasicTable/LearningManagementStudentsTable";
 
-const LMSparkWriting = () => {
+const Progress = () => {
     // page usehook zustand
     const {
         selectNavigationTitles, setSelectNavigationTitles
@@ -55,7 +55,7 @@ const LMSparkWriting = () => {
 
     // initialize setting before render screen
     const beforRenderedFn = async () => {
-        const loadFilterData = await getLMSparkWritingFilterDataAPI();
+        const loadFilterData = await getLMSpeakingFilterDataAPI();
         console.log('laod filter data =',loadFilterData)
         setFilterAllList(loadFilterData);
         const campus_list = loadFilterData.campus.map((item) => {
@@ -103,7 +103,7 @@ const LMSparkWriting = () => {
     }, [selectFIlterValues])
     React.useEffect(()=>{
         if (selectNavigationTitles.length === 0) {
-            setSelectNavigationTitles(['학습 관리', 'Writing Hub', 'Spark Writing'])
+            setSelectNavigationTitles(['학습 결과 관리', 'Speaking Hub', 'Idea Exchange'])
         }
     }, [selectNavigationTitles])
     
@@ -251,11 +251,16 @@ const LMSparkWriting = () => {
 
     const filterButtonEventCampus=(value:string) => {
         if (filterStates!==undefined) {
-            let levelFilterList:any[]=[]
+            let levelFilterList:string[]=[]
             const targetCampus=filterStates.campus
             let name = '';
             let code = '';
-            const serviceLevel = ['MAG3','GT4','MGT4','R4','MAG4']
+            const serviceLevel = [
+                'GT1', 'MGT1', 'S1','MAG1',
+                'GT2', 'MGT2', 'S2','MAG2',
+                'GT3', 'MGT3', 'S3','R3','MAG3',
+                'GT4', 'MGT4', 'S4','R4','MAG4',
+            ]
             for (let campusIndex= 0; campusIndex < targetCampus.length; campusIndex++) {
                 if (targetCampus[campusIndex].name === value) {
                     setSelectCampusCode({name: value, code: targetCampus[campusIndex].code})
@@ -269,7 +274,11 @@ const LMSparkWriting = () => {
                     }
                 }
             }
-            setSelectFilterLevelList(levelFilterList);
+            const sortLevelFilterList = levelFilterList.sort((a,b) => {
+                return serviceLevel.indexOf(a) - serviceLevel.indexOf(b);
+            });
+            console.log('sortLevelFilterList =',sortLevelFilterList)
+            setSelectFilterLevelList(sortLevelFilterList);
             let dumySelectFilterValues = JSON.parse(JSON.stringify(selectFIlterValues));
             dumySelectFilterValues = [value,'','']
             console.log('dumySelectFilterValues= ',dumySelectFilterValues, selectCampusCode)
@@ -403,4 +412,4 @@ const LMSparkWriting = () => {
     )
 
 }
-export default LMSparkWriting;
+export default Progress;

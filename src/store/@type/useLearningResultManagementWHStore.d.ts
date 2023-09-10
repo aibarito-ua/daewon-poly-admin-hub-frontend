@@ -1,0 +1,3 @@
+interface IuseLearningResultManagementWHStore {
+    sideNav: TSideNavData;
+}

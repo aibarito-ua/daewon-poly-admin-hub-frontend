@@ -13,13 +13,22 @@ import StoryVlog from '../pages/ActivityManagement/ActivitySHSubPages/StoryVlog'
 import RolePlay from '../pages/ActivityManagement/ActivitySHSubPages/RolePlay';
 import ActivityWritingHubMain from '../pages/ActivityManagement/ActivityWritingHubMain';
 import SparkWriting from '../pages/ActivityManagement/ActivityWHSubPages/SparkWriting';
-import PromptBlockComponent from '../components/toggleModalComponents/PromptBlockComponent';
-import useControlAlertStore from '../store/useControlAlertStore';
 import CommonAlertModalComponent from '../components/toggleModalComponents/CommonAlertModalComponent';
 import LearningManagementWritingHub from '../pages/LearningManagement/LearningManagementWritingHub';
 import LMSparkWriting from '../pages/LearningManagement/LearningManagementWritingSubPages/SparkWriting';
 import LearningManagementSparkWritingFeedbackPage from '../pages/LearningManagement/LearningManagementSparkWritingFeedbackPage';
-;
+import LearningResultManagementSpeakingHubMain from '../pages/LearningResultManagement/LearningResultManagementSHSubPages/LearningResultManagementSpeakingHubMain';
+
+import LRMIdeaExchangeProgress from '../pages/LearningResultManagement/LearningResultManagementSHSubPages/ideaExchange/Progress'
+import LRMIdeaExchangePortfolio from '../pages/LearningResultManagement/LearningResultManagementSHSubPages/ideaExchange/Portfolio'
+
+import LRMStoryVlogProgress from '../pages/LearningResultManagement/LearningResultManagementSHSubPages/storyVlog/Progress'
+import LRMStoryVlogPortfolio from '../pages/LearningResultManagement/LearningResultManagementSHSubPages/storyVlog/Portfolio'
+
+import LRMRolePlayProgress from '../pages/LearningResultManagement/LearningResultManagementSHSubPages/roleplay/Progress'
+import LRMRolePlayPortfolio from '../pages/LearningResultManagement/LearningResultManagementSHSubPages/roleplay/Portfolio'
+import LearningResultManagementWritingHubMain from '../pages/LearningResultManagement/LearningResultManagementWHSubPages/LearningResultManagementWritingHubMain';
+import LRMSparkWritingReportAndPortfolio from '../pages/LearningResultManagement/LearningResultManagementWHSubPages/sparkWriting/SparkWriting';
 
 export default function Router() {
     const { role, isOpen } = useLoginStore();
@@ -45,7 +54,6 @@ export default function Router() {
     }
     // const privateRoutes = () => {
     //     const routeValue = routeValues.privateRoutes;
-
     // }
     return (
         <div className="display-page-screen">
@@ -71,6 +79,18 @@ export default function Router() {
                     <Route path={'/ActivityManagement/WritingHub/SparkWriting'} element={<ActivityWritingHubMain children={<SparkWriting />} />} />
                     <Route path={'/LearningManagement/WritingHub/SparkWriting'} element={<LearningManagementWritingHub children={<LMSparkWriting />}/>} />
                     <Route path={'/LearningManagement/WritingHub/SparkWriting/feedback/:studentCode/:DraftId'} element={<LearningManagementSparkWritingFeedbackPage/>} />
+
+                    <Route path={'/LearningResultManagement/SpeakingHub/IdeaExchange/Progress'} element={<LearningResultManagementSpeakingHubMain children={<LRMIdeaExchangeProgress />} />} />
+                    <Route path={'/LearningResultManagement/SpeakingHub/IdeaExchange/Portfolio'} element={<LearningResultManagementSpeakingHubMain children={<LRMIdeaExchangePortfolio />} />} />
+
+                    <Route path={'/LearningResultManagement/SpeakingHub/StoryVlog/Progress'} element={<LearningResultManagementSpeakingHubMain children={<LRMStoryVlogProgress />} />} />
+                    <Route path={'/LearningResultManagement/SpeakingHub/StoryVlog/Portfolio'} element={<LearningResultManagementSpeakingHubMain children={<LRMStoryVlogPortfolio />} />} />
+
+                    <Route path={'/LearningResultManagement/SpeakingHub/RolePlay/Progress'} element={<LearningResultManagementSpeakingHubMain children={<LRMRolePlayProgress />} />} />
+                    <Route path={'/LearningResultManagement/SpeakingHub/RolePlay/Portfolio'} element={<LearningResultManagementSpeakingHubMain children={<LRMRolePlayPortfolio />} />} />
+
+                    <Route path={'/LearningResultManagement/WritingHub/SparkWriting/ReportAndPortfolio'} element={<LearningResultManagementWritingHubMain children={<LRMSparkWritingReportAndPortfolio />} />} />
+                    
                 </Route>
                 {/* <Route path='' element={ }></Route> */}
 
