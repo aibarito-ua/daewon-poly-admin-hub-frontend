@@ -109,6 +109,7 @@ export default function TextareaDropdown (props: {
                                     const navigationValues = [selectName, nameItem.name]
                                     console.log('test check nav side depth =',navigationValues)
                                     setSelectNavigationTitles(navigationValues)
+                                    console.log('nav click event : nameItem =',nameItem,', i=',i,', currentIndex=',currentIndex,', selectNavigationIndex=',selectNavigationIndex,', selectActive=',selectActive)
                                     if (nameItem.role !== '') {
                                       console.log('have role')
                                       const troleValue = nameItem.role==='Head' ? 'Head' : (nameItem.role === 'Campus'? 'Campus': '');

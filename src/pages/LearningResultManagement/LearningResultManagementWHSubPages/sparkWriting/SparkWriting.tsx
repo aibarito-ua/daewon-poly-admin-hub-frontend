@@ -103,7 +103,7 @@ const ReportAndPortfolio = () => {
     }, [selectFIlterValues])
     React.useEffect(()=>{
         if (selectNavigationTitles.length === 0) {
-            setSelectNavigationTitles(['학습 관리', 'Writing Hub', 'Spark Writing'])
+            setSelectNavigationTitles(['학습 결과 관리', 'Writing Hub', 'Spark Writing','Report & Portfolio'])
         }
     }, [selectNavigationTitles])
     

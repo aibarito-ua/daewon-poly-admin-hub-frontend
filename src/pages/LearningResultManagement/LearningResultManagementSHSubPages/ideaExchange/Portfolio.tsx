@@ -103,7 +103,7 @@ const Portfolio = () => {
     }, [selectFIlterValues])
     React.useEffect(()=>{
         if (selectNavigationTitles.length === 0) {
-            setSelectNavigationTitles(['학습 결과 관리', 'Speaking Hub', 'Idea Exchange'])
+            setSelectNavigationTitles(['학습 결과 관리', 'Speaking Hub', 'Idea Exchange','Portfolio'])
         }
     }, [selectNavigationTitles])
     
