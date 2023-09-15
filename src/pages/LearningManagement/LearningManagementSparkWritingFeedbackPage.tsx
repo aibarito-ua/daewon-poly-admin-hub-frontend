@@ -1,3 +1,4 @@
+import PDFExportButton from '../../components/commonComponents/customComponents/exportButtons/PDFExportButton';
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import useNavStore from '../../store/useNavStore';
@@ -8,6 +9,10 @@ import useControlAlertStore from '../../store/useControlAlertStore';
 import { commonSvgIcons } from '../../util/svgs/commonSvgIcons';
 import { draftFeedbackSend, draftFeedbackTemporarySave, getSparkWritingAdvisor } from '../../api/LearningManagement/LearningManagementSparkWriting.api';
 import ReturnFeedbackModalComponent from '../../components/toggleModalComponents/ReturnFeedbackModalComponent';
+import RubricTypeModalComponent from '../../components/toggleModalComponents/RubricTypeModalComponent';
+import useActivityWritingHubStore from '../../store/useActivityWritingHubStore';
+import PrintExportButton from '../../components/commonComponents/customComponents/exportButtons/PrintExportButton';
+import ReportModalComponent from '../../components/toggleModalComponents/ReportModalComponent';
 
 type TDivsControlConfig = {
     advisor: {
@@ -39,8 +44,14 @@ const LearningManagementSparkWritingFeedbackPage = () => {
         navigateBlockFlag, navigateBlockMessage
     } = useNavStore();
     const {
-        feedbackDataInStudent
+        feedbackDataInStudent,
+        rubricReportValue,
+        setRubricInit,
+        setRubricReportAllValue
     } = useLearningManagementSparkWritingStore();
+    const {
+        rubricDataHead
+    } = useActivityWritingHubStore();
     const { 
         commonAlertOpen, commonAlertClose
     } = useControlAlertStore();
@@ -86,6 +97,9 @@ const LearningManagementSparkWritingFeedbackPage = () => {
     // overall comment textarea value
     const [overallComment, setOverallComment] = React.useState<string>('');
 
+    // final overall comment textarea value
+    const [finalOverallComment, setFinalOverallComment] = React.useState<string>('');
+
     // return feedback data form -> "feedback_return"
     const [returnFeedback, setReturnFeedback] = React.useState<TReturnFeedback>({
         reason:'',
@@ -94,6 +108,19 @@ const LearningManagementSparkWritingFeedbackPage = () => {
     });
     // 1st draft default data -> temporary save & send data form
     const [draftResultSendData, setDraftResultSendData] = React.useState<TAdminDraft1stCommentData>();
+
+    // final 2nd draft save flag
+    const [finalTemporarySaveFlag, setFinalTemporarySaveFlag] = React.useState<boolean>(false);
+    // final 2nd draft submit flag
+    const [finalCreateReportFlag, setFinalCreateReportFlag] = React.useState<boolean>(false);
+
+    // rubric score state controlers
+    const [rubricSelected, setRubricSelected] = React.useState<string[]>(Array.from({length: 6}, ()=>''));
+    const setRubricSelectedItem = (idx:number, value:string) => {
+        let dump = rubricSelected;
+        dump[idx] = value;
+        setRubricSelected(dump);
+    }
 
     // advisor div control
     const [advisorControlDiv, setAdvisorControlDiv] = React.useState<{
@@ -107,6 +134,9 @@ const LearningManagementSparkWritingFeedbackPage = () => {
         draft_index:-1,
         draft_outline:[]
     });
+
+    // printRef
+    const contentPrintRef = React.useRef(null);
 
     // flag === undefined --> make data form for temporary save
     // flag === "send" ---> make data form for submit save
@@ -271,7 +301,8 @@ const LearningManagementSparkWritingFeedbackPage = () => {
             data:replaceAllScreenDataChartoString,
             draft_id,
             overall_comment,
-            feedback_return
+            feedback_return,
+            rubric_report:[]
         };
         if (flag==='send') {
             console.log('send!')
@@ -298,11 +329,48 @@ const LearningManagementSparkWritingFeedbackPage = () => {
             data,
             draft_id,
             overall_comment,
-            feedback_return
+            feedback_return,
+            rubric_report:[]
         };
         console.log('return =',responseData)
         const rsp = await draftFeedbackSend(responseData);
         return rsp;
+    }
+
+    const makeFinalDraftData = async (flag?:string) => {
+        const draft_id = parseInt(draftId); ;
+        const feedback_return:TReturnFeedback = {
+            reason:'',
+            teacher_comment:'',
+            is_return: false,
+        }
+        const rubric_report = rubricReportValue;
+        
+        if (flag==='send') {
+            console.log('send!')
+            const overall_comment=finalOverallComment;
+        const responseData:TAdminDraft1stCommentData = {
+            draft_id,
+            data:[],
+            comment:[],
+            feedback_return,
+            overall_comment,
+            rubric_report,
+        }
+            return await draftFeedbackSend(responseData);
+        } else {
+            // temporary save data 
+            const overall_comment="";
+            const responseData:TAdminDraft1stCommentData = {
+                draft_id,
+                data:[],
+                comment:[],
+                feedback_return,
+                overall_comment,
+                rubric_report,
+            }
+            return await draftFeedbackTemporarySave(responseData);
+        }
     }
     
     // title select text
@@ -788,6 +856,54 @@ const LearningManagementSparkWritingFeedbackPage = () => {
             return v;
         } else return v;
     }
+
+    // 2nd draft save
+    const draft2ndSave = async () => {
+        commonAlertOpen({
+            head: 'Evaluate 2nd Draft',
+            messages: [
+                'Do you want to save your current progress and return to the main menu?'
+            ],
+            yesButtonLabel: 'Yes',
+            noButtonLabel: 'No',
+            yesEvent: async ()=>{
+                const save = await makeFinalDraftData();
+                if (save) {
+                    navigate(`/LearningManagement/WritingHub/SparkWriting`);
+                    window.location.reload();
+                }
+            }
+        })
+    }
+    // 2nd draft create report
+    const draft2ndCreateReport = async () => {
+        commonAlertOpen({
+            head: 'Evaluate 2nd Draft',
+            messages: [
+                'Do you want to create a report and send to the student?'
+            ],
+            yesButtonLabel: 'Yes',
+            noButtonLabel: 'No',
+            alertType: 'continue',
+            yesEvent: async ()=>{
+                const save = await makeFinalDraftData('send');
+                if (save) {
+                    commonAlertOpen({
+                        head: 'Evaluate 2nd Draft',
+                        messages: ['Completed.','Return to the main menu.'],
+                        useOneButton: true,
+                        yesButtonLabel: 'OK',
+                        yesEvent: async () => {
+                            commonAlertClose();
+                            navigate(`/LearningManagement/WritingHub/SparkWriting`);
+                            window.location.reload();
+                        }
+                    })
+                }
+            }
+        })
+    }
+
     React.useEffect(()=>{
         const pathParam = locationHook.pathname.split('/');
         const last = pathParam.slice(-1)[0];
@@ -869,6 +985,32 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                 }
             })
         }
+        if (feedbackDataInStudent.draft_2nd_data) {
+            const draft2ndData = feedbackDataInStudent.draft_2nd_data;
+            if (feedbackDataInStudent.status?.status === 4 || feedbackDataInStudent.status?.status === 5) {
+                console.log(' status ===',draft2ndData.overall_comment)
+                setFinalOverallComment(draft2ndData.overall_comment)
+            }
+            if (draft2ndData.rubric_report && draft2ndData.rubric_report.length > 0) {
+                setRubricReportAllValue(draft2ndData.rubric_report)
+            }
+            const rubricDT = feedbackDataInStudent.rubric.rubric_description
+            const rubricReportDatas = draft2ndData.rubric_report ? draft2ndData.rubric_report: [];
+            if (rubricReportDatas.length > 0) {
+                let rubricSelectsValue = rubricSelected;
+                for (let i = 0; i<rubricDT.length;i++) {
+                    const rubricCategoryName = rubricDT[i].category;
+                    for (let j = 0; j < rubricReportDatas.length; j++) {
+                        const rubricReportCategoryName = rubricReportDatas[j].category;
+                        if (rubricCategoryName === rubricReportCategoryName) {
+                            rubricSelectsValue[i] = rubricReportDatas[j].selected_value;
+                            break;
+                        }
+                    }
+                }
+                setRubricSelected(rubricSelectsValue);
+            }
+        }
         const handleBodyCommentClick = (event: MouseEvent) => {
             if (
                 containerBodyCommentRef.current &&
@@ -898,11 +1040,47 @@ const LearningManagementSparkWritingFeedbackPage = () => {
         setDraftId(feedbackDataInStudent.defautInfo.select_draft_id);
         return () => {
             setDraftId('');
+            setRubricInit()
             setAdvisor({draft_index:-1,draft_outline:[]})
             window.removeEventListener('click', handleBodyCommentClick)
             window.removeEventListener('click', handleTitleCommentClick)
         }
     },[])
+    React.useEffect(()=>{
+        console.log('rubricReportValue ==',rubricReportValue)
+        const status2ndDraft = feedbackDataInStudent.status?.status;
+        if (status2ndDraft === 2 ||status2ndDraft === 3) {
+            if (finalOverallComment!=='') {
+                if (rubricReportValue.length === 6) {
+                    // save & submit open
+                    setFinalCreateReportFlag(true);
+                    setFinalTemporarySaveFlag(true);
+                } else if (rubricReportValue.length < 6) {
+                    // save open, submit close
+                    setFinalCreateReportFlag(false);
+                    setFinalTemporarySaveFlag(true);
+                }
+            } else {
+                if (rubricReportValue.length > 0) {
+                    // save open, submit close
+                    setFinalCreateReportFlag(false);
+                    setFinalTemporarySaveFlag(true);
+                } else {
+                    // save&submit close
+                    setFinalCreateReportFlag(false);
+                    setFinalTemporarySaveFlag(false);
+                }
+            }
+        } else if (status2ndDraft === 4 ||status2ndDraft === 5) {
+            setFinalCreateReportFlag(false);
+            setFinalTemporarySaveFlag(false);
+        }
+
+        return () => {
+            setFinalCreateReportFlag(false);
+            setFinalTemporarySaveFlag(false);
+        }
+    }, [rubricReportValue, finalOverallComment, finalCreateReportFlag, finalTemporarySaveFlag])
 
     const divideH10 = <div className='w-[1px] h-[10px] bg-[#aaa]'/>
     const divideH29 = <div className='w-[1px] h-[29px] bg-[#ccc]'/>
@@ -989,144 +1167,478 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                 }
             </div>
 
-            <div className='comment-review-contents'
-                ref={boundaryRef}
-                >
-                {!advisorOpen && draftStatus!==5 && (
-                    <div className='absolute left-[14px] top-[60%]'>
-                        <div className='learning-management-advisor-open-button'
-                            onClick={async () => {
-                                console.log(draftId)
-                                const checkAlreadyAdvisorUsed = advisor.draft_index > 0;
-                                
-                                if (checkAlreadyAdvisorUsed) {
-                                    let dumyStates:TDivsControlConfig = JSON.parse(JSON.stringify(divAResize));
-                                    dumyStates.advisor.w = 400;
-                                    setDivAResize(dumyStates);
-                                    setAdvisorOpen(true);
+            {feedbackDataInStudent.defautInfo.step_label==='1st Draft' && (
+                <div className='comment-review-contents'
+                    ref={boundaryRef}
+                    >
+                            {!advisorOpen && draftStatus!==5 && (
+                                <div className='absolute left-[14px] top-[60%]'>
+                                    <div className='learning-management-advisor-open-button'
+                                        onClick={async () => {
+                                            console.log(draftId)
+                                            const checkAlreadyAdvisorUsed = advisor.draft_index > 0;
+                                            
+                                            if (checkAlreadyAdvisorUsed) {
+                                                let dumyStates:TDivsControlConfig = JSON.parse(JSON.stringify(divAResize));
+                                                dumyStates.advisor.w = 400;
+                                                setDivAResize(dumyStates);
+                                                setAdvisorOpen(true);
+                                                
+                                            } else {
+                                                const advisorResponse = await getSparkWritingAdvisor(draftId);
+                                                if (advisorResponse.draft_index > 0) {
+                                                    console.log('advisor response =',advisorResponse)
+                                                    setAdvisor(advisorResponse);
+                                                    let dumyStates:TDivsControlConfig = JSON.parse(JSON.stringify(divAResize));
+                                                    dumyStates.advisor.w = 400;
+                                                    setDivAResize(dumyStates);
+                                                    setAdvisorOpen(true)
+                                                }
+                                            }
+                                        }}
+                                    />
+                                </div>
+                            )}
+                            {advisorOpen && (
+                                <div className='comment-advisor-div'
+                                    // onClick={() => setAdvisorOpen(false)}
+                                style={{width: `${divAResize.advisor.w}px`}}>
+                                    {/* advisor header */}
+                                    <div className='flex flex-col w-full h-fit relative'>
+                                        <div className='absolute top-[2px] right-[0px] hover:cursor-pointer' onClick={() => setAdvisorOpen(false)} ><CloseButton /></div>
+                                        <div className='comment-div-title-label-wrap'>
+                                            <div className='comment-div-title-label-before-bar'></div>
+                                            <div className='comment-div-title-label-text'>{`writing advisor`}</div>
+                                        </div>
+                                    </div>
+                                    {/* advisor */}
+                                    <div className='comment-advisor-contents'>
+                                        {/* original sentence */}
+                                        <div className='flex flex-col bg-white'>
+                                            <div className='comment-advisor-label-wrap bg-[#588ee1] relative'
+                                            onClick={() => {
+                                                let dumyControler = JSON.parse(JSON.stringify(advisorControlDiv));
+                                                dumyControler.original_sentence=!dumyControler.original_sentence;
+                                                setAdvisorControlDiv(dumyControler)
+                                            }}>
+                                                <div className='flex select-none'>original sentence</div>
+                                                <div className='flex absolute right-[19px] items-center select-none w-[14px] h-[14px]'>
+                                                    {advisorControlDiv.original_sentence ? <UnderArrow />:<UpArrow/>}
+                                                </div>
+                                            </div>
+                                            <div className={advisorControlDiv.original_sentence ? 'comment-advisor-wrap-text border-[#588ee1]':'hidden'}>
+                                                {advisor.draft_outline.map((advisorParagraphItem) => {
+                                                    const originalSentence = advisorParagraphItem.original_text;
+                                                    const originalSentenceName = advisorParagraphItem.name;
+                                                    const key = `advisor-${originalSentenceName}-${advisorParagraphItem.order_index}`
+                                                    if (originalSentenceName==='Title') {
+                                                        return (
+                                                            <div key={key} className='flex h-fit'>{`Title: ${originalSentence}`}</div>
+                                                        )
+                                                    } else {
+                                                        return (
+                                                            <div key={key} className='h-fit flow-root'><span className='pl-[10px]'/>{originalSentence}</div>
+                                                        )
+                                                    }
+                                                })}
+                                            </div>
+                                        </div>
+                                        {/* revised sentence */}
+                                        <div className='flex flex-col bg-white'>
+                                            <div className='comment-advisor-label-wrap bg-[#f6914d] relative'
+                                            onClick={() => {
+                                                let dumyControler = JSON.parse(JSON.stringify(advisorControlDiv));
+                                                dumyControler.revised_sentence=!dumyControler.revised_sentence;
+                                                setAdvisorControlDiv(dumyControler)
+                                            }}>
+                                                <div className='flex select-none'>revised sentence</div>
+                                                <div className='flex absolute right-[19px] items-center select-none w-[14px] h-[14px]'>
+                                                    {advisorControlDiv.revised_sentence ? <UnderArrow />:<UpArrow/>}
+                                                </div>
+                                            </div>
+                                            <div className={advisorControlDiv.revised_sentence ? 'comment-advisor-wrap-text border-[#f6914d]':'hidden'}>
+                                                {advisor.draft_outline.map((advisorParagraphItem) => {
+                                                    const originalSentence = advisorParagraphItem.original_text;
+                                                    const originalSentenceName = advisorParagraphItem.name;
+                                                    if (originalSentenceName==='Title') {
+                                                        return (
+                                                            <div className='flex h-fit'>{`Title: ${originalSentence}`}</div>
+                                                        )
+                                                    } else {
+                                                        return (
+                                                            <div className='flow-root h-fit'><span className='pl-[10px]'/>{originalSentence}</div>
+                                                        )
+                                                    }
+                                                })}
+                                            </div>
+                                        </div>
+                                        {/* similar sentence */}
+                                        <div className='flex flex-col bg-white'>
+                                            <div className='comment-advisor-label-wrap bg-[#30c194] relative'
+                                            onClick={() => {
+                                                let dumyControler = JSON.parse(JSON.stringify(advisorControlDiv));
+                                                dumyControler.similar_sentence=!dumyControler.similar_sentence;
+                                                setAdvisorControlDiv(dumyControler)
+                                            }}>
+                                                <div className='flex select-none'>similar sentence</div>
+                                                <div className='flex absolute right-[19px] items-center select-none w-[14px] h-[14px]'>
+                                                    {advisorControlDiv.similar_sentence ? <UnderArrow />:<UpArrow/>}
+                                                </div>
+                                            </div>
+                                            <div className={advisorControlDiv.similar_sentence ? 'comment-advisor-wrap-text border-[#30c194]':'hidden'}>
+                                                {advisor.draft_outline.map((advisorParagraphItem) => {
+                                                    const originalSentence = advisorParagraphItem.original_text;
+                                                    const originalSentenceName = advisorParagraphItem.name;
+                                                    if (originalSentenceName==='Title') {
+                                                        return (
+                                                            <div className='flex h-fit'>{`Title: ${originalSentence}`}</div>
+                                                        )
+                                                    } else {
+                                                        return (
+                                                            <div className='flow-root h-fit'><span className='pl-[10px]'/>{originalSentence}</div>
+                                                        )
+                                                    }
+                                                })}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+                    {/* advisor & draft divider */}
+                    {advisorOpen && (
+                        <div className='bg-white w-fit h-full flex flex-col items-center justify-center'
+                        style={{ left: `${divAResize.divideAD.x}px` }}
+                        ><div className='flex h-[calc(50%-27.5px)] w-[1px] bg-[#d1d1d1]'/><SizeDragButtonSVG
+                            className='h-[55px] hover:cursor-grab'
+                            onMouseDown={(clickEvent: React.MouseEvent<Element, MouseEvent>) => {
+                                const mouseMoveHandler = (moveEvent: MouseEvent) => {
+                                    const boundary = boundaryRef.current?.getBoundingClientRect();
                                     
-                                } else {
-                                    const advisorResponse = await getSparkWritingAdvisor(draftId);
-                                    if (advisorResponse.draft_index > 0) {
-                                        console.log('advisor response =',advisorResponse)
-                                        setAdvisor(advisorResponse);
+                                    if (boundary) {
+                                        // 2️⃣
+                                        const deltaX = moveEvent.screenX - clickEvent.screenX;
+                                        
+                                        const resizeX = inrange(
+                                            divAResize.divideAD.x + deltaX,
+                                            // Math.floor(-boundary.width / 2 + 5 + 10),
+                                            400,
+                                            Math.floor(boundary.width- 5 - 10),
+                                        )
                                         let dumyStates:TDivsControlConfig = JSON.parse(JSON.stringify(divAResize));
-                                        dumyStates.advisor.w = 400;
+                                        dumyStates.advisor.w = resizeX
+                                        dumyStates.divideAD.x = resizeX
+                                        // 3️⃣
                                         setDivAResize(dumyStates);
-                                        setAdvisorOpen(true)
                                     }
-                                }
+                                };
+
+                                const mouseUpHandler = () => {
+                                document.removeEventListener('mousemove', mouseMoveHandler);
+                                };
+
+                                document.addEventListener('mousemove', mouseMoveHandler);
+                                document.addEventListener('mouseup', mouseUpHandler, { once: true });
                             }}
+                        
+                        /><div className='flex h-[calc(50%-27.5px)] w-[1px] bg-[#d1d1d1]'/></div>
+                    )}
+                    {/* draft view div */}
+                    <div className='min-w-[400px] bg-white'
+                        style={{
+                            width: advisorOpen ?
+                                `${divAResize.draft.w}px`:
+                                `${divAResize.draft.w-divAResize.divideAD.x}px`
+                        }}
+                    >
+                        <div className='flex flex-col w-full h-full pl-[20px] py-[20px]'>
+                            <div className='flex flex-row font-notoSansCJKKR text-[16px] text-[#222] leading-[1.13]'>1st Draft</div>
+                            <div id='draft-title-wrap-div'
+                            className='flex flex-row mt-[10px] h-[42px] gap-[15px] font-notoSansCJKKR text-[13px] text-[#222] leading-[1.38] items-center'>
+                                <div className='flex'>Title: </div>
+                                <div className='draft-viewer-container-title'
+                                    ref={containerTitleRef}
+                                    onContextMenu={(e)=>draftStatus>3 ? ()=>{}:titleDragHandlerSelection(e)}
+                                >
+                                    {feedbackDataInStudent && (draftStatus===2||draftStatus===5) && draftViewBox.draftTitle({feedbackDataInStudent})}
+                                    { feedbackDataInStudent && (draftStatus>2&&draftStatus!==5) && draftViewBox.loadTemporaryDraftTitle({feedbackDataInStudent, setCommentFocusId})}
+
+                                    {titleCommentBoxVisible && (
+                                        <div style={commentBoxStyle}
+                                            ref={containerTitleCommentRef}
+                                        >
+                                            <button onClick={handleHighlightClick} className='comment-button-add'></button>
+                                        </div>
+                                    )}
+                                    {afterHighlightBoxVisible && (
+                                        <div style={afterHighlightBoxStyle}>
+                                            <p>{'test'}</p>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                            <div id='draft-body-wrap-div'>
+                                <div className='flex flex-col gap-[13px] mt-[10px] p-[35px] w-full h-full bg-[#f9f9f9] justify-start'
+                                // flex flex-col justify-start
+                                    ref={containerBodyRef}
+                                    onContextMenu={(e)=>draftStatus>3 ? ()=>{}: bodyDragHandlerSelection(e)}
+                                >
+                                    {/* 화면 처음 초기화면 사용 */}
+                                    {feedbackDataInStudent && (draftStatus===2||draftStatus===5) && draftViewBox.draftBody({feedbackDataInStudent})}
+                                    {/* 임시 저장 후 사용 */}
+                                    { feedbackDataInStudent && (draftStatus>2&&draftStatus!==5) && draftViewBox.loadTemporaryDraftBody({feedbackDataInStudent,setCommentFocusId})}
+                                    {/* feedback 완료 후 사용 */}
+
+                                    {bodyCommentBoxVisible && (
+                                        <div style={commentBodyBoxStyle}
+                                            ref={containerBodyCommentRef}
+                                        >
+                                            <button onClick={handleBodyHighlightClick} className='comment-button-add'></button>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {/* draft & comment divider */}
+                    <div className='bg-white w-fit h-full flex flex-col items-center justify-center'
+                        style={{ left: `${divAResize.divideDC.x}px` }}
+                    >
+                        <div className='flex h-[calc(50%-27.5px)] w-[1px] bg-[#d1d1d1]'/>
+                        <SizeDragButtonSVG
+                            className='h-[55px] hover:cursor-grab'
+                            onMouseDown={(clickEvent: React.MouseEvent<Element, MouseEvent>) => {
+                                const mouseMoveHandler = (moveEvent: MouseEvent) => {
+                                    const boundary = boundaryRef.current?.getBoundingClientRect();
+                                    if (boundary) {
+                                        // 2️⃣
+                                        const deltaX = moveEvent.screenX - clickEvent.screenX;
+                                        const resizeX = inrange(
+                                            divAResize.divideDC.x + deltaX,
+                                            // Math.floor(-boundary.width / 2 + 5 + 10),
+                                            400,
+                                            Math.floor(boundary.width - 5 - 10),
+                                        )
+                                        let dumyStates:TDivsControlConfig = JSON.parse(JSON.stringify(divAResize));
+                                        dumyStates.draft.w = resizeX
+                                        dumyStates.divideDC.x = resizeX
+                                        // 3️⃣
+                                        setDivAResize(dumyStates);
+                                    }
+                                };
+
+                                const mouseUpHandler = () => {
+                                document.removeEventListener('mousemove', mouseMoveHandler);
+                                };
+
+                                document.addEventListener('mousemove', mouseMoveHandler);
+                                document.addEventListener('mouseup', mouseUpHandler, { once: true });
+                            }}
+                        
                         />
+                        <div className='flex h-[calc(50%-27.5px)] w-[1px] bg-[#d1d1d1]'/>
                     </div>
-                )}
-                {advisorOpen && (
-                    <div className='comment-advisor-div'
-                        // onClick={() => setAdvisorOpen(false)}
-                    style={{width: `${divAResize.advisor.w}px`}}>
-                        {/* advisor header */}
-                        <div className='flex flex-col w-full h-fit relative'>
-                            <div className='absolute top-[2px] right-[0px] hover:cursor-pointer' onClick={() => setAdvisorOpen(false)} ><CloseButton /></div>
-                            <div className='comment-div-title-label-wrap'>
-                                <div className='comment-div-title-label-before-bar'></div>
-                                <div className='comment-div-title-label-text'>{`writing advisor`}</div>
+                    {/* comment div */}
+                    <div className='flex flex-1 flex-col gap-[20px] bg-white h-full w-full min-w-[300px]'>
+                        
+                        <div className='flex flex-col w-full h-full pr-[20px] pl-[13px] pt-[20px]'>
+                            <div className='flex flex-row capitalize'>{'correction comments'}</div>
+                            {/* all comment */}
+                            <div className='flex flex-col gap-[5px] overflow-y-auto'>
+                                {allBodySelectedText.map((commentItem, commentIndex) => {
+                                    // console.log('claa =',commentItem.comment_className)
+                                    return (
+                                        <div className='comment-wrapper'
+                                        key={commentItem.comment_className}
+                                        style={{
+                                            border: commentFocusId === commentItem.comment_className ? '2px solid #f1b02e':''
+                                        }}
+                                        onMouseOver={()=>{
+                                            const target = document.getElementById(commentItem.comment_className);
+                                            target?.setAttribute(
+                                                'style',
+                                                'background-color:yellow; height:fit-content; cursor:pointer; border:2px solid #f1b02e;'
+                                            )
+                                            setCommentFocusId(commentItem.comment_className);
+                                        }} onMouseOut={()=>{
+                                            const target = document.getElementById(commentItem.comment_className);
+                                            target?.setAttribute(
+                                                'style',
+                                                'background-color:yellow; height:fit-content; cursor:pointer; border:none;'
+                                            )
+                                            setCommentFocusId('');
+                                        }}>
+                                            <input className='comment-input disabled:bg-white'
+                                                disabled={draftStatus < 4 ? false:true}
+                                                onChange={(e)=>{
+                                                    const value = e.currentTarget.value;
+                                                    let dumyAllValues:TComment[] = JSON.parse(JSON.stringify(allBodySelectedText));
+                                                    for (let i = 0; i < dumyAllValues.length; i++) {
+                                                        if (dumyAllValues[i].comment_index === commentItem.comment_index) {
+                                                            dumyAllValues[i].comment = value;
+                                                            break;
+                                                        }
+                                                    };
+                                                    setAllBodySelectedText(dumyAllValues);
+                                                }}
+                                                value={commentItem.comment}
+                                            />
+                                            
+                                            {draftStatus<4 && 
+                                            <commonSvgIcons.CloseImageSVGIcon className='comment-close' onClick={(e)=>{
+                                                // comment 삭제
+                                                // background color redo before
+                                                e.preventDefault();
+                                                const targetElement = document.getElementById(commentItem.comment_className) as HTMLElement;
+                                                // const clickedElement = e.target as HTMLElement;
+                                                console.log('click =',targetElement.parentElement)
+                                                // find parent element className by target
+                                                const checkParent = (target:HTMLElement) => {
+                                                    let targetElement:HTMLElement|null = target;
+                                                    while(targetElement && !targetElement.className.includes(commentItem.comment_className)) {
+                                                        targetElement = targetElement.parentElement;
+                                                    }
+                                                    if (targetElement) return targetElement;
+                                                }
+                                                const parent = checkParent(targetElement);
+                                                console.log('parent ==',parent)
+                                                const checkElement = (target:HTMLElement|null) => {
+                                                    let targetElement:HTMLElement|null = target;
+                                                    while(targetElement && targetElement.id==='') {
+                                                        targetElement = targetElement.parentElement;
+                                                    }
+                                                    if (targetElement) return targetElement.id;
+                                                }
+                                                
+                                                if (parent) {
+                                                    const divName = checkElement(parent.parentElement)
+                                                    console.log('div name =',divName)
+                                                    const parentContent = Array.from(parent.childNodes);
+                                                    const newParent = document.createElement('span');
+                                                    parentContent.forEach(content => {
+                                                        if (content === targetElement) {
+                                                        const originalContent = Array.from(content.childNodes);
+                                                        originalContent.forEach(original => {
+                                                            newParent.appendChild(original.cloneNode(true));
+                                                        });
+                                                        } else {
+                                                        newParent.appendChild(content.cloneNode(true));
+                                                        }
+                                                    });
+                                                    parent.replaceWith(newParent);
+
+                                                    let dumyComment:TComment[] = allBodySelectedText;
+                                                    console.log('before ==',dumyComment)
+                                                    let flag = false;
+                                                    // classNameValue currentCommentIndex divName
+                                                    for (let i =0; i< dumyComment.length; i++) {
+                                                        const checkName = dumyComment[i].paraghragh_name===divName;
+                                                        const checkClassName = dumyComment[i].comment_className === commentItem.comment_className;
+                                                        const checkIndex = dumyComment[i].comment_index === commentItem.comment_index;
+                                                        if (checkName && checkClassName && checkIndex) {
+                                                            console.log('delete', dumyComment[i])
+                                                            flag=true;
+                                                            dumyComment.splice(i, 1);
+                                                        }
+                                                    }
+                                                    setAllBodySelectedText(dumyComment);
+                                                    setCommentFocusId('');
+                                                } else {
+                                                    console.log('parent is not.')
+                                                }
+                                            }}/>
+                                            }
+                                        </div>
+                                    )
+                                })}
                             </div>
                         </div>
-                        {/* advisor */}
-                        <div className='comment-advisor-contents'>
-                            {/* original sentence */}
-                            <div className='flex flex-col bg-white'>
-                                <div className='comment-advisor-label-wrap bg-[#588ee1] relative'
-                                onClick={() => {
-                                    let dumyControler = JSON.parse(JSON.stringify(advisorControlDiv));
-                                    dumyControler.original_sentence=!dumyControler.original_sentence;
-                                    setAdvisorControlDiv(dumyControler)
-                                }}>
-                                    <div className='flex select-none'>original sentence</div>
-                                    <div className='flex absolute right-[19px] items-center select-none w-[14px] h-[14px]'>
-                                        {advisorControlDiv.original_sentence ? <UnderArrow />:<UpArrow/>}
-                                    </div>
-                                </div>
-                                <div className={advisorControlDiv.original_sentence ? 'comment-advisor-wrap-text border-[#588ee1]':'hidden'}>
-                                    {advisor.draft_outline.map((advisorParagraphItem) => {
-                                        const originalSentence = advisorParagraphItem.original_text;
-                                        const originalSentenceName = advisorParagraphItem.name;
-                                        const key = `advisor-${originalSentenceName}-${advisorParagraphItem.order_index}`
-                                        if (originalSentenceName==='Title') {
-                                            return (
-                                                <div key={key} className='flex h-fit'>{`Title: ${originalSentence}`}</div>
-                                            )
-                                        } else {
-                                            return (
-                                                <div key={key} className='h-fit flow-root'><span className='pl-[10px]'/>{originalSentence}</div>
-                                            )
+
+                        {/* overall comments */}
+                        <div className='comment-overall-wrap-div'>
+                            <div className='comment-overall-label'>{'overall comments'}</div>
+                            <textarea className='comment-overall-textarea resize-none disabled:bg-white'
+                                disabled={(draftStatus===2||draftStatus===3) ? false:true}
+                                onChange={(e)=>setOverallComment(e.currentTarget.value)}
+                                value={overallComment}
+                            ></textarea>
+                        </div>
+                        {/* buttons */}
+                        <div className='comment-button-wrap-div'>
+                            <div className='comment-button-close'
+                                onClick={()=>{
+                                    commonAlertOpen({
+                                        head: 'Review 1st Draft',
+                                        messages: [
+                                            'Do you want to return to the main menu?'
+                                        ],
+                                        yesButtonLabel: 'Yes',
+                                        noButtonLabel: 'No',
+                                        yesEvent: async ()=>{
+                                            navigate(`/LearningManagement/WritingHub/SparkWriting`);
+                                            window.location.reload();
                                         }
-                                    })}
+                                    })
+                                }}
+                            />
+                            <div className={(allBodySelectedText.length > 0 || overallComment.length > 0) ? (
+                                draftStatus < 4 ? 'comment-button-save': 'comment-button-save-disabled'
+                            ):'comment-button-save-disabled'} 
+                                onClick={(allBodySelectedText.length > 0 || overallComment.length > 0) ? (
+                                    draftStatus < 4 ? saveButtonEvent:()=>{}
+                                ):()=>{}}
+                            />
+                            <div className={(allBodySelectedText.length > 0 && overallComment.length>0)? (
+                                draftStatus < 4 ? 'comment-button-send': 'comment-button-send-disabled'
+                            ):'comment-button-send-disabled'}
+                                onClick={(allBodySelectedText.length > 0 || overallComment.length > 0) ? (
+                                    draftStatus < 4 ? sendButtonEvent: ()=>{}
+                                ):()=>{}}
+                            />
+                        </div>
+                    </div>
+                </div>
+            )}
+            {feedbackDataInStudent.defautInfo.step_label==='2nd Draft' && (
+                <div className='comment-review-contents'
+                    ref={boundaryRef}
+                >
+                    {/* 1st draft preview */}
+                    <div className='final-draft-viewer-2nd-preview'
+                        style={{width: `${divAResize.advisor.w===0? 400: divAResize.advisor.w}px`}}
+                    >
+                        <div className='flex flex-col w-full h-full pl-[20px] py-[20px]'>
+                            <div className='flex flex-row relative font-notoSansCJKKR text-[16px] text-[#222] leading-[1.13]'>
+                                <span>1st Draft</span>
+                                <span className='absolute top-0 right-0'>
+                                    <ReportModalComponent 
+                                        userInfo={feedbackDataInStudent}
+                                        title={feedbackDataInStudent.draft_data.draft_outline[0].input_content} body={''}
+                                        draft={1}
+                                    />
+                                    <PrintExportButton 
+                                        userInfo={feedbackDataInStudent}
+                                        title={feedbackDataInStudent.draft_data.draft_outline[0].input_content} body={''}
+                                        draft={1}
+                                    />
+
+                                </span>
+                            </div>
+                            <div id='draft-title-wrap-div'
+                            className='flex flex-row mt-[10px] h-[42px] gap-[15px] font-notoSansCJKKR text-[13px] text-[#222] leading-[1.38] items-center'>
+                                <div className='flex'>Title: </div>
+                                <div className='draft-viewer-container-title'>
+                                    {feedbackDataInStudent.draft_data && draftViewBox.loadFinalDraftTitle({feedbackDataInStudent: feedbackDataInStudent.draft_data.draft_outline, draft:'1'})}
                                 </div>
                             </div>
-                            {/* revised sentence */}
-                            <div className='flex flex-col bg-white'>
-                                <div className='comment-advisor-label-wrap bg-[#f6914d] relative'
-                                onClick={() => {
-                                    let dumyControler = JSON.parse(JSON.stringify(advisorControlDiv));
-                                    dumyControler.revised_sentence=!dumyControler.revised_sentence;
-                                    setAdvisorControlDiv(dumyControler)
-                                }}>
-                                    <div className='flex select-none'>revised sentence</div>
-                                    <div className='flex absolute right-[19px] items-center select-none w-[14px] h-[14px]'>
-                                        {advisorControlDiv.revised_sentence ? <UnderArrow />:<UpArrow/>}
-                                    </div>
-                                </div>
-                                <div className={advisorControlDiv.revised_sentence ? 'comment-advisor-wrap-text border-[#f6914d]':'hidden'}>
-                                    {advisor.draft_outline.map((advisorParagraphItem) => {
-                                        const originalSentence = advisorParagraphItem.original_text;
-                                        const originalSentenceName = advisorParagraphItem.name;
-                                        if (originalSentenceName==='Title') {
-                                            return (
-                                                <div className='flex h-fit'>{`Title: ${originalSentence}`}</div>
-                                            )
-                                        } else {
-                                            return (
-                                                <div className='flow-root h-fit'><span className='pl-[10px]'/>{originalSentence}</div>
-                                            )
-                                        }
-                                    })}
-                                </div>
-                            </div>
-                            {/* similar sentence */}
-                            <div className='flex flex-col bg-white'>
-                                <div className='comment-advisor-label-wrap bg-[#30c194] relative'
-                                onClick={() => {
-                                    let dumyControler = JSON.parse(JSON.stringify(advisorControlDiv));
-                                    dumyControler.similar_sentence=!dumyControler.similar_sentence;
-                                    setAdvisorControlDiv(dumyControler)
-                                }}>
-                                    <div className='flex select-none'>similar sentence</div>
-                                    <div className='flex absolute right-[19px] items-center select-none w-[14px] h-[14px]'>
-                                        {advisorControlDiv.similar_sentence ? <UnderArrow />:<UpArrow/>}
-                                    </div>
-                                </div>
-                                <div className={advisorControlDiv.similar_sentence ? 'comment-advisor-wrap-text border-[#30c194]':'hidden'}>
-                                    {advisor.draft_outline.map((advisorParagraphItem) => {
-                                        const originalSentence = advisorParagraphItem.original_text;
-                                        const originalSentenceName = advisorParagraphItem.name;
-                                        if (originalSentenceName==='Title') {
-                                            return (
-                                                <div className='flex h-fit'>{`Title: ${originalSentence}`}</div>
-                                            )
-                                        } else {
-                                            return (
-                                                <div className='flow-root h-fit'><span className='pl-[10px]'/>{originalSentence}</div>
-                                            )
-                                        }
-                                    })}
+                            <div id='draft-body-wrap-div'>
+                                <div className='draft-viewer-container-body gap-[13px]'>
+                                    {feedbackDataInStudent.draft_data && draftViewBox.loadFinalDraftBody({feedbackDataInStudent:feedbackDataInStudent.draft_data.draft_outline, draft: '1' })}
                                 </div>
                             </div>
                         </div>
                     </div>
-                )}
-                {/* advisor & draft divider */}
-                {advisorOpen && (
+
+                    {/* 1st draft & 2nd draft divider */}
                     <div className='bg-white w-fit h-full flex flex-col items-center justify-center'
                     style={{ left: `${divAResize.divideAD.x}px` }}
                     ><div className='flex h-[calc(50%-27.5px)] w-[1px] bg-[#d1d1d1]'/><SizeDragButtonSVG
@@ -1162,262 +1674,135 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                         }}
                     
                     /><div className='flex h-[calc(50%-27.5px)] w-[1px] bg-[#d1d1d1]'/></div>
-                )}
-                {/* draft view div */}
-                <div className='min-w-[400px] bg-white'
-                    style={{
-                        width: advisorOpen ?
-                            `${divAResize.draft.w}px`:
-                            `${divAResize.draft.w-divAResize.divideAD.x}px`
-                    }}
-                >
-                    <div className='flex flex-col w-full h-full pl-[20px] py-[20px]'>
-                        <div className='flex flex-row font-notoSansCJKKR text-[16px] text-[#222] leading-[1.13]'>1st Draft</div>
-                        <div id='draft-title-wrap-div'
-                        className='flex flex-row mt-[10px] h-[42px] gap-[15px] font-notoSansCJKKR text-[13px] text-[#222] leading-[1.38] items-center'>
-                            <div className='flex'>Title: </div>
-                            <div className='draft-viewer-container-title'
-                                ref={containerTitleRef}
-                                onContextMenu={(e)=>draftStatus>3 ? ()=>{}:titleDragHandlerSelection(e)}
-                            >
-                                {feedbackDataInStudent && (draftStatus===2||draftStatus===5) && draftViewBox.draftTitle({feedbackDataInStudent})}
-                                { feedbackDataInStudent && (draftStatus>2&&draftStatus!==5) && draftViewBox.loadTemporaryDraftTitle({feedbackDataInStudent, setCommentFocusId})}
-
-                                {titleCommentBoxVisible && (
-                                    <div style={commentBoxStyle}
-                                        ref={containerTitleCommentRef}
-                                    >
-                                        <button onClick={handleHighlightClick} className='comment-button-add'></button>
-                                    </div>
-                                )}
-                                {afterHighlightBoxVisible && (
-                                    <div style={afterHighlightBoxStyle}>
-                                        <p>{'test'}</p>
-                                    </div>
-                                )}
+                    
+                    {/* 2nd draft student preview */}
+                    <div className='final-draft-viewer-2nd-preview'
+                        style={{
+                            width: `${divAResize.draft.w}px`
+                    }}>
+                        <div className='flex flex-col w-full h-full pl-[20px] py-[20px]'>
+                            <div className='flex flex-row final-component-title-label-font'>2nd Draft</div>
+                            {/* title */}
+                            <div id='draft-title-wrap-div'
+                            className='flex flex-row mt-[10px] h-[42px] gap-[15px] font-notoSansCJKKR text-[13px] text-[#222] leading-[1.38] items-center'>
+                                <div className='flex'>Title: </div>
+                                <div className='draft-viewer-container-title'>
+                                    {feedbackDataInStudent.draft_2nd_data && draftViewBox.loadFinalDraftTitle({feedbackDataInStudent: feedbackDataInStudent.draft_2nd_data.draft_outline, draft:'2'})}
+                                </div>
                             </div>
-                        </div>
-                        <div id='draft-body-wrap-div'>
-                            <div className='flex flex-col gap-[13px] mt-[10px] p-[35px] w-full h-full bg-[#f9f9f9] justify-start'
-                            // flex flex-col justify-start
-                                ref={containerBodyRef}
-                                onContextMenu={(e)=>draftStatus>3 ? ()=>{}: bodyDragHandlerSelection(e)}
-                            >
-                                {/* 화면 처음 초기화면 사용 */}
-                                {feedbackDataInStudent && (draftStatus===2||draftStatus===5) && draftViewBox.draftBody({feedbackDataInStudent})}
-                                {/* 임시 저장 후 사용 */}
-                                { feedbackDataInStudent && (draftStatus>2&&draftStatus!==5) && draftViewBox.loadTemporaryDraftBody({feedbackDataInStudent,setCommentFocusId})}
-                                {/* feedback 완료 후 사용 */}
-
-                                {bodyCommentBoxVisible && (
-                                    <div style={commentBodyBoxStyle}
-                                        ref={containerBodyCommentRef}
-                                    >
-                                        <button onClick={handleBodyHighlightClick} className='comment-button-add'></button>
-                                    </div>
-                                )}
+                            {/* body */}
+                            <div id='draft-body-wrap-div'>
+                                <div className='draft-viewer-container-body'>
+                                    {feedbackDataInStudent.draft_2nd_data && draftViewBox.loadFinalDraftBody({feedbackDataInStudent:feedbackDataInStudent.draft_2nd_data.draft_outline, draft: '2' })}
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                {/* draft & comment divider */}
-                <div className='bg-white w-fit h-full flex flex-col items-center justify-center'
-                    style={{ left: `${divAResize.divideDC.x}px` }}
-                >
-                    <div className='flex h-[calc(50%-27.5px)] w-[1px] bg-[#d1d1d1]'/>
-                    <SizeDragButtonSVG
-                        className='h-[55px] hover:cursor-grab'
-                        onMouseDown={(clickEvent: React.MouseEvent<Element, MouseEvent>) => {
-                            const mouseMoveHandler = (moveEvent: MouseEvent) => {
-                                const boundary = boundaryRef.current?.getBoundingClientRect();
-                                if (boundary) {
-                                    // 2️⃣
-                                    const deltaX = moveEvent.screenX - clickEvent.screenX;
-                                    const resizeX = inrange(
-                                        divAResize.divideDC.x + deltaX,
-                                        // Math.floor(-boundary.width / 2 + 5 + 10),
-                                        400,
-                                        Math.floor(boundary.width - 5 - 10),
-                                    )
-                                    let dumyStates:TDivsControlConfig = JSON.parse(JSON.stringify(divAResize));
-                                    dumyStates.draft.w = resizeX
-                                    dumyStates.divideDC.x = resizeX
-                                    // 3️⃣
-                                    setDivAResize(dumyStates);
-                                }
-                            };
 
-                            const mouseUpHandler = () => {
-                            document.removeEventListener('mousemove', mouseMoveHandler);
-                            };
-
-                            document.addEventListener('mousemove', mouseMoveHandler);
-                            document.addEventListener('mouseup', mouseUpHandler, { once: true });
-                        }}
-                    
-                    />
-                    <div className='flex h-[calc(50%-27.5px)] w-[1px] bg-[#d1d1d1]'/>
-                </div>
-                {/* comment div */}
-                <div className='flex flex-1 flex-col gap-[20px] bg-white h-full w-full min-w-[300px]'>
-                    
-                    <div className='flex flex-col w-full h-full pr-[20px] pl-[13px] pt-[20px]'>
-                        <div className='flex flex-row capitalize'>{'correction comments'}</div>
-                        {/* all comment */}
-                        <div className='flex flex-col gap-[5px] overflow-y-auto'>
-                            {allBodySelectedText.map((commentItem, commentIndex) => {
-                                // console.log('claa =',commentItem.comment_className)
-                                return (
-                                    <div className='comment-wrapper'
-                                    key={commentItem.comment_className}
-                                    style={{
-                                        border: commentFocusId === commentItem.comment_className ? '2px solid #f1b02e':''
-                                    }}
-                                    onMouseOver={()=>{
-                                        const target = document.getElementById(commentItem.comment_className);
-                                        target?.setAttribute(
-                                            'style',
-                                            'background-color:yellow; height:fit-content; cursor:pointer; border:2px solid #f1b02e;'
+                    {/* 2nd draft & overall comments divider */}
+                    <div className='bg-white w-fit h-full flex flex-col items-center justify-center'
+                        style={{ left: `${divAResize.divideDC.x}px` }}
+                    >
+                        <div className='flex h-[calc(50%-27.5px)] w-[1px] bg-[#d1d1d1]'/>
+                        <SizeDragButtonSVG
+                            className='h-[55px] hover:cursor-grab'
+                            onMouseDown={(clickEvent: React.MouseEvent<Element, MouseEvent>) => {
+                                const mouseMoveHandler = (moveEvent: MouseEvent) => {
+                                    const boundary = boundaryRef.current?.getBoundingClientRect();
+                                    if (boundary) {
+                                        // 2️⃣
+                                        const deltaX = moveEvent.screenX - clickEvent.screenX;
+                                        const resizeX = inrange(
+                                            divAResize.divideDC.x + deltaX,
+                                            // Math.floor(-boundary.width / 2 + 5 + 10),
+                                            400,
+                                            Math.floor(boundary.width - 5 - 10),
                                         )
-                                        setCommentFocusId(commentItem.comment_className);
-                                    }} onMouseOut={()=>{
-                                        const target = document.getElementById(commentItem.comment_className);
-                                        target?.setAttribute(
-                                            'style',
-                                            'background-color:yellow; height:fit-content; cursor:pointer; border:none;'
-                                        )
-                                        setCommentFocusId('');
-                                    }}>
-                                        <input className='comment-input disabled:bg-white'
-                                            disabled={draftStatus < 4 ? false:true}
-                                            onChange={(e)=>{
-                                                const value = e.currentTarget.value;
-                                                let dumyAllValues:TComment[] = JSON.parse(JSON.stringify(allBodySelectedText));
-                                                for (let i = 0; i < dumyAllValues.length; i++) {
-                                                    if (dumyAllValues[i].comment_index === commentItem.comment_index) {
-                                                        dumyAllValues[i].comment = value;
-                                                        break;
-                                                    }
-                                                };
-                                                setAllBodySelectedText(dumyAllValues);
-                                            }}
-                                            value={commentItem.comment}
-                                        />
-                                        
-                                        {draftStatus<4 && 
-                                        <commonSvgIcons.CloseImageSVGIcon className='comment-close' onClick={(e)=>{
-                                            // comment 삭제
-                                            // background color redo before
-                                            e.preventDefault();
-                                            const targetElement = document.getElementById(commentItem.comment_className) as HTMLElement;
-                                            // const clickedElement = e.target as HTMLElement;
-                                            console.log('click =',targetElement.parentElement)
-                                            // find parent element className by target
-                                            const checkParent = (target:HTMLElement) => {
-                                                let targetElement:HTMLElement|null = target;
-                                                while(targetElement && !targetElement.className.includes(commentItem.comment_className)) {
-                                                    targetElement = targetElement.parentElement;
-                                                }
-                                                if (targetElement) return targetElement;
-                                            }
-                                            const parent = checkParent(targetElement);
-                                            console.log('parent ==',parent)
-                                            const checkElement = (target:HTMLElement|null) => {
-                                                let targetElement:HTMLElement|null = target;
-                                                while(targetElement && targetElement.id==='') {
-                                                    targetElement = targetElement.parentElement;
-                                                }
-                                                if (targetElement) return targetElement.id;
-                                            }
-                                            
-                                            if (parent) {
-                                                const divName = checkElement(parent.parentElement)
-                                                console.log('div name =',divName)
-                                                const parentContent = Array.from(parent.childNodes);
-                                                const newParent = document.createElement('span');
-                                                parentContent.forEach(content => {
-                                                    if (content === targetElement) {
-                                                    const originalContent = Array.from(content.childNodes);
-                                                    originalContent.forEach(original => {
-                                                        newParent.appendChild(original.cloneNode(true));
-                                                    });
-                                                    } else {
-                                                    newParent.appendChild(content.cloneNode(true));
-                                                    }
-                                                });
-                                                parent.replaceWith(newParent);
-
-                                                let dumyComment:TComment[] = allBodySelectedText;
-                                                console.log('before ==',dumyComment)
-                                                let flag = false;
-                                                // classNameValue currentCommentIndex divName
-                                                for (let i =0; i< dumyComment.length; i++) {
-                                                    const checkName = dumyComment[i].paraghragh_name===divName;
-                                                    const checkClassName = dumyComment[i].comment_className === commentItem.comment_className;
-                                                    const checkIndex = dumyComment[i].comment_index === commentItem.comment_index;
-                                                    if (checkName && checkClassName && checkIndex) {
-                                                        console.log('delete', dumyComment[i])
-                                                        flag=true;
-                                                        dumyComment.splice(i, 1);
-                                                    }
-                                                }
-                                                setAllBodySelectedText(dumyComment);
-                                                setCommentFocusId('');
-                                            } else {
-                                                console.log('parent is not.')
-                                            }
-                                        }}/>
-                                        }
-                                    </div>
-                                )
-                            })}
-                        </div>
-                    </div>
-
-                    {/* overall comments */}
-                    <div className='comment-overall-wrap-div'>
-                        <div className='comment-overall-label'>{'overall comments'}</div>
-                        <textarea className='comment-overall-textarea resize-none disabled:bg-white'
-                            disabled={(draftStatus===2||draftStatus===3) ? false:true}
-                            onChange={(e)=>setOverallComment(e.currentTarget.value)}
-                            value={overallComment}
-                        ></textarea>
-                    </div>
-                    {/* buttons */}
-                    <div className='comment-button-wrap-div'>
-                        <div className='comment-button-close'
-                            onClick={()=>{
-                                commonAlertOpen({
-                                    head: 'Review 1st Draft',
-                                    messages: [
-                                        'Do you want to return to the main menu?'
-                                    ],
-                                    yesButtonLabel: 'Yes',
-                                    noButtonLabel: 'No',
-                                    yesEvent: async ()=>{
-                                        navigate(`/LearningManagement/WritingHub/SparkWriting`);
-                                        window.location.reload();
+                                        let dumyStates:TDivsControlConfig = JSON.parse(JSON.stringify(divAResize));
+                                        dumyStates.draft.w = resizeX
+                                        dumyStates.divideDC.x = resizeX
+                                        // 3️⃣
+                                        setDivAResize(dumyStates);
                                     }
-                                })
+                                };
+
+                                const mouseUpHandler = () => {
+                                document.removeEventListener('mousemove', mouseMoveHandler);
+                                };
+
+                                document.addEventListener('mousemove', mouseMoveHandler);
+                                document.addEventListener('mouseup', mouseUpHandler, { once: true });
                             }}
+                        
                         />
-                        <div className={(allBodySelectedText.length > 0 || overallComment.length > 0) ? (
-                            draftStatus < 4 ? 'comment-button-save': 'comment-button-save-disabled'
-                        ):'comment-button-save-disabled'} 
-                            onClick={(allBodySelectedText.length > 0 || overallComment.length > 0) ? (
-                                draftStatus < 4 ? saveButtonEvent:()=>{}
-                            ):()=>{}}
-                        />
-                        <div className={(allBodySelectedText.length > 0 && overallComment.length>0)? (
-                            draftStatus < 4 ? 'comment-button-send': 'comment-button-send-disabled'
-                        ):'comment-button-send-disabled'}
-                            onClick={(allBodySelectedText.length > 0 || overallComment.length > 0) ? (
-                                draftStatus < 4 ? sendButtonEvent: ()=>{}
-                            ):()=>{}}
-                        />
+                        <div className='flex h-[calc(50%-27.5px)] w-[1px] bg-[#d1d1d1]'/>
                     </div>
+
+                    {/* overall comments & rubric evaluation */}
+                    <div className='flex flex-1 flex-col gap-[20px] bg-white h-full w-full min-w-[300px]'>
+                        {/* final overall comment */}
+                        <div className='flex flex-col w-full h-[214px] pr-[20px] pl-[13px] pt-[20px]'>
+                            <div className='flex flex-row capitalize final-component-title-label-font'>{'overall comments'}</div>
+                            <textarea className='comment-final-overall-textarea mt-[10px]'
+                                disabled={(draftStatus===2||draftStatus===3) ? false:true}
+                                placeholder='Input your overall comments for the 2nd draft.'
+                                onChange={(e)=>setFinalOverallComment(e.currentTarget.value)}
+                                value={finalOverallComment}
+                            ></textarea>
+                        </div>
+                        {/* rubric evaluation */}
+                        <div className='flex flex-col w-full h-full min-h-[467px] pr-[20px] pl-[13px] mt-[28px] gap-[4px] bg-white'>
+                            <div className='flex flex-row pt-[6px] h-[36px] capitalize final-component-title-label-font relative'>
+                                <div className='flex h-[36px]'>{'rubric evaluation'}</div>
+                                {/* <div className='rubric-magnifying-glass-button' /> */}
+                                <RubricTypeModalComponent 
+                                    keyValue={'final-draft-rubric-modal'}
+                                    rubric_type={`Unit ${feedbackDataInStudent.defautInfo.unit_index}. ${feedbackDataInStudent.defautInfo.unit_topic}`}
+                                    rubric_type_datas={{
+                                        data: feedbackDataInStudent.rubric.rubric_description,
+                                        dataHead: rubricDataHead
+                                    }}
+                                    isFinalDraft={true}
+                                />
+                            </div>
+                            {/* rubric categories score select */}
+                            <div className='flex flex-col gap-[5px] overflow-auto'>
+                                {draftViewBox.rubricEvaluation({rubricData: feedbackDataInStudent.rubric, rubricReportValue: rubricReportValue, draftStatus: feedbackDataInStudent.status? feedbackDataInStudent.status.status: 0, controlValue: rubricSelected, controlFn: setRubricSelectedItem})}
+                            </div>
+
+                        </div>
+
+                        {/* buttons */}
+                        <div className='flex w-full relative min-h-[81px] h-[81px] items-center border-t-[1px] border-t-[#e2e3e6] bg-white'>
+                            <div className='absolute flex right-[20px] gap-[10px]'>
+                                <div className='comment-button-close hover:cursor-pointer'
+                                    onClick={()=>{
+                                        commonAlertOpen({
+                                            head: 'Evaluate 2nd Draft',
+                                            messages: [
+                                                'Do you want to return to the main menu?'
+                                            ],
+                                            yesButtonLabel: 'Yes',
+                                            noButtonLabel: 'No',
+                                            yesEvent: async ()=>{
+                                                navigate(`/LearningManagement/WritingHub/SparkWriting`);
+                                                window.location.reload();
+                                            }
+                                        })
+                                    }}
+                                />
+                                <div className={finalTemporarySaveFlag? 'comment-button-save hover:cursor-pointer':'comment-button-save-disabled'}
+                                    onClick={()=>draft2ndSave()}
+                                />
+                                <div className={finalCreateReportFlag? 'comment-button-create-report hover:cursor-pointer':'comment-button-create-report-disabled'}
+                                    onClick={async ()=>draft2ndCreateReport()}
+                                />
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
-            </div>
+            )}
             
         </section>
     )

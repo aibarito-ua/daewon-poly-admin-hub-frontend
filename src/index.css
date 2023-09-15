@@ -947,8 +947,25 @@ body {
 
 .draft-viewer-container-title {
   @apply
-  flex w-full h-[42px] bg-[#f9f9f9] px-[15px] pt-[12px]
+  flex w-full min-h-[42px] h-fit bg-[#f9f9f9] px-[15px] py-[12px]
   rounded-[2px]
+}
+.draft-viewer-container-body {
+  @apply
+  flex
+  flex-col
+  mt-[10px]
+  p-[25px]
+  w-full
+  h-[calc(100vh-455px)]
+  overflow-auto
+  bg-[#f9f9f9]
+  justify-start
+}
+.final-draft-viewer-2nd-preview {
+  @apply
+  min-w-[400px] bg-white
+  h-[calc(100vh-400px)]
 }
 
 .update-words {
@@ -1002,6 +1019,24 @@ body {
   focus:ring-0
   focus:border-[#dbdbdb]
 }
+.final-component-title-label-font {
+  @apply
+  font-notoSansCJKKR text-[16px] text-[#222] leading-[1.13]
+}
+.comment-final-overall-textarea {
+  @apply
+  flex
+  w-[600px]
+  h-[180px]
+  border-[1px]
+  border-[#dbdbdb]
+  outline-none
+  focus:outline-none
+  focus:ring-0
+  focus:border-[#dbdbdb]
+  resize-none disabled:bg-white
+
+}
 .comment-close {
   @apply
   absolute
@@ -1052,6 +1087,35 @@ body {
   bg-svg-bt-save
   bg-no-repeat
   hover:bg-svg-bt-save-over
+}
+.button-icon-print {
+  @apply
+  h-[36px]
+  w-[36px]
+  bg-no-repeat
+  bg-svg-bt-print
+}
+.button-icon-pdf {
+  @apply
+  h-[36px]
+  w-[36px]
+  bg-no-repeat
+  bg-svg-bt-pdf
+}
+.comment-button-create-report {
+  @apply
+  h-[40px]
+  w-[182px]
+  bg-no-repeat
+  bg-svg-bt-create-report
+  hover:bg-svg-bt-create-report-over
+}
+.comment-button-create-report-disabled {
+  @apply
+  h-[40px]
+  w-[182px]
+  bg-no-repeat
+  bg-svg-bt-create-report-disabled
 }
 .comment-button-save-disabled {
   @apply
@@ -1161,3 +1225,157 @@ body {
   leading-normal
   text-center
 }
+/* 돋보기 */
+.rubric-magnifying-glass-button {
+  @apply
+  absolute
+  top-0
+  right-0
+  w-[36px]
+  h-[36px]
+  bg-no-repeat
+  bg-svg-bt-info-magnifying-glass-icon
+  hover:cursor-pointer
+}
+
+/* export 학습관리 */
+.export-lm-wh-draft-info-div {
+  box-shadow: 0 0.79375mm 1.5875mm 0 rgba(0, 0, 0, 0.16);
+  @apply
+  flex
+  flex-row
+  border-[0.2645833333mm]
+  border-[#0fa9cb]
+  rounded-[7.9375mm]
+  bg-white
+}
+.export-lm-wh-font-gothamrounded {
+  font-family: 'GothamRounded';
+  font-weight: 500;
+  font-stretch: normal;
+  font-style: normal;
+  letter-spacing: normal;
+  color:#222;
+  @apply
+  flex
+  capitalize
+}
+.export-lm-wh-font-sub-title {
+  font-family: 'NotoSansCJKKR';
+  font-weight: 400;
+  font-stretch: normal;
+  font-style: normal;
+  letter-spacing: normal;
+  color: #222;
+  @apply
+  flex
+  capitalize
+}
+.export-lm-wh-font-step-span {
+  font-family: 'NotoSansCJKKR';
+  font-weight: 500;
+  font-stretch: normal;
+  font-style: normal;
+  letter-spacing: normal;
+  
+  @apply
+  flex
+  
+  capitalize
+  text-white
+}
+.export-lm-wh-font-label {
+  font-family: 'NotoSansCJKKR';
+  font-size: 3.175mm;
+  font-weight: normal;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 4.7625mm;
+  letter-spacing: normal;
+  text-align: left;
+  color: #999;
+  @apply
+  capitalize
+}
+.export-lm-wh-font-value {
+  font-family: 'NotoSansCJKKR';
+  font-size: 3.175mm;
+  font-weight: 500;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 4.7625mm;
+  letter-spacing: normal;
+  text-align: left;
+  color: #222;
+}
+
+.export-lm-wh-content-title {
+  @apply
+  bg-[#0fa9cb]
+  absolute
+  -left-[5.2916666667mm]
+  top-[10.583333333mm]
+  w-fit
+  h-[14.2875mm]
+  text-white
+  rounded-r-[6.6145833333mm]
+  flex items-center
+  pl-[4.7625mm]
+  pr-[7.9375mm]
+}
+.export-lm-wh-content-title-deco {
+  border-top: 10px solid #177a8f;
+  border-right: 10px solid #177a8f;
+  border-bottom: 10px solid transparent;
+  border-left: 10px solid transparent;
+  @apply
+  absolute
+  -left-[5.2916666667mm]
+  top-[24.870833333mm]
+  w-0
+  h-0
+}
+.export-lm-wh-content-title-value {
+  font-family: 'GothamRounded';
+  font-size: 3.96875mm;
+  font-weight: 500;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 4.7625mm;
+  letter-spacing: normal;
+  text-align: left;
+  vertical-align: middle;
+  @apply
+  h-[4.7625mm]
+}
+.export-lm-wh-content-body {
+  font-family: 'NotoSansCJKKR';
+  font-size: 3.7041666667mm;
+  font-weight: normal;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 7.9375mm;
+  letter-spacing: normal;
+  text-align: left;
+  color: #555;
+  @apply
+  mt-[34.13125mm]
+  mx-[13.229166667mm]
+  mb-[10.583333333mm]
+  flex flex-col
+  gap-[3.4395833333mm]
+  h-[195.662mm]
+}
+.print-container {
+  width: 210mm;
+  height: 297mm;
+}
+@media print {
+  @page {
+    width: 210mm;
+    height: 297mm;
+  }
+  /* .print-container {
+  } */
+}
+

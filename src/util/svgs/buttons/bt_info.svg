@@ -1,0 +1,62 @@
+<svg id="bt_info" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="36" height="36" viewBox="0 0 36 36">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: none;
+      }
+
+      .cls-2 {
+        fill: #fff;
+        stroke: #0fa9cb;
+      }
+
+      .cls-3 {
+        fill: #dadde1;
+      }
+
+      .cls-4 {
+        clip-path: url(#clip-path);
+      }
+
+      .cls-5 {
+        fill: #11819a;
+      }
+
+      .cls-6 {
+        fill: #0fa9cb;
+      }
+
+      .cls-7 {
+        fill: #f1b02e;
+      }
+
+      .cls-8 {
+        fill: #db5757;
+      }
+
+      .cls-9 {
+        stroke: none;
+      }
+    </style>
+    <clipPath id="clip-path">
+      <rect id="사각형_3244" data-name="사각형 3244" class="cls-1" width="24" height="26.123"/>
+    </clipPath>
+  </defs>
+  <g id="사각형_3237" data-name="사각형 3237" class="cls-2">
+    <rect class="cls-9" width="36" height="36" rx="2"/>
+    <rect class="cls-1" x="0.5" y="0.5" width="35" height="35" rx="1.5"/>
+  </g>
+  <g id="그룹_12128" data-name="그룹 12128" transform="translate(6 5)">
+    <rect id="사각형_3240" data-name="사각형 3240" class="cls-3" width="3.151" height="3.637" transform="matrix(0.755, -0.656, 0.656, 0.755, 13.901, 17.283)"/>
+    <g id="그룹_12127" data-name="그룹 12127" transform="translate(0 0)">
+      <g id="그룹_12126" data-name="그룹 12126" class="cls-4">
+        <path id="패스_13022" data-name="패스 13022" class="cls-5" d="M34.019,34.76l1.011,1.165a8.974,8.974,0,0,1-2.242,1.87l-.974-1.122,2.2-1.914Z" transform="translate(-18.828 -20.572)"/>
+        <path id="패스_13023" data-name="패스 13023" class="cls-6" d="M3.061,2.176A8.887,8.887,0,1,0,15.6,3.062,8.887,8.887,0,0,0,3.061,2.176h0m9.955,11.467a6.3,6.3,0,1,1,.627-8.884,6.3,6.3,0,0,1-.627,8.884m5.809,3.3,4.584,5.281L19.873,25.3l-4.584-5.281a.939.939,0,0,1,.092-1.325h0L17.5,16.853a.939.939,0,0,1,1.325.091l0,0Z" transform="translate(0 0)"/>
+        <path id="패스_13024" data-name="패스 13024" class="cls-3" d="M52.224,54.453l.019.022a2.34,2.34,0,1,1-3.534,3.068l-.019-.022,3.536-3.069Z" transform="translate(-28.816 -32.226)"/>
+        <rect id="사각형_3241" data-name="사각형 3241" class="cls-6" width="1.941" height="5.407" transform="translate(5.428 7.583)"/>
+        <rect id="사각형_3242" data-name="사각형 3242" class="cls-7" width="1.941" height="7.523" transform="translate(7.957 5.468)"/>
+        <rect id="사각형_3243" data-name="사각형 3243" class="cls-8" width="1.941" height="6.377" transform="translate(10.487 6.613)"/>
+      </g>
+    </g>
+  </g>
+</svg>

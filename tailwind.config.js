@@ -43,6 +43,17 @@ module.exports = {
         'svg-bt-send': "url('/src/util/svgs/buttons/bt_send.svg')",
         'svg-bt-send-disabled': "url('/src/util/svgs/buttons/bt_send_disable.svg')",
         'svg-bt-send-over': "url('/src/util/svgs/buttons/bt_send_over.svg')",
+        // 돋보기
+        'svg-bt-info-magnifying-glass-icon': "url('/src/util/svgs/buttons/bt_info.svg')",
+        // final draft bottom buttons
+        'svg-bt-create-report': "url('/src/util/svgs/buttons/bt_create_report.svg')",
+        'svg-bt-create-report-over': "url('/src/util/svgs/buttons/bt_create_report_over.svg')",
+        'svg-bt-create-report-disabled': "url('/src/util/svgs/buttons/bt_create_over.svg')",
+        // pdf & print
+        'svg-bt-pdf': "url('/src/util/svgs/buttons/bt_pdf.svg')",
+        'svg-bt-print': "url('/src/util/svgs/buttons/bt_print.svg')",
+        // export 재료
+        'svg-ic-writing':"url('/src/util/svgs/export/ic_wr_2.svg')",
       }
     },
     borderWidth: {

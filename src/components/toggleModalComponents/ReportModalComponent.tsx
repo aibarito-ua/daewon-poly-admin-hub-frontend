@@ -8,9 +8,17 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import useLoginStore from '../../store/useLoginStore';
 import buttonImage from './img/report_image.png'
+import ComponentToPrint from '../commonComponents/customComponents/exportButtons/PrintComponent';
 
-export default function ReportModalComponent() {
-    
+export default function ReportModalComponent(
+  props: {
+    userInfo:TFeedbackStates;
+    title: string;
+    body:string;
+    draft:number;
+  }
+) {
+    const {body,title,userInfo,draft} = props;
   const [open, setOpen] = React.useState(false);
   
   React.useEffect(()=>{
@@ -55,18 +63,21 @@ export default function ReportModalComponent() {
         onClick={handleClickOpen}
     ><img className='flex w-12 h-12' src={buttonImage}/></button>
       <Dialog className=''
+        PaperProps={{
+          sx: {
+            width: '100%',
+            maxWidth: '100%'
+          }
+        }}
       open={open} onClose={handleClose}>
         <DialogTitle>Report</DialogTitle>
         <DialogContent 
-            className='flex flex-1 flex-col min-w-[500px] bg-[#f3f3f3] h-[500px]'
+            className='flex flex-1 w-full h-full flex-col bg-[#f3f3f3]'
         >
-        <div className='flex flex-1 h-[400px]'>
+          <div className='p-[10px]'>
+        <ComponentToPrint userInfo={userInfo} draft={draft}/>
 
-        <div className='flex flex-grow flex-col-reverse w-full overflow-y-auto'>
-        
-        </div>
-        
-        </div>
+          </div>
           
         </DialogContent>
         {/* <DialogActions>

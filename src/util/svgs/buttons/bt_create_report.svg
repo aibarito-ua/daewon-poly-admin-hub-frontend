@@ -1,0 +1,49 @@
+<svg id="bt_create_report" xmlns="http://www.w3.org/2000/svg" width="182" height="40" viewBox="0 0 182 40">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #0fa9cb;
+      }
+
+      .cls-2 {
+        fill: #fff;
+        font-size: 14px;
+        font-family: NotoSansCJKkr-Regular, Noto Sans CJK KR;
+      }
+
+      .cls-3, .cls-4, .cls-5, .cls-7 {
+        fill: none;
+      }
+
+      .cls-3 {
+        opacity: 0.2;
+      }
+
+      .cls-4, .cls-5 {
+        stroke: #fff;
+      }
+
+      .cls-5 {
+        stroke-linecap: round;
+      }
+
+      .cls-6 {
+        stroke: none;
+      }
+    </style>
+  </defs>
+  <rect id="사각형_3246" data-name="사각형 3246" class="cls-1" width="182" height="40" rx="2"/>
+  <text id="CREATE_REPORT" data-name="CREATE REPORT" class="cls-2" transform="translate(101 26)"><tspan x="-53.438" y="0">CREATE REPORT</tspan></text>
+  <g id="ic_view_def" transform="translate(28 13)">
+    <rect id="guide" class="cls-3" width="14" height="14"/>
+    <g id="사각형_837" data-name="사각형 837" class="cls-4" transform="translate(1)">
+      <rect class="cls-6" width="12" height="14" rx="2"/>
+      <rect class="cls-7" x="0.5" y="0.5" width="11" height="13" rx="1.5"/>
+    </g>
+    <g id="그룹_2671" data-name="그룹 2671" transform="translate(4.667 3.5)">
+      <path id="패스_184" data-name="패스 184" class="cls-5" d="M731.311,681.859h4.667" transform="translate(-731.311 -681.859)"/>
+      <path id="패스_185" data-name="패스 185" class="cls-5" d="M731.311,681.859h4.667" transform="translate(-731.311 -678.359)"/>
+      <path id="패스_186" data-name="패스 186" class="cls-5" d="M731.311,681.859h2.333" transform="translate(-731.311 -674.859)"/>
+    </g>
+  </g>
+</svg>

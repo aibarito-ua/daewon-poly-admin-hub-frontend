@@ -109,12 +109,12 @@ const formatDate = (inputDate: string): string => {
       month: '2-digit',
       day: '2-digit',
     });
-  
+    // formattedData = 월/일/년도
     // Replace '/' with '.'
     const replaceDate = formattedDate.split('/');
 
     // change locate
-    return `${replaceDate[2]}.${replaceDate[1]}.${replaceDate[0]}`
+    return `${replaceDate[2]}.${replaceDate[0]}.${replaceDate[1]}`
   }
 const displayJSX = (data:TLMSparkWritingStudentUnitDraft1StatusItemInClass, isDraft: boolean,) => {
     const {
@@ -179,7 +179,7 @@ const TableBody = (props:{
     } = props;
     const navigate = useNavigate();
     const {
-        feedbackDataInStudent, setFeedbackDataInStudent, studentDataInClass
+        feedbackDataInStudent, setFeedbackDataInStudent, studentDataInClass, setRubricReportAllValue
     } = useLearningManagementSparkWritingStore();
     // click enter feedback page
     const enterFeedbackEvent = (draft:string, unit_index:number, unit_topic:string, step_label:string, ) => {
@@ -269,14 +269,43 @@ const TableBody = (props:{
                             // second draft
                             const secondDraftData = cellData.value.data;
                             const data = secondDraftData?.draft_2_status;
-                            console.log('data ===',secondDraftData )
                             if (data) {
                                 const displayDate = displayJSX(data,true)
                                 console.log('displayDate =',displayDate)
                                 return <td
-                                    key={cellData.key}
-                                    className={`border-l-[1px] border-l-[#e2e3e6] border-r-[1px] border-r-[#e2e3e6]`}
-                                    style={{width: cellData.width}}
+                                key={cellData.key}
+                                className={`border-l-[1px] border-l-[#e2e3e6] border-r-[1px] border-r-[#e2e3e6]`}
+                                style={{width: cellData.width}}
+                                onClick={async () => {
+                                        console.log('data ===',secondDraftData )
+                                        const targetData = cellData.value.data?.draft_2_status.draft_id;
+                                        const draft_id = targetData ? targetData.toString() : '';
+                                        const rsp = await getDraftInfoByDraftId(draft_id);
+                                        const target1stData = cellData.value.data?.draft_1_status.draft_id;
+                                        const draft_1st_id = target1stData ? target1stData.toString():'';
+                                        const rsp1st = await getDraftInfoByDraftId(draft_1st_id)
+                                        if (rsp.draft_index > 0) {
+                                            let dumyData:TFeedbackStates = JSON.parse(JSON.stringify(feedbackDataInStudent));
+                                            console.log('data 2nd draft ==',rsp)
+                                            dumyData.draft_2nd_data=rsp;
+                                            dumyData.draft_data=rsp1st;
+                                            dumyData.defautInfo.student_code=studentBasicInfo.student_code;
+                                            dumyData.defautInfo.student_name={student_name_en: studentBasicInfo.student_name_en, student_name_kr: studentBasicInfo.student_name_kr}
+                                            const currentlyDate = selectDate(data,true);
+                                            dumyData.defautInfo.submit_date=formatDate(currentlyDate);
+                                            dumyData.defautInfo.unit_index=secondDraftData.unit_index;
+                                            dumyData.defautInfo.unit_topic=secondDraftData.topic;
+                                            dumyData.defautInfo.select_draft_id=draft_id;
+                                            dumyData.defautInfo.step_label="2nd Draft"
+                                            dumyData.status=secondDraftData.draft_2_status;
+                                            dumyData.overall_comment = rsp.overall_comment;
+                                            dumyData.rubric=secondDraftData.rubric;
+                                            dumyData.status_1st=rowData[cellIdx-1].value.data?.draft_1_status;
+                                            console.log('dumy ===',dumyData)
+                                            setFeedbackDataInStudent(dumyData);
+                                            navigate(`/LearningManagement/WritingHub/SparkWriting/feedback/${studentBasicInfo.student_code}/${draft_id}`);
+                                        }
+                                    }}
                                 >{displayDate}</td>
                             } else {
                                 return <td

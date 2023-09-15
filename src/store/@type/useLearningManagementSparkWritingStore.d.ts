@@ -19,7 +19,11 @@ interface ILearningManagementSparkWritingStore {
     feedbackDataInStudent: TFeedbackStates;
     setFeedbackDataInStudent: (data:TFeedbackStates) => void;
 
-    // 
+    // rubric report values
+    rubricReportValue: TRubricReportAll;
+    setRubricReportAllValue:(data:TRubricReportAll)=>void;
+    setRubricInit: ()=>void;
+    setRubricReportValue: (data:TRubricReport) => void;
 }
 type TMLSparkWritingUserLists = {
     students: TMLSparkWritingUserData[];
@@ -124,6 +128,7 @@ type TLMSparkWritingStudentUnitItemInClass = {
     unit_id: number;
     unit_index: number;
     topic: string;
+    rubric: TActivitySparkWritingBookRubricItem;
 }
 type TLMSparkWritingStudentUnitDraft1StatusItemInClass = {
     draft_id: number;
@@ -178,7 +183,10 @@ type TFeedbackStates = {
     draft_data: TFindDraftInfoByDraftIdResponse;
     comment: [];
     overall_comment: string;
-    status: TLMSparkWritingStudentUnitDraft1StatusItemInClass|null
+    status: TLMSparkWritingStudentUnitDraft1StatusItemInClass|null;
+    status_1st?: TLMSparkWritingStudentUnitDraft1StatusItemInClass|null;
+    draft_2nd_data?: TFindDraftInfoByDraftIdResponse,
+    rubric: TActivitySparkWritingBookRubricItem
 }
 
 type TFeedbackDefaultInfomations = {
@@ -208,6 +216,7 @@ type TFindDraftInfoByDraftIdResponse = {
     overall_comment: string;
     return_reason:string;
     return_teacher_comment:string;
+    rubric_report?:TRubricReportAll
 }
 type TFindDraftInfoByDraftIdDraftOutline = {
     grammar_correction_content_teacher: string;
@@ -263,6 +272,12 @@ type TAdminDraft1stCommentData = {
     overall_comment: string;
     feedback_return: TReturnFeedback;
     draft_id: number;
+    rubric_report: TRubricReportAll
+}
+type TRubricReportData = {
+    category: string;
+    selected_value:"excellent"|"very_good"|"good"|"fair"|"poor";
+    selected_value_description:string;
 }
 // "feedback_return"
 type TReturnFeedback = {
@@ -293,4 +308,12 @@ type TParagraphScreenData = {
     type:-1|0|1|number;
     text: string;
     comment_index: number;
+}
+
+// rubric temporary
+type TRubricReportAll = TRubricReport[];
+type TRubricReport = {
+    category: string;
+    selected_value: string;
+    selected_value_description: string;
 }

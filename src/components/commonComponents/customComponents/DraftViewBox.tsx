@@ -1,4 +1,5 @@
 import React from 'react';
+import RubricEvaluationRowRadioButton from './RubricEvaluationRowRadioButton';
 
 // status 2 title
 const draftTitle = (props:{feedbackDataInStudent:TFeedbackStates}) => {
@@ -284,7 +285,6 @@ const loadTemporaryDraftTitle = (
     })
 }
 
-
 // status 3 body
 const loadTemporaryDraftBody = (
     props: {
@@ -387,10 +387,176 @@ const loadTemporaryDraftBody = (
     })
 }
 
+// final draft title
+const loadFinalDraftTitle = (
+    props: {
+        feedbackDataInStudent:TFindDraftInfoByDraftIdDraftOutline[];
+        draft:string;
+    }
+) => {
+    const {feedbackDataInStudent,draft} = props;
+    // const draftOutline = draft==='1'? feedbackDataInStudent.draft_data.draft_outline: feedbackDataInStudent.draft_2nd_data?.draft_outline;
+    const draftKey = draft==='1' ? 'dr1':'dr2'
+    
+    return feedbackDataInStudent.map((paragraphItem, paragraphIndex) => {
+        const paragraphKey = 'final-title-'+draftKey+'-'+paragraphItem.order_index+paragraphIndex;
+        const screenData = paragraphItem.screen_data;
+        if (paragraphIndex!==0) {
+            return null;
+        } else {
+            const mainTagKey = 'final-body-'+draft+'-'+paragraphIndex+'-normal';
+            const makeValue = <span key={mainTagKey} className='h-fit'>{paragraphItem.input_content}</span>;
+            const wraper = <div className='flow-root'
+            >{makeValue}</div>
+
+            return <div className='draft-title-paragragh-wrap'
+            id={'Title'} key={paragraphKey}
+            >{wraper}
+            </div>
+        }
+    })
+}
+
+// final draft body
+const loadFinalDraftBody = (
+    props: {
+        feedbackDataInStudent:TFindDraftInfoByDraftIdDraftOutline[],
+        draft:string
+    }
+) => {
+    const {feedbackDataInStudent, draft} = props;
+    if (draft==='1') {
+        return feedbackDataInStudent.map((paragraphItem, paragraphIndex) => {
+            const paragraphKey = 'final-body-d'+draft+'-'+paragraphItem.name+'-'+paragraphItem.order_index+'-'+paragraphIndex;
+            const screenData = paragraphItem.screen_data;
+            if (paragraphIndex===0) {
+                return null;
+            } else {
+                const jsxElements:JSX.Element[] = [];
+                const inputContents = paragraphItem.input_content.split('\n\n');
+                inputContents.map((sentenceItem, sentenceIndex) => {
+                    const mainTagKey = 'final-body-'+draft+'-'+paragraphIndex+sentenceIndex+'-normal';
+                    const makeValue = <span key={mainTagKey} className='h-fit'>{sentenceItem}</span>;
+                    const wraper = <div className='flow-root'
+                    ><span className='pl-[10px]'>{makeValue}</span></div>
+                    jsxElements.push(wraper)
+                })
+                return <div className='max-h-fit' key={paragraphKey}>{jsxElements}</div>
+            }
+        })
+    } else if (draft==='2') {
+        return feedbackDataInStudent.map((paragraphItem, paragraphIndex) => {
+            const paragraphKey = 'final-body-d'+draft+'-'+paragraphItem.name+'-'+paragraphItem.order_index+'-'+paragraphIndex;
+            if (paragraphIndex===0) {
+                return null;
+            } else {
+                const jsxElements:JSX.Element[] = [];
+                const inputContents = paragraphItem.input_content.split('\n\n');
+                inputContents.map((sentenceItem, sentenceIndex) => {
+                    const mainTagKey = 'final-body-'+draft+'-'+paragraphIndex+sentenceIndex+'-normal';
+                    const makeValue = <span key={mainTagKey} className='h-fit'>{sentenceItem}</span>;
+                    const wraper = <div className='flow-root'
+                    ><span className='pl-[10px]'>{makeValue}</span></div>
+                    jsxElements.push(wraper)
+                })
+                return <div className='flex flex-col gap-[13px] max-h-fit' key={paragraphKey}>{jsxElements}</div>
+            }
+        })
+    }
+}
+
+// rubric evaluation
+const rubricEvaluation = (
+    props: {
+        rubricData: TActivitySparkWritingBookRubricItem;
+        rubricReportValue:TRubricReportAll;
+        controlValue: string[];
+        controlFn: (idx: number, value: string) => void;
+        draftStatus: number;
+    }
+) => {
+    const {rubricData,rubricReportValue, controlFn, controlValue, draftStatus} = props;
+    const rubricTitles = ['ideas','organization','voice','word choice', 'sentence fluency','conventions'];
+    const rubricColors = [
+        { name: 'ideas', main: '#588ee1', inner: '#f5f8fd' },
+        { name: 'organization', main: '#f6914d', inner: '#fef8f5' },
+        { name: 'voice', main: '#aa6bd4', inner: '#faf6fc' },
+        { name: 'word choice', main: '#30c194', inner: '#f3fbf9' },
+        { name: 'sentence fluency', main: '#6865cc', inner: '#f6f6fc' },
+        { name: 'conventions', main: '#db5757', inner: '#fdf5f5' },
+    ]
+    const rubricAll = rubricData.rubric_description.sort((a,b) => {
+        return rubricTitles.indexOf(a.category) - rubricTitles.indexOf(b.category);
+    });
+    return rubricAll.map((rubric, rubricIndex) => {
+        const rubricKey = 'rubric-'+rubric.category+'-i-'+rubricIndex;
+        let rubricColor:{name:string,main:string,inner:string}={inner:'',main:'',name:''};
+        for (let colorIdx = 0; colorIdx < rubricColors.length; colorIdx++) {
+            const currentColor = rubricColors[colorIdx];
+            if (currentColor.name === rubric.category) {
+                rubricColor=currentColor;
+            }
+        }
+        const titleCategory = rubric.category.split(' ');
+        let defaultValue = '';
+        if (rubricReportValue.length > 0) {
+            for (let i = 0; i<rubricReportValue.length; i++) {
+                if (rubric.category === rubricReportValue[i].category) {
+                    defaultValue=rubricReportValue[i].selected_value;
+                }
+            }
+        }
+        
+        return <div className='flex flex-col' key={rubricKey}
+            style={{
+                borderStyle: 'solid',
+                borderWidth: '1px',
+                borderColor: rubricColor.main
+            }}
+        >
+            {/* description */}
+            <div className='flex flex-row h-[95px]' style={{
+                borderBottomColor: rubricColor.main,
+                borderBottomStyle: 'solid',
+                borderBottomWidth: '1px'
+            }}>
+                <div className={`flex flex-col justify-center items-center capitalize w-full max-w-[120px] text-white`}
+                    style={{
+                        backgroundColor: rubricColor.main,
+                    }}
+                >{titleCategory.map((categoryStr,categoryStrIdx) => {
+                    const titleCategoryKey = 'rubric-evaluation-preview-box-category-'+categoryStrIdx;
+                    return <div key={titleCategoryKey}>{categoryStr}</div>
+                })}</div>
+                <div className='flex flex-col'>
+                    {rubric.explanation.map((rubricEx, rubricExIndex) => {
+                        const rubricExkey = 'rubric-explanation-'+rubricExIndex;
+                        return <p key={rubricExkey}>{ '- '+rubricEx}</p>
+                    })}
+                </div>
+            </div>
+            {/* score */}
+            <div className='flex flex-row h-[70px] items-center'>
+                <RubricEvaluationRowRadioButton 
+                    data={rubric} defaultSelectValue={defaultValue}
+                    controlFn={controlFn}
+                    controlValue={controlValue}
+                    categoryIdx={rubricIndex}
+                    status={draftStatus}
+                />
+            </div>
+        </div>
+    })
+
+}
+
 const draftViewBox = {
     draftTitle,
     draftBody,
     loadTemporaryDraftTitle,
     loadTemporaryDraftBody,
+    loadFinalDraftTitle,
+    loadFinalDraftBody,
+    rubricEvaluation
 }
 export default draftViewBox;

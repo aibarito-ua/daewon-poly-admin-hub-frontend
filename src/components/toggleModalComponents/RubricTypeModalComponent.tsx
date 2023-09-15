@@ -8,7 +8,8 @@ import btnPreview from '../../util/png/btn_preview.png';
 interface IRubricTypeModalComponentProps {
   keyValue: string|number;
   rubric_type:string;
-  rubric_type_datas:TRubricTypeData
+  rubric_type_datas:TRubricTypeData;
+  isFinalDraft?:boolean;
 }
 interface IRubricTableDataItem {
   key:string;
@@ -20,13 +21,12 @@ interface IRubricTableDataItem {
 export default function RubricTypeModalComponent(props:IRubricTypeModalComponentProps) {
 
   const {
-    keyValue, rubric_type, rubric_type_datas
+    keyValue, rubric_type, rubric_type_datas, isFinalDraft
   } = props;
     
   const [open, setOpen] = React.useState(false);
   const [viewRubric, setViewRubric] = React.useState<IRubricTableDataItem[][]>([]);
   const [viewRubricHead, setViewRubricHead] = React.useState<TRubricTypeHeader[]>([]);
-  
 
   React.useEffect(()=>{
     if (!open) {
@@ -178,9 +178,16 @@ export default function RubricTypeModalComponent(props:IRubricTypeModalComponent
 
   return (
     <div className='flex justify-center' key={keyValue}>
-      <span className="flex flex-row hover:cursor-pointer text-center items-center min-w-max px-[20px]"
+      {isFinalDraft && (
+        <div className='rubric-magnifying-glass-button' 
           onClick={handleClickOpen}
-      ><img src={btnPreview} className='w-[24px] h-[24px] mr-[6px]'/>{rubric_type}</span>
+        />
+      )}
+      {!isFinalDraft && (
+        <span className="flex flex-row hover:cursor-pointer text-center items-center min-w-max px-[20px]"
+            onClick={handleClickOpen}
+        ><img src={btnPreview} className='w-[24px] h-[24px] mr-[6px]'/>{rubric_type}</span>
+      )}
       <Dialog className=''
       fullWidth={true}
       maxWidth={'xl'}
@@ -223,10 +230,6 @@ export default function RubricTypeModalComponent(props:IRubricTypeModalComponent
         
         </div>
         </DialogContent>
-        {/* <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleClose}>Subscribe</Button>
-        </DialogActions> */}
       </Dialog>
     </div>
   );

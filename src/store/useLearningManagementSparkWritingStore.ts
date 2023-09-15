@@ -217,10 +217,45 @@ const useLearningManagementSparkWritingStore = create<ILearningManagementSparkWr
         },
         comment: [],
         overall_comment: '',
-        status: null
+        status: null,
+        rubric: {
+            name:'',
+            rubric_description:[]
+        }
     },
     setFeedbackDataInStudent: (data) => {
         set(()=>({feedbackDataInStudent: data}))
+    },
+    rubricReportValue: [],
+    setRubricInit: () => {
+        set(()=>({rubricReportValue:[]}))
+    },
+    setRubricReportAllValue: (data)=>{
+        set(()=>({rubricReportValue:data}))
+    },
+    setRubricReportValue: (data) => {
+        const origin_rubric_data = get().rubricReportValue;
+        let dumyRubricValue:TRubricReportAll = JSON.parse(JSON.stringify(origin_rubric_data));
+        if (dumyRubricValue.length > 0) {
+            let flag = false;
+            for (let i = 0; i < dumyRubricValue.length; i++) {
+                const current = dumyRubricValue[i];
+                if (current.category.toLocaleLowerCase() === data.category.toLocaleLowerCase() ) {
+                    dumyRubricValue[i] = data;
+                    flag=true
+                    break;
+                }
+            }
+            if (!flag) {
+                dumyRubricValue.push(data);    
+            }
+            console.log(dumyRubricValue)            
+        } else {
+            dumyRubricValue.push(data);
+        }
+        set(()=>({
+            rubricReportValue:dumyRubricValue
+        }))
     }
 }))
 
