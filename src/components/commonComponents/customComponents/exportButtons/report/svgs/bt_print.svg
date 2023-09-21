@@ -1,0 +1,17 @@
+<svg id="bt_print" xmlns="http://www.w3.org/2000/svg" width="82" height="36" viewBox="0 0 82 36">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #222;
+      }
+
+      .cls-2 {
+        fill: #fff;
+        font-size: 14px;
+        font-family: NotoSansCJKkr-Regular, Noto Sans CJK KR;
+      }
+    </style>
+  </defs>
+  <rect id="사각형_3399" data-name="사각형 3399" class="cls-1" width="82" height="36" rx="2"/>
+  <text id="Print" class="cls-2" transform="translate(25 24)"><tspan x="0" y="0">Print</tspan></text>
+</svg>

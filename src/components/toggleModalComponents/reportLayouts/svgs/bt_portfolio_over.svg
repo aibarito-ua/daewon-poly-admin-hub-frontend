@@ -1,0 +1,26 @@
+<svg id="bt_portfolio_over" xmlns="http://www.w3.org/2000/svg" width="124.286" height="40" viewBox="0 0 124.286 40">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #44c4e1;
+      }
+
+      .cls-2 {
+        fill: #fff;
+        font-size: 14px;
+        font-family: NotoSansCJKkr-Regular, Noto Sans CJK KR;
+      }
+
+      .cls-3 {
+        fill: none;
+        stroke: #fff;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-width: 1.5px;
+      }
+    </style>
+  </defs>
+  <rect id="사각형_3447" data-name="사각형 3447" class="cls-1" width="124.286" height="40" rx="2"/>
+  <text id="Portfolio" class="cls-2" transform="translate(28 26)"><tspan x="0" y="0">Portfolio</tspan></text>
+  <path id="패스_13391" data-name="패스 13391" class="cls-3" d="M0,4.1,3.819,0l3.6,4.1" transform="translate(96.286 17.5) rotate(90)"/>
+</svg>

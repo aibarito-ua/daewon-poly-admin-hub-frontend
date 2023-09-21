@@ -8,6 +8,7 @@ import { SvgSearchIcon } from "../../../components/commonComponents/BasicTable/s
 import { getLMSparkWritingFilterDataAPI, getLMSparkWritingStudents } from "../../../api/LearningManagement/LearningManagementSparkWriting.api";
 import useLearningManagementSparkWritingStore from "../../../store/useLearningManagementSparkWritingStore";
 import LearningManagementStudentsTable from "../../../components/commonComponents/BasicTable/LearningManagementStudentsTable";
+import useReportStore from "../../../store/useReportStore";
 
 const LMSparkWriting = () => {
     // page usehook zustand
@@ -20,6 +21,7 @@ const LMSparkWriting = () => {
         // feedback
         feedbackDataInStudent, setFeedbackDataInStudent
     } = useLearningManagementSparkWritingStore();
+    const {setCurrentSelectCodes} = useReportStore();
     
     // page states
     const [emptyPageMessage, setEmptyPageMessage] = React.useState<string>('검색 값을 선택 후 조회하세요.');
@@ -64,6 +66,9 @@ const LMSparkWriting = () => {
         setSelectFilterCampusList(campus_list);
         setFilterData(loadFilterData);
         setFilterStates(loadFilterData);
+        setSelectCampusCode({name:'',code:''})
+        setSelectLevelCode({name:'',code:''});
+        setSelectClassCode({name:'',code:''});
         console.log('beforeRenderedFn complete')
     }
     
@@ -125,6 +130,9 @@ const LMSparkWriting = () => {
             if (check) {
                 console.log('selectFIlterValues =',selectFIlterValues)
                 console.log('filter items ==',selectCampusCode,selectLevelCode,selectClassCode)
+                setCurrentSelectCodes({target:'campus', name:selectCampusCode.name, code: selectCampusCode.code})
+                setCurrentSelectCodes({target:'class', name:selectClassCode.name, code: selectClassCode.code})
+                setCurrentSelectCodes({target:'level', name:selectLevelCode.name, code: selectLevelCode.code})
                 const reqData:TFindStudentsReq = {
                     campusCode:selectCampusCode.code,
                     levelCode:selectLevelCode.code,
@@ -259,6 +267,7 @@ const LMSparkWriting = () => {
             for (let campusIndex= 0; campusIndex < targetCampus.length; campusIndex++) {
                 if (targetCampus[campusIndex].name === value) {
                     setSelectCampusCode({name: value, code: targetCampus[campusIndex].code})
+                    setCurrentSelectCodes({target:'campus', name:targetCampus[campusIndex].name, code: targetCampus[campusIndex].code})
                     const levelsAtSelectCampus = targetCampus[campusIndex].level;
                     for (let i = 0; i < levelsAtSelectCampus.length; i++) {
                         const levelTarget = levelsAtSelectCampus[i].name;
@@ -286,6 +295,7 @@ const LMSparkWriting = () => {
                     for (let levelIndex=0; levelIndex<targetLevel.length; levelIndex++) {
                         if (targetLevel[levelIndex].name === value) {
                             setSelectLevelCode({name: value, code: targetLevel[levelIndex].code})
+                            setCurrentSelectCodes({target:'level', name:targetLevel[levelIndex].name, code: targetLevel[levelIndex].code})
                             classFilterList=targetLevel[levelIndex].class.map((classItem) => {
                                 return classItem.name
                             })
@@ -315,6 +325,7 @@ const LMSparkWriting = () => {
                                     dumySelectFilterValues[2] = value
                                     setSelectFilterValues(dumySelectFilterValues)
                                     setSelectClassCode({name: value, code: targetClass[classIndex].code})
+                                    setCurrentSelectCodes({target:'class', name:targetClass[classIndex].name, code: targetClass[classIndex].code})
                                 }
                             }
                         }

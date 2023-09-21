@@ -148,3 +148,46 @@ export async function draftFeedbackSend(data: TAdminDraft1stCommentData):Promise
         return false;
     })
 }
+
+export async function getReportOneDataByStu(data: {
+    level_name: string;
+    unit_index: number;
+    student_code: string;
+}): Promise<TStudentUnitReportRes|null> {
+    const reqUrl = CONFIG.LEARNING_MANAGEMENT.WRITING.SPARK_WRITING.GET.REPORT_BY_STUDENT
+        .replace(/{level_name}/gmi, data.level_name).replace(/{unit_index}/gmi, data.unit_index.toString()).replace(/{student_code}/gmi, data.student_code);
+    return await axios.get(reqUrl, {
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlZFUkEuQkFORyIsImlhdCI6MTY4OTI5OTkyNywiZXhwIjoxNjg5MzAwODI3fQ.wbRM8nuuAm0Nz4op5D2OnRgbEx22uSuY_nqPBRpYSUs'
+        },
+    }).then((response) => {
+        const data:TStudentUnitReportRes = response.data.data;
+        return data;
+    }).catch((reject) => {
+        console.log('reject =',reject);
+        return null;
+    })
+}
+
+export async function getReportOverallDatabyStu(data: {
+    level_name: string;
+    student_code: string;
+}):Promise<TOverallReportAPI|null> {
+    const reqUrl = CONFIG.LEARNING_MANAGEMENT.WRITING.SPARK_WRITING.GET.REPORT_OVERALL_BY_STUDENT
+        .replace(/{level_name}/gmi, data.level_name).replace(/{student_code}/gmi, data.student_code);
+    return await axios.get(reqUrl, {
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlZFUkEuQkFORyIsImlhdCI6MTY4OTI5OTkyNywiZXhwIjoxNjg5MzAwODI3fQ.wbRM8nuuAm0Nz4op5D2OnRgbEx22uSuY_nqPBRpYSUs'
+        },
+    }).then((response) => {
+        const data:TOverallReportAPI = response.data.data;
+        return data;
+    }).catch((reject) => {
+        console.log('reject =',reject);
+        return null;
+    })
+}

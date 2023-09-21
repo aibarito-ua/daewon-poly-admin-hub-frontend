@@ -1244,10 +1244,11 @@ body {
   @apply
   flex
   flex-row
-  border-[0.2645833333mm]
+  border-[0.3mm]
   border-[#0fa9cb]
   rounded-[7.9375mm]
   bg-white
+  justify-center
 }
 .export-lm-wh-font-gothamrounded {
   font-family: 'GothamRounded';
@@ -1286,67 +1287,206 @@ body {
 }
 .export-lm-wh-font-label {
   font-family: 'NotoSansCJKKR';
-  font-size: 3.175mm;
+  font-size: 2.902mm;
   font-weight: normal;
   font-stretch: normal;
   font-style: normal;
-  line-height: 4.7625mm;
+  line-height: 4.353mm;
   letter-spacing: normal;
   text-align: left;
   color: #999;
   @apply
   capitalize
 }
-.export-lm-wh-font-value {
+.export-report-wr-userinfo-font-label {
   font-family: 'NotoSansCJKKR';
-  font-size: 3.175mm;
+  font-size: 2.902mm;
   font-weight: 500;
   font-stretch: normal;
   font-style: normal;
-  line-height: 4.7625mm;
+  line-height: 4.353mm;
   letter-spacing: normal;
   text-align: left;
   color: #222;
+  @apply
+  capitalize
+}
+.export-portfolio-wr-userinfo-font-label {
+  font-family: 'NotoSansCJKKR';
+  font-size: 2.902mm;
+  font-weight: 500;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.67;
+  letter-spacing: normal;
+  text-align: left;
+  color: #999;
+  @apply
+  capitalize
+}
+.export-portfolio-wr-userinfo-font-value {
+  font-family: 'NotoSansCJKKR';
+  font-size: 2.902mm;
+  font-weight: normal;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.67;
+  letter-spacing: normal;
+  text-align: left;
+  color: #222;
+}
+.export-report-wr-userinfo-font-value {
+  font-family: 'NotoSansCJKKR';
+  font-size: 2.902mm;
+  font-weight: normal;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 4.353mm;
+  letter-spacing: normal;
+  text-align: left;
+  color: #222;
+}
+.export-report-wr-big-title-font {
+  font-family: 'GothamRounded';
+  font-size: 3.870mm;
+  font-weight: 500;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 4.595mm;
+  letter-spacing: normal;
+  text-align: center;
+  color: #222;
+}
+.export-report-wr-bar-titles {
+  font-family: 'NotoSansCJKKR';
+  font-size: 2.902mm;
+  font-weight: 400;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 5.321mm;
+  letter-spacing: normal;
+  text-align: left;
+  color: #222;
+  @apply
+  capitalize
+}
+.export-report-wr-sa-title-font {
+  font-family: 'GothamRounded';
+  font-size: 2.902mm;
+  font-weight: 500;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 4.353mm;
+  letter-spacing: normal;
+  text-align: center;
+  color: #fff;
+  @apply
+  capitalize
+}
+.export-report-wr-sa-ar-title {
+  font-family: 'NotoSansCJKKR';
+  font-size: 2.660mm;
+  font-weight: 500;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 8.465mm;
+  letter-spacing: normal;
+  text-align: left;
+  color: #222;
+}
+.export-report-wr-sa-ar-value {
+  font-family: 'NotoSansCJKKR';
+  font-size: 2.660mm;
+  font-weight: 400;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.55;
+  letter-spacing: normal;
+  text-align: left;
+  color: #222;
+}
+.export-report-wr-oc-input {
+  font-family: 'NotoSansCJKKR';
+  font-size: 2.902mm;
+  font-weight: 400;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.5;
+  letter-spacing: normal;
+  text-align: left;
+  color: #222;
+}
+
+.export-lm-wh-font-value {
+  font-family: 'NotoSansCJKKR';
+  font-size: 2.902mm;
+  font-weight: 500;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 4.353mm;
+  letter-spacing: normal;
+  text-align: left;
+  color: #222;
+}
+.export-report-wr-multi-values {
+  font-family: 'GothamRounded';
+  font-size: 2.660mm;
+  font-weight: 500;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.82;
+  letter-spacing: normal;
+  text-align: left;
+  color: #555;
 }
 
 .export-lm-wh-content-title {
   @apply
   bg-[#0fa9cb]
   absolute
-  -left-[5.2916666667mm]
+  -left-[6mm]
   top-[10.583333333mm]
   w-fit
-  h-[14.2875mm]
+  h-[13.06mm]
   text-white
-  rounded-r-[6.6145833333mm]
+  rounded-r-[6.503mm]
   flex items-center
   pl-[4.7625mm]
   pr-[7.9375mm]
 }
 .export-lm-wh-content-title-deco {
-  border-top: 10px solid #177a8f;
-  border-right: 10px solid #177a8f;
-  border-bottom: 10px solid transparent;
-  border-left: 10px solid transparent;
+  border-top: 3mm solid #177a8f;
+  border-right: 2.8mm solid #177a8f;
+  border-bottom: 3mm solid transparent;
+  border-left: 2.8mm solid transparent;
   @apply
   absolute
-  -left-[5.2916666667mm]
-  top-[24.870833333mm]
+  -left-[5.8mm]
+  top-[23.7mm]
+  w-0
+  h-0
+}
+.export-portfolio-content-title-deco {
+  border-top: 2.6mm solid #177a8f;
+  border-right: 2.6mm solid #177a8f;
+  border-bottom: 2.6mm solid transparent;
+  border-left: 2.6mm solid transparent;
+  @apply
   w-0
   h-0
 }
 .export-lm-wh-content-title-value {
   font-family: 'GothamRounded';
-  font-size: 3.96875mm;
+  font-size: 3.628mm;
   font-weight: 500;
   font-stretch: normal;
   font-style: normal;
-  line-height: 4.7625mm;
+  line-height: 4.353mm;
   letter-spacing: normal;
   text-align: left;
   vertical-align: middle;
   @apply
-  h-[4.7625mm]
+  h-[4.353mm]
 }
 .export-lm-wh-content-body {
   font-family: 'NotoSansCJKKR';
@@ -1359,19 +1499,46 @@ body {
   text-align: left;
   color: #555;
   @apply
-  mt-[34.13125mm]
+  mt-[31.2mm]
   mx-[13.229166667mm]
-  mb-[10.583333333mm]
+  mb-[9.674mm]
   flex flex-col
-  gap-[3.4395833333mm]
+  w-[160.588mm]
+  h-[195.662mm]
+}
+.export-lm-wh-content-pre-body {
+  font-family: 'NotoSansCJKKR';
+  font-size: 3.7041666667mm;
+  font-weight: normal;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 7.9375mm;
+  letter-spacing: normal;
+  text-align: left;
+  color: #555;
+  @apply
+  mx-[13.229166667mm]
+  flex flex-col
+  w-[160.588mm]
   h-[195.662mm]
 }
 .print-container {
+  break-after: page;
+}
+/* .print-container + .print-container {
+  margin-top:0;
+} */
+@page {
+  /* margin: 0; */
   width: 210mm;
   height: 297mm;
 }
 @media print {
+  /* .print-container + .print-container {
+    margin-top:0;
+  } */
   @page {
+    /* margin: 0; */
     width: 210mm;
     height: 297mm;
   }
@@ -1379,3 +1546,533 @@ body {
   } */
 }
 
+.export-bt-print {
+  @apply
+  bg-svg-bt-print
+  bg-no-repeat
+  w-[36px]
+  h-[36px]
+}
+.export-bt-pdf {
+  @apply
+  bg-svg-bt-pdf
+  bg-no-repeat
+  w-[36px]
+  h-[36px]
+}
+
+.export-lm-wh-draft-info-numbering-div {
+  font-family: 'GothamRounded';
+  font-size: 2.902mm;
+  font-weight: 500;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 3.628mm;
+  letter-spacing: normal;
+  text-align: center;
+  color: #fff;
+  background-color: #0fa9cb;
+  @apply
+  h-[9.674mm]
+  w-[27.176mm]
+  rounded-t-[7.256mm]
+  flex items-center justify-center
+  absolute
+  bottom-0
+}
+.export-portfolio-paging-box {
+  font-family: 'GothamRounded';
+  font-size: 2.902mm;
+  font-weight: 500;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 3.628mm;
+  letter-spacing: normal;
+  text-align: center;
+  color: #fff;
+  background-color: #0fa9cb;
+  @apply
+  h-[9.674mm]
+  w-[27.176mm]
+  rounded-t-[7.256mm]
+  flex items-center justify-center
+}
+.export-portfolio-body-content-font {
+  font-family: 'NotoSansCJKKR';
+  font-size: 3.386mm;
+  font-weight: normal;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 2.14;
+  letter-spacing: normal;
+  text-align: left;
+  color: #555
+}
+
+.lm-bt-report-in-table {
+  @apply
+  bg-svg-bt-report-lm
+  bg-no-repeat
+  w-[38px]
+  h-[44px]
+}
+.bt-go-report-in-modal {
+  @apply
+  bg-svg-bt-go-report
+  bg-no-repeat
+  w-[111.3px]
+  h-[40px]
+  hover:bg-svg-bt-go-report-over
+}
+
+.report-chart-report-by-unit-title {
+  font-family: 'GothamRounded';
+  font-weight: 700;
+  font-size: 20px;
+  text-align: center;
+  line-height: normal;
+  letter-spacing: normal;
+  @apply
+  flex flex-row
+  text-[#222]
+}
+
+.report-chart-right-components-div {
+  @apply
+  flex flex-col
+  w-[640px]
+  gap-[15px]
+}
+.report-chart-righ-word-count-div {
+  @apply
+  flex flex-col
+  w-[640px]
+  justify-center
+}
+.report-chart-righ-word-count-title {
+  
+  @apply
+  capitalize
+  flex flex-row
+  justify-center
+  items-center
+  rounded-t-[15px]
+  text-[#222]
+  w-[640px]
+  h-[20px]
+  pb-[7px]
+}
+.report-chart-righ-word-count-title-span {
+  font-family: 'GothamRounded';
+  font-size: 16px;
+  font-weight: 500;
+  font-stretch: 'normal';
+  font-style: normal;
+  line-height: 20px;
+  letter-spacing: normal;
+  @apply
+  capitalize
+  flex flex-row
+  justify-center
+  items-center
+  rounded-t-[15px]
+  text-[#222]
+  w-[180px]
+  h-[20px]
+}
+.report-chart-righ-word-count-content {
+  @apply
+  flex flex-row
+  border-[1px]
+  border-[#dddddd]
+  rounded-[20px]
+  w-[640px]
+  h-[114px]
+  items-center
+}
+.report-chart-righ-word-count-content-wrap {
+  @apply
+  flex flex-1
+  flex-col
+  w-full
+  justify-center
+  items-start
+  pl-[20px]
+}
+.report-chart-righ-word-count-content-divide-line {
+  @apply
+  flex
+  border-l-[1px]
+  w-[1px]
+  h-[50px]
+}
+.report-chart-righ-word-count-content-title {
+  font-family: 'NotoSansCJKKR';
+  font-weight: 700;
+  font-stretch: normal;
+  font-style: normal;
+  letter-spacing: normal;
+  font-size: 13px;
+  line-height: 1.54;
+  text-align: left;
+  
+  @apply
+  text-[#222]
+  flex flex-row
+  items-center
+  justify-center
+}
+.report-chart-righ-word-count-content-items {
+  @apply
+  flex flex-col
+  w-full
+}
+.report-chart-righ-word-count-content-item {
+  @apply
+  flex flex-row
+  w-full
+  gap-[40px]
+}
+.report-chart-righ-word-count-content-item-title {
+  font-family: 'NotoSansCJKKR';
+  font-weight: 400;
+  font-stretch: normal;
+  font-style: normal;
+  letter-spacing: normal;
+  font-size: 13px;
+  line-height: 1.54;
+  text-align: left;
+  @apply
+  flex flex-row w-[128px]
+  capitalize
+}
+.report-chart-righ-word-count-content-item-value {
+  font-family: 'GothamRounded';
+  font-size: 12px;
+  text-align: left;
+  line-height: 1.5;
+  @apply
+  text-[#0fa9cb]
+  flex flex-row
+  pl-[10px]
+}
+
+
+.portfolio-modal-contents-font {
+  font-family: 'NotoSansCJKKR';
+  font-size: 13px;
+  font-weight: normal;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.92;
+  letter-spacing: normal;
+  text-align: left;
+  color: '#222'
+}
+
+.report-chart-righ-correction-content {
+  @apply
+  flex flex-col
+  border-[1px]
+  border-[#dddddd]
+  rounded-[20px]
+  w-[640px]
+  h-[202px]
+  py-[13px]
+  px-[20px]
+}
+.report-chart-righ-correction-content-item-title {
+  font-family: 'NotoSansCJKKR';
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.54;
+  text-align: left;
+  @apply
+  flex flex-row w-fit
+  capitalize
+}
+.report-chart-righ-correction-content-item-value {
+  font-family: 'NotoSansCJKKR';
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.54;
+  text-align: left;
+  @apply
+  text-[#0fa9cb]
+  flex flex-row
+  pl-[10px]
+}
+.report-chart-righ-correction-content-item-arrow {
+  @apply
+  flex flex-row
+  justify-center
+  items-center
+  pl-[3px]
+}
+.report-chart-righ-correction-content-wrap-1 {
+  @apply
+  flex
+  flex-col
+  w-full
+  items-start
+}
+.report-chart-righ-correction-content-wrap-2 {
+  @apply
+  flex flex-1
+  flex-col
+  border-[1px]
+  border-[#eee]
+  bg-[#f9f9f9]
+  rounded-[2px]
+  w-[600px]
+  h-[80px]
+  min-h-[80px]
+  max-h-[80px]
+  px-[10px]
+  py-[6px]
+  overflow-y-auto
+}
+.report-chart-righ-correction-content-item {
+  @apply
+  flex flex-col
+  gap-[5px]
+  hover:cursor-pointer
+}
+.report-chart-righ-correction-content-items {
+  @apply
+  flex flex-col
+  w-full
+  gap-[6px]
+}
+.report-chart-correction-content-wrap {
+  @apply
+  /* flex */
+  /* justify-center
+  items-center */
+  h-fit
+  cursor-default
+}
+.report-chart-correction-content-delete-text {
+  font-family: 'NotoSansCJKKR';
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.54;
+  text-align: left;
+  @apply
+  rounded-[5px]
+  text-[#eb3a3a]
+  line-through
+  /* bg-[#ffe8e8] */
+  h-fit
+}
+.report-chart-correction-content-add-text {
+  font-family: 'NotoSansCJKKR';
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.54;
+  text-align: left;
+  @apply
+  rounded-[5px]
+  text-[#00be91]
+  /* bg-[#def4e7] */
+  h-fit
+}
+.grammar-tooltip-custom-content-normal-text {
+  font-family: 'NotoSansCJKKR';
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.54;
+  text-align: left;
+  @apply
+  rounded-[5px]
+  text-[#222]
+  h-fit
+}
+.report-chart-report-by-unit-title {
+  font-family: 'GothamRounded';
+  font-weight: 700;
+  font-size: 20px;
+  text-align: center;
+  line-height: normal;
+  letter-spacing: normal;
+  @apply
+  flex flex-row
+  text-[#222]
+}
+.report-chart-teacher-comment-content-box {
+  font-family: 'NotoSansCJKKR';
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.54;
+  text-align: left;
+  @apply
+  flex flex-col
+  border-[1px]
+  border-[#dddddd]
+  rounded-[20px]
+  w-[640px]
+  h-[85px]
+  max-h-[85px]
+  min-h-[85px]
+  py-[13px]
+  px-[20px]
+  overflow-y-auto
+}
+
+/* report chart custom tooltips */
+.custom-tooltip {
+  @apply
+  bg-no-repeat
+  object-fill
+  /* bg-white */
+  max-w-[262px]
+  h-full
+  px-[25px]
+  pt-[10px]
+  pb-[20px]
+  flow-root
+}
+.custom-tooltip-organization {
+  @apply
+  bg-report-rechart-custom-tooltip-box-organization
+  bg-no-repeat
+  object-fill
+  max-w-[262px]
+  h-full
+  px-[25px]
+  pt-[10px]
+  pb-[20px]
+  flow-root
+}
+.custom-tooltip-voice {
+  @apply
+  bg-report-rechart-custom-tooltip-box-voice
+  bg-no-repeat
+  object-fill
+  max-w-[262px]
+  h-full
+  px-[25px]
+  pt-[10px]
+  pb-[20px]
+  flow-root
+}
+.custom-tooltip-conventions {
+  @apply
+  bg-report-rechart-custom-tooltip-box-conventions
+  bg-no-repeat
+  object-fill
+  max-w-[262px]
+  h-full
+  px-[25px]
+  pt-[10px]
+  pb-[20px]
+  flow-root
+}
+.custom-tooltip-sentencefluency {
+  @apply
+  bg-report-rechart-custom-tooltip-box-sentencefluency
+  bg-no-repeat
+  object-fill
+  max-w-[262px]
+  h-full
+  px-[25px]
+  pt-[10px]
+  pb-[20px]
+  flow-root
+}
+.custom-tooltip-wordchoice {
+  @apply
+  bg-report-rechart-custom-tooltip-box-wordchoice
+  bg-no-repeat
+  object-fill
+  max-w-[262px]
+  h-full
+  px-[25px]
+  pt-[10px]
+  pb-[20px]
+  flow-root
+}
+.custom-tooltip-ideas {
+  @apply
+  bg-report-rechart-custom-tooltip-box-ideas
+  bg-no-repeat
+  object-fill
+  max-w-[262px]
+  h-full
+  px-[25px]
+  pt-[10px]
+  pb-[20px]
+  flow-root
+}
+.custom-tooltip-title {
+  font-family: 'NotoSansCJKKR';
+  font-weight: 500;
+  font-size: 14px;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: normal;
+  line-height: 1.43;
+  @apply
+  text-[#222]
+  
+}
+.custom-tooltip-content {
+  font-family: 'NotoSansCJKKR';
+  font-size: 13px;
+  font-weight: 400;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.54;
+  letter-spacing: normal;
+  text-align: left;
+  @apply
+  text-[#222]
+  h-full 
+}
+.report-by-unit-title-label {
+  font-family: 'NotoSansCJKKR';
+  font-size: 20px;
+  font-weight: 700;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: normal;
+  text-align: center;
+  @apply
+  text-[#222]
+  h-[29px]
+}
+.report-by-unit-completion-date-title {
+  font-family: 'NotoSansCJKKR';
+  font-size: 13px;
+  font-weight: 700;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.54;
+  letter-spacing: normal;
+  text-align: center;
+  @apply
+  text-[#222]
+}
+.report-by-unit-completion-date-content {
+  font-family: 'NotoSansCJKKR';
+  font-size: 13px;
+  font-weight: normal;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.54;
+  letter-spacing: normal;
+  text-align: center;
+  @apply
+  text-[#222]
+}
+
+.report-export-print-button {
+  @apply
+  w-[82px]
+  h-[36px]
+  bg-no-repeat
+  bg-report-export-print-btn
+  hover:bg-report-export-print-btn-over
+}

@@ -137,6 +137,8 @@ const LearningManagementSparkWritingFeedbackPage = () => {
 
     // printRef
     const contentPrintRef = React.useRef(null);
+    const container1stDraftBody = React.useRef<HTMLDivElement|null>(null);
+    const [printBodyText, setPrintBodyText] = React.useState<string>('');
 
     // flag === undefined --> make data form for temporary save
     // flag === "send" ---> make data form for submit save
@@ -1035,9 +1037,15 @@ const LearningManagementSparkWritingFeedbackPage = () => {
         window.addEventListener('click', handleBodyCommentClick);
         window.addEventListener('click', handleTitleCommentClick);
         
+        if (container1stDraftBody.current) {
+            const draft1stBody = container1stDraftBody.current.textContent? container1stDraftBody.current.textContent:'';
+            setPrintBodyText(draft1stBody)
+
+        }
         // draft find
         // console.log('feedbackDataInStudent did =',feedbackDataInStudent)
         setDraftId(feedbackDataInStudent.defautInfo.select_draft_id);
+
         return () => {
             setDraftId('');
             setRubricInit()
@@ -1607,19 +1615,20 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                         style={{width: `${divAResize.advisor.w===0? 400: divAResize.advisor.w}px`}}
                     >
                         <div className='flex flex-col w-full h-full pl-[20px] py-[20px]'>
-                            <div className='flex flex-row relative font-notoSansCJKKR text-[16px] text-[#222] leading-[1.13]'>
+                            <div className='flex flex-row relative min-h-[36px] h-[36px] items-center font-notoSansCJKKR text-[16px] text-[#222] leading-[1.13]'>
                                 <span>1st Draft</span>
-                                <span className='absolute top-0 right-0'>
-                                    <ReportModalComponent 
+                                <span className='absolute top-0 right-0 flex gap-[5px]'>
+                                    <PDFExportButton 
                                         userInfo={feedbackDataInStudent}
-                                        title={feedbackDataInStudent.draft_data.draft_outline[0].input_content} body={''}
+                                        title={feedbackDataInStudent.draft_data.draft_outline[0].input_content} body={printBodyText}
                                         draft={1}
                                     />
                                     <PrintExportButton 
                                         userInfo={feedbackDataInStudent}
-                                        title={feedbackDataInStudent.draft_data.draft_outline[0].input_content} body={''}
+                                        title={feedbackDataInStudent.draft_data.draft_outline[0].input_content} body={printBodyText}
                                         draft={1}
                                     />
+
 
                                 </span>
                             </div>
@@ -1630,7 +1639,7 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                                     {feedbackDataInStudent.draft_data && draftViewBox.loadFinalDraftTitle({feedbackDataInStudent: feedbackDataInStudent.draft_data.draft_outline, draft:'1'})}
                                 </div>
                             </div>
-                            <div id='draft-body-wrap-div'>
+                            <div id='draft-body-wrap-div' ref={container1stDraftBody}>
                                 <div className='draft-viewer-container-body gap-[13px]'>
                                     {feedbackDataInStudent.draft_data && draftViewBox.loadFinalDraftBody({feedbackDataInStudent:feedbackDataInStudent.draft_data.draft_outline, draft: '1' })}
                                 </div>
@@ -1681,7 +1690,23 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                             width: `${divAResize.draft.w}px`
                     }}>
                         <div className='flex flex-col w-full h-full pl-[20px] py-[20px]'>
-                            <div className='flex flex-row final-component-title-label-font'>2nd Draft</div>
+                            <div className='flex flex-row final-component-title-label-font relative min-h-[36px] h-[36px]'>
+                                <span>2nd Draft</span>
+                                {feedbackDataInStudent.draft_2nd_data && (
+                                    <span className='absolute top-0 right-0 flex gap-[5px]'>
+                                        <PDFExportButton 
+                                            userInfo={feedbackDataInStudent}
+                                            title={feedbackDataInStudent.draft_2nd_data?.draft_outline[0].input_content} body={printBodyText}
+                                            draft={2}
+                                        />
+                                        <PrintExportButton 
+                                            userInfo={feedbackDataInStudent}
+                                            title={feedbackDataInStudent.draft_2nd_data?.draft_outline[0].input_content} body={printBodyText}
+                                            draft={2}
+                                        />
+                                    </span>
+                                )}
+                            </div>
                             {/* title */}
                             <div id='draft-title-wrap-div'
                             className='flex flex-row mt-[10px] h-[42px] gap-[15px] font-notoSansCJKKR text-[13px] text-[#222] leading-[1.38] items-center'>

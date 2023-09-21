@@ -2,6 +2,12 @@ import React from 'react';
 interface IComponentToPrintProps {
     userInfo: TFeedbackStates;
     draft:number;
+    title:string;
+    body:JSX.Element;
+    multi?: {
+        currentPageNum:number;
+        maxPageNum: number;
+    }
 }
 class ComponentToPrint extends React.PureComponent<IComponentToPrintProps> {
     
@@ -13,42 +19,20 @@ class ComponentToPrint extends React.PureComponent<IComponentToPrintProps> {
         const dateCompleted = dateCompleted_ori?.substring(2,10)
         console.log('dateCompleted =',dateCompleted)
         const draft_str = this.props.draft===1 ? '1st': '2st';
-        let title = '';
-        let body:JSX.Element[] = [];
-        let bodyEachSpanHeight:string[] = [];
-        const outlines:TFindDraftInfoByDraftIdDraftOutline[] = this.props.draft===1 ? userInfo.draft_data.draft_outline:userInfo.draft_2nd_data? userInfo.draft_2nd_data.draft_outline:[];
-        for (let i = 0; i < outlines.length; i++) {
-            if (outlines[i].name === 'Title') {
-                title = outlines[i].input_content
-            } else {
-                if (this.props.draft === 1) {
-                    let jsxBody = <span><span className='pl-[2.64583mm]' />{outlines[i].input_content}</span>;
-                    // jsxBody
-                    console.log('jsxBody =',jsxBody)
-                    body.push(jsxBody);
-                    body.push(jsxBody);
-                } else {
-                    const bodyText = outlines[i].input_content.split('\n\n');
-                    body = bodyText.map((item,itemIdx ) => {
-                        return <span key={'print-component-'+this.props.draft+'-'+itemIdx}><span className='pl-[1.05833mm]'></span>{item}</span>
-                    })
-                }
-            }
-        }
-        let allBody = <div className='export-lm-wh-content-body'>{body}</div>;
+        const body = <div className='export-lm-wh-content-body'>{this.props.body}</div>
         
       return (
         <div className='print-container'>
-            <div className='w-full h-full bg-[#f7fcfe] px-[13.22917mm] pt-[13.22917mm]'>
+            <div className='w-full h-full bg-[#f7fcfe] px-[13.22917mm] pt-[12.093mm]'>
 
                 {/* head */}
-                <div className='export-lm-wh-draft-info-div h-[37.04167mm] w-full'>
+                <div className='export-lm-wh-draft-info-div h-[33.86mm] w-full'>
                     
-                    <div className='flex flex-col w-[32.54375mm] h-[18.52083mm] ml-[6.614583mm] mt-[9.260417mm] gap-[1.534583mm]'>
+                    <div className='flex flex-col w-[32.54375mm] h-[16.93mm] ml-[6.614583mm] mt-[8.465mm] gap-[1.534583mm]'>
                         <div className='flex flex-row gap-[4px] w-full h-[10.63625mm]'>
                             <div className='w-[8.7047916mm] h-full bg-contain bg-center bg-no-repeat bg-svg-ic-writing'/>
 
-                            <div className='flex flex-col w-[22.75417mm] h-[8.202083mm] pt-[1.05833mm]'>
+                            <div className='flex flex-col w-[22.75417mm] h-[8.202083mm] pt-[0.967mm]'>
                                 <div className='export-lm-wh-font-gothamrounded' style={{
                                     fontSize: '3.704167mm',
                                     lineHeight: '4.23333mm'
@@ -69,36 +53,36 @@ class ComponentToPrint extends React.PureComponent<IComponentToPrintProps> {
                         </div>
                     </div>
 
-                    <div className='flex flex-row w-[133.87916mm] h-[25.135416mm] ml-[6.614583mm] mt-[5.82083mm] gap-[5.291667mm]'>
-                        <div className='flex flex-col w-full h-full gap-[3.96875mm]'>
+                    <div className='flex flex-row w-[133.87916mm] h-[22.976mm] ml-[6.614583mm] mt-[5.321mm] gap-[5.291667mm]'>
+                        <div className='flex flex-col w-full h-full gap-[3.628mm]'>
 
-                            <div className='flex flex-col gap-[1.05833mm]'>
+                            <div className='flex flex-col gap-[0.967mm]'>
                                 <span className='export-lm-wh-font-label'>level</span>
                                 <span className='export-lm-wh-font-value'>{userInfo.defautInfo.level.name}</span>
                             </div>
-                            <div className='flex flex-col gap-[1.05833mm]'>
+                            <div className='flex flex-col gap-[0.967mm]'>
                                 <span className='export-lm-wh-font-label'>book</span>
                                 <span className='export-lm-wh-font-value'>{userInfo.defautInfo.book_name}</span>
                             </div>
                         </div>
 
                         <div className='flex flex-col w-full h-full gap-[3.96875mm]'>
-                            <div className='flex flex-col gap-[1.05833mm]'>
+                            <div className='flex flex-col gap-[0.967mm]'>
                                 <span className='export-lm-wh-font-label'>class</span>
                                 <span className='export-lm-wh-font-value'>{userInfo.defautInfo.class.name}</span>
                             </div>
-                            <div className='flex flex-col gap-[1.05833mm]'>
+                            <div className='flex flex-col gap-[0.967mm]'>
                                 <span className='export-lm-wh-font-label'>unit</span>
                                 <span className='export-lm-wh-font-value'>{`Unit ${userInfo.defautInfo.unit_index}`}</span>
                             </div>
                         </div>
 
                         <div className='flex flex-col w-full h-full gap-[3.96875mm]'>
-                            <div className='flex flex-col gap-[1.05833mm]'>
+                            <div className='flex flex-col gap-[0.967mm]'>
                                 <span className='export-lm-wh-font-label'>student</span>
                                 <span className='export-lm-wh-font-value'>{userInfo.defautInfo.student_name.student_name_kr}</span>
                             </div>
-                            <div className='flex flex-col gap-[1.05833mm]'>
+                            <div className='flex flex-col gap-[0.967mm]'>
                                 <span className='export-lm-wh-font-label'>date completed</span>
                                 <span className='export-lm-wh-font-value'>{`${draft_str} : ${dateCompleted}`}</span>
                             </div>
@@ -113,11 +97,18 @@ class ComponentToPrint extends React.PureComponent<IComponentToPrintProps> {
                     <div className='export-lm-wh-content-title-deco z-0'/>
                     <div className='export-lm-wh-content-title z-10'>
                         <span className='export-lm-wh-content-title-value'>Title:</span>
-                        <span className='export-lm-wh-content-title-value'>{title}</span>
+                        <span className='export-lm-wh-content-title-value'>{this.props.title}</span>
                     </div>
-                    {allBody}
+                    {/* page numbering */}
+                    {this.props.multi && (
+                        <div className={this.props.multi.maxPageNum!==1 ? 'export-lm-wh-draft-info-numbering-div':'hidden'}>
+                            <span>{`${this.props.multi.currentPageNum} / ${this.props.multi.maxPageNum}`}</span>
+                        </div>
+                    )}
+                    {this.props.body}
                 </div>
             </div>
+
         </div>
       );
     }

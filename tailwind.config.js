@@ -18,6 +18,7 @@ module.exports = {
       backgroundImage: {
         'outline-box-img': "url('/src/util/png/textKeyBox.png')",
         'outline-white-box': "url('/src/util/png/outlineTextSubBox.png)",
+
         // draft table buttons
         
         'svg-bt-correct': "url('/src/util/svgs/buttons/writing/learningManagement/table/bt_correct.svg')",
@@ -28,6 +29,21 @@ module.exports = {
         'svg-bt-done-over': "url('/src/util/svgs/buttons/writing/learningManagement/table/bt_done_over.svg')",
         'svg-bt-returned': "url('/src/util/svgs/buttons/writing/learningManagement/table/bt_returned.svg')",
         'svg-bt-returned-over': "url('/src/util/svgs/buttons/writing/learningManagement/table/bt_returned_over.svg')",
+        // tab move buttons
+        'svg-bt-left': "url('/src/components/toggleModalComponents/reportLayouts/svgs/bt_left.svg')",
+        'svg-bt-left-over': "url('/src/components/toggleModalComponents/reportLayouts/svgs/bt_left_over.svg')",
+        'svg-bt-left-disabled': "url('/src/components/toggleModalComponents/reportLayouts/svgs/bt_left_disable.svg')",
+        'svg-bt-right': "url('/src/components/toggleModalComponents/reportLayouts/svgs/bt_right.svg')",
+        'svg-bt-right-over': "url('/src/components/toggleModalComponents/reportLayouts/svgs/bt_right_over.svg')",
+        'svg-bt-right-disabled': "url('/src/components/toggleModalComponents/reportLayouts/svgs/bt_right_disable.svg')",
+        // portfolio button
+        'svg-bt-portfolio': "url('/src/components/toggleModalComponents/reportLayouts/svgs/bt_portfolio.svg')",
+        'svg-bt-portfolio-over': "url('/src/components/toggleModalComponents/reportLayouts/svgs/bt_portfolio_over.svg')",
+        // report button
+        'svg-bt-go-report': "url('/src/components/toggleModalComponents/reportLayouts/svgs/bt_report.svg')",
+        'svg-bt-go-report-over': "url('/src/components/toggleModalComponents/reportLayouts/svgs/bt_report_over.svg')",
+        // crown ic
+        'svg-ic-crown': "url('/src/components/toggleModalComponents/reportLayouts/svgs/crown.svg')",
         // buttons
         'svg-bt-comment-add': "url('/src/util/svgs/buttons/bt_comments.svg')",
         'svg-bt-advisor': "url('/src/util/svgs/buttons/bt_advisor.svg')",
@@ -43,6 +59,10 @@ module.exports = {
         'svg-bt-send': "url('/src/util/svgs/buttons/bt_send.svg')",
         'svg-bt-send-disabled': "url('/src/util/svgs/buttons/bt_send_disable.svg')",
         'svg-bt-send-over': "url('/src/util/svgs/buttons/bt_send_over.svg')",
+        // modal close
+        'svg-btn-close': "url('/src/util/svgs/buttons/p_btn_close.svg')",
+        // report button in 학습 관리
+        'svg-bt-report-lm':"url('/src/util/svgs/buttons//writing/learningManagement/table/bt_report.svg')",
         // 돋보기
         'svg-bt-info-magnifying-glass-icon': "url('/src/util/svgs/buttons/bt_info.svg')",
         // final draft bottom buttons
@@ -52,8 +72,20 @@ module.exports = {
         // pdf & print
         'svg-bt-pdf': "url('/src/util/svgs/buttons/bt_pdf.svg')",
         'svg-bt-print': "url('/src/util/svgs/buttons/bt_print.svg')",
+        // report print
+        'report-export-print-btn': "url('/src/components/commonComponents/customComponents/exportButtons/report/svgs/bt_print.svg')",
+        'report-export-print-btn-over': "url('/src/components/commonComponents/customComponents/exportButtons/report/svgs/bt_print_over.svg')",
         // export 재료
         'svg-ic-writing':"url('/src/util/svgs/export/ic_wr_2.svg')",
+        'report-ic-wr': "url('/src/components/commonComponents/customComponents/exportButtons/report/svgs/ic_wr.svg')",
+        // report custom tooltips
+        'report-rechart-custom-tooltip-box-organization': "url('/src/components/chartComponents/tooltips/polygons/reportTooltipOrganization.svg')",
+        'report-rechart-custom-tooltip-box-voice': "url('/src/components/chartComponents/tooltips/polygons/reportTooltipVoice.svg')",
+        'report-rechart-custom-tooltip-box-sentencefluency': "url('/src/components/chartComponents/tooltips/polygons/reportTooltipSentenceFluency.svg')",
+        'report-rechart-custom-tooltip-box-wordchoice': "url('/src/components/chartComponents/tooltips/polygons/reportTooltipWordChoice.svg')",
+        'report-rechart-custom-tooltip-box-ideas': "url('/src/components/chartComponents/tooltips/polygons/reportTooltipIdeas.svg')",
+        'report-rechart-custom-tooltip-box-conventions': "url('/src/components/chartComponents/tooltips/polygons/reportTooltipConventions.svg')",
+        
       }
     },
     borderWidth: {

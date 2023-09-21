@@ -1,84 +1,106 @@
 import * as React from 'react';
-import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import useLoginStore from '../../store/useLoginStore';
-import buttonImage from './img/report_image.png'
-import ComponentToPrint from '../commonComponents/customComponents/exportButtons/PrintComponent';
+import ReportTabComponent from './reportLayouts/TabCompoent';
+import { commonSvgIcons } from '../../util/svgs/commonSvgIcons';
+import useReportStore from '../../store/useReportStore';
 
 export default function ReportModalComponent(
   props: {
-    userInfo:TFeedbackStates;
-    title: string;
-    body:string;
-    draft:number;
+    feedbackStates:TFeedbackStates;
+    studend_code:string;
+    initSettingData: Function;
+    from?: ''|'portfolioModal'
   }
 ) {
-    const {body,title,userInfo,draft} = props;
+  const { 
+    feedbackStates,
+    studend_code,
+    initSettingData, from
+} = props;
   const [open, setOpen] = React.useState(false);
+
+  const {
+    report, set
+  } = useReportStore();
   
   React.useEffect(()=>{
     
   }, [open])
 
-  const handleClickOpen = () => {
-    setOpen(true);
+  const handleClickOpen = async () => {
+    if (from) {
+      
+      console.log('close')
+      handleClose();
+    } else {
+      const init = await initSettingData();
+      if (init) {
+        set.doughnutChart(dumyData);
+        setOpen(true);
+      }
+    }
   };
 
   const handleClose = () => {
     setOpen(false);
   };
-  const onChangeValue = (e:React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    // // console.log('current value =',e.currentTarget.value)
-    // e.currentTarget.style.height = 'auto';
-    // e.currentTarget.style.height = e.currentTarget.scrollHeight+'px';
-    // const value = e.currentTarget.value;
-    // const inputValue = value.replace(/\n{2,}/gm, '\n')
-    // setInputText(inputValue)
-  }
 
-  const onKeyUpEvent = async (e:React.KeyboardEvent<HTMLTextAreaElement>) => {
-    // if (e.key==='Enter') {
-    //     if (!e.shiftKey) {
-    //         console.log('enter')
-    //         console.log('inputText =',inputText)
-            
-    //         e.currentTarget.value = '';
-    //         e.currentTarget.style.height = 'auto';
-    //         e.currentTarget.style.height = e.currentTarget.scrollHeight+'px';
-    //         const inputTextValue = inputText.replace(/\n$/gmi,'');
-    //         await callDialogAPIFN(inputTextValue);
-    //     } 
-    // }
-  }
+  const dumyData:TRubricScoreData[] = [
+    {name: 'convention', score: 20},
+    {name: 'organization', score: 80},
+    {name: 'ideas', score: 60},
+    {name: 'voice', score: 40},
+    {name: 'word choice', score: 80},
+    {name: 'sentence fluency', score: 80},
+  ]
+
+
 
   return (
     <div className='flex'>
     <button 
-        className={`chatbot-modal-button justify-center bg-black rounded-lg`}
-        onClick={handleClickOpen}
-    ><img className='flex w-12 h-12' src={buttonImage}/></button>
+        className={`chatbot-modal-button justify-center`}
+        onClick={async()=>await handleClickOpen()}
+    ><div className={from==='portfolioModal' ? 'bt-go-report-in-modal':'lm-bt-report-in-table'}/></button>
       <Dialog className=''
         PaperProps={{
           sx: {
             width: '100%',
-            maxWidth: '100%'
+            maxWidth: '1300px',
+            minWidth: '1300px',
+            
           }
         }}
-      open={open} onClose={handleClose}>
-        <DialogTitle>Report</DialogTitle>
-        <DialogContent 
-            className='flex flex-1 w-full h-full flex-col bg-[#f3f3f3]'
-        >
-          <div className='p-[10px]'>
-        <ComponentToPrint userInfo={userInfo} draft={draft}/>
-
-          </div>
+      open={open} onClose={handleClose}
+      
+      >
+        <DialogTitle sx={{
+          backgroundColor: '#333',
+          color: '#fff',
+          position: 'relative',
+          fontFamily: 'NotoSansCJKKR',
+          fontSize: '16px',
+          fontWeight: 700,
+          height:'50px',
+          paddingTop: '13px',
+          paddingLeft: '20px'
+        }}>
           
+          <span>{`Report - ${feedbackStates.defautInfo.student_name.student_name_kr} (${feedbackStates.defautInfo.student_name.student_name_en})`}</span>
+          <div className='absolute top-[15px] right-[20px] hover:cursor-pointer bg-svg-btn-close bg-no-repeat w-[20px] h-[20px]' onClick={handleClose}></div>
+          
+        </DialogTitle>
+        <DialogContent 
+          sx={{
+            height: 'fit-content'
+          }}
+            className='flex flex-1 min-w-[1260px] w-full h-full bg-[#f2f9ff]'
+        >
+          <ReportTabComponent doughnutValues={report.doughnutChart} 
+            student_code={studend_code} otherModalCloseFn={handleClose}
+          />
         </DialogContent>
         {/* <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>

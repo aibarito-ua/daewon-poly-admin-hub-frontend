@@ -1,6 +1,6 @@
 interface IChartDataStore {
     dumyData: TSetChartDatas[];
-    doughnutData: TAllDoughnutDatas;
+    doughnutData: TAllDoughnutDatasCDS;
     barChartData: TBarChartDatas;
     setDatas: (data:TSetChartDatas[])=>void;
 }
@@ -14,7 +14,7 @@ type TScoreByUnit = {
     score: TUnitScore;
 }
 type TScoreCategory = 'ideas'|'organization'|'voice'|'word choice'|'sentence fluency'|'conventions';
-type TAllDoughnutDatas = {
+type TAllDoughnutDatasCDS = {
     target: string;
     data: {
         name: string;
