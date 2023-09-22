@@ -72,13 +72,15 @@ const Portfolio = () => {
         const loadFilterData = await getLMRSpeakingHubFilterDataAPI();
         console.log('laod filter data =',loadFilterData)
         setFilterAllList(loadFilterData);
-        const campus_list = loadFilterData.campus.map((item) => {
-            return item.name;
-        })
-        setSelectFilterCampusList(campus_list);
-        setFilterData(loadFilterData);
-        setFilterStates(loadFilterData);
-        console.log('beforeRenderedFn complete')
+        if (loadFilterData&& loadFilterData.campus) {
+            const campus_list = loadFilterData.campus.map((item) => {
+                return item.name;
+            })
+            setSelectFilterCampusList(campus_list);
+            setFilterData(loadFilterData);
+            setFilterStates(loadFilterData);
+            console.log('beforeRenderedFn complete')
+        }
     }
     
     useComponentWillMount(()=>{
