@@ -25,6 +25,13 @@ const useLearningResultManagementWHStore = create<IuseLearningResultManagementWH
             //     ]
             // },
         ]
+    },
+    getAllReportData: {
+        book_name: '',
+        students: []
+    },
+    setAllReportData: (data) => {
+        set(()=>({getAllReportData: data}));
     }
 }))
 

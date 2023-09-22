@@ -130,7 +130,7 @@ export default function BasicTabs(props: {
     const getOverallDatas = async () => {
         const getOverallDataFromAPI = await getReportOverallDatabyStu({
             level_name: feedbackDataInStudent.defautInfo.level.name,
-            student_code: feedbackDataInStudent.defautInfo.student_code
+            student_code: student_code
         });
         if (getOverallDataFromAPI) {
             setOverallReportByStu(getOverallDataFromAPI);
@@ -294,7 +294,7 @@ export default function BasicTabs(props: {
                     const searchData = {
                         level_name: dumyData.defautInfo.level.name,
                         unit_index: target.unit_index,
-                        student_code: dumyData.defautInfo.student_code
+                        student_code: student_code
                     }
                     const reportData = await getReportOneDataByStu(searchData)
                     console.log('rsp1st =',rsp1st)
@@ -353,7 +353,7 @@ export default function BasicTabs(props: {
                     const searchData = {
                         level_name: dumyData.defautInfo.level.name,
                         unit_index: target.unit_index,
-                        student_code: dumyData.defautInfo.student_code
+                        student_code: student_code
                     }
                     const reportData = await getReportOneDataByStu(searchData)
                     if (rsp1st.draft_index > 0 && rsp2nd.draft_index > 0 && reportData) {
@@ -448,7 +448,7 @@ export default function BasicTabs(props: {
                 ></div>
                 
                 <div className='absolute right-[30px] '>
-                 <PortfolioModalComponent feedbackStates={feedbackDataInStudent} from='LM-Report'/>
+                 <PortfolioModalComponent feedbackStates={feedbackDataInStudent} from='LM-Report' studentCode={student_code}/>
                 </div>
             </div>
             {/* 좌 - 그래프, 우 - summary, correction, t comment */}

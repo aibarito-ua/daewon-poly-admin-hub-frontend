@@ -84,4 +84,13 @@ export const CONFIG = {
             }
         }
     },
+    LEARNING_RESULT_MANAGEMENT: {
+        WRITING: {
+            SPARK_WRITING: {
+                GET: {
+                    ALL_REPORTS: HOST_URL+LEARNING_RESULT_MANAGEMENT_WRITING_SPARK_WRITING_GET_REPORTS,
+                }
+            }
+        }
+    }
 }

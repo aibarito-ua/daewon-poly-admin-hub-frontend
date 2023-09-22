@@ -191,3 +191,23 @@ export async function getReportOverallDatabyStu(data: {
         return null;
     })
 }
+export async function getAllReportByCampusLevelClass(data: {
+    campus_code: string;
+    level_code:string;
+    class_code:string;
+}):Promise<TGetAllWritingReport|null> {
+    const reqUrl = CONFIG.LEARNING_RESULT_MANAGEMENT.WRITING.SPARK_WRITING.GET.ALL_REPORTS.replace(/{campus_code}/gmi,data.campus_code).replace(/{level_code}/gmi, data.level_code).replace(/{class_code}/gmi,data.class_code);
+    return await axios.get(reqUrl, {
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlZFUkEuQkFORyIsImlhdCI6MTY4OTI5OTkyNywiZXhwIjoxNjg5MzAwODI3fQ.wbRM8nuuAm0Nz4op5D2OnRgbEx22uSuY_nqPBRpYSUs'
+        },
+    }).then((response) => {
+        const data:TGetAllWritingReport = response.data.data;
+        return data;
+    }).catch((reject) => {
+        console.log('reject ===',reject);
+        return null;
+    })
+}

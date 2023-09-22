@@ -5,9 +5,10 @@ import { cf } from "../../../../util/common/commonFunctions";
 import { useComponentWillMount } from "../../../../hooks/useEffectOnce";
 import DebouncedDropdowFilter from "../../../../components/commonComponents/BasicTable/stateDebouncedDropdown";
 import { SvgSearchIcon } from "../../../../components/commonComponents/BasicTable/svgs/SearchIcon";
-import { getLMSparkWritingFilterDataAPI, getLMSparkWritingStudents } from "../../../../api/LearningManagement/LearningManagementSparkWriting.api";
+import { getAllReportByCampusLevelClass, getLMSparkWritingFilterDataAPI, getLMSparkWritingStudents, getReportOverallDatabyStu } from "../../../../api/LearningManagement/LearningManagementSparkWriting.api";
 import useLearningManagementSparkWritingStore from "../../../../store/useLearningManagementSparkWritingStore";
-import LearningManagementStudentsTable from "../../../../components/commonComponents/BasicTable/LearningManagementStudentsTable";
+import LearningResultManagementStudentsTable from "../../../../components/commonComponents/BasicTable/LearningResultManagementStudentsTable";
+import useLearningResultManagementWHStore from "../../../../store/useLearningResultManagementWHStore";
 
 const ReportAndPortfolio = () => {
     // page usehook zustand
@@ -20,6 +21,9 @@ const ReportAndPortfolio = () => {
         // feedback
         feedbackDataInStudent, setFeedbackDataInStudent
     } = useLearningManagementSparkWritingStore();
+    const {
+        getAllReportData, setAllReportData
+    } = useLearningResultManagementWHStore();
     
     // page states
     const [emptyPageMessage, setEmptyPageMessage] = React.useState<string>('검색 값을 선택 후 조회하세요.');
@@ -50,12 +54,13 @@ const ReportAndPortfolio = () => {
     const [isSearch, setIsSearch] = React.useState<boolean>(false);
 
     // studen table data
-    const [classCurrentData,setClassCurrentData] = React.useState<TClassCurrentlyData[][]>();
+    const [classCurrentData,setClassCurrentData] = React.useState<TLRMWHClassCurrentlyData[][]>();
     const [classTableHead, setClassTableHead] = React.useState<string[]>([]);
 
     // initialize setting before render screen
     const beforRenderedFn = async () => {
         const loadFilterData = await getLMSparkWritingFilterDataAPI();
+        
         console.log('laod filter data =',loadFilterData)
         setFilterAllList(loadFilterData);
         const campus_list = loadFilterData.campus.map((item) => {
@@ -131,8 +136,13 @@ const ReportAndPortfolio = () => {
                     classCode:selectClassCode.code
                 }
                 const rsp = await getLMSparkWritingStudents(reqData);
+                const overallData = await getAllReportByCampusLevelClass({
+                    campus_code:selectCampusCode.code,
+                    level_code:selectLevelCode.code,
+                    class_code:selectClassCode.code
+                })
                 console.log('stu rsp ==',rsp)
-                if (rsp.students.length > 0) {
+                if (rsp.students.length > 0 && overallData) {
                     // feedback value setting
                     const dumyFeedbackData:TFeedbackStates = JSON.parse(JSON.stringify(feedbackDataInStudent));
                     dumyFeedbackData.defautInfo.campus= selectCampusCode;
@@ -140,8 +150,9 @@ const ReportAndPortfolio = () => {
                     dumyFeedbackData.defautInfo.class = selectClassCode;
                     dumyFeedbackData.defautInfo.book_name = rsp.book_name;
                     setFeedbackDataInStudent(dumyFeedbackData);
+                    setAllReportData(overallData);
                     // table data setting
-                    makeTableData(rsp)
+                    makeTableData(rsp, overallData)
                     setStudentDataInClass(rsp)
                     setIsSearch(true)
                 } else {
@@ -161,35 +172,48 @@ const ReportAndPortfolio = () => {
             setEmptyPageMessage('검색 값을 선택 후 조회하세요.')
         };
     }
-    const makeTableData = (rsp: TLMSparkWritingStudentsListInClass) =>{
+    const makeTableData = (rsp: TLMSparkWritingStudentsListInClass, overallPortfolio:TGetAllWritingReport) =>{
         const unitIdxs = Array.from({length:5},(_, valueKIdx) => {return valueKIdx+1});
-        const draftIdxs = Array.from({length:3}, (_,valueKIdx) => {return valueKIdx+1});
+        const draftIdxs = Array.from({length:2}, (_,valueKIdx) => {return valueKIdx+1});
         const headLabels = [
             ['no','student','unit 1', 'unit 2', 'unit 3', 'unit 4', 'unit 5'],
-            ['1st draft', '2nd draft', 'report']
+            ['report','portfolio']
         ]
         let rowKeys:string[] =['no','student'];
         for (let unitIdx=0; unitIdx<unitIdxs.length; unitIdx++) {
             for (let stepIdx=0; stepIdx<draftIdxs.length; stepIdx++) {
-                const stepLabel = draftIdxs[stepIdx]===1?'1st_draft': (
-                    draftIdxs[stepIdx]===2?'2nd_draft':'report'
-                )
+                const stepLabel = draftIdxs[stepIdx]===1?'report': 'portfolio'
                 const textUnitVal = `unit_${unitIdxs[unitIdx]}_${stepLabel}`;
                 rowKeys.push(textUnitVal)
             }
         }
         console.log('rowKeys ==',rowKeys)
-        
         setClassTableHead(rowKeys);
-        const bodyData: TClassCurrentlyData[][] = [];
+        const bodyData: TLRMWHClassCurrentlyData[][] = [];
         // // 학생 수 -> row
         for (let row = 0; row < rsp.students.length; row++) {
             const targetStudent = rsp.students[row];
+            
             const student_name_kr = targetStudent.student_name_kr
             const student_name_en = targetStudent.student_name_en
             const studentNameSet:TNamesetData = {student_name_kr,student_name_en};
+            let currentlyPortfolio:TGetAllWritingReportStudent[]=[];
+            let userInfoBasic:{student_code: string;
+                student_name_en: string;
+                student_name_kr: string;} = {student_code:'',student_name_en:'',student_name_kr:''}
+            // find portfolio
+            for (let i = 0; i < overallPortfolio.students.length; i++) {
+                if (overallPortfolio.students[i].student_code === targetStudent.student_code) {
+                    userInfoBasic.student_code=overallPortfolio.students[i].student_code;
+                    userInfoBasic.student_name_en=overallPortfolio.students[i].student_name_en;
+                    userInfoBasic.student_name_kr=overallPortfolio.students[i].student_name_kr;
+                    currentlyPortfolio.push(overallPortfolio.students[i]);
+                    break;
+                }
+            }
             let rowData = []
             for (let col = 0; col < rowKeys.length; col++) {
+                
                 const unit = parseInt(rowKeys[col].split('_')[1]);
                 const draftString = rowKeys[col].split('_')[2];
                 const draftNum = draftString==='1st'?1: (draftString==='2nd'?2:0)
@@ -197,13 +221,16 @@ const ReportAndPortfolio = () => {
                 
                 // const targetUnitData = col===0 ? row+1: (col===1 ? studentNameSet : targetStudent.units[unit]);
                 if (col===0) {
-                    const makeCellData:TClassCurrentlyData = {
+                    
+                    const makeCellData:TLRMWHClassCurrentlyData = {
                         key: rowKeys[col],
                         width: 70,
                         value:{
                             num:row+1,
-                            data:null,
-                            nameset:null
+                            report:null,
+                            portfolio:null,
+                            nameset:null,
+                            userInfo: userInfoBasic,
                         },
                         rowspan: 1,
                         print:true,
@@ -211,13 +238,15 @@ const ReportAndPortfolio = () => {
                     }
                     rowData.push(makeCellData)
                 } else if (col===1) {
-                    const makeCellData:TClassCurrentlyData = {
+                    const makeCellData:TLRMWHClassCurrentlyData = {
                         key: rowKeys[col],
                         width: 140,
                         value:{
                             num:0,
                             nameset:studentNameSet,
-                            data:null
+                            report:null,
+                            portfolio:null,
+                            userInfo: userInfoBasic,
                         },
                         rowspan: 1,
                         print:true,
@@ -225,13 +254,24 @@ const ReportAndPortfolio = () => {
                     }
                     rowData.push(makeCellData)
                 } else {
-                    const makeCellData:TClassCurrentlyData = {
+                    let currentPortfolioData:TGetAllWritingReportStudentReports|null = null;
+                    const targetPD = currentlyPortfolio[0].unit_reports;
+                    for (let r = 0; r < targetPD.length; r++) {
+                        if (targetPD[r].unit_index === unit) {
+                            currentPortfolioData = targetPD[r];
+                            break;
+                        }
+                    };
+                    
+                    const makeCellData:TLRMWHClassCurrentlyData = {
                         key: rowKeys[col],
                         width: 95,
                         value:{
                             num:0,
                             nameset: null,
-                            data: targetStudent.units[unit-1]
+                            report: targetStudent.units[unit-1],
+                            portfolio: currentPortfolioData? currentPortfolioData: null,
+                            userInfo: userInfoBasic,
                         },
                         rowspan: 1,
                         print:true,
@@ -385,7 +425,7 @@ const ReportAndPortfolio = () => {
                                     </div>
                                 </div>
                                 <div className="flex flex-row">
-                                    <LearningManagementStudentsTable
+                                    <LearningResultManagementStudentsTable
                                         dataHead={classTableHead}
                                         dataModel={classCurrentData?classCurrentData:[]}
                                     />

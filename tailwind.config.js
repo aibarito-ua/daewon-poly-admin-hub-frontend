@@ -36,6 +36,8 @@ module.exports = {
         'svg-bt-right': "url('/src/components/toggleModalComponents/reportLayouts/svgs/bt_right.svg')",
         'svg-bt-right-over': "url('/src/components/toggleModalComponents/reportLayouts/svgs/bt_right_over.svg')",
         'svg-bt-right-disabled': "url('/src/components/toggleModalComponents/reportLayouts/svgs/bt_right_disable.svg')",
+        // portfolio view ic
+        'svg-ic-portfolio': "url('/src/components/toggleModalComponents/reportLayouts/svgs/bt_portfolio_view.svg')",
         // portfolio button
         'svg-bt-portfolio': "url('/src/components/toggleModalComponents/reportLayouts/svgs/bt_portfolio.svg')",
         'svg-bt-portfolio-over': "url('/src/components/toggleModalComponents/reportLayouts/svgs/bt_portfolio_over.svg')",

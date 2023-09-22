@@ -11,7 +11,7 @@ export default function ReportModalComponent(
     feedbackStates:TFeedbackStates;
     studend_code:string;
     initSettingData: Function;
-    from?: ''|'portfolioModal'
+    from?: ''|'portfolioModal'|'portfolioModalLRM'
   }
 ) {
   const { 
@@ -30,10 +30,18 @@ export default function ReportModalComponent(
   }, [open])
 
   const handleClickOpen = async () => {
-    if (from) {
+    if (from==='portfolioModal') {
       
       console.log('close')
       handleClose();
+    } else if (from==='portfolioModalLRM') {
+      const init = await initSettingData();
+      console.log('portfolioModalLRM',init)
+      if (init) {
+        set.doughnutChart(dumyData);
+        console.log('open')
+        setOpen(true);
+      }
     } else {
       const init = await initSettingData();
       if (init) {
@@ -63,7 +71,7 @@ export default function ReportModalComponent(
     <button 
         className={`chatbot-modal-button justify-center`}
         onClick={async()=>await handleClickOpen()}
-    ><div className={from==='portfolioModal' ? 'bt-go-report-in-modal':'lm-bt-report-in-table'}/></button>
+    ><div className={from ? 'bt-go-report-in-modal':'lm-bt-report-in-table'}/></button>
       <Dialog className=''
         PaperProps={{
           sx: {
