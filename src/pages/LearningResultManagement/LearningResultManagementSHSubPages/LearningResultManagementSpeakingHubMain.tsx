@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import ActivitySpeakHubSideLayout from "../../../components/pageComponents/activityManagement/layout/ActivitySpeakHubSideLayout";
 import useActivitySpeakHubStore from "../../../store/useActivitySpeakHubStore";
 
@@ -52,17 +52,17 @@ export default function LearningResultManagementSpeakingHubMain (props: TLearnin
 
     React.useEffect(()=>{
         const pathParam = locationHook.pathname.split('/');
+        const prelast = pathParam.slice(-2)[0];
         const last = pathParam.slice(-1)[0];
-        console.log(locationHook)
         if (selectNavigationTitles.length===0) {
-            if (last==='IdeaExchange') {
-                setSideSelected([0,0])
+            if (prelast==='IdeaExchange') {
+                setSideSelected([0, last == 'Progress' ? 0 : 1])
                 setSelectNavigationTitles(['학습 결과 관리', 'Speaking Hub', 'Idea Exchange'])
-            } else if (last==='StoryVlog') {
-                setSideSelected([1,0])
+            } else if (prelast==='StoryVlog') {
+                setSideSelected([1, last == 'Progress' ? 0 : 1])
                 setSelectNavigationTitles(['학습 결과 관리', 'Speaking Hub', 'Story Vlog'])
-            } else if (last === 'RolePlay') {
-                setSideSelected([2,0])
+            } else if (prelast === 'RolePlay') {
+                setSideSelected([2, last == 'Progress' ? 0 : 1])
                 setSelectNavigationTitles(['학습 결과 관리', 'Speaking Hub', 'Role-play'])
             }
         } 

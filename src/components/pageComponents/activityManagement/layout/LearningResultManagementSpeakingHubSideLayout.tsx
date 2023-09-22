@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 
 import { commonSvgIcons } from '../../../../util/svgs/commonSvgIcons';
 const SpeakingHubIcon = (
@@ -36,8 +36,14 @@ export default function LearningResultManagementSpeakingHubSideLayout (props:{
         sideSelected
     } = props;
     const [subListOpen, setSubListOpen] = React.useState<number[]>(Array.from({length:sideNav.titleList.length}, (v,i)=>{
-        if (i===0) {return 0} else return -1;
+        if (i===sideSelected[0]) {return sideSelected[1]} else return -1;
     }));
+
+    useEffect(() => {
+        setSubListOpen(Array.from({length:sideNav.titleList.length}, (v,i)=>{
+            if (i===sideSelected[0]) {return sideSelected[1]} else return -1;
+        }))
+    }, [sideSelected])
 
     const handleSubListToggle = (index: number, subIndex:number) => {
         

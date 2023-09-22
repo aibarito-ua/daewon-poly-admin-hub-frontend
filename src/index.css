@@ -484,7 +484,8 @@ body {
   h-[36px]
   justify-between
   items-center
-  rounded-md
+  rounded-[2px]
+  whitespace-nowrap
   shadow-sm
   ml-4
   px-4 py-1 
@@ -506,7 +507,7 @@ body {
   absolute 
   w-full
   left-0 
-  text-[#0070c0]
+  text-[#222]
   z-10
   origin-top-right 
   rounded-bl-md
@@ -549,7 +550,8 @@ body {
   h-[36px]
   text-[14px]
   gap-2
-  rounded-md
+  rounded-[2px]
+  font-notoSansCJKKR
   border
   border-[#BBBBBB]
 }
@@ -816,6 +818,96 @@ body {
   font-notoSansCJKKR
   text-[#444]
   h-[19px]
+}
+.learning-management-class-table-complete-question-wrapper {
+  /* width: 28px; */
+  height: 28px;
+  display: flex;
+  justify-content: center;
+}
+.learning-management-class-table-complete-question-icon {
+  width: 10px;
+  height: 10px;
+  object-fit: contain;
+  box-shadow: 0.8px 0.8px 0 0 rgba(255, 255, 255, 0.3);
+  background-color: var(--material-theme-ref-primary-primary-100);
+}
+.learning-management-analysis-lesson-question {
+  height: 24px;
+  margin: 0 0 0 8px;
+  font-family: NotoSansCJKKR;
+  font-size: 16px;
+  font-weight: 500;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.13;
+  letter-spacing: normal;
+  text-align: left;
+  color: #222;
+}
+.learning-management-analysis-info-name {
+  height: 24px;
+  margin: 0 6px 0 0;
+  font-family: NotoSansCJKKR;
+  font-size: 16px;
+  font-weight: normal;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.25;
+  letter-spacing: normal;
+  text-align: right;
+  color: #444;
+}
+.learning-management-analysis-table-th {
+  height: 19px;
+  margin: 11px 247px 0 129px;
+  font-family: NotoSansCJKKR;
+  font-size: 13px;
+  font-weight: normal;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.92;
+  letter-spacing: normal;
+  text-align: center;
+  color: #222;
+  @apply
+  w-[330px]
+}
+.learning-management-analysis-table-td {
+  height: 19px;
+  margin: 12.5px 158px 12px;
+  font-family: NotoSansCJKKR;
+  font-size: 13px;
+  font-weight: 500;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.92;
+  letter-spacing: normal;
+  text-align: center;
+  color: #222;
+  @apply
+  text-center
+}
+.learning-result-management-portfolio-text-box {
+  width: 660px;
+  height: 303px;
+  margin: 14px 0 0;
+  padding: 25px 8px 25px 25px;
+  border-radius: 2px;
+  background-color: #f9f9f9;
+  overflow: auto;
+}
+.learning-result-management-portfolio-text-span {
+  margin: 0 15px 0 0;
+  font-family: NotoSansCJKKR;
+  font-size: 13px;
+  font-weight: normal;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.92;
+  letter-spacing: normal;
+  text-align: left;
+  color: #222;
 }
 .learning-management-class-table-empty-draft {
   @apply

@@ -47,7 +47,25 @@ const useLearningResultManagementSHStore = create<IuseLearningResultManagementSH
                 ]
             },
         ]
-    }
+    },
+    loadDataHead: {
+
+    },
+    loadData: {
+
+    },
+    filterData: null,
+    setFilterData: (apiFilterData) => {
+        set(() => ({
+            filterData: apiFilterData
+        }))
+    },
+    studentDataInClass: null,
+    setStudentDataInClass: (data) => {
+        set(() => ({
+            studentDataInClass: data
+        }))
+    },
 }))
 
 export default useLearningResultManagementSHStore;

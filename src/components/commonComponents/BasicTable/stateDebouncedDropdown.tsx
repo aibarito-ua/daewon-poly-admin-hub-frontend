@@ -66,7 +66,7 @@ export default function DebouncedDropdowFilter({
         <Menu as="div" className="relative inline-block text-left min-w-[178px] h-full">
             <div className='flex flex-col w-full h-full'>
                 <div className='flex flex-row items-center w-full'>
-                    <div className='inline-block text-left w-fit whitespace-nowrap'>{filterTitleLabel}</div>
+                    <div className='inline-block text-left w-fit whitespace-nowrap capitalize font-notoSansCJKKR'>{filterTitleLabel}</div>
                     <Menu.Button className="Filter-CSS-dropdown-menu-button"
                         disabled={column.length>0? false:true}
                         onClick={()=>{

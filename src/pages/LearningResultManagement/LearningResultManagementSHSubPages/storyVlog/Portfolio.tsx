@@ -1,13 +1,14 @@
-import React from "react";
+import React, { FC, SVGAttributes } from "react";
 import useActivitySpeakHubStore from "../../../../store/useActivitySpeakHubStore";
 import useNavStore from "../../../../store/useNavStore";
 import { cf } from "../../../../util/common/commonFunctions";
 import { useComponentWillMount } from "../../../../hooks/useEffectOnce";
 import DebouncedDropdowFilter from "../../../../components/commonComponents/BasicTable/stateDebouncedDropdown";
 import { SvgSearchIcon } from "../../../../components/commonComponents/BasicTable/svgs/SearchIcon";
-import { getLMSparkWritingStudents, getLMSpeakingFilterDataAPI } from "../../../../api/LearningManagement/LearningManagementSparkWriting.api";
-import useLearningManagementSparkWritingStore from "../../../../store/useLearningManagementSparkWritingStore";
-import LearningManagementStudentsTable from "../../../../components/commonComponents/BasicTable/LearningManagementStudentsTable";
+import LRMSpeakingHubTable from "../../../../components/commonComponents/BasicTable/LRMSpeakingHubTable";
+import { getLMRSpeakingHubFilterDataAPI, getLMRSpeakingHubStudents } from "../../../../api/LearningResultManagement/LearningResultManagementSpeakingHub";
+import useLearningResultManagementSHStore from "../../../../store/useLearningResultManagementSHStore";
+import { CompletedQuestionIcon, CompletedQuestionIconContained, VideoIcon } from "../LearningResultManagementIcons";
 
 const Portfolio = () => {
     // page usehook zustand
@@ -17,15 +18,13 @@ const Portfolio = () => {
     const {
         filterData, setFilterData, studentDataInClass, setStudentDataInClass,
         loadDataHead,
-        // feedback
-        feedbackDataInStudent, setFeedbackDataInStudent
-    } = useLearningManagementSparkWritingStore();
+    } = useLearningResultManagementSHStore();
     
     // page states
     const [emptyPageMessage, setEmptyPageMessage] = React.useState<string>('검색 값을 선택 후 조회하세요.');
     // Table Data 
     const [data, setData] = React.useState<{body: TIdeaExchangeBooks[], head: TLoadDataHeadTrans[]}>({ body: [], head: [] });
-    const [filterStates, setFilterStates]=React.useState<TFilterSparkWriting>();
+    const [filterStates, setFilterStates]=React.useState<TFilterLRMSpeaking>();
     
     // searchValue
     const [selectFIlterValues, setSelectFilterValues] = React.useState<any[]>(['','','']);
@@ -40,7 +39,7 @@ const Portfolio = () => {
     const [selectFilterClassList, setSelectFilterClassList] = React.useState<string[]>([]);
 
     // original filter values
-    const [filterAllList, setFilterAllList] = React.useState<TFilterSparkWriting>({campus:[],semester: 0,year:0});
+    const [filterAllList, setFilterAllList] = React.useState<TFilterLRMSpeaking>({campus:[],semester: 0,year:0});
     
     // merge in table body value's keys
     const [grouping, setGrouping] = React.useState<string[]>([]);
@@ -50,12 +49,27 @@ const Portfolio = () => {
     const [isSearch, setIsSearch] = React.useState<boolean>(false);
 
     // studen table data
-    const [classCurrentData,setClassCurrentData] = React.useState<TClassCurrentlyData[][]>();
+    const [classCurrentData,setClassCurrentData] = React.useState<TLRMSpeakingHubTableCellData[][]>();
     const [classTableHead, setClassTableHead] = React.useState<string[]>([]);
+
+    // modal contents when icon is clicked
+    const LessonSummary: FC<{lesson: TLRMSpeakingHubStoryVlogLesson}> = ({lesson}) => {
+        return (
+            <div className="learning-result-management-portfolio-text-box">
+                <p className="learning-result-management-portfolio-text-span ">{lesson.summary}</p>
+            </div>
+        )
+    }
+    const LessonVlog: FC<{lesson: TLRMSpeakingHubStoryVlogLesson}> = ({lesson}) => {
+        return (
+            <div>VIDEO Content here</div>
+        )
+    }
 
     // initialize setting before render screen
     const beforRenderedFn = async () => {
-        const loadFilterData = await getLMSpeakingFilterDataAPI();
+        console.log('progress')
+        const loadFilterData = await getLMRSpeakingHubFilterDataAPI();
         console.log('laod filter data =',loadFilterData)
         setFilterAllList(loadFilterData);
         const campus_list = loadFilterData.campus.map((item) => {
@@ -103,20 +117,18 @@ const Portfolio = () => {
     }, [selectFIlterValues])
     React.useEffect(()=>{
         if (selectNavigationTitles.length === 0) {
-            setSelectNavigationTitles(['학습 결과 관리', 'Speaking Hub', 'Idea Exchange','Portfolio'])
+            setSelectNavigationTitles(['학습 결과 관리', 'Speaking Hub', 'Idea Exchange','Progress'])
         }
     }, [selectNavigationTitles])
     
     const searchEventFunction = async (e:React.MouseEvent<HTMLButtonElement, MouseEvent>)=>{
         e.preventDefault();
-        console.log('is test =',isAllSelected)
+        console.log('allSelected =',isAllSelected)
         if (isAllSelected) {
-
             let check = true;
             const maxLength = selectFIlterValues.length;
             for (let selectIndex=0; selectIndex < maxLength; selectIndex++) {
                 const currentSelectValue = selectFIlterValues[selectIndex];
-                // console.log('currentSelectValue =',currentSelectValue, ', idx =',selectIndex)
                 if (currentSelectValue===''||currentSelectValue===null) {
                     check = false;
                     break;
@@ -130,58 +142,50 @@ const Portfolio = () => {
                     levelCode:selectLevelCode.code,
                     classCode:selectClassCode.code
                 }
-                const rsp = await getLMSparkWritingStudents(reqData);
+                // TODO change the response here
+                const rsp = await getLMRSpeakingHubStudents(reqData);
                 console.log('stu rsp ==',rsp)
-                if (rsp.students.length > 0) {
-                    // feedback value setting
-                    const dumyFeedbackData:TFeedbackStates = JSON.parse(JSON.stringify(feedbackDataInStudent));
-                    dumyFeedbackData.defautInfo.campus= selectCampusCode;
-                    dumyFeedbackData.defautInfo.level = selectLevelCode;
-                    dumyFeedbackData.defautInfo.class = selectClassCode;
-                    dumyFeedbackData.defautInfo.book_name = rsp.book_name;
-                    setFeedbackDataInStudent(dumyFeedbackData);
+
+                if(!rsp.story_vlog){
+                    console.log('story vlog is null')
+                    setStudentDataInClass({...rsp, story_vlog: {book_name:'',students:[]}})
+                    setEmptyPageMessage('No data to display!')
+                    setIsSearch(false)
+                    return
+                }
+
+                if (rsp.story_vlog.students.length > 0) {
                     // table data setting
-                    makeTableData(rsp)
+                    makeTableData(rsp.story_vlog)
                     setStudentDataInClass(rsp)
                     setIsSearch(true)
                 } else {
-                    setStudentDataInClass({book_name:'',students:[]})
+                    setStudentDataInClass({...rsp, story_vlog: {book_name:'',students:[]}})
                     setEmptyPageMessage('No data to display!')
                     setIsSearch(false)
                 }
             } else {
                 setIsSearch(false)
-                setStudentDataInClass({book_name:'',students:[]})
+                setStudentDataInClass({idea_exchange: null, role_play: null, story_vlog: {book_name:'',students:[]}})
                 setEmptyPageMessage('검색 값을 선택 후 조회하세요.')
                 console.log('search is not all selected')
             }
         } else {
             setIsSearch(false)
-            setStudentDataInClass({book_name:'',students:[]})
+            setStudentDataInClass({idea_exchange: null, role_play: null, story_vlog: {book_name:'',students:[]}})
             setEmptyPageMessage('검색 값을 선택 후 조회하세요.')
         };
     }
-    const makeTableData = (rsp: TLMSparkWritingStudentsListInClass) =>{
-        const unitIdxs = Array.from({length:5},(_, valueKIdx) => {return valueKIdx+1});
-        const draftIdxs = Array.from({length:3}, (_,valueKIdx) => {return valueKIdx+1});
-        const headLabels = [
-            ['no','student','unit 1', 'unit 2', 'unit 3', 'unit 4', 'unit 5'],
-            ['1st draft', '2nd draft', 'report']
-        ]
+    const makeTableData = (rsp: TLRMSpeakingHubStoryVlog) =>{
+        const lessonIdxs = Array.from({length: rsp.students[0].lessons.length},(_, valueKIdx) => {return valueKIdx+1});
         let rowKeys:string[] =['no','student'];
-        for (let unitIdx=0; unitIdx<unitIdxs.length; unitIdx++) {
-            for (let stepIdx=0; stepIdx<draftIdxs.length; stepIdx++) {
-                const stepLabel = draftIdxs[stepIdx]===1?'1st_draft': (
-                    draftIdxs[stepIdx]===2?'2nd_draft':'report'
-                )
-                const textUnitVal = `unit_${unitIdxs[unitIdx]}_${stepLabel}`;
-                rowKeys.push(textUnitVal)
-            }
+        for (let lessonIdx=0; lessonIdx<lessonIdxs.length; lessonIdx++) {
+            rowKeys.push(`lesson_${lessonIdxs[lessonIdx]}_Summary`)
+            rowKeys.push(`lesson_${lessonIdxs[lessonIdx]}_Vlog`)
         }
         console.log('rowKeys ==',rowKeys)
-        
         setClassTableHead(rowKeys);
-        const bodyData: TClassCurrentlyData[][] = [];
+        const bodyData: TLRMSpeakingHubTableCellData[][] = [];
         // // 학생 수 -> row
         for (let row = 0; row < rsp.students.length; row++) {
             const targetStudent = rsp.students[row];
@@ -190,52 +194,86 @@ const Portfolio = () => {
             const studentNameSet:TNamesetData = {student_name_kr,student_name_en};
             let rowData = []
             for (let col = 0; col < rowKeys.length; col++) {
-                const unit = parseInt(rowKeys[col].split('_')[1]);
-                const draftString = rowKeys[col].split('_')[2];
-                const draftNum = draftString==='1st'?1: (draftString==='2nd'?2:0)
-                console.log(`unit = ${unit}`,targetStudent.units[unit-1])
-                
-                // const targetUnitData = col===0 ? row+1: (col===1 ? studentNameSet : targetStudent.units[unit]);
+                const lessonNumber = parseInt(rowKeys[col].split('_')[1])
                 if (col===0) {
-                    const makeCellData:TClassCurrentlyData = {
+                    // NO
+                    const makeCellData:TLRMSpeakingHubTableCellData = {
                         key: rowKeys[col],
                         width: 70,
                         value:{
                             num:row+1,
                             data:null,
-                            nameset:null
+                            nameset:null,
+                            show: false,
+                            jsxElem:null,
+                            modalContent:null
                         },
                         rowspan: 1,
                         print:true,
-                        dataIndex: [row,col,unit,draftNum]
+                        dataIndex: [row,col]
                     }
                     rowData.push(makeCellData)
                 } else if (col===1) {
-                    const makeCellData:TClassCurrentlyData = {
+                    // username
+                    const makeCellData:TLRMSpeakingHubTableCellData = {
                         key: rowKeys[col],
                         width: 140,
                         value:{
                             num:0,
                             nameset:studentNameSet,
-                            data:null
+                            data:null,
+                            show: false,
+                            jsxElem:null,
+                            modalContent:null
                         },
                         rowspan: 1,
                         print:true,
-                        dataIndex: [row,col,unit,draftNum]
+                        dataIndex: [row,col]
                     }
                     rowData.push(makeCellData)
-                } else {
-                    const makeCellData:TClassCurrentlyData = {
+                } else if (col % 2 == 0){
+                    // question data
+                    const makeCellData:TLRMSpeakingHubTableCellData = {
                         key: rowKeys[col],
-                        width: 95,
+                        width: 60,
+                        title: 'Story Vlog Portfolio',
+                        student: {...studentNameSet, class: selectClassCode.name},
                         value:{
                             num:0,
                             nameset: null,
-                            data: targetStudent.units[unit-1]
+                            description: `Lesson ${lessonNumber} - Summary`,
+                            data: {
+                                lesson: targetStudent.lessons[lessonNumber - 1]
+                            },
+                            show: targetStudent.lessons[lessonNumber - 1].is_completed_dialogue,
+                            jsxElem: <CompletedQuestionIconContained className='learning-management-class-table-complete-question-icon'/>,
+                            modalContent: <LessonSummary lesson={targetStudent.lessons[lessonNumber - 1]}/>
                         },
                         rowspan: 1,
                         print:true,
-                        dataIndex: [row,col,unit,draftNum]
+                        dataIndex: [row,col]
+                    }
+                    rowData.push(makeCellData)
+                } else {
+                    const makeCellData:TLRMSpeakingHubTableCellData = {
+                        key: rowKeys[col],
+                        width: 60,
+                        title: 'Story Vlog Portfolio',
+                        student: {...studentNameSet, class: selectClassCode.name},
+                        value:{
+                            num:0,
+                            nameset: null,
+                            description: `Lesson ${lessonNumber} - Vlog`,
+                            data: {
+                                lesson: targetStudent.lessons[lessonNumber - 1]
+                            },
+                            show: targetStudent.lessons[lessonNumber - 1].is_completed_recording,
+                            jsxElem: <VideoIcon className='learning-management-class-table-complete-question-icon'/>,
+                            modalContent: <LessonVlog lesson={targetStudent.lessons[lessonNumber - 1]} />
+                        },
+                        rowspan: 1,
+                        print:true,
+                        dataIndex: [row,col]
                     }
                     rowData.push(makeCellData)
                 }
@@ -385,18 +423,19 @@ const Portfolio = () => {
                             <div className="flex flex-col">
                                 <div className="flex flex-row h-[41px] py-[11px] pl-[21px] pr-[10px] bg-[#f5f5f5] border-t-[1px] border-t-[#ddd] border-b-[1px] border-b-[#ddd]">
                                     <div className="learning-management-class-info-text justify-start">{`${filterAllList.year}년 ${filterAllList.semester}학기 / ${selectCampusCode.name} / ${selectLevelCode.name} / ${selectClassCode.name}`}</div>
-                                    <div className="learning-management-class-info-text justify-end">{`* 현재 학기에 대해서만 Spark Writing 첨삭이 가능합니다.`}</div>
+                                    <div className="learning-management-class-info-text justify-end">{`* 현재 학기에 대해서만 결과 조회가 가능합니다.`}</div>
                                 </div>
-                                <div className="flex flex-row h-[50px] items-center pl-[21px]">
+                                <div className="flex flex-row h-[50px] items-center pl-[21px] border-b-[1px] border-b-[#111]">
                                     <div className="flex flex-row items-center h-[24px] gap-[8px]">
                                         <div className="flex border-l-[3px] h-[12px] border-l-[#0fa9cb]"/>
-                                        <div className="flex learning-management-book-info-text">{`Book: ${studentDataInClass.book_name}`}</div>
+                                        <div className="flex learning-management-book-info-text">{`Book: ${studentDataInClass?.story_vlog?.book_name}`}</div>
                                     </div>
                                 </div>
                                 <div className="flex flex-row">
-                                    <LearningManagementStudentsTable
+                                    <LRMSpeakingHubTable
                                         dataHead={classTableHead}
                                         dataModel={classCurrentData?classCurrentData:[]}
+                                        subHeadingsCount={2} // summary and vlog only
                                     />
                                 </div>
                             </div>
