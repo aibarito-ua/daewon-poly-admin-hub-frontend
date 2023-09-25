@@ -615,7 +615,8 @@ body {
 /* tr */
 .table-tbody-tr-basic {
   @apply
-  max-h-[2.5rem]
+  /* max-h-[2.5rem] */
+  max-h-[76px]
   h-[38px]
 }
 
@@ -931,10 +932,11 @@ body {
   text-align: center;
   line-height: 1.92;
   @apply
-  flex
+  /* flex
+  items-center */
   font-notoSansCJKKR
   text-[#444]
-  h-[19px]
+  /* h-[19px] */
 }
 .learning-management-class-table-item-wrap {
   @apply

@@ -152,9 +152,12 @@ const TableBody = (props:{
                             // category "NO"
                             return <td
                                 key={cellData.key}
-                                className={`inline-flex items-center justify-center w-full h-full border-l-[1px] border-l-[#e2e3e6] border-r-[1px] border-r-[#e2e3e6]`}
+                                className={`border-l-[1px] border-l-[#e2e3e6] border-r-[1px] border-r-[#e2e3e6]`}
                                 style={{minWidth: cellData.width}}
-                            ><span className='learning-management-class-table-no'>{cellData.value.num}</span></td>
+                            >
+                                <span className='inline-flex items-center justify-center w-full'>
+                                <span className='learning-management-class-table-no'>{cellData.value.num}</span>
+                                </span></td>
                         } else if (cellIdx===1) {
                             // category "Student"
                             return <td
@@ -325,7 +328,7 @@ const TableBody = (props:{
         </tbody>
     )
 }
-export default function LearningManagementStudentsTable (props:{
+export default function LearningResultManagementStudentsTable (props:{
     dataHead: string[],
     dataModel: TLRMWHClassCurrentlyData[][],
 }) {

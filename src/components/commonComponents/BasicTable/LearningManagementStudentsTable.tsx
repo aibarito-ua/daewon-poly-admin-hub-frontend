@@ -56,21 +56,21 @@ const TableHeader = (props: {head:string[] }) => {
                                 rowSpan={2}
                                 key={headerCell.accessor}
                                 className='table-thead-tr-th-basic border-t-[1px] border-t-[#111]'
-                                style={{minWidth: headerCell.width+'px'}}
+                                style={{width: headerCell.width+'px'}}
                             >{headerCell.header}</th>
                         } else {
                             return <th
                                 colSpan={3}
                                 key={headerCell.accessor}
                                 className='table-thead-tr-th-basic border-t-[1px] border-t-[#111] border-r-[1px] border-r-[#aaa]'
-                                style={{minWidth: headerCell.width+'px'}}
+                                style={{width: headerCell.width+'px'}}
                             >{headerCell.header}</th>
                         }
                     } else {
                         return <th
                                 key={headerCell.accessor}
                                 className={`table-thead-tr-th-basic ${headerCell.header==='report'&& 'border-r-[1px] border-r-[#aaa]'}`}
-                                style={{minWidth: headerCell.width+'px'}}
+                                style={{width: headerCell.width+'px'}}
                             >{headerCell.header}</th>
                     }
                 })
@@ -214,15 +214,18 @@ const TableBody = (props:{
                             // category "NO"
                             return <td
                                 key={cellData.key}
-                                className={`inline-flex items-center justify-center h-full border-l-[1px] border-l-[#e2e3e6] border-r-[1px] border-r-[#e2e3e6]`}
-                                style={{width: cellData.width}}
-                            ><span className='learning-management-class-table-no'>{cellData.value.num}</span></td>
+                                className={`border-l-[1px] border-l-[#e2e3e6] border-r-[1px] border-r-[#e2e3e6]`}
+                                style={{minWidth: cellData.width}}
+                            >
+                                <span className='inline-flex items-center justify-center w-full'>
+                                <span className='learning-management-class-table-no'>{cellData.value.num}</span>
+                                </span></td>
                         } else if (cellIdx===1) {
                             // category "Student"
                             return <td
                                 key={cellData.key}
                                 className={`border-l-[1px] border-l-[#e2e3e6] border-r-[1px] border-r-[#e2e3e6]`}
-                                style={{width: cellData.width}}
+                                style={{minWidth: cellData.width}}
                             ><span className='w-full inline-flex flex-col justify-center items-center'>
                                 <span className='learning-management-class-table-text'>{cellData.value.nameset?.student_name_kr}</span>
                                 <span className='learning-management-class-table-text'>{`(${cellData.value.nameset?.student_name_en})`}</span>
@@ -238,7 +241,7 @@ const TableBody = (props:{
                                 return <td
                                     key={cellData.key}
                                     className={`border-l-[1px] border-l-[#e2e3e6] border-r-[1px] border-r-[#e2e3e6]`}
-                                    style={{width: cellData.width}}
+                                    style={{minWidth: cellData.width}}
                                     onClick={async ()=>{
                                         console.log('cellData =',cellData)
                                         const targetData = cellData.value.data?.draft_1_status.draft_id;
@@ -282,7 +285,7 @@ const TableBody = (props:{
                                 return <td
                                 key={cellData.key}
                                 className={`border-l-[1px] border-l-[#e2e3e6] border-r-[1px] border-r-[#e2e3e6]`}
-                                style={{width: cellData.width}}
+                                style={{minWidth: cellData.width}}
                                 onClick={async () => {
                                         console.log('data ===',secondDraftData )
                                         const targetData = cellData.value.data?.draft_2_status.draft_id;
@@ -318,7 +321,7 @@ const TableBody = (props:{
                                 return <td
                                     key={cellData.key}
                                     className={`learning-management-class-table-empty-draft`}
-                                    style={{width: cellData.width}}
+                                    style={{minWidth: cellData.width}}
                                 >{'-'}</td>
                             }
                         } else {
@@ -341,7 +344,7 @@ const TableBody = (props:{
                                     return <td
                                         key={cellData.key}
                                         className={`border-l-[1px] border-l-[#e2e3e6] border-r-[1px] border-r-[#aaa] h-full flex items-center justify-center`}
-                                        style={{width: cellData.width}}
+                                        style={{minWidth: cellData.width}}
                                     ><ReportModalComponent 
                                         feedbackStates={feedbackDataInStudent}
                                         studend_code={studentBasicInfo.student_code}
@@ -408,14 +411,14 @@ const TableBody = (props:{
                                     return <td
                                         key={cellData.key}
                                         className={`learning-management-class-table-empty-report`}
-                                        style={{width: cellData.width}}
+                                        style={{minWidth: cellData.width}}
                                     >{'-'}</td>
                                 }
                             } else {
                                 return <td
                                     key={cellData.key}
                                     className={`learning-management-class-table-empty-report`}
-                                    style={{width: cellData.width}}
+                                    style={{minWidth: cellData.width}}
                                 >{'-'}</td>
                             }
                         }
