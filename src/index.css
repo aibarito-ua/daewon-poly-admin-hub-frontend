@@ -1824,8 +1824,6 @@ body {
 .report-chart-righ-word-count-content-item {
   @apply
   flex flex-row
-  w-full
-  gap-[40px]
 }
 .report-chart-righ-word-count-content-item-title {
   font-family: 'NotoSansCJKKR';
