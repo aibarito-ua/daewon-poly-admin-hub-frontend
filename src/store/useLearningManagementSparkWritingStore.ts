@@ -235,12 +235,34 @@ const useLearningManagementSparkWritingStore = create<ILearningManagementSparkWr
     },
     setRubricReportValue: (data) => {
         const origin_rubric_data = get().rubricReportValue;
+        const getterRubricDescriptionData = get().feedbackDataInStudent.rubric.rubric_description;
+
         let dumyRubricValue:TRubricReportAll = JSON.parse(JSON.stringify(origin_rubric_data));
         if (dumyRubricValue.length > 0) {
             let flag = false;
             for (let i = 0; i < dumyRubricValue.length; i++) {
                 const current = dumyRubricValue[i];
                 if (current.category.toLocaleLowerCase() === data.category.toLocaleLowerCase() ) {
+                    for (let j = 0; j < getterRubricDescriptionData.length; j++) {
+                        if (getterRubricDescriptionData[j].category.toLocaleLowerCase() === current.category.toLocaleLowerCase()) {
+                            if (data.selected_value === 'excellent') {
+                                data.selected_value_description = getterRubricDescriptionData[j].excellent;
+                                break;
+                            } else if (data.selected_value === 'very_good') {
+                                data.selected_value_description = getterRubricDescriptionData[j].very_good;
+                                break;
+                            } else if (data.selected_value === 'good') {
+                                data.selected_value_description = getterRubricDescriptionData[j].good;
+                                break;
+                            } else if (data.selected_value === 'fair') {
+                                data.selected_value_description = getterRubricDescriptionData[j].fair;
+                                break;
+                            } else if (data.selected_value === 'poor') {
+                                data.selected_value_description = getterRubricDescriptionData[j].poor;
+                                break;
+                            }
+                        }
+                    }
                     dumyRubricValue[i] = data;
                     flag=true
                     break;

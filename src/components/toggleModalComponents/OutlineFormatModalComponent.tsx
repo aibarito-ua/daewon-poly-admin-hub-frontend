@@ -38,30 +38,44 @@ export default function OutlineFormatModalComponent(props:IOutlineFormatModalCom
       setViewData([]);
     } else {
       console.log('whole =',wholeData)
-      const targetWholeData = wholeData[unit-1];
-      const targetData = targetWholeData.outline_format.outline_format;
-      console.log('year: ',year,', semester: ',semester,', level: ',level,', book: ',book, ', unit: ',unit)
-      
-      let filterData:{
-        outline_form:string,
-        texts: string[],
-        placeHolderText: string[]
-      }[] = []; 
-      for (let dataIndex =0; dataIndex < targetData.length; dataIndex++) {
-        const dataItem = targetData[dataIndex]
-        console.log('data item [',dataIndex,'] =',dataItem)
-        // const contentCheck = Array.isArray(dataItem.content)
-        const texts = Array.isArray(dataItem.content) ? dataItem.content: [dataItem.content]
-        const placeHolderText = [`Start typing in your ${dataItem.name} ...`]
-        const pushItem = {
-          outline_form: dataItem.name,
-          texts,
-          placeHolderText
+      let targetWholeData:TActivitySparkWritingBooks;
+      for (let i = 0; i < wholeData.length; i++) {
+        if (
+          wholeData[i].year===year
+          && wholeData[i].semester === semester
+          && wholeData[i].level === level
+          && wholeData[i].unit_index === unit
+        ) {
+          console.log('target whole data =',wholeData[i])
+          targetWholeData = wholeData[i];
+          const targetData = targetWholeData.outline_format.outline_format;
+          console.log('year: ',year,', semester: ',semester,', level: ',level,', book: ',book, ', unit: ',unit)
+          
+          let filterData:{
+            outline_form:string,
+            texts: string[],
+            placeHolderText: string[]
+          }[] = []; 
+          for (let dataIndex =0; dataIndex < targetData.length; dataIndex++) {
+            const dataItem = targetData[dataIndex]
+            console.log('data item [',dataIndex,'] =',dataItem)
+            // const contentCheck = Array.isArray(dataItem.content)
+            const texts = Array.isArray(dataItem.content) ? dataItem.content: [dataItem.content]
+            const placeHolderText = [`Start typing in your ${dataItem.name} ...`]
+            const pushItem = {
+              outline_form: dataItem.name,
+              texts,
+              placeHolderText
+            }
+            filterData.push(pushItem)
+          }
+          console.log('after filter data =',filterData)
+          setViewData(filterData);
+          break;
         }
-        filterData.push(pushItem)
       }
-      console.log('after filter data =',filterData)
-      setViewData(filterData);
+
+      
       
     }
   }, [open])

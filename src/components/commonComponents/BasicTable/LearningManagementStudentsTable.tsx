@@ -366,7 +366,8 @@ const TableBody = (props:{
                                                 }
                                                 const reportData = await getReportOneDataByStu(data);
                                                 const overallData = await getReportOverallDatabyStu({level_name: data.level_name, student_code: data.student_code})
-
+                                                console.log('onClick reportData = ',reportData)
+                                                console.log('onClick overallData =',overallData)
                                                 if (rsp.draft_index > 0 && reportData && overallData) {
                                                     let dumyData:TFeedbackStates = JSON.parse(JSON.stringify(feedbackDataInStudent));
                                                     console.log('data 2nd draft ==',rsp)

@@ -35,9 +35,9 @@ const PrintExportButton = (props: {
         const clientHeight = checkRef.clientHeight
         const offsetHeight = checkRef.offsetHeight;
         const scrollHeight = checkRef.scrollHeight;
-        console.log('clientHeight =',clientHeight)
-        console.log('offsetHeight =',offsetHeight)
-        console.log('scrollHeight =',scrollHeight)
+        // console.log('clientHeight =',clientHeight)
+        // console.log('offsetHeight =',offsetHeight)
+        // console.log('scrollHeight =',scrollHeight)
         let newHeight = 0;
         let newTags:JSX.Element[][] = [];
         const childRef = checkRef.children
@@ -45,7 +45,7 @@ const PrintExportButton = (props: {
             const childSpanRef = childRef[i].children;
             for (let j = 0; j < childSpanRef.length; j++) {
             const childSpanText = childSpanRef[j].textContent;
-            console.log('texts [',i,',',j,'] =',childSpanText)
+            // console.log('texts [',i,',',j,'] =',childSpanText)
             const spanHeight = childSpanRef[j].clientHeight;
             newHeight += spanHeight;
             const newTagsLength = newTags.length;
@@ -53,9 +53,9 @@ const PrintExportButton = (props: {
             
             if (newTagsLength === 0) {
                 if (clientHeight >= newHeight) {
-                console.log('1new tags length =',newTagsLength)
-                console.log('spanHeight =',spanHeight)
-                console.log('newH =',newHeight)
+                // console.log('1new tags length =',newTagsLength)
+                // console.log('spanHeight =',spanHeight)
+                // console.log('newH =',newHeight)
                 newTags.push([])
                 newTags[0].push(jsxChildSpan);
                 }
@@ -63,14 +63,14 @@ const PrintExportButton = (props: {
                 const lastIdx = newTagsLength-1;
     
                 if (clientHeight >= newHeight) {
-                console.log('2new tags length =',newTagsLength)
-                console.log('spanHeight =',spanHeight)
-                console.log('newH =',newHeight)
+                // console.log('2new tags length =',newTagsLength)
+                // console.log('spanHeight =',spanHeight)
+                // console.log('newH =',newHeight)
                 newTags[lastIdx].push(jsxChildSpan);
                 } else if (clientHeight < newHeight) {
-                console.log('3new tags length =',newTagsLength)
-                console.log('spanHeight =',spanHeight)
-                console.log('newH =',newHeight)
+                // console.log('3new tags length =',newTagsLength)
+                // console.log('spanHeight =',spanHeight)
+                // console.log('newH =',newHeight)
                 newHeight=0;
                 newTags.push([])
                 newTags[lastIdx+1].push(jsxChildSpan)
@@ -79,14 +79,14 @@ const PrintExportButton = (props: {
                 const lastIdx = newTagsLength-1;
     
                 if (clientHeight >= newHeight) {
-                console.log('4new tags length =',newTagsLength)
-                console.log('spanHeight =',spanHeight)
-                console.log('newH =',newHeight)
+                // console.log('4new tags length =',newTagsLength)
+                // console.log('spanHeight =',spanHeight)
+                // console.log('newH =',newHeight)
                 newTags[lastIdx].push(jsxChildSpan);
                 } else if (clientHeight < newHeight) {
-                console.log('5new tags length =',newTagsLength)
-                console.log('spanHeight =',spanHeight)
-                console.log('newH =',newHeight)
+                // console.log('5new tags length =',newTagsLength)
+                // console.log('spanHeight =',spanHeight)
+                // console.log('newH =',newHeight)
                 newHeight=0;
                 newTags.push([])
                 newTags[lastIdx+1].push(jsxChildSpan)
@@ -114,7 +114,7 @@ const PrintExportButton = (props: {
     const makeContentFn = () => {
         const dateCompleted_ori = userInfo.status_1st?.review_complete_date;
         const dateCompleted = dateCompleted_ori?.substring(2,10)
-        console.log('dateCompleted =',dateCompleted)
+        // console.log('dateCompleted =',dateCompleted)
         const draft_str = draft===1 ? '1st': '2st';
         let title = '';
         let body:JSX.Element[] = [];
@@ -126,7 +126,7 @@ const PrintExportButton = (props: {
                 if (draft === 1) {
                     let jsxBody = <span className='flow-root indent-[2.64583mm]'>{outlines[i].input_content}<br /><br /></span>;
                     // jsxBody
-                    console.log('jsxBody =',jsxBody.props)
+                    // console.log('jsxBody =',jsxBody.props)
                     body.push(jsxBody);
                 } else {
                     const bodyText = outlines[i].input_content.split('\n\n');

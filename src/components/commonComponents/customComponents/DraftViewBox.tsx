@@ -249,6 +249,7 @@ const loadTemporaryDraftTitle = (
                 if (af_item?.comment_index !== currentCommentIdx) {
                     if (currentCommentIdx===-1) {
                         jsxElements.push(...returnValue)
+                        returnValue=[];
                     } else {
                         const currentCommentItem = findCommentByCommentIndex(currentCommentIdx);
                         const createSpan = <span className={currentCommentItem.comment_className}

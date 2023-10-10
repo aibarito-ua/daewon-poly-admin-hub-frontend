@@ -315,5 +315,5 @@ type TRubricReportAll = TRubricReport[];
 type TRubricReport = {
     category: string;
     selected_value: string;
-    selected_value_description: string;
+    selected_value_description: string|"excellent"|"very_good"|"good"|"fair"|"poor";
 }

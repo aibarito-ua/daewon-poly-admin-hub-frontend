@@ -37,15 +37,16 @@ export default function ReportModalComponent(
     } else if (from==='portfolioModalLRM') {
       const init = await initSettingData();
       console.log('portfolioModalLRM',init)
+      console.log('report =40=',report)
       if (init) {
-        set.doughnutChart(dumyData);
+        // set.doughnutChart(dumyData);
         console.log('open')
         setOpen(true);
       }
     } else {
       const init = await initSettingData();
       if (init) {
-        set.doughnutChart(dumyData);
+        // set.doughnutChart(dumyData);
         setOpen(true);
       }
     }
@@ -56,12 +57,12 @@ export default function ReportModalComponent(
   };
 
   const dumyData:TRubricScoreData[] = [
-    {name: 'convention', score: 20},
-    {name: 'organization', score: 80},
-    {name: 'ideas', score: 60},
-    {name: 'voice', score: 40},
-    {name: 'word choice', score: 80},
-    {name: 'sentence fluency', score: 80},
+    {name: 'convention', score: 0},
+    {name: 'organization', score: 0},
+    {name: 'ideas', score: 0},
+    {name: 'voice', score: 0},
+    {name: 'word choice', score: 0},
+    {name: 'sentence fluency', score: 0},
   ]
 
 
@@ -106,7 +107,7 @@ export default function ReportModalComponent(
           }}
             className='flex flex-1 min-w-[1260px] w-full h-full bg-[#f2f9ff]'
         >
-          <ReportTabComponent doughnutValues={report.doughnutChart} 
+          <ReportTabComponent doughnutValues={report.doughnutChart}
             student_code={studend_code} otherModalCloseFn={handleClose}
           />
         </DialogContent>

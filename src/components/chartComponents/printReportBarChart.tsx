@@ -178,49 +178,56 @@ export default function App() {
                 name: dataName,
                 score: dataItem.data[0].value,
                 colors: ideaColor,
-                customY: 10
+                customY: 10,
+                amt: 100
             }
         } else if (dataName==='organization') {
             return {
                 name: dataName,
                 score: dataItem.data[0].value,
                 colors: organizationColor,
-                customY: 32
+                customY: 32,
+                amt: 100
             }
         } else if (dataName === 'voice') {
             return {
                 name: dataName,
                 score: dataItem.data[0].value,
                 colors: voiceColor,
-                customY: 54
+                customY: 54,
+                amt: 100
             }
         } else if (dataName==='word choice') {
             return {
                 name: dataName,
                 score: dataItem.data[0].value,
                 colors: wordChoiceColor,
-                customY: 76
+                customY: 76,
+                amt: 100
             }
         } else if (dataName==='sentence fluency') {
             return {
                 name: dataName,
                 score: dataItem.data[0].value,
                 colors: sentenceFluencyColor,
-                customY: 98
+                customY: 98,
+                amt: 100
             }
         } else if (dataName==='conventions') {
             return {
                 name: dataName,
                 score: dataItem.data[0].value,
                 colors: conventionsColor,
-                customY: 120
+                customY: 120,
+                amt: 100
             }
         } else {
             return {
                 name: '',
                 score: 0,
                 colors: {start: '', end:''},
-                customY: 0
+                customY: 0,
+                amt: 100
             }
         }
     })
@@ -267,11 +274,14 @@ export default function App() {
       <CartesianGrid strokeDasharray="3 3" 
         height={140}
         horizontal={false}
+        
       />
-      <XAxis type="number" axisLine={false} tick={true}
+      <XAxis type="number" axisLine={false}
+      max={100}
       ticks={['0','10','20','30','40','50','60','70','80','90','100']}
       tickSize={0}
       tickFormatter={()=>''}
+      domain={[0,100]}
       />
       <YAxis dataKey="name" type="category"
       axisLine={true}

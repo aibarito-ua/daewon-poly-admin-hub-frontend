@@ -68,7 +68,7 @@ const SparkWriting = () => {
     }) => {
         let dumpPageStateData = JSON.parse(JSON.stringify(tableDataModel));
         dumpPageStateData[pageStateIndex.rowIndex][pageStateIndex.cellIndex].value = text;
-
+        
         setLoadDataSparkWritingInput(text, storeIndex.unitId, storeIndex.outlineFormatIndex)
         setTableDataModel(dumpPageStateData)
     }
@@ -283,6 +283,8 @@ const SparkWriting = () => {
                             pushValue=tableDatas[dataIndex][keyC];
                         } else if (keyC==='unit') {
                             pushValue=tableDatas[dataIndex]['unit_index']
+                        } else if (keyC==='outline_format_type') {
+                            pushValue=tableDatas[dataIndex].outline_format.name;
                         } else {
                             pushValue=''
                         }
@@ -300,6 +302,7 @@ const SparkWriting = () => {
                     const dataModelIndex = dataModel.length;
                     const pushKey = headItem.accessor;
                     const outlineData = tableDatas[dataIndex].outline_format.outline_format[rowIndex];
+                    console.log('test table data - outline =',outlineData)
                     let pushValue:any = ''
                     let unitId:number|undefined=undefined;
                     let outlineFormatIndex:number|undefined=undefined;
@@ -313,8 +316,11 @@ const SparkWriting = () => {
                         pushValue=outlineData.content
                         unitId=rowD.unit_id;
                         outlineFormatIndex=outlineData.order_index-1;
-                    } else if (pushKey==='outline_format_type'||pushKey==='rubric_type') {
+                    } else if (pushKey==='outline_format_type') {
+                        pushValue=tableDatas[dataIndex].outline_format.name;
+                    } else if (pushKey==='rubric_type') {
                         pushValue=''
+
                     } else {
                         pushValue=tableDatas[dataIndex][pushKey]
                     }

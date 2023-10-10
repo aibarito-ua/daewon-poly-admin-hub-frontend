@@ -117,6 +117,7 @@ const LearningManagementSparkWritingFeedbackPage = () => {
     // rubric score state controlers
     const [rubricSelected, setRubricSelected] = React.useState<string[]>(Array.from({length: 6}, ()=>''));
     const setRubricSelectedItem = (idx:number, value:string) => {
+        console.log('rubricSelected bf update  =',rubricSelected)
         let dump = rubricSelected;
         dump[idx] = value;
         setRubricSelected(dump);
@@ -347,7 +348,7 @@ const LearningManagementSparkWritingFeedbackPage = () => {
             is_return: false,
         }
         const rubric_report = rubricReportValue;
-        
+        console.log(' rubricReportValue in send =',rubricReportValue)
         if (flag==='send') {
             console.log('send!')
             const overall_comment=finalOverallComment;
@@ -879,31 +880,34 @@ const LearningManagementSparkWritingFeedbackPage = () => {
     }
     // 2nd draft create report
     const draft2ndCreateReport = async () => {
-        commonAlertOpen({
-            head: 'Evaluate 2nd Draft',
-            messages: [
-                'Do you want to create a report and send to the student?'
-            ],
-            yesButtonLabel: 'Yes',
-            noButtonLabel: 'No',
-            alertType: 'continue',
-            yesEvent: async ()=>{
-                const save = await makeFinalDraftData('send');
-                if (save) {
-                    commonAlertOpen({
-                        head: 'Evaluate 2nd Draft',
-                        messages: ['Completed.','Return to the main menu.'],
-                        useOneButton: true,
-                        yesButtonLabel: 'OK',
-                        yesEvent: async () => {
-                            commonAlertClose();
-                            navigate(`/LearningManagement/WritingHub/SparkWriting`);
-                            window.location.reload();
-                        }
-                    })
+        console.log('finalCreateReportFlag =',finalCreateReportFlag)
+        if (finalCreateReportFlag) {
+            commonAlertOpen({
+                head: 'Evaluate 2nd Draft',
+                messages: [
+                    'Do you want to create a report and send to the student?'
+                ],
+                yesButtonLabel: 'Yes',
+                noButtonLabel: 'No',
+                alertType: 'continue',
+                yesEvent: async ()=>{
+                    const save = await makeFinalDraftData('send');
+                    if (save) {
+                        commonAlertOpen({
+                            head: 'Evaluate 2nd Draft',
+                            messages: ['Completed.','Return to the main menu.'],
+                            useOneButton: true,
+                            yesButtonLabel: 'OK',
+                            yesEvent: async () => {
+                                commonAlertClose();
+                                navigate(`/LearningManagement/WritingHub/SparkWriting`);
+                                window.location.reload();
+                            }
+                        })
+                    }
                 }
-            }
-        })
+            })
+        }
     }
 
     React.useEffect(()=>{
@@ -988,6 +992,7 @@ const LearningManagementSparkWritingFeedbackPage = () => {
             })
         }
         if (feedbackDataInStudent.draft_2nd_data) {
+            console.log('feedbackDataInStudent.draft_2nd_data =995=',feedbackDataInStudent.draft_2nd_data)
             const draft2ndData = feedbackDataInStudent.draft_2nd_data;
             if (feedbackDataInStudent.status?.status === 4 || feedbackDataInStudent.status?.status === 5) {
                 console.log(' status ===',draft2ndData.overall_comment)
@@ -1454,9 +1459,10 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                             <div className='flex flex-col gap-[5px] overflow-y-auto'>
                                 {allBodySelectedText.map((commentItem, commentIndex) => {
                                     // console.log('claa =',commentItem.comment_className)
+                                    const commentKey = 'comment-'+commentItem.comment_className+commentItem.comment_index
                                     return (
                                         <div className='comment-wrapper'
-                                        key={commentItem.comment_className}
+                                        key={commentKey}
                                         style={{
                                             border: commentFocusId === commentItem.comment_className ? '2px solid #f1b02e':''
                                         }}

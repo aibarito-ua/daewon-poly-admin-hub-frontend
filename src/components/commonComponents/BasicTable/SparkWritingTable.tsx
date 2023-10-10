@@ -161,7 +161,7 @@ const TableBody = (props:{
                     } else {
                         // topic row
                         const rubric = row[10].value;
-                        console.log('row =',row)
+                        console.log('Topic row =',rIdx,', ',row)
                         const unitId = dataModel[2][8].unitId? dataModel[2][8].unitId:-1;
                         
                         return (
