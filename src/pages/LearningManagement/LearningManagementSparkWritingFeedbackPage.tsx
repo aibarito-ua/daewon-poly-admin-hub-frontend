@@ -1271,15 +1271,15 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                                             </div>
                                             <div className={advisorControlDiv.revised_sentence ? 'comment-advisor-wrap-text border-[#f6914d]':'hidden'}>
                                                 {advisor.draft_outline.map((advisorParagraphItem) => {
-                                                    const originalSentence = advisorParagraphItem.original_text;
-                                                    const originalSentenceName = advisorParagraphItem.name;
-                                                    if (originalSentenceName==='Title') {
+                                                    const revisedSentence = advisorParagraphItem.revised_text;
+                                                    const revisedSentenceName = advisorParagraphItem.name;
+                                                    if (revisedSentenceName==='Title') {
                                                         return (
-                                                            <div className='flex h-fit'>{`Title: ${originalSentence}`}</div>
+                                                            <div className='flex h-fit'>{`Title: ${revisedSentence}`}</div>
                                                         )
                                                     } else {
                                                         return (
-                                                            <div className='flow-root h-fit'><span className='pl-[10px]'/>{originalSentence}</div>
+                                                            <div className='flow-root h-fit'><span className='pl-[10px]'/>{revisedSentence}</div>
                                                         )
                                                     }
                                                 })}
