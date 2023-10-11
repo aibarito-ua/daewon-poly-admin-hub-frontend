@@ -1300,15 +1300,15 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                                             </div>
                                             <div className={advisorControlDiv.similar_sentence ? 'comment-advisor-wrap-text border-[#30c194]':'hidden'}>
                                                 {advisor.draft_outline.map((advisorParagraphItem) => {
-                                                    const originalSentence = advisorParagraphItem.original_text;
-                                                    const originalSentenceName = advisorParagraphItem.name;
-                                                    if (originalSentenceName==='Title') {
+                                                    const similarSentence = advisorParagraphItem.similar_text;
+                                                    const similarSentenceName = advisorParagraphItem.name;
+                                                    if (similarSentenceName==='Title') {
                                                         return (
-                                                            <div className='flex h-fit'>{`Title: ${originalSentence}`}</div>
+                                                            <div className='flex h-fit'>{`Title: ${similarSentence}`}</div>
                                                         )
                                                     } else {
                                                         return (
-                                                            <div className='flow-root h-fit'><span className='pl-[10px]'/>{originalSentence}</div>
+                                                            <div className='flow-root h-fit'><span className='pl-[10px]'/>{similarSentence}</div>
                                                         )
                                                     }
                                                 })}
