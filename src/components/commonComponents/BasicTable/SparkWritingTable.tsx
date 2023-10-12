@@ -45,54 +45,77 @@ const TableBody = (props:{
     enableSaveButtonFlag: boolean,
     updateInputText:Function,
 }) => {
-    const { loadData, rubricDataHead} = useActivityWritingHubStore();
+    const { 
+        saveLoadData, loadData, rubricDataHead,
+        innerDataModel, setInnerDataModel
+    } = useActivityWritingHubStore();
     const {filterValues, enableSaveButtonFlag, dataModel, updateInputText} = props;
-    let tableDatas:TActivitySparkWritingBooks[]=[]
-    tableDatas = loadData.spark_writing;
+    // const [innerDataModel, setInnerDataModel] = React.useState<TTableDataModel>([]);
+    const [gradeHaveCell, setGradeHaveCell] = React.useState<any>();
+    const [gradesKey, setGradesKey] = React.useState<number[]>([]);
+    const [tableDatas, setTableDatas] = React.useState<TActivitySparkWritingBooks[]>(saveLoadData.spark_writing);
+    
+    const updateTableData = () => {
+        let dumyTableDatas:TActivitySparkWritingBooks[]=[]
+        dumyTableDatas = saveLoadData.spark_writing;
 
-    let gradeHaveCell:any = {};
-    let gradesKey:number[] = [];
+        let dumyGradeHaveCell:any = {};
+        let dumyGradesKey:number[] = [];
 
-    let pIdx = 0;
-    for (let rowIdx = 0; rowIdx < dataModel.length; rowIdx ++) {
-        const currentRow = dataModel[rowIdx];
-        if (rowIdx > 0 ) {
-            for (let cellIdx = 0; cellIdx < currentRow.length; cellIdx++) {
-                const currentCell = currentRow[cellIdx];
-                if (cellIdx === 4) {
-                    // console.log('4 - gradeCell: ',gradeHaveCell, ', ::, ',currentCell.value)
-                    const checkKey = Object.keys(gradeHaveCell).includes(currentCell.value.toString())
-                    // console.log('check key =',checkKey)
-                    if (!checkKey) {
-                        pIdx = 0;
-                        gradesKey.push(pIdx)
-                        gradeHaveCell[currentCell.value] = [];
-                        gradeHaveCell[currentCell.value] = [currentRow]
-                    } else {
-                        // console.log('current Row =',currentRow)
-                        pIdx+=1;
-                        gradesKey.push(pIdx)
-                        gradeHaveCell[currentCell.value].push(currentRow)
+        let pIdx = 0;
+        for (let rowIdx = 0; rowIdx < dataModel.length; rowIdx ++) {
+            const currentRow = dataModel[rowIdx];
+            if (rowIdx > 0 ) {
+                for (let cellIdx = 0; cellIdx < currentRow.length; cellIdx++) {
+                    const currentCell = currentRow[cellIdx];
+                    if (cellIdx === 4) {
+                        // console.log('4 - gradeCell: ',dumyGradeHaveCell, ', ::, ',currentCell.value)
+                        const checkKey = Object.keys(dumyGradeHaveCell).includes(currentCell.value.toString())
+                        // console.log('check key =',checkKey)
+                        if (!checkKey) {
+                            pIdx = 0;
+                            dumyGradesKey.push(pIdx)
+                            dumyGradeHaveCell[currentCell.value] = [];
+                            dumyGradeHaveCell[currentCell.value] = [currentRow]
+                        } else {
+                            // console.log('current Row =',currentRow)
+                            pIdx+=1;
+                            dumyGradesKey.push(pIdx)
+                            dumyGradeHaveCell[currentCell.value].push(currentRow)
+                        }
+                    }
+                }
+            } else {
+                for (let cellIdx = 0; cellIdx < currentRow.length; cellIdx++) {
+                    const currentCell = currentRow[cellIdx];
+                    if (cellIdx===4) {
+                        dumyGradesKey.push(pIdx);
+                        dumyGradeHaveCell[currentCell.value]=[]
+                        dumyGradeHaveCell[currentCell.value]=[currentRow]
                     }
                 }
             }
-        } else {
-            for (let cellIdx = 0; cellIdx < currentRow.length; cellIdx++) {
-                const currentCell = currentRow[cellIdx];
-                if (cellIdx===4) {
-                    gradesKey.push(pIdx);
-                    gradeHaveCell[currentCell.value]=[]
-                    gradeHaveCell[currentCell.value]=[currentRow]
-                }
-            }
         }
+        setGradeHaveCell(dumyGradeHaveCell)
+        setGradesKey(dumyGradesKey)
+        setTableDatas(dumyTableDatas);
+        setInnerDataModel(dataModel)
     }
-    // console.log('gradeHaveCell =',gradeHaveCell)
-    // console.log('gradesKey =',gradesKey)
+    React.useEffect(()=>{
+        setInnerDataModel(dataModel)
+        updateTableData();
+    },[])
+    React.useEffect(()=>{
+        updateTableData();
+    },[saveLoadData, loadData])
+    
+    console.log('gradeHaveCell =',gradeHaveCell)
+    console.log('gradesKey =',gradesKey)
 
+    
     return (
         <tbody className='table-tbody-basic text-[13px] font-sans font-normal text-[#444444] bg-[#fff]'>
-            {dataModel&& dataModel.map((row, rIdx)=>{
+            {innerDataModel.length>0 && innerDataModel.map((row: any[], rIdx: number)=>{
                 const rowKey = 'row-data-'+rIdx;
                 // check : unit, outline_form, else -> 3종류
                 const hasUnit = row[4].value!=='' ? true:false;
@@ -161,7 +184,7 @@ const TableBody = (props:{
                     } else {
                         // topic row
                         const rubric = row[10].value;
-                        console.log('Topic row =',rIdx,', ',row)
+                        // console.log('Topic row =',rIdx,', ',row)
                         const unitId = dataModel[2][8].unitId? dataModel[2][8].unitId:-1;
                         
                         return (
@@ -216,7 +239,7 @@ const TableBody = (props:{
                 } else {
                     // book first row
                     // book 까지, 이후 병합
-                    console.log('row data first row =',row)
+                    // console.log('row data first row =',row)
                     return (
                         <tr key={rowKey} className='table-tbody-tr-basic'>
                             {row.map((cell, cellIdx) => {

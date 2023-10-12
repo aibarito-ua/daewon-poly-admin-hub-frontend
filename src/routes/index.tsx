@@ -29,6 +29,7 @@ import LRMRolePlayProgress from '../pages/LearningResultManagement/LearningResul
 import LRMRolePlayPortfolio from '../pages/LearningResultManagement/LearningResultManagementSHSubPages/roleplay/Portfolio'
 import LearningResultManagementWritingHubMain from '../pages/LearningResultManagement/LearningResultManagementWHSubPages/LearningResultManagementWritingHubMain';
 import LRMSparkWritingReportAndPortfolio from '../pages/LearningResultManagement/LearningResultManagementWHSubPages/sparkWriting/SparkWriting';
+import StandbyScreen from '../components/toggleModalComponents/StandbyScreen';
 
 export default function Router() {
     const { role, isOpen } = useLoginStore();
@@ -96,6 +97,7 @@ export default function Router() {
 
             </Routes>
             <CommonAlertModalComponent />
+            <StandbyScreen />
         </div>
 
     )

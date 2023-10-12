@@ -917,6 +917,7 @@ body {
   border-r-[1px]
   border-r-[#e2e3e6]
   text-center
+  w-[95px]
 }
 .learning-management-class-table-empty-report {
   @apply

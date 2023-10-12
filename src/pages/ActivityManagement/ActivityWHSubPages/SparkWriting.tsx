@@ -25,7 +25,7 @@ export const history = createBrowserHistory();
 const SparkWriting = () => {
     // page usehook zustand
     const {
-        commonAlertOpen, 
+        commonAlertOpen, commonAlertClose
     } = useControlAlertStore();
     const {
         selectNavigationTitles, setSelectNavigationTitles,
@@ -34,10 +34,14 @@ const SparkWriting = () => {
         setNavigateBlockAlertYesFn, setNavigateBlockAlertNoFn,
     } = useNavStore();
     const {
-        loadData, loadDataHeadKor, sortRules, 
+        saveLoadData, loadDataHeadKor, sortRules, 
         loadDataUpdateFlag,loadDataUpdateFlagInit,
         setSparkWritingData, setSparkWritingHeadData,
-        setLoadDataSparkWritingInput
+        setLoadDataSparkWritingInput,
+        // setLoadDataUpdateFlag,
+        resetSaveLoadData,
+        savedSaveLoadData,
+        loadData
     } = useActivityWritingHubStore();
 
     // page states
@@ -61,6 +65,7 @@ const SparkWriting = () => {
 
     // table control
     const [tableDataModel, setTableDataModel] = React.useState<TTableDataModel>([]);
+
     const setInputChangeTableDataModelState = (text:string, pageStateIndex:{
         rowIndex:number, cellIndex:number
     }, storeIndex: {
@@ -113,29 +118,63 @@ const SparkWriting = () => {
     
     // input check effect
     React.useEffect(()=>{
+        const saveDump = JSON.stringify(saveLoadData);
+        const originDump = JSON.stringify(loadData)
+        console.log('effect saveLoadData =',saveLoadData)
+        console.log('effect loadData =',loadData)
+        console.log('check =',saveDump === originDump)
         if (navigateBlockFlag) {
             let message:string[] = [];
             console.log('flag =',loadDataUpdateFlag)
             if (loadDataUpdateFlag===0) {
                 message.push("입력된 내용이 없습니다.","저장하지 않고 화면 이동 하시겠습니까?")
                 setNavigateBlockAlertYesFn(()=>{
-
+                    setEnableSaveButtonFlag(false);
+                    setNavigateBlockFlag(false);
                 })
                 setNavigateBlockAlertNoFn(()=>{
-
+                    commonAlertClose();
                 })
             } else if (loadDataUpdateFlag===1){
-                message.push("입력한 내용을 저장하시겠습니까?")
+                message.push("입력된 내용이 있습니다.","저장하지 않고 화면 이동 하시겠습니까?")
                 setNavigateBlockAlertYesFn(()=>{
-
+                    setEnableSaveButtonFlag(false);
+                    setNavigateBlockFlag(false);
                 })
-                setNavigateBlockAlertNoFn(()=>{
-                    
+                setNavigateBlockAlertNoFn(async ()=>{
+                    commonAlertOpen({
+                        alertType: 'continue',
+                        head: 'outline format - text input',
+                        messages: ['입력한 내용을 저장하시겠습니까?'],
+                        yesEvent: async ()=>{
+                            const unitId = tableDataModel[2][8].unitId;
+                            if (unitId!==undefined) {
+                                let outline_format:TOLContentItem[] = [];
+                                const targetDataDumy = saveLoadData.spark_writing;
+                                for (let i = 0; i < targetDataDumy.length; i++) {
+                                    if (targetDataDumy[i].unit_id === unitId) {
+                                        outline_format = targetDataDumy[i].outline_format.outline_format;
+                                    }
+                                }
+                                await setActivityManagementSparkWritingOutlineAPI(unitId, outline_format );
+                                savedSaveLoadData();
+                                setEnableSaveButtonFlag(false);
+                                setNavigateBlockFlag(false);
+                                commonAlertClose();
+                            }
+                        },
+                        closeEvent: () => {
+                            resetSaveLoadData();
+                            setEnableSaveButtonFlag(false);
+                            setNavigateBlockFlag(false);
+                            commonAlertClose();
+                        }
+                    })
                 })
             }
             setNavigateBlockMessage(message);
         }
-    }, [loadData, navigateBlockFlag])
+    }, [saveLoadData])
 
     // // page unload check
     React.useEffect(()=>{
@@ -210,6 +249,7 @@ const SparkWriting = () => {
             }
         }
         if (selectCheck) {
+            setTableDataModel([])
             setIsAllSelected(false);
         } else {
             setIsAllSelected(true);
@@ -227,8 +267,8 @@ const SparkWriting = () => {
     }[][] => {
         
         let tableDatas:TActivitySparkWritingBooks[]=[];
-        tableDatas = loadData.spark_writing;
-        console.log('originData =',loadData)
+        tableDatas = saveLoadData.spark_writing;
+        console.log('originData =',saveLoadData)
 
         let dataModel:TTableDataModel = [];
         
@@ -388,6 +428,39 @@ const SparkWriting = () => {
         return dataModel;
     }
 
+    const saveEventFunction = () => {
+        if (enableSaveButtonFlag) {
+            commonAlertOpen({
+                head: 'outline format - text input',
+                messages: ['입력한 내용을 저장하시겠습니까?'],
+                yesEvent: async ()=>{
+                    const unitId = tableDataModel[2][8].unitId;
+                    if (unitId!==undefined) {
+                        let outline_format:TOLContentItem[] = [];
+                        const targetDataDumy = saveLoadData.spark_writing;
+                        for (let i = 0; i < targetDataDumy.length; i++) {
+                            if (targetDataDumy[i].unit_id === unitId) {
+                                outline_format = targetDataDumy[i].outline_format.outline_format;
+                            }
+                        }
+                        await setActivityManagementSparkWritingOutlineAPI(unitId, outline_format );
+                        
+                        savedSaveLoadData();
+                        setEnableSaveButtonFlag(false);
+                        setNavigateBlockFlag(false);
+
+                    }
+                },
+                closeEvent: () => {
+                    resetSaveLoadData();
+                    setEnableSaveButtonFlag(false);
+                    setNavigateBlockFlag(false);
+                    commonAlertClose();
+                }
+            })
+        }
+    }
+
     const searchEventFunction = (e:React.MouseEvent<HTMLButtonElement, MouseEvent>)=>{
         e.preventDefault();
         // console.log('is test =',isAllSelected)
@@ -539,32 +612,33 @@ const SparkWriting = () => {
                     >{'수정'}</div>
                     <div className={enableSaveButtonFlag ? 'buttons-div-button':'buttons-div-button-disabled'} 
                         onClick={()=>{
-                            if (enableSaveButtonFlag) {
-                                commonAlertOpen({
-                                    head: 'outline format - text input',
-                                    messages: ['입력한 내용을 저장하시겠습니까?'],
-                                    yesEvent: async ()=>{
-                                        const unitId = tableDataModel[2][8].unitId;
-                                        if (unitId!==undefined) {
-                                            let outline_format:TOLContentItem[] = [];
-                                            const targetDataDumy = loadData.spark_writing;
-                                            for (let i = 0; i < targetDataDumy.length; i++) {
-                                                if (targetDataDumy[i].unit_id === unitId) {
-                                                    outline_format = targetDataDumy[i].outline_format.outline_format;
-                                                }
-                                            }
-                                            await setActivityManagementSparkWritingOutlineAPI(unitId, outline_format );
+                            // if (enableSaveButtonFlag) {
+                            //     commonAlertOpen({
+                            //         head: 'outline format - text input',
+                            //         messages: ['입력한 내용을 저장하시겠습니까?'],
+                            //         yesEvent: async ()=>{
+                            //             const unitId = tableDataModel[2][8].unitId;
+                            //             if (unitId!==undefined) {
+                            //                 let outline_format:TOLContentItem[] = [];
+                            //                 const targetDataDumy = saveLoadData.spark_writing;
+                            //                 for (let i = 0; i < targetDataDumy.length; i++) {
+                            //                     if (targetDataDumy[i].unit_id === unitId) {
+                            //                         outline_format = targetDataDumy[i].outline_format.outline_format;
+                            //                     }
+                            //                 }
+                            //                 await setActivityManagementSparkWritingOutlineAPI(unitId, outline_format );
                                             
-                                            setEnableSaveButtonFlag(false);
-                                            setNavigateBlockFlag(false);
-                                        }
-                                    },
-                                    closeEvent: () => {
-                                        setEnableSaveButtonFlag(false);
-                                        setNavigateBlockFlag(false);
-                                    }
-                                })
-                            }
+                            //                 setEnableSaveButtonFlag(false);
+                            //                 setNavigateBlockFlag(false);
+                            //             }
+                            //         },
+                            //         closeEvent: () => {
+                            //             setEnableSaveButtonFlag(false);
+                            //             setNavigateBlockFlag(false);
+                            //         }
+                            //     })
+                            // }
+                            saveEventFunction();
                         }}
                     >{'저장'}</div>
                 </footer>

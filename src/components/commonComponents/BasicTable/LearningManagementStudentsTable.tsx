@@ -5,6 +5,7 @@ import { CommonFunctions } from '../../../util/common/commonFunctions';
 import { useNavigate } from 'react-router-dom';
 import ReportModalComponent from '../../toggleModalComponents/ReportModalComponent';
 import useReportStore from '../../../store/useReportStore';
+import useControlAlertStore from '../../../store/useControlAlertStore';
 
 const TableHeader = (props: {head:string[] }) => {
     let tableHeadDatas = props.head;
@@ -63,14 +64,15 @@ const TableHeader = (props: {head:string[] }) => {
                                 colSpan={3}
                                 key={headerCell.accessor}
                                 className='table-thead-tr-th-basic border-t-[1px] border-t-[#111] border-r-[1px] border-r-[#aaa]'
-                                style={{width: headerCell.width+'px'}}
+                                // style={{width: headerCell.width+'px'}}
+                                style={{width: '296px'}}
                             >{headerCell.header}</th>
                         }
                     } else {
                         return <th
                                 key={headerCell.accessor}
                                 className={`table-thead-tr-th-basic ${headerCell.header==='report'&& 'border-r-[1px] border-r-[#aaa]'}`}
-                                style={{width: headerCell.width+'px'}}
+                                style={{width: '95px'}}
                             >{headerCell.header}</th>
                     }
                 })
@@ -188,6 +190,20 @@ const TableBody = (props:{
     const {
         set, currentSelectCodes, setOverallReportByStu
     } = useReportStore()
+
+    const {
+        commonStandbyScreen, setCommonStandbyScreen
+    } = useControlAlertStore();
+    const [dumpStudentDataInClass,setDumpStudentDataInClass] = React.useState<TLMSparkWritingStudentItemInClass[]>([]);
+    
+    React.useEffect(()=>{
+        if (commonStandbyScreen.openFlag) {
+            setCommonStandbyScreen({openFlag:false})
+        }
+    },[
+        studentDataInClass
+    ])
+
     // click enter feedback page
     const enterFeedbackEvent = (draft:string, unit_index:number, unit_topic:string, step_label:string, ) => {
         // basic info setting
@@ -201,20 +217,21 @@ const TableBody = (props:{
         <tbody className='table-tbody-basic text-[13px] font-sans font-normal text-[#444444] bg-[#fff] border-b-[1px]'>
             {dataModel&& dataModel.map((rowData, rowIdx)=>{
                 // student row
-                const studentBasicInfo = {
-                    student_code: studentDataInClass.students[rowIdx].student_code,
-                    student_name_en: studentDataInClass.students[rowIdx].student_name_en,
-                    student_name_kr: studentDataInClass.students[rowIdx].student_name_kr,
-                }
                 return <tr key={rowIdx}
-                    className='table-tbody-tr-basic max-h-[76px]'
+                className='table-tbody-tr-basic max-h-[76px]'
                 >{
                     rowData.map((cellData, cellIdx) => {
+                        console.log('row idx =',rowIdx, ', studendInClass =',studentDataInClass)
+                        const studentBasicInfo = {
+                            student_code: studentDataInClass.students[rowIdx] ? studentDataInClass.students[rowIdx].student_code: '',
+                            student_name_en: studentDataInClass.students[rowIdx] ? studentDataInClass.students[rowIdx].student_name_en:'',
+                            student_name_kr: studentDataInClass.students[rowIdx] ? studentDataInClass.students[rowIdx].student_name_kr:'',
+                        }
                         if (cellIdx===0) {
                             // category "NO"
                             return <td
                                 key={cellData.key}
-                                className={`border-l-[1px] border-l-[#e2e3e6] border-r-[1px] border-r-[#e2e3e6]`}
+                                className={`border-l-[1px] border-l-[#e2e3e6] border-r-[1px] border-r-[#e2e3e6] h-[78px]`}
                                 style={{minWidth: cellData.width}}
                             >
                                 <span className='inline-flex items-center justify-center w-full'>
@@ -234,13 +251,13 @@ const TableBody = (props:{
                             // first draft
                             const firstDraftData = cellData.value.data;
                             const data = firstDraftData?.draft_1_status;
-                            console.log('data ===',firstDraftData )
+                            // console.log('data ===',firstDraftData )
                             if (data) {
                                 const displayDate = displayJSX(data,true)
-                                console.log('displayDate =',displayDate)
+                                // console.log('displayDate =',displayDate)
                                 return <td
                                     key={cellData.key}
-                                    className={`border-l-[1px] border-l-[#e2e3e6] border-r-[1px] border-r-[#e2e3e6]`}
+                                    className={`border-l-[1px] border-l-[#e2e3e6] border-r-[1px] border-r-[#e2e3e6] w-[95px]`}
                                     style={{minWidth: cellData.width}}
                                     onClick={async ()=>{
                                         console.log('cellData =',cellData)
@@ -272,7 +289,7 @@ const TableBody = (props:{
                                 return <td
                                     key={cellData.key}
                                     className={`learning-management-class-table-empty-draft`}
-                                    style={{width: cellData.width}}
+                                    style={{minWidth: cellData.width}}
                                 >{'-'}</td>
                             }
                         } else if ( (cellIdx-2)%3===1 ) {
@@ -284,7 +301,7 @@ const TableBody = (props:{
                                 console.log('displayDate =',displayDate)
                                 return <td
                                 key={cellData.key}
-                                className={`border-l-[1px] border-l-[#e2e3e6] border-r-[1px] border-r-[#e2e3e6]`}
+                                className={`border-l-[1px] border-l-[#e2e3e6] border-r-[1px] border-r-[#e2e3e6] w-[95px]`}
                                 style={{minWidth: cellData.width}}
                                 onClick={async () => {
                                         console.log('data ===',secondDraftData )
@@ -332,7 +349,7 @@ const TableBody = (props:{
 
 
                             
-                            console.log('report data ===',reportData )
+                            // console.log('report data ===',reportData )
                             if (checkReportData) {
                                 const draft1Status = reportData?.draft_1_status.status;
                                 const draft2Status = reportData?.draft_2_status.status;

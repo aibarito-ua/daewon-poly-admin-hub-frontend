@@ -68,10 +68,28 @@ const useActivityWritingHubStore = create<IActivityWHStore>((set, get) => ({
     loadData: {
         spark_writing: [],
     },
-
+    saveLoadData: {
+        spark_writing: [],
+    },
+    resetSaveLoadData: () => {
+        const originalLoadData = get().loadData;
+        set(()=>({
+            saveLoadData: originalLoadData
+        }))
+    },
+    savedSaveLoadData: () => {
+        // save 후 loadData(original) update
+        const saveData = get().saveLoadData;
+        set(()=>({
+            loadData: saveData
+        }))
+    },
     loadDataUpdateFlag : 0,
     loadDataUpdateFlagInit: () => {
         set(()=>({loadDataUpdateFlag:0}))
+    },
+    setLoadDataUpdateFlag: (num: number) => {
+        set(()=>({loadDataUpdateFlag: num}))
     },
     setLoadDataSparkWritingInput: (text:string, unitId:number, outlineFormatIndex:number) => {
         let dumpSparkWritingData = get().loadData.spark_writing;
@@ -84,9 +102,9 @@ const useActivityWritingHubStore = create<IActivityWHStore>((set, get) => ({
         })
         set(()=>({
             loadDataUpdateFlag: 1,
-            loadData: {
+            saveLoadData: {
                 spark_writing: dumpSparkWritingData,
-            }
+            },
         }))
     },
     openControlBox: false,
@@ -101,6 +119,9 @@ const useActivityWritingHubStore = create<IActivityWHStore>((set, get) => ({
         set(()=>({
             loadData: {
                 spark_writing: sparkWriting
+            },
+            saveLoadData: {
+                spark_writing: sparkWriting
             }
         }))
     },
@@ -108,6 +129,12 @@ const useActivityWritingHubStore = create<IActivityWHStore>((set, get) => ({
         set(()=>({
             loadDataHeadKor: { spark_writing: loadHeadData}
         }))
+    },
+
+    // 저장 로직 테스트
+    innerDataModel: [],
+    setInnerDataModel: (dataModel) => {
+        set(()=>({innerDataModel:dataModel}))
     }
 }));
 

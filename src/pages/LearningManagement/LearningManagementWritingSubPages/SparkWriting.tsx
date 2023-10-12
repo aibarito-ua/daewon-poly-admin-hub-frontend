@@ -9,6 +9,7 @@ import { getLMSparkWritingFilterDataAPI, getLMSparkWritingStudents } from "../..
 import useLearningManagementSparkWritingStore from "../../../store/useLearningManagementSparkWritingStore";
 import LearningManagementStudentsTable from "../../../components/commonComponents/BasicTable/LearningManagementStudentsTable";
 import useReportStore from "../../../store/useReportStore";
+import useControlAlertStore from "../../../store/useControlAlertStore";
 
 const LMSparkWriting = () => {
     // page usehook zustand
@@ -22,6 +23,9 @@ const LMSparkWriting = () => {
         feedbackDataInStudent, setFeedbackDataInStudent
     } = useLearningManagementSparkWritingStore();
     const {setCurrentSelectCodes} = useReportStore();
+    const {
+        commonStandbyScreen, setCommonStandbyScreen
+    } = useControlAlertStore();
     
     // page states
     const [emptyPageMessage, setEmptyPageMessage] = React.useState<string>('검색 값을 선택 후 조회하세요.');
@@ -130,6 +134,7 @@ const LMSparkWriting = () => {
             if (check) {
                 console.log('selectFIlterValues =',selectFIlterValues)
                 console.log('filter items ==',selectCampusCode,selectLevelCode,selectClassCode)
+                setCommonStandbyScreen({openFlag:true})
                 setCurrentSelectCodes({target:'campus', name:selectCampusCode.name, code: selectCampusCode.code})
                 setCurrentSelectCodes({target:'class', name:selectClassCode.name, code: selectClassCode.code})
                 setCurrentSelectCodes({target:'level', name:selectLevelCode.name, code: selectLevelCode.code})
@@ -138,7 +143,12 @@ const LMSparkWriting = () => {
                     levelCode:selectLevelCode.code,
                     classCode:selectClassCode.code
                 }
-                const rsp = await getLMSparkWritingStudents(reqData);
+                
+                
+                const rsp = await getLMSparkWritingStudents(reqData).then((response) => {
+                    // setCommonStandbyScreen({openFlag:false})
+                    return response;
+                });
                 console.log('stu rsp ==',rsp)
                 if (rsp.students.length > 0) {
                     // feedback value setting
@@ -149,8 +159,8 @@ const LMSparkWriting = () => {
                     dumyFeedbackData.defautInfo.book_name = rsp.book_name;
                     setFeedbackDataInStudent(dumyFeedbackData);
                     // table data setting
-                    makeTableData(rsp)
                     setStudentDataInClass(rsp)
+                    makeTableData(rsp)
                     setIsSearch(true)
                 } else {
                     setStudentDataInClass({book_name:'',students:[]})

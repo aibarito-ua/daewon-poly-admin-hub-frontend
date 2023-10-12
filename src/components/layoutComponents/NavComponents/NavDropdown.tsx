@@ -31,10 +31,13 @@ export default function TextareaDropdown (props: {
         setSelectNavigationTitles,
         selectNavigationIndex,
         navigateBlockFlag,
-        navigateBlockMessage
+        navigateBlockMessage,
+        navigateBlockAlertYesFn,
+        navigateBlockAlertNoFn,
+        
     } = useNavStore();
     const {
-        commonAlertOpen
+        commonAlertOpen, commonAlertClose,
     } = useControlAlertStore();
 
     const goLink = async (link: string, role: string) => {
@@ -50,7 +53,20 @@ export default function TextareaDropdown (props: {
         commonAlertOpen({
             head: 'outline format - text input',
             messages: navigateBlockMessage,
-
+            yesEvent: ()=>{
+                if (navigateBlockAlertYesFn) {
+                    navigateBlockAlertYesFn();
+                }
+                commonAlertClose();
+                navigate(pathString);
+            },
+            closeEvent: async () => {
+                // commonAlertClose();
+                if (navigateBlockAlertNoFn) {
+                    await navigateBlockAlertNoFn();
+                }
+            },
+            alertType: 'continue'
         })
       }
     }

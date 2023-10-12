@@ -15,7 +15,16 @@ interface IUseControlAlertStore {
     setCommonAlertHeadTitle: (title:string) =>void;
     commonAlertOpen: (option?: TCommonAlertOpenOptions ) => void;
     commonAlertClose: () => void;
+
+    // standbyScreen Controller
+    commonStandbyScreen: TCommonStandbyScreen,
+    setCommonStandbyScreen: (controlData:TCommonStandbyScreen) => void;
 }
+// standby screen
+type TCommonStandbyScreen = {
+    openFlag: boolean
+}
+
 type TCommonAlertOpenOptions = {
     head?:string,
     yesButtonLabel?:string,
@@ -74,6 +83,14 @@ const useControlAlertStore = create<IUseControlAlertStore>((set, get) => ({
         set(()=>({
             commonAlertOpenFlag:false,
         }))
+    },
+
+    // standby screen
+    commonStandbyScreen: {
+        openFlag: false
+    },
+    setCommonStandbyScreen: (data) => {
+        set(()=>({commonStandbyScreen:data}))
     }
 }))
 

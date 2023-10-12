@@ -9,9 +9,17 @@ interface IActivityWHStore {
     loadData: {
         spark_writing: TActivitySparkWritingBooks[],
     };
+    saveLoadData: {
+        spark_writing: TActivitySparkWritingBooks[],
+    };
     loadDataHeadKor: {
         spark_writing: TLoadDataHeadTrans[],
     };
+    // 저장 취소 이벤트
+    resetSaveLoadData: () => void;
+    // 저장 후 덮어쓰기
+    savedSaveLoadData: () => void;
+    setLoadDataUpdateFlag: (num:number) => void;
     setLoadDataSparkWritingInput: (text:string, unitId:number, outlineFormatIndex:number) => void;
     openControlBox: boolean;
     setOpenControlBox: (flag:boolean) => void;
@@ -21,6 +29,10 @@ interface IActivityWHStore {
     setSparkWritingData: (loadData: TActivitySparkWritingBooks[]) =>void;
     setSparkWritingHeadData: (loadHeadData: TLoadDataHeadTrans[]) =>void;
     rubricDataHead: TRubricTypeHeader[];
+
+    // 저장 로직 
+    innerDataModel: TTableDataModel;
+    setInnerDataModel: (dataModel: TTableDataModel ) => void;
 }
 type TLoadDataHeadTrans = {
     accessor: string,
