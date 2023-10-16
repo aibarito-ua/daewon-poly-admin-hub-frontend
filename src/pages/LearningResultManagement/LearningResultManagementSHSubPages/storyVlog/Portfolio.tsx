@@ -62,7 +62,11 @@ const Portfolio = () => {
     }
     const LessonVlog: FC<{lesson: TLRMSpeakingHubStoryVlogLesson}> = ({lesson}) => {
         return (
-            <div>VIDEO Content here</div>
+            <div className="mt-[14px] w-[660px] h-[346px]">
+                <video width="660" height="100%" controls >
+                    <source src={lesson.video} type="video/mp4"/>
+                </video>
+            </div>
         )
     }
 
