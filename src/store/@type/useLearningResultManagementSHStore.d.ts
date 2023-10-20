@@ -5,8 +5,8 @@ interface IuseLearningResultManagementSHStore {
     loadDataHead: any;
     loadData: any;
 
-    filterData: TFilterLRMSpeaking|null;
-    setFilterData: (apiFilterData: TFilterLRMSpeaking)=>void;
+    filterData: TAllClassLRMSpeaking|null;
+    setFilterData: (apiFilterData: TAllClassLRMSpeaking)=>void;
 
     studentDataInClass: TLRMSpeakingHubData|null;
     setStudentDataInClass: (data:TLRMSpeakingHubData)=>void;
@@ -14,10 +14,30 @@ interface IuseLearningResultManagementSHStore {
     // other stuff here
 }
 
+type TAllClassLRMSpeaking={
+    year: number,
+    semester: number,
+    campus: TCampusData[]
+}
+type TCampusData={
+    code: string,
+    name: string,
+    level: TFilterLevelSpeakingHub[];
+}
+type TFilterLevelSpeakingHub={
+    name: string;
+    code: string;
+    class: TFilterClassSpeakingHub[];
+}
+type TFilterClassSpeakingHub={
+    name: string;
+    code: string;
+}
+
 type TFilterLRMSpeaking={
     "year": number,
     "semester": number,
-    "campus": TFilterCampusSparkWriting[]
+    "campus": TCampusData[]
 }
 
 type TLRMSpeakingHubGetStudentReject = {

@@ -6,7 +6,7 @@ import { useComponentWillMount } from "../../../../hooks/useEffectOnce";
 import DebouncedDropdowFilter from "../../../../components/commonComponents/BasicTable/stateDebouncedDropdown";
 import { SvgSearchIcon } from "../../../../components/commonComponents/BasicTable/svgs/SearchIcon";
 import LRMSpeakingHubTable from "../../../../components/commonComponents/BasicTable/LRMSpeakingHubTable";
-import { getLMRSpeakingHubFilterDataAPI, getLMRSpeakingHubStudents } from "../../../../api/LearningResultManagement/LearningResultManagementSpeakingHub";
+import { getLMRSpeakingHubAllCampusDataAPI, getLMRSpeakingHubFilterDataAPI, getLMRSpeakingHubLevelsOfCampusDataAPI, getLMRSpeakingHubStudents } from "../../../../api/LearningResultManagement/LearningResultManagementSpeakingHub";
 import useLearningResultManagementSHStore from "../../../../store/useLearningResultManagementSHStore";
 import { QuestionReportIcon } from "../LearningResultManagementIcons";
 import { getLMSparkWritingFilterDataAPI } from "../../../../api/LearningManagement/LearningManagementSparkWriting.api";
@@ -74,8 +74,7 @@ const Portfolio = () => {
     // initialize setting before render screen
     const beforRenderedFn = async () => {
         console.log('portfolio')
-        const loadFilterData = await getLMRSpeakingHubFilterDataAPI();
-        // const loadFilterData = await getLMSparkWritingFilterDataAPI();
+        const loadFilterData = await getLMRSpeakingHubAllCampusDataAPI();
         console.log('laod filter data =',loadFilterData)
         setFilterAllList(loadFilterData);
         if (loadFilterData&& loadFilterData.campus) {
@@ -302,7 +301,7 @@ const Portfolio = () => {
         }
     }
 
-    const filterButtonEventCampus=(value:string) => {
+    const filterButtonEventCampus= async (value:string) => {
         if (filterStates!==undefined) {
             let levelFilterList:string[]=[]
             const targetCampus=filterStates.campus
@@ -317,7 +316,8 @@ const Portfolio = () => {
             for (let campusIndex= 0; campusIndex < targetCampus.length; campusIndex++) {
                 if (targetCampus[campusIndex].name === value) {
                     setSelectCampusCode({name: value, code: targetCampus[campusIndex].code})
-                    const levelsAtSelectCampus = targetCampus[campusIndex].level;
+                    const levelsAtSelectCampus = (await getLMRSpeakingHubLevelsOfCampusDataAPI(targetCampus[campusIndex].code)).level
+                    targetCampus[campusIndex].level = levelsAtSelectCampus
                     for (let i = 0; i < levelsAtSelectCampus.length; i++) {
                         const levelTarget = levelsAtSelectCampus[i].name;
                         const findTarget = serviceLevel.includes(levelTarget);
