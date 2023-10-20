@@ -5,7 +5,7 @@ import { cf } from "../../../../util/common/commonFunctions";
 import { useComponentWillMount } from "../../../../hooks/useEffectOnce";
 import DebouncedDropdowFilter from "../../../../components/commonComponents/BasicTable/stateDebouncedDropdown";
 import { SvgSearchIcon } from "../../../../components/commonComponents/BasicTable/svgs/SearchIcon";
-import { getAllReportByCampusLevelClass, getLMSparkWritingFilterDataAPI, getLMSparkWritingStudents, getReportOverallDatabyStu } from "../../../../api/LearningManagement/LearningManagementSparkWriting.api";
+import { getAllReportByCampusLevelClass, getLMSparkWritingCampusDataAPI, getLMSparkWritingFilterDataAPI, getLMSparkWritingLevelsOfCampusDataAPI, getLMSparkWritingStudents, getReportOverallDatabyStu } from "../../../../api/LearningManagement/LearningManagementSparkWriting.api";
 import useLearningManagementSparkWritingStore from "../../../../store/useLearningManagementSparkWritingStore";
 import LearningResultManagementStudentsTable from "../../../../components/commonComponents/BasicTable/LearningResultManagementStudentsTable";
 import useLearningResultManagementWHStore from "../../../../store/useLearningResultManagementWHStore";
@@ -59,7 +59,7 @@ const ReportAndPortfolio = () => {
 
     // initialize setting before render screen
     const beforRenderedFn = async () => {
-        const loadFilterData = await getLMSparkWritingFilterDataAPI();
+        const loadFilterData = await getLMSparkWritingCampusDataAPI();
         
         console.log('laod filter data =',loadFilterData)
         setFilterAllList(loadFilterData);
@@ -289,7 +289,7 @@ const ReportAndPortfolio = () => {
         }
     }
 
-    const filterButtonEventCampus=(value:string) => {
+    const filterButtonEventCampus= async (value:string) => {
         if (filterStates!==undefined) {
             let levelFilterList:any[]=[]
             const targetCampus=filterStates.campus
@@ -299,7 +299,8 @@ const ReportAndPortfolio = () => {
             for (let campusIndex= 0; campusIndex < targetCampus.length; campusIndex++) {
                 if (targetCampus[campusIndex].name === value) {
                     setSelectCampusCode({name: value, code: targetCampus[campusIndex].code})
-                    const levelsAtSelectCampus = targetCampus[campusIndex].level;
+                    const levelsAtSelectCampus = (await getLMSparkWritingLevelsOfCampusDataAPI(targetCampus[campusIndex].code)).level
+                    targetCampus[campusIndex].level = levelsAtSelectCampus
                     for (let i = 0; i < levelsAtSelectCampus.length; i++) {
                         const levelTarget = levelsAtSelectCampus[i].name;
                         const findTarget = serviceLevel.includes(levelTarget);
