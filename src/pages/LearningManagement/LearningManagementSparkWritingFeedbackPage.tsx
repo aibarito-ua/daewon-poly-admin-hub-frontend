@@ -1166,8 +1166,15 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                     <div className='flex font-notoSansCJKKR leading-[1.13] text-left text-[16px] text-[#222] font-medium'>{`Review ${feedbackDataInStudent.defautInfo.step_label}`}</div>
                 </div>
                 <div className='flex flex-col font-notoSansCJKKR leading-[1.77] text-left text-[13px] font-normal text-[#222] pl-[11px] mt-[10px]'>
-                    <span>{`Highlight the selected parts you want to correct, then right-click to leave a correction comment.`}</span>
-                    <span>{`Writing Advisor will also provide correction advice for you to refer to when writing correction comments.`}</span>
+                    {feedbackDataInStudent.defautInfo.step_label === '2nd Draft' ? 
+                        <span>{`Review the student\’s 2nd draft and prepare a final evaluation.`}</span>
+                        :
+                        <>
+                            <span>{`Highlight the selected parts you want to correct, then right-click to leave a correction comment.`}</span>
+                            <span>{`Writing Advisor will also provide correction advice for you to refer to when writing correction comments.`}</span>
+                        </>
+                    }
+                    
                 </div>
                 {/* returns */}
                 {draftStatus>3 && <div className='learning-management-feedback-return-button-disabled'/>}
