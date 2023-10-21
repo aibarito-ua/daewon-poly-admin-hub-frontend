@@ -75,7 +75,7 @@ export default function DebouncedDropdowFilter({
                             }
                         }}
                     >
-                    <span className="flex">{value === '' ? '-': (
+                    <span className="flex">{value === '' ? '': (
                         filterTitleLabel==='학기' ? value+'학기': (
                             filterTitleLabel==='Grade' ? 'Grade'+value : value
                         )
@@ -96,6 +96,8 @@ export default function DebouncedDropdowFilter({
                 <Menu.Items className="Filter-CSS-dropdown-menu-items">
                 <div className="py-1 overflow-y-auto" style={{'maxHeight':'55vh'}}>
                     {stateDropNameList!==undefined && stateDropNameList.map((nameItem, i)=>{
+                        if(nameItem==='')
+                            return
                         const nameLabels = filterTitleLabel==='학기' ? nameItem+'학기': (
                             filterTitleLabel==='Grade' ? 'Grade'+nameItem : nameItem
                         )
