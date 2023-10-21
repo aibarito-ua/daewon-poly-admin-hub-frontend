@@ -1320,6 +1320,22 @@ body {
   leading-normal
   text-center
 }
+.return-feedback-modal-disabled-buttons {
+  @apply
+  flex
+  w-[80px]
+  h-[36px]
+  rounded-[2px]
+  justify-center
+  items-center
+  font-notoSansCJKKR
+  font-[400]
+  text-[14px]
+  leading-normal
+  text-center
+  bg-[#eaeaea]
+  text-[#999]
+}
 /* 돋보기 */
 .rubric-magnifying-glass-button {
   @apply

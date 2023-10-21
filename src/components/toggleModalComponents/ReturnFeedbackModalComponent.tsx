@@ -29,9 +29,10 @@ export default function ReturnFeedbackModalComponent (props: IReturnFeedbackProp
     if (!open) {
         setReasonStr('')
         setOtherReason('')
-    } else {
-        setReasonStr(radioLabelandString[0])
-    }
+    } 
+    // else {
+    //     setReasonStr(radioLabelandString[0])
+    // }
   }, [open])
 
   const handleClickOpen = () => {
@@ -88,7 +89,7 @@ export default function ReturnFeedbackModalComponent (props: IReturnFeedbackProp
         <RadioGroup
             aria-labelledby="demo-controlled-radio-buttons-group"
             name="controlled-radio-buttons-group"
-            defaultValue={radioLabelandString[0]}
+            // defaultValue={radioLabelandString[0]}
             value={reasonStr}
             onChange={(e)=>{
                 console.log(e.currentTarget.value)
@@ -162,25 +163,25 @@ export default function ReturnFeedbackModalComponent (props: IReturnFeedbackProp
             sx={{padding:0}}
             className='flex flex-1 flex-col w-[300px] h-[500px] border-t-[1px] border-t-[#ddd]'
         >
-        <div className='flex flex-col flex-1 w-[300px] pt-[29.5px]'>
-            {RadioButtonsGroup()}
-            <div className='flex flex-row font-notoSansCJKKR leading-[1.43] text-[#222] text-[14px] mt-[30px] mb-[10px]'>{`Teacher's Comment:`}</div>
-            <textarea 
-                className='w-[300px] h-[100px] resize-none border-[#ddd] outline-none ring-0 focus:border-[#ddd] focus:outline-none focus:ring-0'
-                value={returnFeedbackValue.teacher_comment}
-                placeholder=''
-                onChange={(e)=>{
-                    const textareaValue = e.currentTarget.value;
-                    let dumyReturn:TReturnFeedback = JSON.parse(JSON.stringify(returnFeedbackValue));
-                    dumyReturn.teacher_comment=textareaValue;
-                    setReturnFeedbackValue(dumyReturn);
-                }}
-            />
-            <div className='flex flex-col justify-center items-center mt-[30px] w-[300] h-[83px] font-notoSansCJKKR leading-[1.81] text-[#ee4e4e] font-bold text-[16px]'>
-                <span className='text-center'>{'Do you wish to send your feedback?'}</span>
-                <span className='text-center'>{'Once you select ‘Send,’ your feedback will be delivered to the student.'}</span>
+            <div className='flex flex-col flex-1 w-[300px] pt-[29.5px]'>
+                {RadioButtonsGroup()}
+                <div className='flex flex-row font-notoSansCJKKR leading-[1.43] text-[#222] text-[14px] mt-[30px] mb-[10px]'>{`Teacher's Comment:`}</div>
+                <textarea 
+                    className='w-[300px] h-[100px] resize-none border-[#ddd] outline-none ring-0 focus:border-[#ddd] focus:outline-none focus:ring-0'
+                    value={returnFeedbackValue.teacher_comment}
+                    placeholder=''
+                    onChange={(e)=>{
+                        const textareaValue = e.currentTarget.value;
+                        let dumyReturn:TReturnFeedback = JSON.parse(JSON.stringify(returnFeedbackValue));
+                        dumyReturn.teacher_comment=textareaValue;
+                        setReturnFeedbackValue(dumyReturn);
+                    }}
+                />
+                <div className='flex flex-col justify-center items-center mt-[30px] w-[300] h-[83px] font-notoSansCJKKR leading-[1.81] text-[#ee4e4e] font-bold text-[16px]'>
+                    <span className='text-center'>{'Do you wish to send your feedback?'}</span>
+                    <span className='text-center'>{'Once you select ‘Send,’ your feedback will be delivered to the student.'}</span>
+                </div>
             </div>
-        </div>
           
         </DialogContent>
         <DialogActions sx={{
@@ -189,9 +190,14 @@ export default function ReturnFeedbackModalComponent (props: IReturnFeedbackProp
           margin:0,
         }}>
             <div className='flex flex-1 flex-row justify-center w-full items-center gap-[10px]'>
-                <div className='return-feedback-modal-buttons bg-[#0fa9cb] text-[#ffffff]'
-                onClick={send}
-                >{'send'}</div>
+                {((reasonStr === 'Other' && otherReason != '') || (reasonStr !== 'Other' && reasonStr !== '')) && returnFeedbackValue.teacher_comment != '' ? 
+                    <div className='return-feedback-modal-buttons bg-[#0fa9cb] text-[#ffffff]'
+                    onClick={send}
+                    >{'send'}</div>
+                    :
+                    <div className='return-feedback-modal-disabled-buttons'
+                    >{'send'}</div>
+                }
                 <div className='return-feedback-modal-buttons bg-[#e5e5e5] text-[#222222]'
                 onClick={cancel}
                 >{'cancel'}</div>
