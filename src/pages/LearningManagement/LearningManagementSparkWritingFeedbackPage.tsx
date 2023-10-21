@@ -1779,35 +1779,36 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                     {/* overall comments & rubric evaluation */}
                     <div className='flex flex-1 flex-col gap-[20px] bg-white h-full w-full min-w-[300px]'>
                         {/* final overall comment */}
-                        <div className='flex flex-col w-full h-[214px] pr-[20px] pl-[13px] pt-[20px]'>
-                            <div className='flex flex-row capitalize final-component-title-label-font'>{'overall comments'}</div>
-                            <textarea className='comment-final-overall-textarea mt-[10px]'
-                                disabled={(draftStatus===2||draftStatus===3) ? false:true}
-                                placeholder='Input your overall comments for the 2nd draft.'
-                                onChange={(e)=>setFinalOverallComment(e.currentTarget.value)}
-                                value={finalOverallComment}
-                            ></textarea>
-                        </div>
-                        {/* rubric evaluation */}
-                        <div className='flex flex-col w-full h-full min-h-[467px] pr-[20px] pl-[13px] mt-[28px] gap-[4px] bg-white'>
-                            <div className='flex flex-row pt-[6px] h-[36px] capitalize final-component-title-label-font relative'>
-                                <div className='flex h-[36px]'>{'rubric evaluation'}</div>
-                                {/* <div className='rubric-magnifying-glass-button' /> */}
-                                <RubricTypeModalComponent 
-                                    keyValue={'final-draft-rubric-modal'}
-                                    rubric_type={`Unit ${feedbackDataInStudent.defautInfo.unit_index}. ${feedbackDataInStudent.defautInfo.unit_topic}`}
-                                    rubric_type_datas={{
-                                        data: feedbackDataInStudent.rubric.rubric_description,
-                                        dataHead: rubricDataHead
-                                    }}
-                                    isFinalDraft={true}
-                                />
+                        <div className='flex flex-col flex-1 overflow-auto'>
+                            <div className='flex flex-col w-full h-[214px] pr-[20px] pl-[13px] pt-[20px]'>
+                                <div className='flex flex-row capitalize final-component-title-label-font'>{'overall comments'}</div>
+                                <textarea className='comment-final-overall-textarea mt-[10px]'
+                                    disabled={(draftStatus===2||draftStatus===3) ? false:true}
+                                    placeholder='Input your overall comments for the 2nd draft.'
+                                    onChange={(e)=>setFinalOverallComment(e.currentTarget.value)}
+                                    value={finalOverallComment}
+                                ></textarea>
                             </div>
-                            {/* rubric categories score select */}
-                            <div className='flex flex-col gap-[5px] overflow-auto'>
-                                {draftViewBox.rubricEvaluation({rubricData: feedbackDataInStudent.rubric, rubricReportValue: rubricReportValue, draftStatus: feedbackDataInStudent.status? feedbackDataInStudent.status.status: 0, controlValue: rubricSelected, controlFn: setRubricSelectedItem})}
+                            {/* rubric evaluation */}
+                            <div className='flex flex-col w-full pr-[20px] pl-[13px] mt-[28px] gap-[4px] bg-white'>
+                                <div className='flex flex-row pt-[6px] h-[36px] capitalize final-component-title-label-font relative'>
+                                    <div className='flex h-[36px]'>{'rubric evaluation'}</div>
+                                    {/* <div className='rubric-magnifying-glass-button' /> */}
+                                    <RubricTypeModalComponent 
+                                        keyValue={'final-draft-rubric-modal'}
+                                        rubric_type={`Unit ${feedbackDataInStudent.defautInfo.unit_index}. ${feedbackDataInStudent.defautInfo.unit_topic}`}
+                                        rubric_type_datas={{
+                                            data: feedbackDataInStudent.rubric.rubric_description,
+                                            dataHead: rubricDataHead
+                                        }}
+                                        isFinalDraft={true}
+                                    />
+                                </div>
+                                {/* rubric categories score select */}
+                                <div className='flex flex-col gap-[5px] overflow-auto'>
+                                    {draftViewBox.rubricEvaluation({rubricData: feedbackDataInStudent.rubric, rubricReportValue: rubricReportValue, draftStatus: feedbackDataInStudent.status? feedbackDataInStudent.status.status: 0, controlValue: rubricSelected, controlFn: setRubricSelectedItem})}
+                                </div>
                             </div>
-
                         </div>
 
                         {/* buttons */}
