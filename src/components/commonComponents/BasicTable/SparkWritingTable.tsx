@@ -126,8 +126,6 @@ const TableBody = (props:{
                     if (hasOutlineForm) {
                         // else input types
                         // sprite
-                        const currentParentValue = row[4].value;
-                        const currentParentMaxLength = gradeHaveCell[currentParentValue].length;
                         const currentParentHaveKey = gradesKey[rIdx];
                         
                         const cellBg = currentParentHaveKey>0 && (

@@ -110,6 +110,120 @@ const basicTable = {
             }
         }
         return returnFilterValues;
+    },
+    setFilterPropertyDeps: (bodyData:any) => {
+        console.log('=== setFilterPropertyDeps ===')
+        const allBodyData = bodyData.body;
+        console.log('bodyData =',allBodyData)
+        let listFilter:TActivitySpeakingHubFilterList[] = [];
+        let isAllChecked = false;
+        for (let i = 0; i < allBodyData.length; i++) {
+            const targetBodyDataRow = allBodyData[i];
+            if (i===0) {
+                console.log('i === 0 pushed init value')
+                const pushListFilterRow:TActivitySpeakingHubFilterList = {
+                    year: targetBodyDataRow.year,
+                    semester: targetBodyDataRow.semester,
+                    grade: targetBodyDataRow.grade,
+                    level: targetBodyDataRow.level
+                }
+                listFilter.push(pushListFilterRow);
+            } else {
+                // will be push data
+                const pushListFilterRow:TActivitySpeakingHubFilterList = {
+                    year: targetBodyDataRow.year,
+                    semester: targetBodyDataRow.semester,
+                    grade: targetBodyDataRow.grade,
+                    level: targetBodyDataRow.level
+                }
+                // check is exist
+                let isPush= true;
+                for (let j = 0; j < listFilter.length; j++) {
+                    const checkListFilterRowValue = listFilter[j];
+                    const checkYear = checkListFilterRowValue.year === pushListFilterRow.year;
+                    const checkSemester = checkListFilterRowValue.semester === pushListFilterRow.semester;
+                    const checkGrade = checkListFilterRowValue.grade === pushListFilterRow.grade;
+                    const checkLevel = checkListFilterRowValue.level === pushListFilterRow.level;
+                    if (checkYear&&checkSemester&&checkGrade&&checkLevel) {
+                        console.log('i ==',i,', j==',j)
+                        console.log('checkYear =',checkYear)
+                        console.log('checkSemester = ',checkSemester)
+                        console.log('checkGrade =',checkGrade)
+                        console.log('checkLevel =',checkLevel)
+                        isPush=false;
+                    }
+                };
+
+                if (isPush) {
+                    listFilter.push(pushListFilterRow);
+                }
+            }
+        };
+        return listFilter;
+    },
+    // 레벨 및 교재 && activity 관리 셀렉트 후 다른 값 셋팅할때 사용
+    // selectedValueArray: [year, semester, grade, level]
+    // return : string[]
+    filterValue: (item: TActivitySpeakingHubFilterList[], selectedValueArray: string[], selectKeyValue:string|number, compareKey: 'year'|'semester'|'grade', outputKey: 'semester'|'grade'|'level') => {
+        const selectValue = selectKeyValue.toString();
+        let returnList:string[] = []
+        for (let i = 0; i < item.length; i++) {
+            const currentItem = item[i];
+            if (compareKey=== 'grade') {
+                const checkYear = currentItem.year.toString() === selectedValueArray[0];
+                const checkSemester = currentItem.semester.toString() === selectedValueArray[1];
+                const checkGrade = currentItem[compareKey].toString() === selectValue;
+                if (checkYear&&checkSemester&&checkGrade) {
+                    const pushValue = currentItem['level'].toString();
+                    let isPush = true;
+                    for (let j = 0; j < returnList.length; j++) {
+                        if (returnList[j] === pushValue) {
+                            isPush=false;
+                        }
+                    };
+                    if (isPush) {
+                        returnList.push(pushValue)
+                    }
+                }
+
+            } else {
+                if (currentItem[compareKey].toString() === selectValue) {
+                    const pushValue = currentItem[outputKey].toString();
+                    let isPush = true;
+                    for (let j = 0; j < returnList.length; j++) {
+                        if (returnList[j] === pushValue) {
+                            isPush=false;
+                        }
+                    }
+                    if (isPush) {
+                        returnList.push(pushValue);
+                    }
+                }
+            }
+        }
+        return returnList;
+    },
+    todayYear: () => {
+        const date = new Date();
+        const year = date.getFullYear();
+        const month = date.getMonth()+1;
+        // console.log('year =',year)
+        // console.log('month =',month+1)
+        const semester = (month > 2 && month < 9) ? 1 : 2;
+        return {
+            year, semester
+        }
+    },
+    todayYearString: () => {
+        const date = new Date();
+        const year = date.getFullYear().toString();
+        const month = date.getMonth()+1;
+        // console.log('year =',year)
+        // console.log('month =',month+1)
+        const semester = (month > 2 && month < 9) ? '1' : '2';
+        return {
+            year, semester
+        }
     }
 }
 

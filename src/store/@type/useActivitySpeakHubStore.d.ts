@@ -96,3 +96,12 @@ type TRolePlayBooks = {
 //         }
 //     ]
 // }
+
+
+// new filters
+type TActivitySpeakingHubFilterList = {
+    year:number,
+    semester: number,
+    grade: number,
+    level: string
+}

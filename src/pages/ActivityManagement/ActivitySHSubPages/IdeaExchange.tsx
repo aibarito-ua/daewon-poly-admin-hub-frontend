@@ -29,6 +29,9 @@ const IdeaExchange = () => {
     const [selectFilterSemesterList, setSelectFilterSemesterList] = React.useState<string[]>([]);
     const [selectFilterGradeList, setSelectFilterGradeList] = React.useState<string[]>([]);
     const [selectFilterLevelList, setSelectFilterLevelList] = React.useState<string[]>([]);
+
+    // all filter lists
+    const [allFilterListData, setAllFilterListData] = React.useState<TActivitySpeakingHubFilterList[]>([]);
     
     // merge in table body value's keys
     const [grouping, setGrouping] = React.useState<string[]>([]);
@@ -39,17 +42,22 @@ const IdeaExchange = () => {
 
     // initialize setting before render screen
     const beforRenderedFn = async () => {
+        const checkDate = cf.basicTable.todayYearString();
+        console.log('today is =',checkDate)
         const loadDataFromAPI = await getActivityManagementSpeakingDataAPI('idea_exchange', sortRules.head.idea_exchange);
         const yearFilterValues:string[] = cf.basicTable.setFilterProperty(loadDataFromAPI.body, 'year')
         const semesterFilterValues:string[] = cf.basicTable.setFilterProperty(loadDataFromAPI.body, 'semester')
         const gradeFilterValues:string[] = cf.basicTable.setFilterProperty(loadDataFromAPI.body, 'grade')
-        const levelFilterValues:string[] = cf.basicTable.setFilterProperty(loadDataFromAPI.body, 'level')
-
+        // const levelFilterValues:string[] = cf.basicTable.setFilterProperty(loadDataFromAPI.body, 'level')
+        const newFilter = cf.basicTable.setFilterPropertyDeps(loadDataFromAPI);
+        console.log('newFilter before render ==',newFilter)
+        setAllFilterListData(newFilter)
+        
         setSelectFilterYearList(yearFilterValues)
         setSelectFilterSemesterList(semesterFilterValues)
         setSelectFilterGradeList(gradeFilterValues)
-        setSelectFilterLevelList(levelFilterValues)
-        const bodyData = loadDataFromAPI.body
+        setSelectFilterValues([checkDate.year, checkDate.semester,'',''])
+        // setSelectFilterLevelList(levelFilterValues)
         setData({
             body: loadDataFromAPI.body,
             head: loadDataFromAPI.head
@@ -146,7 +154,17 @@ const IdeaExchange = () => {
                         onChange={value=>{
                             let dumySelectFilterValues = JSON.parse(JSON.stringify(selectFIlterValues));
                             dumySelectFilterValues[0] = value
-                            setSelectFilterValues(dumySelectFilterValues)
+                            // allFilterListData
+                            console.log('year dumySelectFilterValues=',dumySelectFilterValues)
+                            if (selectFilterYearList.length > 1) {
+                                dumySelectFilterValues[2] = '';
+                                const dumyFilterSemesterList = cf.basicTable.filterValue(allFilterListData,[],value,'year','semester');
+                                const dumyFilterGradeList = cf.basicTable.filterValue(allFilterListData,[],value,'year','grade');
+                                setSelectFilterSemesterList(dumyFilterSemesterList);
+                                setSelectFilterGradeList(dumyFilterGradeList);
+                            } 
+                            setSelectFilterValues(dumySelectFilterValues);
+                            
                         }}
                         value={selectFIlterValues[0]}
                         originData={data}
@@ -159,6 +177,12 @@ const IdeaExchange = () => {
                         onChange={value=>{
                             let dumySelectFilterValues = JSON.parse(JSON.stringify(selectFIlterValues));
                             dumySelectFilterValues[1] = value
+                            console.log('semester dumySelectFilterValues =',dumySelectFilterValues)
+                            if (selectFilterSemesterList.length>1) {
+                                dumySelectFilterValues[2] = ''
+                                const dumyFilterGradeList = cf.basicTable.filterValue(allFilterListData, [], value, 'semester', 'grade');
+                                setSelectFilterGradeList(dumyFilterGradeList)
+                            }
                             setSelectFilterValues(dumySelectFilterValues)
                             
                         }}
@@ -173,6 +197,8 @@ const IdeaExchange = () => {
                         onChange={value=>{
                             let dumySelectFilterValues = JSON.parse(JSON.stringify(selectFIlterValues));
                             dumySelectFilterValues[2] = value
+                            const dumyFilterLevelList = cf.basicTable.filterValue(allFilterListData, dumySelectFilterValues, value, 'grade','level');
+                            setSelectFilterLevelList(dumyFilterLevelList)
                             setSelectFilterValues(dumySelectFilterValues)
                             
                         }}
