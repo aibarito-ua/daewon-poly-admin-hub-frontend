@@ -364,6 +364,7 @@ const LearningManagementSparkWritingFeedbackPage = () => {
         } else {
             // temporary save data 
             const overall_comment="";
+            // const overall_comment = finalOverallComment;
             const responseData:TAdminDraft1stCommentData = {
                 draft_id,
                 data:[],
@@ -992,6 +993,7 @@ const LearningManagementSparkWritingFeedbackPage = () => {
             })
         }
         if (feedbackDataInStudent.draft_2nd_data) {
+            console.log('DATA:=', feedbackDataInStudent)
             console.log('feedbackDataInStudent.draft_2nd_data =995=',feedbackDataInStudent.draft_2nd_data)
             const draft2ndData = feedbackDataInStudent.draft_2nd_data;
             if (feedbackDataInStudent.status?.status === 4 || feedbackDataInStudent.status?.status === 5) {
@@ -1077,7 +1079,7 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                 if (rubricReportValue.length > 0) {
                     // save open, submit close
                     setFinalCreateReportFlag(false);
-                    setFinalTemporarySaveFlag(true);
+                    setFinalTemporarySaveFlag(false);
                 } else {
                     // save&submit close
                     setFinalCreateReportFlag(false);
@@ -1777,7 +1779,7 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                     </div>
 
                     {/* overall comments & rubric evaluation */}
-                    <div className='flex flex-1 flex-col gap-[20px] bg-white h-full w-full min-w-[300px]'>
+                    <div className='flex flex-1 flex-col bg-white h-full w-full min-w-[300px]'>
                         {/* final overall comment */}
                         <div className='flex flex-col flex-1 overflow-auto'>
                             <div className='flex flex-col w-full h-[214px] pr-[20px] pl-[13px] pt-[20px]'>
