@@ -17,9 +17,9 @@ export default function ActivitySpeakHubSideLayout (props:{
 
     const SideListItem = (props:{label:string, selectIndex:number}) => {
         return (
-            <li className={`flex items-center w-full h-[45px] text-black hover:cursor-pointer border ${
-                    props.selectIndex === sideSelected ? 'bg-[#ECFAFC] text-[#0fa9cb] border-r-[3px] border-r-[#0FA9CB]': 'font-sans font-light'
-                }`}
+            <li className={`flex items-center w-full h-[45px] hover:cursor-pointer border ${
+                    props.selectIndex === sideSelected ? 'bg-[#ECFAFC] text-[#0fa9cb] border-r-[3px] border-r-[#0FA9CB] font-notoSansCJKKR font-medium': 'text-black font-sans font-light'
+                } ${props.selectIndex && 'border-t-0'}`}
                 onClick={()=>{
                     setSideSelected(props.selectIndex)
                 }}
@@ -67,7 +67,7 @@ export default function ActivitySpeakHubSideLayout (props:{
                 </div>
             </div>
             <div className="flex flex-1 justify-start w-[234px] h-full">
-                <ul className="w-[234px] border-collapse">
+                <ul className="w-[234px]">
                     {props.sideNav.titleList.map((sideNavItem, sideNavIndex)=>{
                         return (
                             <SideListItem key={'activity-management-sideitem-'+sideNavIndex} 

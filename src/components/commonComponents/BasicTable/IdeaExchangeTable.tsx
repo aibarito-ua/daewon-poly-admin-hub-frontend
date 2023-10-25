@@ -100,7 +100,7 @@ const TableBody = (props:{dataModel:{key:string, value:any, rowspan:number, prin
                             <tr key={rowKey} className='table-tbody-tr-basic bg-white'>
                                 {row[5].value.viewIndex===1 && <td
                                 className='h-fit table-tbody-tr-td-basic'
-                                rowSpan={row[4].rowspan}
+                                rowSpan={dataModel.length - 1}
                                 ></td>}
                                 <td
                                 className='table-tbody-tr-td-basic h-fit capitalize text-center'
