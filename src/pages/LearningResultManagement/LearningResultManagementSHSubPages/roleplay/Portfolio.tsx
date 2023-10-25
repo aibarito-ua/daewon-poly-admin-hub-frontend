@@ -367,7 +367,7 @@ const Portfolio = () => {
             // <div className='flex flex-1 w-full h-full justify-center items-center'>
                 <div className='section-common-canvas'>
                     {/* filter row */}
-                    <div className='scetion-common-filter-row-div py-[11px] pl-[20px] bg-white'>
+                    <div className='scetion-common-filter-row-div py-[11px] pl-[20px] bg-white border-b border-[#111]'>
                         <div className='section-common-filter-columns-div'>
                             {/* filter 1 : Campus */}
                             <DebouncedDropdowFilter 
