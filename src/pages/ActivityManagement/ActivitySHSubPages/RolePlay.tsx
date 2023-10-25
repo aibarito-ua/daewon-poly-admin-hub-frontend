@@ -231,7 +231,7 @@ const RolePlay = () => {
                             }`}
                             disabled={!isAllSelected}
                             onClick={(e:React.MouseEvent<HTMLButtonElement, MouseEvent>)=>searchEventFunction(e)}
-                        ><span className='flex'><SvgSearchIcon className='w-5 h-5'/></span><span className='text-white'>{'Search'}</span>
+                        ><span className='flex'><SvgSearchIcon className='w-5 h-5'/></span><span>{'Search'}</span>
                         </button>
                     </div>
                     <div className='flex flex-col w-full h-full overflow-auto rounded-md'>

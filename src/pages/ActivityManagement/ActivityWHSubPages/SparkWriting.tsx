@@ -584,7 +584,7 @@ const SparkWriting = () => {
                         }`}
                         disabled={!isAllSelected}
                         onClick={(e:React.MouseEvent<HTMLButtonElement, MouseEvent>)=>searchEventFunction(e)}
-                    ><span className='flex'><SvgSearchIcon className='w-5 h-5'/></span><span className='text-white'>{'Search'}</span>
+                    ><span className='flex'><SvgSearchIcon className='w-5 h-5'/></span><span>{'Search'}</span>
                     </button>
                 </div>
                 {isSearch && <div className='flex flex-row justify-between bg-[#f5f5f5] h-[40px] w-full text-center items-center'>
