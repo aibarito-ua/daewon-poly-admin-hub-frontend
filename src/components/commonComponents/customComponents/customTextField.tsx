@@ -65,7 +65,9 @@ export const BootstrapInput = styled(InputBase)(({ theme }) => ({
       borderColor: theme.palette.primary.main,
     },
     '&:disabled': {
-      backgroundColor: '#dbdbdb'
+      borderColor: '#bbb',
+      backgroundColor: '#eaeaea',
+      
     }
   },
 }));

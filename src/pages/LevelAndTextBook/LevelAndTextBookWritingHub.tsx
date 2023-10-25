@@ -23,9 +23,26 @@ const LevelAndTextBookWritingHub = () => {
         setLoadData,
         setLoadDataHead
     } = useLevelAndTextbookSpeakingStore();
+    // Table Data 
+    const [data, setData] = React.useState<{body: TLoadDataItem[], head: TLoadDataHeadTrans[]}>({ body: [], head: [] });
+    
+    // page states
+    // searchValue
+    const [selectFIlterValues, setSelectFilterValues] = React.useState<any[]>(['','']);
+    // select search target value list
+    const [selectFilterYearList, setSelectFilterYearList] = React.useState<string[]>([]);
+    const [selectFilterSemesterList, setSelectFilterSemesterList] = React.useState<string[]>([]);
+    
+    // merge in table body value's keys
+    const [grouping, setGrouping] = React.useState<string[]>([]);
+    // isFilter data selected complete flag
+    const [isAllSelected, setIsAllSelected] = React.useState<boolean>(false);
+    // is started search check flag
+    const [isSearch, setIsSearch] = React.useState<boolean>(false);
     
     // initialize setting before render screen
     const beforeRendereredFn = async () => {
+        const checkDate = cf.basicTable.todayYearString();
         const loadDataFromAPI = await getLevelAndTextbookWritingDataAPI(sortRules);
         const yearFilterValues:string[] = cf.basicTable.setFilterProperty(loadDataFromAPI.loadData, 'year');
         const semesterFilterValues:string[] = cf.basicTable.setFilterProperty(loadDataFromAPI.loadData, 'semester');
@@ -33,6 +50,7 @@ const LevelAndTextBookWritingHub = () => {
         setSelectFilterYearList(yearFilterValues)
         setSelectFilterSemesterList(semesterFilterValues);
 
+        setSelectFilterValues([checkDate.year, checkDate.semester])
         setLoadDataHead(loadDataFromAPI.loadDataHeadKor);
         setLoadData(loadDataFromAPI.loadData, undefined);
         
@@ -53,22 +71,6 @@ const LevelAndTextBookWritingHub = () => {
         }
     },[])
 
-    // Table Data 
-    const [data, setData] = React.useState<{body: TLoadDataItem[], head: TLoadDataHeadTrans[]}>({ body: [], head: [] });
-    
-    // page states
-    // searchValue
-    const [selectFIlterValues, setSelectFilterValues] = React.useState<any[]>(['','']);
-    // select search target value list
-    const [selectFilterYearList, setSelectFilterYearList] = React.useState<string[]>([]);
-    const [selectFilterSemesterList, setSelectFilterSemesterList] = React.useState<string[]>([]);
-    
-    // merge in table body value's keys
-    const [grouping, setGrouping] = React.useState<string[]>([]);
-    // isFilter data selected complete flag
-    const [isAllSelected, setIsAllSelected] = React.useState<boolean>(false);
-    // is started search check flag
-    const [isSearch, setIsSearch] = React.useState<boolean>(false);
     
     React.useEffect(()=>{
         if (grouping.length === 0) {

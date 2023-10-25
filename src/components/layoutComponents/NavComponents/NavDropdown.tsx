@@ -92,7 +92,7 @@ export default function TextareaDropdown (props: {
         }
     })
     return (
-        <Menu as="div" className="relative inline-block text-left w-fit h-full">
+        <Menu as="div" className="relative inline-block text-left w-fit h-full shadow-none">
             <div className='flex flex-col max-w-[230px] w-fit h-full'>
                 <Menu.Button className={currentIndex===selectNavigationIndex? 'CSS-dropdown-menu-button-active':'CSS-dropdown-menu-button'}>
                 {selectName}

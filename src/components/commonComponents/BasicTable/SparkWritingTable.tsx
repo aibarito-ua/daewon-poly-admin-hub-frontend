@@ -127,6 +127,7 @@ const TableBody = (props:{
                         // else input types
                         // sprite
                         const currentParentHaveKey = gradesKey[rIdx];
+                        const checkNext = innerDataModel[rIdx+1] ? (innerDataModel[rIdx+1][6].value !=='' ? true:false):false;
                         
                         const cellBg = currentParentHaveKey>0 && (
                             currentParentHaveKey%2 === 1 ? 'bg-[#f9f9f9]': 'bg-[#fff]'
@@ -139,15 +140,15 @@ const TableBody = (props:{
                                 rowSpan={row[4].rowspan}
                                 >{``}</td>}
                                 <td
-                                className='table-tbody-tr-td-basic border-t-transparent border-b-transparent pl-[20px]'
+                                className={checkNext ? 'table-tbody-tr-td-basic border-t-transparent border-b-transparent pl-[20px]':'table-tbody-tr-td-basic border-t-transparent pl-[20px]'}
                                 colSpan={1}
                                 >{row[6].value}</td>
                                 <td
-                                className='table-tbody-tr-td-basic border-t-transparent border-b-transparent w-[30px] text-center'
+                                className={checkNext ? 'table-tbody-tr-td-basic border-t-transparent border-b-transparent w-[30px] text-center': 'table-tbody-tr-td-basic border-t-transparent w-[30px] text-center'}
                                 colSpan={1}
                                 >{row[7].value}</td>
                                 <td
-                                className='table-tbody-tr-td-basic border-t-transparent border-b-transparent px-[4.5px]'
+                                className={checkNext ? 'table-tbody-tr-td-basic border-t-transparent border-b-transparent px-[4.5px]': 'table-tbody-tr-td-basic border-t-transparent px-[4.5px]'}
                                 colSpan={2}
                                 >
                                     <BootstrapInput 
@@ -170,11 +171,11 @@ const TableBody = (props:{
                                     />
                                 </td>
                                 <td
-                                className='table-tbody-tr-td-basic border-t-transparent border-b-transparent'
+                                className={checkNext ? 'table-tbody-tr-td-basic border-t-transparent border-b-transparent':'table-tbody-tr-td-basic border-t-transparent'}
                                 colSpan={1}
                                 >{}</td>
                                 <td
-                                className='table-tbody-tr-td-basic border-t-transparent border-b-transparent'
+                                className={checkNext ? 'table-tbody-tr-td-basic border-t-transparent border-b-transparent':'table-tbody-tr-td-basic border-t-transparent'}
                                 colSpan={1}
                                 >{}</td>
                             </tr>

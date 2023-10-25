@@ -87,7 +87,11 @@ module.exports = {
         'report-rechart-custom-tooltip-box-wordchoice': "url('/src/components/chartComponents/tooltips/polygons/reportTooltipWordChoice.svg')",
         'report-rechart-custom-tooltip-box-ideas': "url('/src/components/chartComponents/tooltips/polygons/reportTooltipIdeas.svg')",
         'report-rechart-custom-tooltip-box-conventions': "url('/src/components/chartComponents/tooltips/polygons/reportTooltipConventions.svg')",
-        
+        // outline format type images
+        'outline-format-image-ol-01': "url('/src/components/toggleModalComponents/outlineFormatModalImages/OL_01@3x.png')",
+        'outline-format-image-ol-02': "url('/src/components/toggleModalComponents/outlineFormatModalImages/OL_02@3x.png')",
+        'outline-format-image-ol-03': "url('/src/components/toggleModalComponents/outlineFormatModalImages/OL_03@3x.png')",
+        'outline-format-image-ol-04': "url('/src/components/toggleModalComponents/outlineFormatModalImages/OL_04@3x.png')",
       }
     },
     borderWidth: {

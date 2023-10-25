@@ -95,3 +95,9 @@ type TRubricTypeData = {
     dataHead: TRubricTypeHeader[],
     data: TRubricTypeDataItem[]
 }
+
+type TActivityWritingHubFilterList = {
+    year: nunber,
+    semester: number,
+    level:string
+}

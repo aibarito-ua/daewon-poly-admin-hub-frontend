@@ -127,14 +127,14 @@ export const Nav = () => {
     )
     return (
         
-        <nav className="block bg-[#17C5EB] h-[120px] min-w-[1920px] w-full">
+        <nav className="block bg-[#0fa9cb] h-[120px] min-w-[1920px] w-full">
             {/* menu nav main area */}
             <div className="max-w-screen w-full h-[80px] flex flex-row items-center mx-auto px-[40px] font-bold text-[18px]">
                 <div className="flex flex-row justify-start items-center w-[430px] h-full pl-[20px] cursor-default">
                     <div className="flex flex-col"
                     >
-                        <span className="flex self-center whitespace-nowrap text-white">Speaking &</span>
-                        <span className="flex self-center whitespace-nowrap text-white">Writing Hub</span>
+                        <span className="flex self-start whitespace-nowrap text-white">Speaking &</span>
+                        <span className="flex self-start whitespace-nowrap text-white">Writing Hub</span>
                     </div>
                 </div>
 
@@ -165,7 +165,7 @@ export const Nav = () => {
                         
                         return (
                             <div key={navigateLocationIndex} 
-                            className={navigateLocationIndex===maxIndex ? 'text-[#222222]':'text-[#999999]'}>
+                            className={navigateLocationIndex===maxIndex ? 'text-[#222222] font-bold':'text-[#999999]'}>
                                 {navigateLocationValue}
                                 {navigateLocationIndex !== maxIndex && <span className='px-2'>{svgNextArrow}</span>}
                             </div>

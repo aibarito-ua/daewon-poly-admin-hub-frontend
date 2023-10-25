@@ -55,6 +55,9 @@ const SparkWriting = () => {
     const [selectFilterYearList, setSelectFilterYearList] = React.useState<string[]>([]);
     const [selectFilterSemesterList, setSelectFilterSemesterList] = React.useState<string[]>([]);
     const [selectFilterLevelList, setSelectFilterLevelList] = React.useState<string[]>([]);
+
+    // all filter lists
+    const [allFilterListData, setAllFilterListData] = React.useState<TActivityWritingHubFilterList[]>([]);
     
     // merge in table body value's keys
     const [grouping, setGrouping] = React.useState<string[]>([]);
@@ -87,15 +90,27 @@ const SparkWriting = () => {
 
     // initialize setting before render screen
     const beforRenderedFn = async () => {
+        const checkDate = cf.basicTable.todayYearString();
         const loadDataFromAPI = await getActivityManagementSparkWritingDataAPI(sortRules);
         console.log('response data =',loadDataFromAPI)
         const yearFilterValues:string[] = cf.basicTable.setFilterProperty(loadDataFromAPI.body, 'year')
         const semesterFilterValues:string[] = cf.basicTable.setFilterProperty(loadDataFromAPI.body, 'semester')
         const levelFilterValues:string[] = cf.basicTable.setFilterProperty(loadDataFromAPI.body, 'level')
+
+        const newFilter = cf.basicTable.setFilterPropertyDepsWH(loadDataFromAPI);
+        console.log('newFilter =',newFilter)
         
         setSelectFilterYearList(yearFilterValues)
         setSelectFilterSemesterList(semesterFilterValues)
+
+        // if (yearFilterValues.length>1 || semesterFilterValues.length > 1) {
+            
+        // }
+        const initSelectFilterLists = [checkDate.year, checkDate.semester,''];
         setSelectFilterLevelList(levelFilterValues)
+
+        setSelectFilterValues(initSelectFilterLists)
+        setAllFilterListData(newFilter);
         setSparkWritingData(loadDataFromAPI.body)
         setSparkWritingHeadData(loadDataFromAPI.head)
 
@@ -515,7 +530,14 @@ const SparkWriting = () => {
                             column={selectFilterYearList}
                             onChange={value=>{
                                 let dumySelectFilterValues = JSON.parse(JSON.stringify(selectFIlterValues));
-                                dumySelectFilterValues[0] = value
+                                dumySelectFilterValues[0] = value;
+                                if (selectFilterYearList.length > 1) {
+                                    dumySelectFilterValues[2] = '';
+                                    const dumyFilterSemesterList = cf.basicTable.filterValueWH(allFilterListData, [],value,'year','semester');
+                                    const dumyFilterLevelList = cf.basicTable.filterValueWH(allFilterListData,[],value,'year','level');
+                                    setSelectFilterSemesterList(dumyFilterSemesterList);
+                                    setSelectFilterLevelList(dumyFilterLevelList)
+                                }
                                 setSelectFilterValues(dumySelectFilterValues)
                             }}
                             value={selectFIlterValues[0]}
@@ -528,7 +550,12 @@ const SparkWriting = () => {
                             column={selectFilterSemesterList}
                             onChange={value=>{
                                 let dumySelectFilterValues = JSON.parse(JSON.stringify(selectFIlterValues));
-                                dumySelectFilterValues[1] = value
+                                dumySelectFilterValues[1] = value;
+                                if (selectFilterSemesterList.length > 1) {
+                                    dumySelectFilterValues[2] = '';
+                                    const dumySelectLevelList = cf.basicTable.filterValueWH(allFilterListData, [], value, 'semester','level');
+                                    setSelectFilterLevelList(dumySelectLevelList)
+                                }
                                 setSelectFilterValues(dumySelectFilterValues)
                                 
                             }}
@@ -542,7 +569,7 @@ const SparkWriting = () => {
                             column={selectFilterLevelList}
                             onChange={value=>{
                                 let dumySelectFilterValues = JSON.parse(JSON.stringify(selectFIlterValues));
-                                dumySelectFilterValues[2] = value
+                                dumySelectFilterValues[2] = value;
                                 setSelectFilterValues(dumySelectFilterValues)
                                 
                             }}

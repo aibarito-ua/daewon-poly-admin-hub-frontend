@@ -258,7 +258,7 @@ code {
   font-family: "Pathfinder";
   font-style: normal;
   font-weight: 400;
-  src: local("Roboto"),
+  src: local("Pathfinder"),
       url('./font/Pathfinder/Pathfinder-R.otf') format('woff2'),
       url('./font/Pathfinder/Pathfinder-R.otf') format('woff'),
       url('./font/Pathfinder/Pathfinder-R.otf') format('truetype');
@@ -267,7 +267,7 @@ code {
   font-family: "Pathfinder";
   font-style: bold;
   font-weight: 700;
-  src: local("Roboto"),
+  src: local("Pathfinder"),
       url('./font/Pathfinder/Pathfinder-B.otf') format('woff2'),
       url('./font/Pathfinder/Pathfinder-B.otf') format('woff'),
       url('./font/Pathfinder/Pathfinder-B.otf') format('truetype');
@@ -299,6 +299,19 @@ body {
   /* width: 100vw;
   height: 100vh;
   background-color: black; */
+  *::-webkit-scrollbar {
+    width: 9px;
+    height: 9px;
+  };
+  *::-webkit-scrollbar-thumb {
+    background-color: #cccccc;
+    background-clip: padding-box;
+    border-right: 7px solid transparent;
+    border-bottom: 7px solid transparent;
+  };
+  *::-webkit-scrollbar-corner {
+    display: none;
+  }
   @apply
   m-0
   
@@ -307,6 +320,7 @@ body {
   flex
   items-center
   justify-center
+  
 }
 .display-page-screen {
   @apply
@@ -402,11 +416,20 @@ body {
   h-full
   justify-center
   items-center
-  rounded-md
-  shadow-sm
-  border-none
-  font-bold text-[18px]
+  shadow-none
+  /* rounded-md */
+  
+  font-normal
+  
+  /* border-none */
+  text-[18px]
   text-[#E9E9E9]
+  
+  hover:font-bold
+  hover:text-white
+  /* hover:border-transparent */
+  hover:border-b-[4px]
+  hover:border-b-white
 }
 .CSS-dropdown-menu-button-active {
   @apply inline-flex
@@ -416,10 +439,10 @@ body {
   h-full
   justify-center
   items-center
+  shadow-none
   
-  shadow-sm
-  
-  font-bold text-[18px]
+  font-bold 
+  text-[18px]
   text-white
   border-transparent
   border-b-[4px]

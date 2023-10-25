@@ -27,56 +27,16 @@ export default function OutlineFormatModalComponent(props:IOutlineFormatModalCom
   } = props;
     
   const [open, setOpen] = React.useState(false);
-  const [viewData, setViewData] = React.useState<{
-    outline_form:string,
-    texts: string[],
-    placeHolderText: string[]
-  }[]>([]);
+  const [title, setTitle] = React.useState<string>('');
 
   React.useEffect(()=>{
-    if (!open) {
-      setViewData([]);
+    if (open) {
+      console.log('unit id =',unitId)
+      console.log('key value =',keyValue)
+      console.log('outline_format_type =',outline_format_type)
+      setTitle(outline_format_type)
     } else {
-      console.log('whole =',wholeData)
-      let targetWholeData:TActivitySparkWritingBooks;
-      for (let i = 0; i < wholeData.length; i++) {
-        if (
-          wholeData[i].year===year
-          && wholeData[i].semester === semester
-          && wholeData[i].level === level
-          && wholeData[i].unit_index === unit
-        ) {
-          console.log('target whole data =',wholeData[i])
-          targetWholeData = wholeData[i];
-          const targetData = targetWholeData.outline_format.outline_format;
-          console.log('year: ',year,', semester: ',semester,', level: ',level,', book: ',book, ', unit: ',unit)
-          
-          let filterData:{
-            outline_form:string,
-            texts: string[],
-            placeHolderText: string[]
-          }[] = []; 
-          for (let dataIndex =0; dataIndex < targetData.length; dataIndex++) {
-            const dataItem = targetData[dataIndex]
-            console.log('data item [',dataIndex,'] =',dataItem)
-            // const contentCheck = Array.isArray(dataItem.content)
-            const texts = Array.isArray(dataItem.content) ? dataItem.content: [dataItem.content]
-            const placeHolderText = [`Start typing in your ${dataItem.name} ...`]
-            const pushItem = {
-              outline_form: dataItem.name,
-              texts,
-              placeHolderText
-            }
-            filterData.push(pushItem)
-          }
-          console.log('after filter data =',filterData)
-          setViewData(filterData);
-          break;
-        }
-      }
-
-      
-      
+      setTitle('')
     }
   }, [open])
 
@@ -116,56 +76,56 @@ export default function OutlineFormatModalComponent(props:IOutlineFormatModalCom
       <Dialog className=''
       PaperProps={{sx:{
         borderRadius: '0.2rem',
+        width: '850px',
+        minWidth: '850px',
+        maxWidth:'850px',
       }}}
       open={open} onClose={handleClose}>
         <DialogTitle borderBottom={1}
           sx={{
             backgroundColor: '#333',
             paddingLeft: '20px',
-            paddingY: '13px'
+            height:'50px',
+            paddingY:'13px'
           }}
         >
-          <div className='flex flex-row text-[16px] text-[#ffffff] font-bold'>
-            {wholeData[unit-1].outline_format.name}
-          <IconButton
-            size='small'
-            sx={{position: 'absolute', padding:0, right: '20px', top: '15px', height: '20px', width: '20px', backgroundColor: '', ":hover": {backgroundColor:''}}}
-            onClick={handleClose}
-          >
-            <CloseButton />
+          <div className='flex flex-row text-[16px] text-[#ffffff] font-bold h-[24px]'>
+            {outline_format_type}
+            <IconButton
+              size='small'
+              sx={{position: 'absolute', padding:0, right: '20px', top: '15px', height: '20px', width: '20px', backgroundColor: '', ":hover": {backgroundColor:''}}}
+              onClick={handleClose}
+            >
+              <CloseButton />
           </IconButton>
           </div>
         </DialogTitle>
         <DialogContent 
-            className='flex flex-1 flex-col min-w-[600px] h-[500px]'
+            className='flex flex-1 flex-col w-[850px] h-[800px] overflow-y-auto overflow-x-hidden'
+            sx={{
+              padding: 0,
+              '& .MuiDialogContent-root': {
+                width: '850px',
+                height: '800px',
+              }
+
+            }}
         >
-        <div className='flex flex-1 h-[400px] bg-[#d9d9d9] mt-8'>
-        <div className='flex flex-grow flex-col w-full overflow-y-auto px-2'>
-          {viewData.map((viewItem, viewIndex)=>{
-            return (
-              <div key={viewItem.outline_form+'-'+viewIndex}
-                className='flex flex-wrap flex-col w-full h-fit relative bg-white mb-4 shadow-[5px_5px_5px_rgba(0,0,0,0.25)]'
-              >
-                <div className='outline-accordion-button-inner'>
-                  {viewItem.outline_form}
-                </div>
-                <div className=''
-                >
-                  {viewItem.texts.map((textItem, textIndex)=>{
-                    return (
-                      <div key={'outline-modal-'+textIndex} className='flex flex-col px-4 pb-2'>
-                        <div>{textItem}</div>
-                        <div className='flex border text-[#808080] justify-center'>{viewItem.placeHolderText[textIndex]}</div>
-                      </div>
-                    )
-                  })}
-                </div>
-              </div>
-            )
-          })}
-        </div>
-        
-        </div>
+          <div className='w-[850px] h-[800px] px-[20px] pt-[10px] '>
+            {title==='OL01' && 
+              <div className='bg-outline-format-image-ol-01 bg-no-repeat bg-cover w-[810px] h-[1100px] pb-[20px]'></div>
+            }
+            {title==='OL02' && 
+              <div className='bg-outline-format-image-ol-02 bg-no-repeat bg-cover w-[810px] h-[1220px] pb-[20px]'></div>
+            }
+            {title==='OL03' && 
+              <div className='bg-outline-format-image-ol-03 bg-no-repeat bg-cover w-[810px] h-[1340px] pb-[20px]'></div>
+            }
+            {title==='OL04' && 
+              <div className='bg-outline-format-image-ol-04 bg-no-repeat bg-cover w-[810px] h-[1220px] pb-[20px]'></div>
+            }
+          </div>
+
         </DialogContent>
       </Dialog>
     </div>
