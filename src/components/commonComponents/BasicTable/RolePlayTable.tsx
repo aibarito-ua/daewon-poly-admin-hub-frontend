@@ -10,14 +10,21 @@ const TableHeader = (props: {table:TLoadDataHeadTrans[], sortEventTargetHeaderKe
                 {tableHeadDatas.map((header, hIndex)=>{
                     const headerText = header.header;
                     const maxWidthCheck = (header.accessor==='year'||header.accessor==='semester'||header.accessor==='grade'||header.accessor==='level'||header.accessor==='month') ? true:false;
-
+                    const checkDashed = header.accessor==="topic_title_1st"||header.accessor==="topic_title_2nd";
+                    const isFirstCell = hIndex===0;
+                    const isLastCell = hIndex===(tableHeadDatas.length-1);
                     return (
                         <th
                             key={header.accessor+hIndex}
-                            className={`table-thead-tr-th-basic 
+                            className={`table-thead-tr-th-basic-role-play 
                                 ${hIndex>8 && 'hidden'}
                                 ${maxWidthCheck ? 'max-w-[80px]':'max-w-[100px]'}
                             `}
+                            style={{
+                                borderRight: checkDashed ? '1px dashed #e2e3e6': (isLastCell ? '': '1px solid #e2e3e6'),
+                                borderLeft: checkDashed ? '1px dashed #e2e3e6': (isFirstCell ? '': '1px solid #e2e3e6'),
+                                borderBottom: '1px solid #e2e3e6'
+                            }}
                         >{headerText}</th>
                     )
                 })}
@@ -50,13 +57,15 @@ const TableBody = (props:{dataModel:{key:string, value:any, rowspan:number, prin
                                 
                                 return (
                                     <td key={cell.key}
-                                        className={`${(cell.key==='topic_title_1st'||cell.key==='topic_title_2nd') ? 'role-play-table-td-elipsis':'role-play-table-td-basic'} ${
-                                            cIdx>8 && 'hidden'
-                                        } ${cIdx===8 && 'border-r-transparent'} ${cIdx===0 && 'border-l-transparent'}
-                                        ${checkLastRowIndex!==rIdx ? (
-                                            cIdx < 4 ? 'border-t-transparent': 'border-t-transparent border-b-transparent'
-                                        ): 'border-t-transparent'}`}
-                                        style={{backgroundColor: cellBg}}
+                                        className={`
+                                        ${(cell.key==='topic_title_1st'||cell.key==='topic_title_2nd') ? 'role-play-table-td-elipsis':'role-play-table-td-basic'} 
+                                        ${ cIdx>8 && 'hidden' } `}
+                                        style={{
+                                            backgroundColor: cellBg,
+                                            borderRight: (cell.key==='topic_title_1st'||cell.key==='topic_title_2nd') ? '1px dashed #e2e3e6':(cIdx===8 ? '':'1px solid #e2e3e6'),
+                                            borderLeft: (cell.key==='topic_lv_1st'||cell.key==='topic_lv_2nd') ? '':(cIdx===0 ? '':'1px solid #e2e3e6'),
+                                            borderBottom: cIdx > 3 ? (rIdx===5 ? '1px solid #e2e3e6':''):'1px solid #e2e3e6',
+                                        }}
                                         rowSpan={cell.rowspan}
                                     >{tdValue}</td>
                                 )

@@ -117,6 +117,8 @@ const TableBody = (props:{dataModel:{key:string, value:any, rowspan:number, prin
                         const questionViewIndex = row[6].value.viewIndex===1;
                         const rowBgSprite = questionViewIndex ? 'bg-[#f9f9f9]':'bg-[#ffffff]';
                         const borderTrans = questionViewIndex ? 'border-b-transparent':'border-t-transparent'
+                        const pathExp:string = row[7].value.url.split('/').splice(-1,1);
+                        const buttonLabel = pathExp;
                         
                         return (
                             <tr key={rowKey} className={`table-tbody-tr-basic ${rowBgSprite}`}>
@@ -140,9 +142,10 @@ const TableBody = (props:{dataModel:{key:string, value:any, rowspan:number, prin
                                     className={`h-fit table-tbody-tr-td-basic pl-[20px] border-r-transparent ${borderTrans}`}
                                     colSpan={1}
                                 ><ExpressionModalComponent keyValue={row[5].key} 
-                                    btnLabel={row[7].value.filename}
+                                    btnLabel={buttonLabel}
                                     lesson={`lesson ${row[5].value.viewIndex}`}
                                     question={`question ${row[6].value.viewIndex}`}
+                                    image={row[7].value.url}
                                 /></td>
                             </tr>
                         )

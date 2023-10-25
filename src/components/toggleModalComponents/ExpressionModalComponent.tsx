@@ -23,7 +23,7 @@ interface IExpressionModalComponentProps {
 export default function ExpressionModalComponent(props:IExpressionModalComponentProps) {
 
   const {
-    keyValue, lesson, question, btnLabel
+    keyValue, lesson, question, btnLabel, image,
   } = props;
     
   const [open, setOpen] = React.useState(false);
@@ -85,11 +85,11 @@ export default function ExpressionModalComponent(props:IExpressionModalComponent
           </div>
         </DialogTitle>
         <DialogContent 
-            className='flex flex-1 flex-col min-w-[500px] h-[500px]'
+            className='flex flex-1 flex-col min-w-[500px] max-h-[500px] h-fit min-h-fit'
         >
         <div className='flex flex-1 h-[400px] bg-[#f3f3f3]'>
         <div className='flex flex-grow flex-col w-full overflow-y-auto'>
-          img
+          <img src={image} alt={btnLabel}/>
         </div>
         
         </div>

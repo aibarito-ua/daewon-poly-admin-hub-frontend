@@ -628,9 +628,22 @@ body {
   border
   whitespace-nowrap
 }
+.table-thead-tr-th-basic-role-play {
+  @apply
+  h-[34px]
+  text-center
+  text-[#222222]
+  text-[14px]
+  leading-[1.79]
+  font-sans
+  font-normal
+  whitespace-nowrap
+}
 
 /* tbody */
 .table-tbody-basic {
+  font-family: 'NotoSansCJKKR';
+  font-size: 13px;
   @apply
   h-fit
   text-[#444444]
@@ -690,9 +703,9 @@ body {
 /* td */
 .role-play-table-td-elipsis {
   @apply
-  text-sm
-  font-medium
-  border
+  text-[13px]
+  font-normal
+  
   overflow-ellipsis
   whitespace-nowrap
   py-2
@@ -701,9 +714,9 @@ body {
 }
 .role-play-table-td-basic {
   @apply
-  text-sm
-  font-medium
-  border
+  text-[13px]
+  font-normal
+  
   whitespace-nowrap
   text-center
 }

@@ -75,7 +75,7 @@ export default function DebouncedDropdowFilter({
                             }
                         }}
                     >
-                    <span className="flex">{value === '' ? '': (
+                    <span className="flex">{value === '' ? '-': (
                         filterTitleLabel==='학기' ? value+'학기': (
                             filterTitleLabel==='Grade' ? 'Grade'+value : value
                         )
