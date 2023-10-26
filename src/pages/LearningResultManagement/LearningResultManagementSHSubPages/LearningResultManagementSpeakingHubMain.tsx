@@ -76,6 +76,13 @@ export default function LearningResultManagementSpeakingHubMain (props: TLearnin
     React.useEffect(()=>{
         console.log('component did mount')
         console.log('filterStates = ',filterData)
+        return () => {
+            console.log("clear store on leave")
+            setChosenCampus(null)
+            setChosenLevel(null)
+            setChosenClass(null)
+            setSelectFilterValues(['', '', ''])
+        }
     },[])
     React.useEffect(()=>{
         if (grouping.length === 0) {
