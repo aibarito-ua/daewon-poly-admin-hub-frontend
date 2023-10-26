@@ -39,8 +39,7 @@ export default function Router() {
     const [isAuth, setIsAuth ] = React.useState<boolean>(false);
 
     React.useEffect(()=>{
-        console.log('CONFIG.IS_DEV =',CONFIG.IS_DEV)
-        if (CONFIG.IS_DEV==='TRUE') {
+        if (CONFIG.IS_DEV===CONFIG.IS_DEV_CHECK) {
             // dev
             setIsAuth(true);
         } else {
