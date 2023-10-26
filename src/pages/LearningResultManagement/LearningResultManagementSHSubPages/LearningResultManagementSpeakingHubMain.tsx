@@ -127,8 +127,8 @@ export default function LearningResultManagementSpeakingHubMain (props: TLearnin
 
     const sideOnClickEvent = async (selectListNumber:number, selectSubListNumber:number, path:string) => {
         let selectPath = ''
-        const dumySideSelected:number[] = JSON.parse(JSON.stringify(sideSelected));
-        dumySideSelected[selectListNumber] = selectSubListNumber;
+        const dumySideSelected:number[] = [selectListNumber, selectSubListNumber]
+        // dumySideSelected[selectListNumber] = selectSubListNumber;
         setSideSelected(dumySideSelected);
         if (selectListNumber===0) {
             selectPath = `LearningResultManagement/SpeakingHub/IdeaExchange/${path}`
