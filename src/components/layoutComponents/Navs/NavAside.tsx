@@ -74,7 +74,7 @@ const NavAside = () => {
                         <button className="bg-blue-500 hover:bg-blue-700 text-black font-bold py-2 px-4 rounded-xl" onClick={()=>setIsOpen(true)} >Login</button>
                     )}
                     {role !== 'logout' && (
-                        <button className="bg-blue-500 hover:bg-blue-700 text-black font-bold py-2 px-4 rounded-xl" onClick={()=>setUserInfo({companyName:'', email: '', class:'',subClass:'', name: '', role: 'logout'})}>Logout</button>
+                        <button className="bg-blue-500 hover:bg-blue-700 text-black font-bold py-2 px-4 rounded-xl" onClick={()=>setUserInfo({accessToken:'', clientCode:'', employeeSttName:'', memberCode:''})}>Logout</button>
                     )}
                 </ul>
             </div>

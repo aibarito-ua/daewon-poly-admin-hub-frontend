@@ -7,15 +7,19 @@ interface IUserInfo {
     role: TRole;
     isOpen: boolean;
     setIsOpen: any;
+
+    clientCode:string,
+    employeeSttName:string,
+    memberCode:string,
+    accessToken:string
+    
     setUserInfo: (userLoginInfomation: IUserLoginInfo)=>void;
 }
 interface IUserLoginInfo {
-    name: string;
-    email: string;
-    companyName: string;
-    class:string;
-    subClass: string;
-    role:TRole;
+    clientCode:string,
+    employeeSttName:string,
+    memberCode:string,
+    accessToken:string
 }
 
 type TRole = "Head" | "Campus" | "All" |"logout";

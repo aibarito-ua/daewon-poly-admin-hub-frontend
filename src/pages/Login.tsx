@@ -11,7 +11,7 @@ export const Login = () => {
                     <div className="bg-white rounded-lg p-6">
                         <h2 className="text-xl font-bold mb-4">로그인</h2>
                         {/* <p className="mb-4">모달 내용</p> */}
-                        <div>
+                        {/* <div>
                             <button onClick={() => {
 
                                 setUserInfo({name: 'Henry', companyName: 'Poly',class: 'TESTCLASS', subClass: 'SUBTEST-CLASS', email: 'TEST@una.co.kr', role: "Head"})
@@ -25,15 +25,15 @@ export const Login = () => {
                                 setUserInfo({name: 'admin', companyName: 'Poly',class: 'TESTCLASS', subClass: 'SUBTEST-CLASS', email: 'TEST@una.co.kr', role: "All"})
                                 closeModal()
                             }} className="m-4 p-4 w-1/3 mx-auto bg-blue-200 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full">admin</button>
-                            {/* <button onClick={() => {
+                            <button onClick={() => {
                                 setUserInfo("logout")
                                 closeModal()
-                            }} className="m-4 p-4 w-1/4 mx-auto bg-blue-200 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full">Logout</button> */}
+                            }} className="m-4 p-4 w-1/4 mx-auto bg-blue-200 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full">Logout</button>
                         </div>
                         <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                             onClick={closeModal}>
                             닫기
-                        </button>
+                        </button> */}
                     </div>
                 </div>
             </div>

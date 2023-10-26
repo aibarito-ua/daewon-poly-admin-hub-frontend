@@ -30,9 +30,44 @@ import LRMRolePlayPortfolio from '../pages/LearningResultManagement/LearningResu
 import LearningResultManagementWritingHubMain from '../pages/LearningResultManagement/LearningResultManagementWHSubPages/LearningResultManagementWritingHubMain';
 import LRMSparkWritingReportAndPortfolio from '../pages/LearningResultManagement/LearningResultManagementWHSubPages/sparkWriting/SparkWriting';
 import StandbyScreen from '../components/toggleModalComponents/StandbyScreen';
+import {Cookies} from 'react-cookie'
+import { NotAuth } from '../pages/NotAuth';
+import { CONFIG } from '../config';
 
 export default function Router() {
     const { role, isOpen } = useLoginStore();
+    const [isAuth, setIsAuth ] = React.useState<boolean>(false);
+
+    React.useEffect(()=>{
+        console.log('CONFIG.IS_DEV =',CONFIG.IS_DEV)
+        if (CONFIG.IS_DEV==='TRUE') {
+            // dev
+            setIsAuth(true);
+        } else {
+            const cookies = new Cookies();
+            const getCheckDatas = cookies.get('data')
+            if (getCheckDatas) {
+                const checkTargetData:{
+                    clientCode:string, employeeSttName:string, memberCode:string, accessToken:string
+                } = {
+                    accessToken: getCheckDatas.accessToken ? getCheckDatas.accessToken:'',
+                    clientCode: getCheckDatas.clientCode ? getCheckDatas.clientCode:'',
+                    employeeSttName: getCheckDatas.employeeSttName ? getCheckDatas.employeeSttName:'',
+                    memberCode: getCheckDatas.memberCode ? getCheckDatas.memberCode:''
+                };
+                const isMemberCode = checkTargetData.memberCode.length === 8 && checkTargetData.memberCode!=='';
+                const isEmp = checkTargetData.employeeSttName !== '';
+                const isClient = checkTargetData.clientCode!=='';
+                if (isMemberCode && isEmp && isClient) {
+                    setIsAuth(true)
+                } else {
+                    setIsAuth(false)
+                }
+            } else {
+                setIsAuth(false)
+            }
+        }
+    })
     const publicRoutes = () => {
         const routeValue = routeValues.publicRoutes;
         // 각 권한별 기본 페이지
@@ -42,7 +77,7 @@ export default function Router() {
             )
         );
         return (
-            <Route element={<PrivateRoute authenticated={false} />}>
+            <Route element={<PrivateRoute authenticated={isAuth} />}>
                 {routeValue.map((publicRoute, publicIndex) => {
                     if (publicRoute.path === '/') {
                         return <Route key={publicIndex} path={publicRoute.path} element={mainPage}/>
@@ -58,44 +93,46 @@ export default function Router() {
     // }
     return (
         <div className="display-page-screen">
-            {isOpen && <Login />}
-            <Routes>
-                {/* No Login Pages */}
-                {publicRoutes()}
-                {/* 본사 전용 페이지 */}
-                <Route element={<PrivateRoute authenticated={true} pageAuth='Head' />} >
-                    
-                </Route>
-                {/* 캠퍼스 전용 페이지 */}
-                <Route element={<PrivateRoute authenticated={true} pageAuth='Campus' />} >
+            {!isAuth && <NotAuth />}
+            {isAuth && 
+                <Routes>
+                    {/* No Login Pages */}
+                    {publicRoutes()}
+                    {/* 본사 전용 페이지 */}
+                    <Route element={<PrivateRoute authenticated={isAuth} pageAuth='Head' />} >
+                        
+                    </Route>
+                    {/* 캠퍼스 전용 페이지 */}
+                    <Route element={<PrivateRoute authenticated={isAuth} pageAuth='Campus' />} >
 
-                </Route>
-                {/* 본사&캠퍼스 전체 페이지 */}
-                <Route element={<PrivateRoute authenticated={true} />} >
-                    <Route path={'/LevelandTextbook/SpeakingHub'} element={<LevelAndTextBookSpeakingHub />}/>
-                    <Route path={'/LevelandTextbook/WritingHub'} element={<LevelAndTextBookWritingHub />} />
-                    <Route path={'/ActivityManagement/SpeakingHub/IdeaExchange'} element={<ActivitySpeakHubMain children={<IdeaExchange />}  />}/>
-                    <Route path={'/ActivityManagement/SpeakingHub/StoryVlog'} element={<ActivitySpeakHubMain children={<StoryVlog />} />} />
-                    <Route path={'/ActivityManagement/SpeakingHub/RolePlay'} element={<ActivitySpeakHubMain children={<RolePlay />} />} />
-                    <Route path={'/ActivityManagement/WritingHub/SparkWriting'} element={<ActivityWritingHubMain children={<SparkWriting />} />} />
-                    <Route path={'/LearningManagement/WritingHub/SparkWriting'} element={<LearningManagementWritingHub children={<LMSparkWriting />}/>} />
-                    <Route path={'/LearningManagement/WritingHub/SparkWriting/feedback/:studentCode/:DraftId'} element={<LearningManagementSparkWritingFeedbackPage/>} />
+                    </Route>
+                    {/* 본사&캠퍼스 전체 페이지 */}
+                    <Route element={<PrivateRoute authenticated={isAuth} />} >
+                        <Route path={'/LevelandTextbook/SpeakingHub'} element={<LevelAndTextBookSpeakingHub />}/>
+                        <Route path={'/LevelandTextbook/WritingHub'} element={<LevelAndTextBookWritingHub />} />
+                        <Route path={'/ActivityManagement/SpeakingHub/IdeaExchange'} element={<ActivitySpeakHubMain children={<IdeaExchange />}  />}/>
+                        <Route path={'/ActivityManagement/SpeakingHub/StoryVlog'} element={<ActivitySpeakHubMain children={<StoryVlog />} />} />
+                        <Route path={'/ActivityManagement/SpeakingHub/RolePlay'} element={<ActivitySpeakHubMain children={<RolePlay />} />} />
+                        <Route path={'/ActivityManagement/WritingHub/SparkWriting'} element={<ActivityWritingHubMain children={<SparkWriting />} />} />
+                        <Route path={'/LearningManagement/WritingHub/SparkWriting'} element={<LearningManagementWritingHub children={<LMSparkWriting />}/>} />
+                        <Route path={'/LearningManagement/WritingHub/SparkWriting/feedback/:studentCode/:DraftId'} element={<LearningManagementSparkWritingFeedbackPage/>} />
 
-                    <Route path={'/LearningResultManagement/SpeakingHub/IdeaExchange/Progress'} element={<LearningResultManagementSpeakingHubMain children={<LRMIdeaExchangeProgress />} />} />
-                    <Route path={'/LearningResultManagement/SpeakingHub/IdeaExchange/Portfolio'} element={<LearningResultManagementSpeakingHubMain children={<LRMIdeaExchangePortfolio />} />} />
+                        <Route path={'/LearningResultManagement/SpeakingHub/IdeaExchange/Progress'} element={<LearningResultManagementSpeakingHubMain children={<LRMIdeaExchangeProgress />} />} />
+                        <Route path={'/LearningResultManagement/SpeakingHub/IdeaExchange/Portfolio'} element={<LearningResultManagementSpeakingHubMain children={<LRMIdeaExchangePortfolio />} />} />
 
-                    <Route path={'/LearningResultManagement/SpeakingHub/StoryVlog/Progress'} element={<LearningResultManagementSpeakingHubMain children={<LRMStoryVlogProgress />} />} />
-                    <Route path={'/LearningResultManagement/SpeakingHub/StoryVlog/Portfolio'} element={<LearningResultManagementSpeakingHubMain children={<LRMStoryVlogPortfolio />} />} />
+                        <Route path={'/LearningResultManagement/SpeakingHub/StoryVlog/Progress'} element={<LearningResultManagementSpeakingHubMain children={<LRMStoryVlogProgress />} />} />
+                        <Route path={'/LearningResultManagement/SpeakingHub/StoryVlog/Portfolio'} element={<LearningResultManagementSpeakingHubMain children={<LRMStoryVlogPortfolio />} />} />
 
-                    <Route path={'/LearningResultManagement/SpeakingHub/RolePlay/Progress'} element={<LearningResultManagementSpeakingHubMain children={<LRMRolePlayProgress />} />} />
-                    <Route path={'/LearningResultManagement/SpeakingHub/RolePlay/Portfolio'} element={<LearningResultManagementSpeakingHubMain children={<LRMRolePlayPortfolio />} />} />
+                        <Route path={'/LearningResultManagement/SpeakingHub/RolePlay/Progress'} element={<LearningResultManagementSpeakingHubMain children={<LRMRolePlayProgress />} />} />
+                        <Route path={'/LearningResultManagement/SpeakingHub/RolePlay/Portfolio'} element={<LearningResultManagementSpeakingHubMain children={<LRMRolePlayPortfolio />} />} />
 
-                    <Route path={'/LearningResultManagement/WritingHub/SparkWriting/ReportAndPortfolio'} element={<LearningResultManagementWritingHubMain children={<LRMSparkWritingReportAndPortfolio />} />} />
-                    
-                </Route>
-                {/* <Route path='' element={ }></Route> */}
+                        <Route path={'/LearningResultManagement/WritingHub/SparkWriting/ReportAndPortfolio'} element={<LearningResultManagementWritingHubMain children={<LRMSparkWritingReportAndPortfolio />} />} />
+                        
+                    </Route>
+                    {/* <Route path='' element={ }></Route> */}
 
-            </Routes>
+                </Routes>
+            }
             <CommonAlertModalComponent />
             <StandbyScreen />
         </div>

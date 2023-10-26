@@ -8,14 +8,22 @@ const useLoginStore = create<IUserInfo>((set) => ({
     subClass: '',
     role: "logout",
     isOpen: false,
+    accessToken: '',
+    clientCode: '',
+    employeeSttName: '',
+    memberCode: '',
     setUserInfo: (userInfo:IUserLoginInfo) => {
 
         set(()=>({
-            name: userInfo.name,
-            class: userInfo.class,
-            subClass: userInfo.subClass,
-            email: 'test@una.co.kr',
-            role:userInfo.role
+            // name: userInfo.name,
+            // class: userInfo.class,
+            // subClass: userInfo.subClass,
+            // email: 'test@una.co.kr',
+            // role:userInfo.role
+            clientCode: userInfo.clientCode,
+            accessToken: userInfo.accessToken,
+            employeeSttName: userInfo.employeeSttName,
+            memberCode: userInfo.memberCode
         }))
     },
     setIsOpen: (boolean:boolean) => {
