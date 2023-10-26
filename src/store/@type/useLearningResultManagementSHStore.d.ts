@@ -5,6 +5,31 @@ interface IuseLearningResultManagementSHStore {
     loadDataHead: any;
     loadData: any;
 
+    chosenCampus: {name: string, code: string} | null;
+    setChosenCampus: (campus: {name: string, code: string} | null) => void;
+    chosenLevel: {name: string, code: string} | null;
+    setChosenLevel: (level: {name: string, code: string} | null) => void;
+    chosenClass: {name: string, code: string} | null;
+    setChosenClass: (classname: {name: string, code: string} | null) => void;
+
+    dropdown: {
+        campusList: string[],
+        setSelectFilterCampusList: (campusList: string[]) => void;
+        levelList: string[],
+        setSelectFilterLevelList: (levelList: string[]) => void;
+        classList: string[],
+        setSelectFilterClassList: (classList: string[]) => void;
+    }
+
+    isAllSelected: boolean,
+    setIsAllSelected: (isAllSelected: boolean) => void,
+    selectFilterValues: string[],
+    setSelectFilterValues: (filterValues: string[]) => void;
+
+    searchEventFunction: (e:React.MouseEvent<HTMLButtonElement, MouseEvent>)=>void,
+    setSearchFunction: (f: (e:React.MouseEvent<HTMLButtonElement, MouseEvent>)=>void)=>void;
+
+
     filterData: TAllClassLRMSpeaking|null;
     setFilterData: (apiFilterData: TAllClassLRMSpeaking)=>void;
 
