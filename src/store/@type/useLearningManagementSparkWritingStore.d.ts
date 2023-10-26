@@ -24,6 +24,15 @@ interface ILearningManagementSparkWritingStore {
     setRubricReportAllValue:(data:TRubricReportAll)=>void;
     setRubricInit: ()=>void;
     setRubricReportValue: (data:TRubricReport) => void;
+
+    // page 이동해도 filter 선택 유지하는 값
+    maintainFilterValues: string[];
+    setMaintainFilterValues: (maintainTargetFilterValues: string[]) => void;
+
+    // page state 유지
+    maintainSparkWritingStates: TMaintainStates|null;
+    setMaintainSparkWritingStates: (data: TMaintainStates|null) => void;
+    
 }
 type TMLSparkWritingUserLists = {
     students: TMLSparkWritingUserData[];
@@ -316,4 +325,42 @@ type TRubricReport = {
     category: string;
     selected_value: string;
     selected_value_description: string|"excellent"|"very_good"|"good"|"fair"|"poor";
+}
+
+// maintain search values
+// 첨삭 후 페이지 돌아올때 불러올 데이터
+type TMaintainStates = {
+    data: {body: TIdeaExchangeBooks[], head: TLoadDataHeadTrans[]};
+    filterStates: TFilterSparkWriting|undefined;
+    selectFilterValues: any[];
+    selectCampusCode:{name:string, code:string};
+    selectLevelCode:{name:string, code:string};
+    selectClassCode:{name:string, code:string};
+    selectFilterCampusList:string[];
+    selectFilterLevelList:string[];
+    selectFilterClassList:string[];
+    filterAllList:TFilterSparkWriting;
+    grouping:string[];
+    isAllSelected:boolean;
+    isSearch:boolean;
+    classCurrentData:TClassCurrentlyData[][];
+    classTableHead:string[];
+}
+// options
+type TMaintainStatesOptions = {
+    data?: {body: TIdeaExchangeBooks[], head: TLoadDataHeadTrans[]};
+    filterStates?: TFilterSparkWriting|undefined;
+    selectFilterValues?: any[];
+    selectCampusCode?:{name:string, code:string};
+    selectLevelCode?:{name:string, code:string};
+    selectClassCode?:{name:string, code:string};
+    selectFilterCampusList?:string[];
+    selectFilterLevelList?:string[];
+    selectFilterClassList?:string[];
+    filterAllList?:TFilterSparkWriting;
+    grouping?:string[];
+    isAllSelected?:boolean;
+    isSearch?:boolean;
+    classCurrentData?:TClassCurrentlyData[][];
+    classTableHead?:string[];
 }

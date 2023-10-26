@@ -278,6 +278,14 @@ const useLearningManagementSparkWritingStore = create<ILearningManagementSparkWr
         set(()=>({
             rubricReportValue:dumyRubricValue
         }))
+    },
+    maintainFilterValues: [],
+    setMaintainFilterValues: (maintainFilterValues) => {
+        set(()=>({maintainFilterValues}))
+    },
+    maintainSparkWritingStates: null,
+    setMaintainSparkWritingStates: (data) => {
+        set(()=>({maintainSparkWritingStates:data}))
     }
 }))
 

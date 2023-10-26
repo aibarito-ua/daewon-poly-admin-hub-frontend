@@ -10,6 +10,7 @@ import useLearningManagementSparkWritingStore from "../../../store/useLearningMa
 import LearningManagementStudentsTable from "../../../components/commonComponents/BasicTable/LearningManagementStudentsTable";
 import useReportStore from "../../../store/useReportStore";
 import useControlAlertStore from "../../../store/useControlAlertStore";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const LMSparkWriting = () => {
     // page usehook zustand
@@ -20,12 +21,19 @@ const LMSparkWriting = () => {
         filterData, setFilterData, studentDataInClass, setStudentDataInClass,
         loadDataHead,
         // feedback
-        feedbackDataInStudent, setFeedbackDataInStudent
+        feedbackDataInStudent, setFeedbackDataInStudent,
+
+        // keeping before selected filter values
+        setMaintainFilterValues, maintainFilterValues,
+        // keeping current page states
+        maintainSparkWritingStates, setMaintainSparkWritingStates
     } = useLearningManagementSparkWritingStore();
     const {setCurrentSelectCodes} = useReportStore();
     const {
         commonStandbyScreen, setCommonStandbyScreen
     } = useControlAlertStore();
+    const navigate = useNavigate();
+    const locationInfo = useLocation();
     
     // page states
     const [emptyPageMessage, setEmptyPageMessage] = React.useState<string>('검색 값을 선택 후 조회하세요.');
@@ -56,8 +64,57 @@ const LMSparkWriting = () => {
     const [isSearch, setIsSearch] = React.useState<boolean>(false);
 
     // studen table data
-    const [classCurrentData,setClassCurrentData] = React.useState<TClassCurrentlyData[][]>();
+    const [classCurrentData,setClassCurrentData] = React.useState<TClassCurrentlyData[][]>([]);
     const [classTableHead, setClassTableHead] = React.useState<string[]>([]);
+
+    // year filter api 사용 flag
+    const [isLoadData, setIsLoadData] = React.useState<boolean>(false);
+
+    // maintain load and save
+    const maintainStates = (startCharacter: 'save'|'load'|'delete',options?: TMaintainStatesOptions) => {
+        if (startCharacter==='save') {
+            let saveMaintainStates:TMaintainStates = {
+                data: options?.data ? options.data: data,
+                filterStates: options?.filterStates ? options.filterStates : (filterStates?filterStates:undefined),
+                selectFilterValues:options?.selectFilterValues ? options.selectFilterValues : selectFIlterValues,
+                selectCampusCode: options?.selectCampusCode ? options.selectCampusCode : selectCampusCode,
+                selectLevelCode: options?.selectLevelCode ? options.selectLevelCode : selectLevelCode,
+                selectClassCode: options?.selectClassCode ? options.selectClassCode : selectClassCode,
+                selectFilterCampusList: options?.selectFilterCampusList ? options.selectFilterCampusList : selectFilterCampusList,
+                selectFilterClassList: options?.selectFilterClassList ? options.selectFilterClassList : selectFilterClassList,
+                selectFilterLevelList: options?.selectFilterLevelList ? options.selectFilterLevelList : selectFilterLevelList,
+                filterAllList: options?.filterAllList ? options.filterAllList : filterAllList,
+                grouping: options?.grouping ? options.grouping : grouping,
+                isAllSelected: options?.isAllSelected ? options.isAllSelected : isAllSelected,
+                isSearch: options?.isSearch ? options.isSearch : isSearch,
+                classCurrentData: options?.classCurrentData ? options.classCurrentData : classCurrentData,
+                classTableHead: options?.classTableHead ? options.classTableHead : classTableHead,
+            };
+            setMaintainSparkWritingStates(saveMaintainStates);
+        } else if (startCharacter==='delete') {
+            setMaintainSparkWritingStates(null)
+        } else if (startCharacter==='load') {
+            if (maintainSparkWritingStates) {
+                setIsLoadData(true)
+                setData(maintainSparkWritingStates.data);
+                setFilterStates(maintainSparkWritingStates.filterStates)
+                setSelectFilterValues(maintainSparkWritingStates.selectFilterValues);
+                setSelectCampusCode(maintainSparkWritingStates.selectCampusCode);
+                setSelectLevelCode(maintainSparkWritingStates.selectLevelCode);
+                setSelectClassCode(maintainSparkWritingStates.selectClassCode);
+                setSelectFilterCampusList(maintainSparkWritingStates.selectFilterCampusList);
+                setSelectFilterClassList(maintainSparkWritingStates.selectFilterClassList);
+                setSelectFilterLevelList(maintainSparkWritingStates.selectFilterLevelList);
+                setFilterAllList(maintainSparkWritingStates.filterAllList);
+                setGrouping(maintainSparkWritingStates.grouping);
+                setIsAllSelected(maintainSparkWritingStates.isAllSelected);
+                setIsSearch(maintainSparkWritingStates.isSearch);
+                setClassCurrentData(maintainSparkWritingStates.classCurrentData);
+                setClassTableHead(maintainSparkWritingStates.classTableHead);
+            }
+
+        }
+    }
 
     // initialize setting before render screen
     const beforRenderedFn = async () => {
@@ -73,16 +130,33 @@ const LMSparkWriting = () => {
         setSelectCampusCode({name:'',code:''})
         setSelectLevelCode({name:'',code:''});
         setSelectClassCode({name:'',code:''});
+        if (maintainFilterValues.length > 0) {
+            setSelectFilterValues(maintainFilterValues)
+        }
         console.log('beforeRenderedFn complete')
     }
     
-    useComponentWillMount(()=>{
-        console.log('component will mount')
-        beforRenderedFn();
-    })
+    
     React.useEffect(()=>{
         console.log('component did mount')
-        console.log('filterStates = ',filterStates)
+        const beforeUrl:string = locationInfo.search;
+        if (maintainSparkWritingStates) {
+            if (beforeUrl==="?feedback=end") {
+                // draft에서 넘어온 후
+                console.log('1')
+                // maintainStates('load');
+                searchEventFunction()
+            } else {
+                // 다른 곳에서 넘어온 후
+                console.log('2')
+                // maintainStates('delete');
+                // beforRenderedFn();
+            }
+        } else {
+            console.log('3')
+            // 검색한 적이 없는 경우
+            // beforRenderedFn();
+        }
     },[])
 
     React.useEffect(()=>{
@@ -93,6 +167,7 @@ const LMSparkWriting = () => {
         return () => {
             setSelectNavigationTitles([])
             setIsAllSelected(false)
+            
         }
     }, [grouping])
     React.useEffect(()=>{
@@ -116,8 +191,10 @@ const LMSparkWriting = () => {
         }
     }, [selectNavigationTitles])
     
-    const searchEventFunction = async (e:React.MouseEvent<HTMLButtonElement, MouseEvent>)=>{
-        e.preventDefault();
+    const searchEventFunction = async (e?:React.MouseEvent<HTMLButtonElement, MouseEvent>)=>{
+        if (e) {
+            e.preventDefault();
+        }
         console.log('is test =',isAllSelected)
         if (isAllSelected) {
 
@@ -151,6 +228,7 @@ const LMSparkWriting = () => {
                 });
                 console.log('stu rsp ==',rsp)
                 if (rsp.students.length > 0) {
+                    
                     // feedback value setting
                     const dumyFeedbackData:TFeedbackStates = JSON.parse(JSON.stringify(feedbackDataInStudent));
                     dumyFeedbackData.defautInfo.campus= selectCampusCode;
@@ -162,6 +240,9 @@ const LMSparkWriting = () => {
                     setStudentDataInClass(rsp)
                     makeTableData(rsp)
                     setIsSearch(true)
+                    maintainStates('save', {
+                        isSearch: true, isAllSelected:true,
+                    });
                 } else {
                     setStudentDataInClass({book_name:'',students:[]})
                     setEmptyPageMessage('No data to display!')
@@ -274,69 +355,88 @@ const LMSparkWriting = () => {
             let name = '';
             let code = '';
             const serviceLevel = ['MAG3','GT4','MGT4','R4','MAG4']
-            for (let campusIndex= 0; campusIndex < targetCampus.length; campusIndex++) {
-                if (targetCampus[campusIndex].name === value) {
-                    setSelectCampusCode({name: value, code: targetCampus[campusIndex].code})
-                    setCurrentSelectCodes({target:'campus', name:targetCampus[campusIndex].name, code: targetCampus[campusIndex].code})
-                    const levelsAtSelectCampus = (await getLMSparkWritingLevelsOfCampusDataAPI(targetCampus[campusIndex].code)).level
-                    targetCampus[campusIndex].level = levelsAtSelectCampus
-                    for (let i = 0; i < levelsAtSelectCampus.length; i++) {
-                        const levelTarget = levelsAtSelectCampus[i].name;
-                        const findTarget = serviceLevel.includes(levelTarget);
-                        if (findTarget) {
-                            levelFilterList.push(levelTarget);
+            if (isLoadData) {
+
+            } else {
+                for (let campusIndex= 0; campusIndex < targetCampus.length; campusIndex++) {
+                    if (targetCampus[campusIndex].name === value) {
+                        setSelectCampusCode({name: value, code: targetCampus[campusIndex].code})
+                        setCurrentSelectCodes({target:'campus', name:targetCampus[campusIndex].name, code: targetCampus[campusIndex].code})
+                        const levelsAtSelectCampus = (await getLMSparkWritingLevelsOfCampusDataAPI(targetCampus[campusIndex].code)).level
+                        targetCampus[campusIndex].level = levelsAtSelectCampus
+                        for (let i = 0; i < levelsAtSelectCampus.length; i++) {
+                            const levelTarget = levelsAtSelectCampus[i].name;
+                            const findTarget = serviceLevel.includes(levelTarget);
+                            if (findTarget) {
+                                levelFilterList.push(levelTarget);
+                            }
                         }
                     }
                 }
+                setSelectFilterLevelList(levelFilterList);
+                let dumySelectFilterValues = JSON.parse(JSON.stringify(selectFIlterValues));
+                dumySelectFilterValues = [value,'','']
+                console.log('dumySelectFilterValues= ',dumySelectFilterValues, selectCampusCode)
+                setSelectFilterValues(dumySelectFilterValues)
+                setMaintainFilterValues(dumySelectFilterValues)
             }
-            setSelectFilterLevelList(levelFilterList);
-            let dumySelectFilterValues = JSON.parse(JSON.stringify(selectFIlterValues));
-            dumySelectFilterValues = [value,'','']
-            console.log('dumySelectFilterValues= ',dumySelectFilterValues, selectCampusCode)
-            setSelectFilterValues(dumySelectFilterValues)
         }
     }
     const filterButtonEventLevel=(value:string) => {
         if (filterStates!==undefined) {
             let classFilterList:any[]=[]
             const targetCampus=filterStates.campus
-            for (let campusIndex= 0; campusIndex < targetCampus.length; campusIndex++) {
-                if (targetCampus[campusIndex].name === selectFIlterValues[0]) {
-                    const targetLevel = targetCampus[campusIndex].level;
-                    for (let levelIndex=0; levelIndex<targetLevel.length; levelIndex++) {
-                        if (targetLevel[levelIndex].name === value) {
-                            setSelectLevelCode({name: value, code: targetLevel[levelIndex].code})
-                            setCurrentSelectCodes({target:'level', name:targetLevel[levelIndex].name, code: targetLevel[levelIndex].code})
-                            classFilterList=targetLevel[levelIndex].class.map((classItem) => {
-                                return classItem.name
-                            })
+            if (isLoadData) {
+
+            } else {
+                for (let campusIndex= 0; campusIndex < targetCampus.length; campusIndex++) {
+                    if (targetCampus[campusIndex].name === selectFIlterValues[0]) {
+                        const targetLevel = targetCampus[campusIndex].level;
+                        if (targetLevel) {
+                            for (let levelIndex=0; levelIndex<targetLevel.length; levelIndex++) {
+                                if (targetLevel[levelIndex].name === value) {
+                                    setSelectLevelCode({name: value, code: targetLevel[levelIndex].code})
+                                    setCurrentSelectCodes({target:'level', name:targetLevel[levelIndex].name, code: targetLevel[levelIndex].code})
+                                    classFilterList=targetLevel[levelIndex].class.map((classItem) => {
+                                        return classItem.name
+                                    })
+                                }
+                            }
                         }
                     }
                 }
+                setSelectFilterClassList(classFilterList)
+                let dumySelectFilterValues = JSON.parse(JSON.stringify(selectFIlterValues));
+                dumySelectFilterValues[1] = value
+                dumySelectFilterValues[2] = ''
+                setSelectFilterValues(dumySelectFilterValues)
+                setMaintainFilterValues(dumySelectFilterValues)
             }
-            setSelectFilterClassList(classFilterList)
-            let dumySelectFilterValues = JSON.parse(JSON.stringify(selectFIlterValues));
-            dumySelectFilterValues[1] = value
-            dumySelectFilterValues[2] = ''
-            setSelectFilterValues(dumySelectFilterValues)
         }
     }
     const filterButtonEventClass=(value:string)=>{
         if (filterStates!==undefined) {
             const targetCampus=filterStates.campus
-            for (let campusIndex= 0; campusIndex < targetCampus.length; campusIndex++) {
-                if (targetCampus[campusIndex].name === selectFIlterValues[0]) {
-                    const targetLevel = targetCampus[campusIndex].level;
-                    for (let levelIndex=0; levelIndex<targetLevel.length; levelIndex++) {
-                        if (targetLevel[levelIndex].name === selectFIlterValues[1]) {
-                            const targetClass=targetLevel[levelIndex].class
-                            for(let classIndex=0; classIndex<targetClass.length; classIndex++) {
-                                if (targetClass[classIndex].name === value) {
-                                    let dumySelectFilterValues = JSON.parse(JSON.stringify(selectFIlterValues));
-                                    dumySelectFilterValues[2] = value
-                                    setSelectFilterValues(dumySelectFilterValues)
-                                    setSelectClassCode({name: value, code: targetClass[classIndex].code})
-                                    setCurrentSelectCodes({target:'class', name:targetClass[classIndex].name, code: targetClass[classIndex].code})
+            if (isLoadData) {
+
+            } else {
+                for (let campusIndex= 0; campusIndex < targetCampus.length; campusIndex++) {
+                    if (targetCampus[campusIndex].name === selectFIlterValues[0]) {
+                        const targetLevel = targetCampus[campusIndex].level;
+                        if (targetLevel) {
+                            for (let levelIndex=0; levelIndex<targetLevel.length; levelIndex++) {
+                                if (targetLevel[levelIndex].name === selectFIlterValues[1]) {
+                                    const targetClass=targetLevel[levelIndex].class
+                                    for(let classIndex=0; classIndex<targetClass.length; classIndex++) {
+                                        if (targetClass[classIndex].name === value) {
+                                            let dumySelectFilterValues = JSON.parse(JSON.stringify(selectFIlterValues));
+                                            dumySelectFilterValues[2] = value
+                                            setSelectFilterValues(dumySelectFilterValues)
+                                            setMaintainFilterValues(dumySelectFilterValues)
+                                            setSelectClassCode({name: value, code: targetClass[classIndex].code})
+                                            setCurrentSelectCodes({target:'class', name:targetClass[classIndex].name, code: targetClass[classIndex].code})
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -345,6 +445,36 @@ const LMSparkWriting = () => {
             }
         }
     }
+
+    useComponentWillMount(async()=>{
+        console.log('component will mount')
+        // 이전 페이지 path 체크
+        // 현재 페이지: /LearningManagement/WritingHub/SparkWriting
+        // 1st/2nd draft : /LearningManagement/WritingHub/SparkWriting/feedback/{stuCode}/data id
+        // match 3 currentPath/feedback/str/str
+        const beforeUrl:string = locationInfo.search;
+        if (maintainSparkWritingStates) {
+            if (beforeUrl==="?feedback=end") {
+                // draft에서 넘어온 후
+                console.log('1')
+                maintainStates('load');
+                // await searchEventFunction()
+            } else {
+                // 다른 곳에서 넘어온 후
+                console.log('2')
+                maintainStates('delete');
+                beforRenderedFn();
+            }
+        } else {
+            console.log('3')
+            // 검색한 적이 없는 경우
+            beforRenderedFn();
+        }
+        
+        // console.log('before url path =',beforeUrl);
+        // console.log('test =',document.referrer)
+        // beforRenderedFn();
+    })
 
     return (
         
@@ -409,7 +539,7 @@ const LMSparkWriting = () => {
                                 <div className="flex flex-row">
                                     <LearningManagementStudentsTable
                                         dataHead={classTableHead}
-                                        dataModel={classCurrentData?classCurrentData:[]}
+                                        dataModel={classCurrentData}
                                     />
                                 </div>
                             </div>

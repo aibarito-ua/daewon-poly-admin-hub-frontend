@@ -96,8 +96,7 @@ class ComponentToPrint extends React.PureComponent<IComponentToPrintProps> {
                 <div className='export-lm-wh-draft-info-div mt-[2.64583mm] h-[236.536mm] relative z-10'>
                     <div className='export-lm-wh-content-title-deco z-0'/>
                     <div className='export-lm-wh-content-title z-10'>
-                        <span className='export-lm-wh-content-title-value'>Title:</span>
-                        <span className='export-lm-wh-content-title-value'>{this.props.title}</span>
+                        <span className='export-lm-wh-content-title-value'>{`Title : ${this.props.title}`}</span>
                     </div>
                     {/* page numbering */}
                     {this.props.multi && (

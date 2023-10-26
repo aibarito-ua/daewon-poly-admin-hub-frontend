@@ -363,8 +363,8 @@ const LearningManagementSparkWritingFeedbackPage = () => {
             return await draftFeedbackSend(responseData);
         } else {
             // temporary save data 
-            const overall_comment="";
-            // const overall_comment = finalOverallComment;
+            // const overall_comment="";
+            const overall_comment = finalOverallComment;
             const responseData:TAdminDraft1stCommentData = {
                 draft_id,
                 data:[],
@@ -792,6 +792,9 @@ const LearningManagementSparkWritingFeedbackPage = () => {
             setBodySelectedText('')
         }
     }
+    const outPage = () => {
+        navigate(`/LearningManagement/WritingHub/SparkWriting?feedback=end`)
+    }
     // send button event
     const sendButtonEvent = ()=>{
         commonAlertOpen({
@@ -811,8 +814,8 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                         useOneButton: true,
                         yesButtonLabel: 'OK',
                         yesEvent: async () => {
-                            navigate(`/LearningManagement/WritingHub/SparkWriting`);
-                            window.location.reload();
+                            outPage();
+                            // window.location.reload();
                             commonAlertClose();
                         }
                     })
@@ -832,8 +835,8 @@ const LearningManagementSparkWritingFeedbackPage = () => {
             yesEvent: async ()=>{
                 const save = await makeData();
                 if (save) {
-                    navigate(`/LearningManagement/WritingHub/SparkWriting`);
-                    window.location.reload();
+                    outPage();
+                    // window.location.reload();
                 }
             }
         })
@@ -873,8 +876,8 @@ const LearningManagementSparkWritingFeedbackPage = () => {
             yesEvent: async ()=>{
                 const save = await makeFinalDraftData();
                 if (save) {
-                    navigate(`/LearningManagement/WritingHub/SparkWriting`);
-                    window.location.reload();
+                    outPage();
+                    // window.location.reload();
                 }
             }
         })
@@ -901,8 +904,8 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                             yesButtonLabel: 'OK',
                             yesEvent: async () => {
                                 commonAlertClose();
-                                navigate(`/LearningManagement/WritingHub/SparkWriting`);
-                                window.location.reload();
+                                outPage();
+                                // window.location.reload();
                             }
                         })
                     }
@@ -943,7 +946,7 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                 useOneButton:true,
                 yesButtonLabel: 'OK',
                 yesEvent: () => {
-                    navigate(`/LearningManagement/WritingHub/SparkWriting`);
+                    outPage();
                 }
             })
         }
@@ -988,7 +991,7 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                 useOneButton:true,
                 yesButtonLabel: 'OK',
                 yesEvent: () => {
-                    navigate(`/LearningManagement/WritingHub/SparkWriting`);
+                    outPage();
                 }
             })
         }
@@ -996,7 +999,7 @@ const LearningManagementSparkWritingFeedbackPage = () => {
             console.log('DATA:=', feedbackDataInStudent)
             console.log('feedbackDataInStudent.draft_2nd_data =995=',feedbackDataInStudent.draft_2nd_data)
             const draft2ndData = feedbackDataInStudent.draft_2nd_data;
-            if (feedbackDataInStudent.status?.status === 4 || feedbackDataInStudent.status?.status === 5) {
+            if (feedbackDataInStudent.status?.status === 4 || feedbackDataInStudent.status?.status === 5 || feedbackDataInStudent.status?.status === 2|| feedbackDataInStudent.status?.status === 3) {
                 console.log(' status ===',draft2ndData.overall_comment)
                 setFinalOverallComment(draft2ndData.overall_comment)
             }
@@ -1597,8 +1600,8 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                                         yesButtonLabel: 'Yes',
                                         noButtonLabel: 'No',
                                         yesEvent: async ()=>{
-                                            navigate(`/LearningManagement/WritingHub/SparkWriting`);
-                                            window.location.reload();
+                                            outPage();
+                                            // window.location.reload();
                                         }
                                     })
                                 }}
@@ -1826,8 +1829,8 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                                             yesButtonLabel: 'Yes',
                                             noButtonLabel: 'No',
                                             yesEvent: async ()=>{
-                                                navigate(`/LearningManagement/WritingHub/SparkWriting`);
-                                                window.location.reload();
+                                                outPage();
+                                                // window.location.reload();
                                             }
                                         })
                                     }}
