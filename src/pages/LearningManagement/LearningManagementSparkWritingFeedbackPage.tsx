@@ -399,9 +399,9 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                     // Calculate end index
                     endIndex = startIndex + text.length;
             
-                    console.log('Start Index:', startIndex);
-                    console.log('End Index:', endIndex);
-                    console.log('Full text :',containerNode.textContent)
+                    // console.log('Start Index:', startIndex);
+                    // console.log('End Index:', endIndex);
+                    // console.log('Full text :',containerNode.textContent)
                     // 추가: 다른 div에 있을 경우 처리
                     let isDragOverOtherDiv = false;
                     // 드래그 된 범위의 id 비교   
@@ -412,14 +412,38 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                         }
                         if (targetElement) return targetElement.id;
                     }
+                    let getIdName = '';
                     if (range.startContainer.parentElement) {
                         const startId = checkParent(range.startContainer.parentElement);
-                        console.log(' startId = ',startId)
+                        // console.log(' startId = ',startId)
                         if (range.endContainer.parentElement) {
                             const endId = checkParent(range.endContainer.parentElement);
-                            console.log(' end id = ',endId)
+                            // console.log(' end id = ',endId)
+                            getIdName=typeof(endId)==='string' ? endId: '';
                             if (startId !== endId) {
                                 isDragOverOtherDiv=true;        
+                            }
+                        }
+
+                        // select 범위 안에 이미 선택된 범위가 있는지 체크
+                        // get paraghraph name 
+                        
+                        // console.log('divName =',getIdName)
+                        if (allBodySelectedText.length>0) {
+                            for (let i = 0; i < allBodySelectedText.length; i++) {
+                                const rowSelectedTextData = allBodySelectedText[i];
+                                if (rowSelectedTextData.paraghragh_name === getIdName) {
+                                    const rowSelectedTextStartIndex = rowSelectedTextData.start_index;
+                                    const rowSelectedTextEndIndex = rowSelectedTextData.end_index;
+                                    
+                                    if (rowSelectedTextStartIndex >= endIndex || rowSelectedTextEndIndex <= startIndex) {
+                                        // 곂치지 않는 경우
+                                    } else {
+                                        // 곂치는 경우
+                                        isDragOverOtherDiv=true;
+                                        break;
+                                    }
+                                }
                             }
                         }
                     }
@@ -469,9 +493,9 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                     // Calculate end index
                     endIndex = startIndex + text.length;
                     
-                    console.log('Start Index:', startIndex);
-                    console.log('End Index:', endIndex);
-                    console.log('Full text :',containerNode.textContent?.toString().substring(startIndex, endIndex),':')
+                    // console.log('Start Index:', startIndex);
+                    // console.log('End Index:', endIndex);
+                    // console.log('Full text :',containerNode.textContent?.toString().substring(startIndex, endIndex),':')
                     // 추가: 다른 div에 있을 경우 처리
                     let isDragOverOtherDiv = false;
                     // 드래그 된 범위의 id 비교   
@@ -482,17 +506,45 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                         }
                         if (targetElement) return targetElement.id;
                     }
+
+                    // 
+                    let getIdName = '';
                     if (range.startContainer.parentElement) {
                         const startId = checkParent(range.startContainer.parentElement);
-                        console.log(' startId = ',startId)
+                        // console.log(' startId = ',startId)
                         if (range.endContainer.parentElement) {
                             const endId = checkParent(range.endContainer.parentElement);
-                            console.log(' end id = ',endId)
+                            // console.log(' end id = ',endId)
+                            getIdName=typeof(endId)==='string' ? endId: '';
                             if (startId !== endId) {
                                 isDragOverOtherDiv=true;        
                             }
                         }
+
+                        // select 범위 안에 이미 선택된 범위가 있는지 체크
+                        // get paraghraph name 
+                        
+                        // console.log('divName =',getIdName)
+                        if (allBodySelectedText.length>0) {
+                            for (let i = 0; i < allBodySelectedText.length; i++) {
+                                const rowSelectedTextData = allBodySelectedText[i];
+                                if (rowSelectedTextData.paraghragh_name === getIdName) {
+                                    const rowSelectedTextStartIndex = rowSelectedTextData.start_index;
+                                    const rowSelectedTextEndIndex = rowSelectedTextData.end_index;
+                                    
+                                    if (rowSelectedTextStartIndex >= endIndex || rowSelectedTextEndIndex <= startIndex) {
+                                        // 곂치지 않는 경우
+                                    } else {
+                                        // 곂치는 경우
+                                        isDragOverOtherDiv=true;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
                     }
+                    
+                    
 
                     if (isDragOverOtherDiv) {
                         selection?.removeAllRanges(); // 드래그 취소
@@ -1376,10 +1428,10 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                         }}
                     >
                         <div className='flex flex-col w-full h-full pl-[20px] py-[20px]'>
-                            <div className='flex flex-row font-notoSansCJKKR text-[16px] text-[#222] leading-[1.13]'>1st Draft</div>
+                            <div className='comment-overall-label'>1st Draft</div>
                             <div id='draft-title-wrap-div'
                             className='flex flex-row mt-[10px] h-[42px] gap-[15px] font-notoSansCJKKR text-[13px] text-[#222] leading-[1.38] items-center'>
-                                <div className='flex'>Title: </div>
+                                <div className='learning-management-title-label'>Title: </div>
                                 <div className='draft-viewer-container-title'
                                     ref={containerTitleRef}
                                     onContextMenu={(e)=>draftStatus>3 ? ()=>{}:titleDragHandlerSelection(e)}
@@ -1465,12 +1517,18 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                     {/* comment div */}
                     <div className='flex flex-1 flex-col gap-[20px] bg-white h-full w-full min-w-[300px]'>
                         
-                        <div className='flex flex-col w-full h-full pr-[20px] pl-[13px] pt-[20px]'>
-                            <div className='flex flex-row capitalize'>{'correction comments'}</div>
+                        <div className='flex flex-col w-full h-[calc(100%-284px)] max-h-[calc(100%-284px)] min-h-[calc(100%-284px)] pr-[20px] pl-[13px] pt-[20px] gap-[10px]'>
+                            <div className='comment-overall-label'>{'correction comments'}</div>
                             {/* all comment */}
-                            <div className='flex flex-col gap-[5px] overflow-y-auto'>
-                                {allBodySelectedText.map((commentItem, commentIndex) => {
+                            <div className='flex flex-col gap-[5px] overflow-y-auto h-full'>
+                                {allBodySelectedText.length === 0 && 
+                                    <div className='learning-management-1st-draft-comments-no-comments-font mt-[90px]'>
+                                        {'Your correction comments will appear here.'}
+                                    </div>
+                                }
+                                {allBodySelectedText.length > 0 && allBodySelectedText.map((commentItem, commentIndex) => {
                                     // console.log('claa =',commentItem.comment_className)
+                                    console.log('allBodySelectedText ==',allBodySelectedText)
                                     const commentKey = 'comment-'+commentItem.comment_className+commentItem.comment_index
                                     return (
                                         <div className='comment-wrapper'
@@ -1554,13 +1612,19 @@ const LearningManagementSparkWritingFeedbackPage = () => {
 
                                                     let dumyComment:TComment[] = allBodySelectedText;
                                                     console.log('before ==',dumyComment)
+                                                    console.log('commentItem = ',commentItem)
                                                     let flag = false;
                                                     // classNameValue currentCommentIndex divName
                                                     for (let i =0; i< dumyComment.length; i++) {
-                                                        const checkName = dumyComment[i].paraghragh_name===divName;
+                                                        console.log('dumyComment[i] =',dumyComment[i])
+                                                        console.log('divName =',divName)
+                                                        // const checkName = dumyComment[i].paraghragh_name===divName;
                                                         const checkClassName = dumyComment[i].comment_className === commentItem.comment_className;
                                                         const checkIndex = dumyComment[i].comment_index === commentItem.comment_index;
-                                                        if (checkName && checkClassName && checkIndex) {
+                                                        // console.log('checkName =',checkName)
+                                                        console.log('checkClassName =',checkClassName)
+                                                        console.log('checkIndex =',checkIndex)
+                                                        if ( checkClassName && checkIndex) {
                                                             console.log('delete', dumyComment[i])
                                                             flag=true;
                                                             dumyComment.splice(i, 1);
@@ -1582,11 +1646,14 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                         {/* overall comments */}
                         <div className='comment-overall-wrap-div'>
                             <div className='comment-overall-label'>{'overall comments'}</div>
+                            
                             <textarea className='comment-overall-textarea resize-none disabled:bg-white'
                                 disabled={(draftStatus===2||draftStatus===3) ? false:true}
                                 onChange={(e)=>setOverallComment(e.currentTarget.value)}
+                                placeholder='Input your overall comments for the 1st draft.'
                                 value={overallComment}
                             ></textarea>
+                        
                         </div>
                         {/* buttons */}
                         <div className='comment-button-wrap-div'>

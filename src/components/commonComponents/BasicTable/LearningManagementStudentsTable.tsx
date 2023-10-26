@@ -56,14 +56,14 @@ const TableHeader = (props: {head:string[] }) => {
                             return <th
                                 rowSpan={2}
                                 key={headerCell.accessor}
-                                className='table-thead-tr-th-basic border-t-[1px] border-t-[#111]'
+                                className='table-thead-tr-th-basic'
                                 style={{width: headerCell.width+'px'}}
                             >{headerCell.header}</th>
                         } else {
                             return <th
                                 colSpan={3}
                                 key={headerCell.accessor}
-                                className='table-thead-tr-th-basic border-t-[1px] border-t-[#111] border-r-[1px] border-r-[#aaa]'
+                                className='table-thead-tr-th-basic border-r-[1px] border-r-[#aaa]'
                                 // style={{width: headerCell.width+'px'}}
                                 style={{width: '296px'}}
                             >{headerCell.header}</th>
@@ -216,9 +216,10 @@ const TableBody = (props:{
     return (
         <tbody className='table-tbody-basic text-[13px] font-sans font-normal text-[#444444] bg-[#fff] border-b-[1px]'>
             {dataModel&& dataModel.map((rowData, rowIdx)=>{
+                const isBackgroundColorWhite = rowIdx%2 === 0;
                 // student row
                 return <tr key={rowIdx}
-                className='table-tbody-tr-basic max-h-[76px]'
+                className={isBackgroundColorWhite ? 'table-tbody-tr-basic max-h-[76px] bg-white': 'table-tbody-tr-basic max-h-[76px] bg-[#f9f9f9]'}
                 >{
                     rowData.map((cellData, cellIdx) => {
                         console.log('row idx =',rowIdx, ', studendInClass =',studentDataInClass)
@@ -360,9 +361,12 @@ const TableBody = (props:{
                                     console.log('displayDate =',displayDate)
                                     return <td
                                         key={cellData.key}
-                                        className={`border-l-[1px] border-l-[#e2e3e6] border-r-[1px] border-r-[#aaa] h-full flex items-center justify-center`}
+                                        // className={`border-l-[1px] border-l-[#e2e3e6] border-r-[1px] border-r-[#aaa] h-full flex items-center justify-center`}
+                                        className={`border-l-[1px] border-l-[#e2e3e6] border-r-[1px] border-r-[#aaa] w-[95px]`}
                                         style={{minWidth: cellData.width}}
-                                    ><ReportModalComponent 
+                                    >
+                                        <span className='w-full h-full flex justify-center items-center'>
+                                        <ReportModalComponent 
                                         feedbackStates={feedbackDataInStudent}
                                         studend_code={studentBasicInfo.student_code}
                                         initSettingData={async () => {
@@ -424,7 +428,9 @@ const TableBody = (props:{
                                             }
                                             return false;
                                         }}
-                                    /></td>
+                                    />
+                                    </span>
+                                    </td>
                                 } else {
                                     return <td
                                         key={cellData.key}

@@ -46,10 +46,10 @@ export default function LearningManagementWritingHubSideLayout (props:{
         return (
             <li className={`flex flex-col w-full text-black hover:cursor-pointer border font-sans font-light`}>
                 <div
-                    className={`flex items-center w-full h-[45px] border-b-[1px] border-b-[#ddd] ${subListOpen[selectIndex]===-2 ? 'bg-[#ECFAFC] text-[#0fa9cb] border-r-[3px] border-r-[#0FA9CB]' : ''}`}
+                    className={`flex items-center w-full h-[45px] border-b-[1px] font-normal border-b-[#ddd] ${subListOpen[selectIndex]===-2 ? 'bg-[#ECFAFC] text-[#0fa9cb] border-r-[3px] border-r-[#0FA9CB]' : ''}`}
                     onClick={() => handleSubListToggle(selectIndex, -2)}
                 >
-                    <span className="flex flex-row items-center justify-between flex-1 mx-[20px] whitespace-nowrap">
+                    <span className="flex flex-row items-center justify-between flex-1 mx-[20px] whitespace-nowrap learning-management-left-side-menu-font text-[#0fa9cb]">
                         {label}
                         {subListOpen[selectIndex]===-1 ? <commonSvgIcons.SideMenuPlusSVGIcon className='w-[11px] h-[11px]'/>: <commonSvgIcons.SideMenuMinusSVGIcon/>}
                         
@@ -60,7 +60,7 @@ export default function LearningManagementWritingHubSideLayout (props:{
                         {subTitleList.map((subTitle, subIndex) => (
                             <li
                                 key={`sub-menu-${selectIndex}-${subIndex}`}
-                                className={`pl-[30px] border-b-[1px] border-b-[#ddd] ${subListOpen[selectIndex] === subIndex ? 'bg-[#ECFAFC] text-[#0fa9cb] border-r-[3px] border-r-[#0FA9CB]' : ''}`}
+                                className={`pl-[30px] text-[#0fa9cb] font-bold learning-management-left-side-menu-font ${subListOpen[selectIndex] === subIndex ? 'bg-[#ECFAFC] border-r-[3px] border-r-[#0FA9CB]' : ''}`}
                                 onClick={() => {
                                     handleSubListToggle(selectIndex, subIndex);
                                     // 메뉴로 이동

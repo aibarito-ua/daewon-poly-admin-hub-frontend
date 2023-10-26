@@ -107,7 +107,7 @@ export default function BasicTabs(props: {
     const {
         doughnutValues,student_code, otherModalCloseFn
     } = props;
-    const [value, setValue] = React.useState(0);
+    const [value, setValue] = React.useState(1);
     // car
     const [availableReports, setAvailableReports] = React.useState<TAvailableReportsArr[]>([]);
     const [isLeftAvailable, setIsLeftAvailable] = React.useState<boolean>(false);
