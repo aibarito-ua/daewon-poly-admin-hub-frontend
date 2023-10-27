@@ -11,6 +11,7 @@ import LearningResultManagementStudentsTable from "../../../../components/common
 import useLearningResultManagementWHStore from "../../../../store/useLearningResultManagementWHStore";
 import useLoginStore from "../../../../store/useLoginStore";
 import { CONFIG } from "../../../../config";
+import { Cookies } from "react-cookie";
 
 const ReportAndPortfolio = () => {
     // page usehook zustand
@@ -27,7 +28,7 @@ const ReportAndPortfolio = () => {
         getAllReportData, setAllReportData
     } = useLearningResultManagementWHStore();
     const {
-        accessToken, mcYn, clientCode, memberCode
+        // accessToken, mcYn, clientCode, memberCode
     } = useLoginStore();
     
     // page states
@@ -68,6 +69,10 @@ const ReportAndPortfolio = () => {
         
         console.log('laod filter data =',loadFilterData)
         setFilterAllList(loadFilterData);
+        const cookies = new Cookies();
+        const userInfo = cookies.get('data');
+        const mcYn = userInfo.mcYn;
+        const clientCode = userInfo.clientCode;
         let defaultCampus = ['','','']
         const campus_list = loadFilterData.campus.map((item) => {
             if (mcYn===CONFIG.HEADCHECKVALUE) {

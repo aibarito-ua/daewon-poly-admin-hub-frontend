@@ -13,6 +13,7 @@ import useControlAlertStore from "../../../store/useControlAlertStore";
 import { useLocation, useNavigate } from "react-router-dom";
 import useLoginStore from "../../../store/useLoginStore";
 import { CONFIG } from "../../../config";
+import { Cookies } from "react-cookie";
 
 const LMSparkWriting = () => {
     // page usehook zustand
@@ -35,7 +36,7 @@ const LMSparkWriting = () => {
         commonStandbyScreen, setCommonStandbyScreen
     } = useControlAlertStore();
     const {
-        accessToken, mcYn, clientCode, memberCode
+        // accessToken, mcYn, clientCode, memberCode
     } = useLoginStore();
     const navigate = useNavigate();
     const locationInfo = useLocation();
@@ -126,6 +127,11 @@ const LMSparkWriting = () => {
         const loadFilterData = await getLMSparkWritingCampusDataAPI();
         console.log('laod filter data =',loadFilterData)
         setFilterAllList(loadFilterData);
+        const cookies = new Cookies();
+
+        const userInfo = cookies.get('data');
+        const mcYn = userInfo.mcYn;
+        const clientCode = userInfo.clientCode;
         let defaultCampus = {name:'', code:''};
         const campus_list = loadFilterData.campus.map((item) => {
             if (mcYn===CONFIG.HEADCHECKVALUE) {
