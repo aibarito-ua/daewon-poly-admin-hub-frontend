@@ -66,6 +66,8 @@ export default function Router() {
                 memberCode: '23100091',
                 pageAuth: "Head"
             }
+            const cookies = new Cookies();
+            cookies.set('data', devTestData)
             setUserInfo(devTestData)
             setUserData(devTestData)
         } else {
