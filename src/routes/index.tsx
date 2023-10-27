@@ -40,7 +40,7 @@ interface IPrivateRouteProps {
     children?: React.ReactElement;
     authenticated: boolean;
     userData:{
-        clientCode:string, employeeSttName:string, memberCode:string, accessToken:string, pageAuth:string,
+        clientCode:string, mcYn:string, memberCode:string, accessToken:string, pageAuth:string,
     };
     pageAuth?: TRole
 }
@@ -49,9 +49,9 @@ export default function Router() {
     const [open, setOpen] = React.useState(false);
     const [isAuth, setIsAuth ] = React.useState<boolean>(false);
     const [userData, setUserData] = React.useState<{
-        clientCode:string, employeeSttName:string, memberCode:string, accessToken:string, pageAuth:string,
+        clientCode:string, mcYn:string, memberCode:string, accessToken:string, pageAuth:string,
     }>({
-        clientCode:'', employeeSttName:'', memberCode:'', accessToken:'', pageAuth:'',
+        clientCode:'', mcYn:'', memberCode:'', accessToken:'', pageAuth:'',
     });
 
     React.useEffect(()=>{
@@ -61,9 +61,9 @@ export default function Router() {
             const devTestData = {
                 accessToken: '',
                 clientCode: '0508003',
-                employeeSttName: '',
+                mcYn: 'Y',
                 memberCode: '',
-                pageAuth: 'Campus'
+                pageAuth: 'Head'
             }
             setUserInfo(devTestData)
             setUserData(devTestData)
@@ -72,16 +72,16 @@ export default function Router() {
             const getCheckDatas = cookies.get('data')
             if (getCheckDatas) {
                 const checkTargetData:{
-                    clientCode:string, employeeSttName:string, memberCode:string, accessToken:string, pageAuth:string,
+                    clientCode:string, mcYn:string, memberCode:string, accessToken:string, pageAuth:string,
                 } = {
                     accessToken: getCheckDatas.accessToken ? getCheckDatas.accessToken:'',
                     clientCode: getCheckDatas.clientCode ? getCheckDatas.clientCode:'',
-                    employeeSttName: getCheckDatas.employeeSttName ? getCheckDatas.employeeSttName:'',
+                    mcYn: getCheckDatas.mcYn ? getCheckDatas.mcYn:'',
                     memberCode: getCheckDatas.memberCode ? getCheckDatas.memberCode:'',
-                    pageAuth: getCheckDatas.employeeSttName ? (getCheckDatas.employeeSttName==='본사' ? 'Head':'Campus'): ''
+                    pageAuth: getCheckDatas.mcYn ? (getCheckDatas.mcYn===CONFIG.HEADCHECKVALUE ? 'Head':'Campus'): ''
                 };
                 const isMemberCode = checkTargetData.memberCode.length === 8 && checkTargetData.memberCode!=='';
-                const isEmp = checkTargetData.employeeSttName !== '';
+                const isEmp = checkTargetData.mcYn !== '';
                 const isClient = checkTargetData.clientCode!=='';
                 if (isMemberCode && isEmp && isClient) {
                     setIsAuth(true)

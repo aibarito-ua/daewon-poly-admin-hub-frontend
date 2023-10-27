@@ -9,7 +9,7 @@ interface IUserInfo {
     setIsOpen: any;
 
     clientCode:string,
-    employeeSttName:string,
+    mcYn:string,
     memberCode:string,
     accessToken:string,
     pageAuth: string
@@ -18,7 +18,7 @@ interface IUserInfo {
 }
 interface IUserLoginInfo {
     clientCode:string,
-    employeeSttName:string,
+    mcYn:string,
     memberCode:string,
     accessToken:string,
     pageAuth:string,

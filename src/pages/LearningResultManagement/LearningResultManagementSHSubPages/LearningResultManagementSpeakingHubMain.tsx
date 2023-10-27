@@ -42,7 +42,7 @@ export default function LearningResultManagementSpeakingHubMain (props: TLearnin
 
     // user data
     const {
-        accessToken, employeeSttName, clientCode, memberCode
+        accessToken, mcYn, clientCode, memberCode
     } = useLoginStore();
 
     // side list select
@@ -69,7 +69,7 @@ export default function LearningResultManagementSpeakingHubMain (props: TLearnin
         if (loadFilterData&&loadFilterData.campus) {
             const defaultCampus = ['', '', '']
             const campus_list = loadFilterData.campus.map((item, index) => {
-                if (employeeSttName===CONFIG.HEADCHECKVALUE) {
+                if (mcYn===CONFIG.HEADCHECKVALUE) {
                     return item.name;
                 } else {
                     if (item.code === clientCode) {

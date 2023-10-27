@@ -27,7 +27,7 @@ const ReportAndPortfolio = () => {
         getAllReportData, setAllReportData
     } = useLearningResultManagementWHStore();
     const {
-        accessToken, employeeSttName, clientCode, memberCode
+        accessToken, mcYn, clientCode, memberCode
     } = useLoginStore();
     
     // page states
@@ -70,7 +70,7 @@ const ReportAndPortfolio = () => {
         setFilterAllList(loadFilterData);
         let defaultCampus = ['','','']
         const campus_list = loadFilterData.campus.map((item) => {
-            if (employeeSttName===CONFIG.HEADCHECKVALUE) {
+            if (mcYn===CONFIG.HEADCHECKVALUE) {
                 return item.name;
             } else {
                 if (item.code === clientCode) {

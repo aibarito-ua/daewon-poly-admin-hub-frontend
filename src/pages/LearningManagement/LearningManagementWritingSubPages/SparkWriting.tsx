@@ -35,7 +35,7 @@ const LMSparkWriting = () => {
         commonStandbyScreen, setCommonStandbyScreen
     } = useControlAlertStore();
     const {
-        accessToken, employeeSttName, clientCode, memberCode
+        accessToken, mcYn, clientCode, memberCode
     } = useLoginStore();
     const navigate = useNavigate();
     const locationInfo = useLocation();
@@ -128,7 +128,7 @@ const LMSparkWriting = () => {
         setFilterAllList(loadFilterData);
         let defaultCampus = {name:'', code:''};
         const campus_list = loadFilterData.campus.map((item) => {
-            if (employeeSttName===CONFIG.HEADCHECKVALUE) {
+            if (mcYn===CONFIG.HEADCHECKVALUE) {
                 if (item.code === clientCode) {console.log('item =',item)}
                 return item.name;    
             } else {
@@ -148,7 +148,7 @@ const LMSparkWriting = () => {
         setFilterData(loadFilterData);
         setFilterStates(loadFilterData);
         // campus default 
-        if (employeeSttName==='본사') {
+        if (mcYn===CONFIG.HEADCHECKVALUE) {
             setSelectCampusCode({name:'',code:''})
         } else {
             if (maintainFilterValues.length === 0) {
