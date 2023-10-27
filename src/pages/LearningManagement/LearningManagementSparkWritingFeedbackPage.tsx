@@ -1237,9 +1237,9 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                     
                 </div>
                 {/* returns */}
-                {pageAuth !== 'Campus' && <div className='learning-management-feedback-return-button-disabled'/>}
-                {pageAuth === 'Campus' && draftStatus>3 && <div className='learning-management-feedback-return-button-disabled'/>}
-                {pageAuth === 'Campus' && draftStatus < 4 && 
+                {pageAuth !== 'N' && <div className='learning-management-feedback-return-button-disabled'/>}
+                {pageAuth === 'N' && draftStatus>3 && <div className='learning-management-feedback-return-button-disabled'/>}
+                {pageAuth === 'N' && draftStatus < 4 && 
                     <ReturnFeedbackModalComponent 
                         returnFeedbackValue={returnFeedback}
                         setReturnFeedbackValue={setReturnFeedback}
@@ -1933,11 +1933,11 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                                         })
                                     }}
                                 />
-                                <div className={pageAuth === 'Campus' ? (finalTemporarySaveFlag? 'comment-button-save hover:cursor-pointer':'comment-button-save-disabled'):'comment-button-save-disabled'}
-                                    onClick={pageAuth === 'Campus' ? ()=>draft2ndSave():()=>{}}
+                                <div className={pageAuth === 'N' ? (finalTemporarySaveFlag? 'comment-button-save hover:cursor-pointer':'comment-button-save-disabled'):'comment-button-save-disabled'}
+                                    onClick={pageAuth === 'N' ? ()=>draft2ndSave():()=>{}}
                                 />
-                                <div className={pageAuth === 'Campus' ? (finalCreateReportFlag? 'comment-button-create-report hover:cursor-pointer':'comment-button-create-report-disabled'):'comment-button-create-report-disabled'}
-                                    onClick={pageAuth === 'Campus' ? async ()=>draft2ndCreateReport():()=>{}}
+                                <div className={pageAuth === 'N' ? (finalCreateReportFlag? 'comment-button-create-report hover:cursor-pointer':'comment-button-create-report-disabled'):'comment-button-create-report-disabled'}
+                                    onClick={pageAuth === 'N' ? async ()=>draft2ndCreateReport():()=>{}}
                                 />
                             </div>
                         </div>

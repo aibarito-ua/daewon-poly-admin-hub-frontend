@@ -26,7 +26,7 @@ const NavAside = () => {
 
     const goLink = async (role: TRole, link: string) => {
         console.log("link :::", link);
-        const rolePath = role==='logout'? '': (role==='Head'? 'Head':'Campus')
+        const rolePath = role==='logout'? '': (role==='Y'? 'Y':'N')
         const path = `/${rolePath}/${link}`;
         // navigate();
         if (!navigateBlockFlag) {

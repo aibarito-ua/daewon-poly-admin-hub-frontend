@@ -58,12 +58,13 @@ export default function Router() {
         if (CONFIG.IS_DEV===CONFIG.IS_DEV_CHECK) {
             // dev
             setIsAuth(true);
+            // "memberCode":"23100091","clientCode":"0508003","mcYn":"N","accessToken":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImtGbDA2aWs2cXdkQ2U5UEtnQitRMlFFbUtBdUhOelFXWnJ4cmMrTndrSHc9IiwiaWF0IjoxNjk4MzkwODE5LCJleHAiOjE2OTg0NzcyMTl9.TJc-VnfvXibsTCE8ZISd9A99CffOEWS0ml_BnAH5cdA"
             const devTestData = {
                 accessToken: '',
-                clientCode: '0508003',
+                clientCode: '0508001',
                 mcYn: 'Y',
-                memberCode: '',
-                pageAuth: 'Head'
+                memberCode: '23100091',
+                pageAuth: "Head"
             }
             setUserInfo(devTestData)
             setUserData(devTestData)
@@ -78,13 +79,15 @@ export default function Router() {
                     clientCode: getCheckDatas.clientCode ? getCheckDatas.clientCode:'',
                     mcYn: getCheckDatas.mcYn ? getCheckDatas.mcYn:'',
                     memberCode: getCheckDatas.memberCode ? getCheckDatas.memberCode:'',
-                    pageAuth: getCheckDatas.mcYn ? (getCheckDatas.mcYn===CONFIG.HEADCHECKVALUE ? 'Head':'Campus'): ''
+                    pageAuth: getCheckDatas.mcYn ? getCheckDatas.mcYn:'',
                 };
+                
                 const isMemberCode = checkTargetData.memberCode.length === 8 && checkTargetData.memberCode!=='';
                 const isEmp = checkTargetData.mcYn !== '';
                 const isClient = checkTargetData.clientCode!=='';
                 if (isMemberCode && isEmp && isClient) {
                     setIsAuth(true)
+                    console.log('test id =',checkTargetData)
                     setUserData(checkTargetData)
                     // setUserInfo(checkTargetData)
                 } else {
@@ -99,8 +102,8 @@ export default function Router() {
         const routeValue = routeValues.publicRoutes;
         // 각 권한별 기본 페이지
         const mainPage = role === 'logout' ? <Home /> : (
-            role === 'Head' ? <Home /> : (
-                role === 'Campus' ? <Home /> : <Home />
+            role === 'Y' ? <Home /> : (
+                role === 'N' ? <Home /> : <Home />
             )
         );
         return (
@@ -145,7 +148,7 @@ export default function Router() {
                     {/* No Login Pages */}
                     {/* {publicRoutes()} */}
                     {/* 본사 전용 페이지 */}
-                    <Route element={<PrivateRoute authenticated={isAuth} userData={userData} pageAuth='Head' />} >
+                    <Route element={<PrivateRoute authenticated={isAuth} userData={userData} pageAuth='Y' />} >
                         <Route path={'/LevelandTextbook/SpeakingHub'} element={<LevelAndTextBookSpeakingHub />}/>
                         <Route path={'/LevelandTextbook/WritingHub'} element={<LevelAndTextBookWritingHub />} />
                         <Route path={'/ActivityManagement/SpeakingHub/IdeaExchange'} element={<ActivitySpeakHubMain children={<IdeaExchange />}  />}/>
@@ -154,7 +157,7 @@ export default function Router() {
                         <Route path={'/ActivityManagement/WritingHub/SparkWriting'} element={<ActivityWritingHubMain children={<SparkWriting />} />} />
                     </Route>
                     {/* 캠퍼스 전용 페이지 */}
-                    <Route element={<PrivateRoute authenticated={isAuth} userData={userData} pageAuth='Campus' />} >
+                    <Route element={<PrivateRoute authenticated={isAuth} userData={userData} pageAuth='N' />} >
 
                     </Route>
                     {/* 본사&캠퍼스 전체 페이지 */}

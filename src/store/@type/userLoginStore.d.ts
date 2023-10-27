@@ -24,4 +24,5 @@ interface IUserLoginInfo {
     pageAuth:string,
 }
 
-type TRole = "Head" | "Campus" | "All" |"logout";
+// type TRole = "Head" | "Campus" | "All" |"logout";
+type TRole = "Y" | "N" | "All" |"logout";

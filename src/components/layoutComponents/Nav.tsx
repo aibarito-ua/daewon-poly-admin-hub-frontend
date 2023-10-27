@@ -12,15 +12,19 @@ type INavItems = {
     };
 };
 export const navItems:INavItems = {
-    Head: {
+    Y: {
         selectedMenu: [
-            {path: '', label: ''}
+            {path: "WritingClinic", label: 'Writing Clinic'},
+            {path: "StudentProgress", label: 'My Progress'},
+            {path: "StudentReport", label: 'My Report'},
+            {path: "StudentPortfolio", label: 'My Portfolio'},
+            // {path: "StudentHome", label: ''}
         ]
     },
     logout: {
         selectedMenu: []
     },
-    Campus: {
+    N: {
         selectedMenu: [
             {path: "WritingClinic", label: 'Writing Clinic'},
             {path: "StudentProgress", label: 'My Progress'},
