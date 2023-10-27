@@ -13,6 +13,7 @@ import { getLMRSpeakingHubAllCampusDataAPI, getLMRSpeakingHubLevelsOfCampusDataA
 import { useComponentWillMount } from '../../../hooks/useEffectOnce';
 import useLoginStore from '../../../store/useLoginStore';
 import { CONFIG } from '../../../config';
+import { Cookies } from "react-cookie";
 
 
 type TLearningResultManagementSpeakHubMainProps = {
@@ -42,7 +43,7 @@ export default function LearningResultManagementSpeakingHubMain (props: TLearnin
 
     // user data
     const {
-        accessToken, mcYn, clientCode, memberCode
+        // accessToken, mcYn, clientCode, memberCode
     } = useLoginStore();
 
     // side list select
@@ -67,6 +68,10 @@ export default function LearningResultManagementSpeakingHubMain (props: TLearnin
         const loadFilterData = await getLMRSpeakingHubAllCampusDataAPI();
         console.log('laod filter data =',loadFilterData)
         if (loadFilterData&&loadFilterData.campus) {
+            const cookies = new Cookies();
+            const userInfo = cookies.get('data');
+            const mcYn = userInfo.mcYn;
+            const clientCode = userInfo.clientCode
             const defaultCampus = ['', '', '']
             const campus_list = loadFilterData.campus.map((item, index) => {
                 if (mcYn===CONFIG.HEADCHECKVALUE) {
