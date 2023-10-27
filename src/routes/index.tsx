@@ -61,9 +61,9 @@ export default function Router() {
             const devTestData = {
                 accessToken: '',
                 clientCode: '0508003',
-                employeeSttName: '본사',
+                employeeSttName: '',
                 memberCode: '',
-                pageAuth: ''
+                pageAuth: 'Campus'
             }
             setUserInfo(devTestData)
             setUserData(devTestData)

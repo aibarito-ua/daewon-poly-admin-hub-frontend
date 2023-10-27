@@ -11,6 +11,8 @@ import DebouncedDropdowFilter from "../../../components/commonComponents/BasicTa
 import { SvgSearchIcon } from '../../../components/commonComponents/BasicTable/svgs/SearchIcon';
 import { getLMRSpeakingHubAllCampusDataAPI, getLMRSpeakingHubLevelsOfCampusDataAPI } from '../../../api/LearningResultManagement/LearningResultManagementSpeakingHub';
 import { useComponentWillMount } from '../../../hooks/useEffectOnce';
+import useLoginStore from '../../../store/useLoginStore';
+import { CONFIG } from '../../../config';
 
 
 type TLearningResultManagementSpeakHubMainProps = {
@@ -38,6 +40,11 @@ export default function LearningResultManagementSpeakingHubMain (props: TLearnin
         selectNavigationTitles, setSelectNavigationTitles
     } = useNavStore();
 
+    // user data
+    const {
+        accessToken, employeeSttName, clientCode, memberCode
+    } = useLoginStore();
+
     // side list select
     const [sideSelected, setSideSelected] = React.useState<number[]>([0,0]);
 
@@ -60,11 +67,27 @@ export default function LearningResultManagementSpeakingHubMain (props: TLearnin
         const loadFilterData = await getLMRSpeakingHubAllCampusDataAPI();
         console.log('laod filter data =',loadFilterData)
         if (loadFilterData&&loadFilterData.campus) {
-            const campus_list = loadFilterData.campus.map((item) => {
-                return item.name;
+            const defaultCampus = ['', '', '']
+            const campus_list = loadFilterData.campus.map((item, index) => {
+                if (employeeSttName===CONFIG.HEADCHECKVALUE) {
+                    return item.name;
+                } else {
+                    if (item.code === clientCode) {
+                        defaultCampus[0] = item.name;
+                        setChosenCampus(item)
+                        return item.name;
+                    } else {
+                        return '';
+                    }
+                }
             })
+            console.log('Default search values:', defaultCampus)
+            const index = loadFilterData.campus.findIndex(item => item.name == defaultCampus[0])
+            if(index != -1)
+                loadFilterData.campus[index].level = (await getLMRSpeakingHubLevelsOfCampusDataAPI(loadFilterData.campus[index].code)).level
             setFilterData(loadFilterData);
             dropdown.setSelectFilterCampusList(campus_list)
+            setSelectFilterValues(defaultCampus)
             console.log('beforeRenderedFn complete')
         }
     }

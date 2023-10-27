@@ -84,7 +84,7 @@ const useLearningResultManagementSHStore = create<IuseLearningResultManagementSH
 
     isAllSelected: false,
     setIsAllSelected: (isAllSelected) => set({isAllSelected: isAllSelected}),
-    selectFilterValues: [],
+    selectFilterValues: ['', '', ''],
     setSelectFilterValues: (filterValues) => set({selectFilterValues: filterValues}),
 
     searchEventFunction: () => {},
