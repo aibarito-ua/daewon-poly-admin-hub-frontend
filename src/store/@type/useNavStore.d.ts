@@ -26,6 +26,10 @@ interface INavItem {
     navigateBlockAlertNoFn: Function|null,
     setNavigateBlockAlertYesFn: (yesFn: Function) =>void;
     setNavigateBlockAlertNoFn: (noFn: Function) => void;
+
+    // toast message control
+    toastOpen: boolean;
+    setToastOpen: (open:flag) => void;
 }
 type TStudentNavItem = "MyPage" | "EssayWriting" | "Portfolio";
 // type TTeacherNavItem = ""

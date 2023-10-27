@@ -11,6 +11,8 @@ import LearningManagementStudentsTable from "../../../components/commonComponent
 import useReportStore from "../../../store/useReportStore";
 import useControlAlertStore from "../../../store/useControlAlertStore";
 import { useLocation, useNavigate } from "react-router-dom";
+import useLoginStore from "../../../store/useLoginStore";
+import { CONFIG } from "../../../config";
 
 const LMSparkWriting = () => {
     // page usehook zustand
@@ -32,6 +34,9 @@ const LMSparkWriting = () => {
     const {
         commonStandbyScreen, setCommonStandbyScreen
     } = useControlAlertStore();
+    const {
+        accessToken, employeeSttName, clientCode, memberCode
+    } = useLoginStore();
     const navigate = useNavigate();
     const locationInfo = useLocation();
     
@@ -121,13 +126,36 @@ const LMSparkWriting = () => {
         const loadFilterData = await getLMSparkWritingCampusDataAPI();
         console.log('laod filter data =',loadFilterData)
         setFilterAllList(loadFilterData);
+        let defaultCampus = {name:'', code:''};
         const campus_list = loadFilterData.campus.map((item) => {
-            return item.name;
+            if (employeeSttName===CONFIG.HEADCHECKVALUE) {
+                if (item.code === clientCode) {console.log('item =',item)}
+                return item.name;    
+            } else {
+                if (item.code === clientCode) {
+                    // 시범 캠퍼스 테스트
+                    // if (item.code === "0508003"){
+                    // console.log('')
+                    defaultCampus = {code: item.code, name: item.name}
+                    return item.name;
+                } else {
+                    return ''
+                }
+            }
         })
+        // console.log('get list =',campus_list)
         setSelectFilterCampusList(campus_list);
         setFilterData(loadFilterData);
         setFilterStates(loadFilterData);
-        setSelectCampusCode({name:'',code:''})
+        // campus default 
+        if (employeeSttName==='본사') {
+            setSelectCampusCode({name:'',code:''})
+        } else {
+            if (maintainFilterValues.length === 0) {
+                setSelectFilterValues([defaultCampus.name])
+            }
+            setSelectCampusCode(defaultCampus)
+        }
         setSelectLevelCode({name:'',code:''});
         setSelectClassCode({name:'',code:''});
         if (maintainFilterValues.length > 0) {

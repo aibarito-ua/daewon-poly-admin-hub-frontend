@@ -92,6 +92,9 @@ module.exports = {
         'outline-format-image-ol-02': "url('/src/components/toggleModalComponents/outlineFormatModalImages/OL_02@3x.png')",
         'outline-format-image-ol-03': "url('/src/components/toggleModalComponents/outlineFormatModalImages/OL_03@3x.png')",
         'outline-format-image-ol-04': "url('/src/components/toggleModalComponents/outlineFormatModalImages/OL_04@3x.png')",
+
+        // toast icon
+        'toast-warning-ic': "url('/src/util/png/ic_warning_toast.png')",
       }
     },
     borderWidth: {

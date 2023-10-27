@@ -11,7 +11,8 @@ interface IUserInfo {
     clientCode:string,
     employeeSttName:string,
     memberCode:string,
-    accessToken:string
+    accessToken:string,
+    pageAuth: string
     
     setUserInfo: (userLoginInfomation: IUserLoginInfo)=>void;
 }
@@ -19,7 +20,8 @@ interface IUserLoginInfo {
     clientCode:string,
     employeeSttName:string,
     memberCode:string,
-    accessToken:string
+    accessToken:string,
+    pageAuth:string,
 }
 
 type TRole = "Head" | "Campus" | "All" |"logout";

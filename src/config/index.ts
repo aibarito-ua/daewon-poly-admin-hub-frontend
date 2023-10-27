@@ -34,9 +34,11 @@ const LEARNING_RESULT_MANAGEMENT_SPEAKING_GET_STUDENT: string = process.env.REAC
 
 const IS_DEV:string = process.env.REACT_APP_IS_DEV ? process.env.REACT_APP_IS_DEV : '';
 const IS_DEV_CHECK:string = process.env.REACT_APP_IS_DEV_CHECK ? process.env.REACT_APP_IS_DEV_CHECK:'';
+const IS_HEAD_COMP:string = process.env.REACT_APP_IS_HEAD_COMP ? process.env.REACT_APP_IS_HEAD_COMP:'';
 export const CONFIG = {
     IS_DEV:IS_DEV,
     IS_DEV_CHECK:IS_DEV_CHECK,
+    HEADCHECKVALUE:IS_HEAD_COMP,
     GRAMMAR: {
         CHECK:HOST_URL+GRAMMAR_CHECK,
         COMPARE:HOST_URL+GRAMMAR_COMPARE

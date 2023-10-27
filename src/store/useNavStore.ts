@@ -78,7 +78,11 @@ const useNavStore = create<INavItem>((set) => ({
         set(()=>({
             navigateBlockMessage: messages
         }))
-    }
+    },
+    toastOpen:false,
+    setToastOpen: (open) => {
+        set(()=>({toastOpen:open}))
+    },
 }))
 
 export default useNavStore;

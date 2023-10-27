@@ -13,6 +13,7 @@ import RubricTypeModalComponent from '../../components/toggleModalComponents/Rub
 import useActivityWritingHubStore from '../../store/useActivityWritingHubStore';
 import PrintExportButton from '../../components/commonComponents/customComponents/exportButtons/PrintExportButton';
 import ReportModalComponent from '../../components/toggleModalComponents/ReportModalComponent';
+import useLoginStore from '../../store/useLoginStore';
 
 type TDivsControlConfig = {
     advisor: {
@@ -55,6 +56,8 @@ const LearningManagementSparkWritingFeedbackPage = () => {
     const { 
         commonAlertOpen, commonAlertClose
     } = useControlAlertStore();
+
+    const {pageAuth} = useLoginStore();
 
     // Save -> go back flag
     const [saveComplete, setSaveComplete] = React.useState<boolean>(false);
@@ -1234,8 +1237,9 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                     
                 </div>
                 {/* returns */}
-                {draftStatus>3 && <div className='learning-management-feedback-return-button-disabled'/>}
-                {draftStatus < 4 && 
+                {pageAuth !== 'Campus' && <div className='learning-management-feedback-return-button-disabled'/>}
+                {pageAuth === 'Campus' && draftStatus>3 && <div className='learning-management-feedback-return-button-disabled'/>}
+                {pageAuth === 'Campus' && draftStatus < 4 && 
                     <ReturnFeedbackModalComponent 
                         returnFeedbackValue={returnFeedback}
                         setReturnFeedbackValue={setReturnFeedback}
@@ -1551,18 +1555,45 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                                             )
                                             setCommentFocusId('');
                                         }}>
-                                            <input className='comment-input disabled:bg-white'
+                                            <textarea className='comment-input disabled:bg-white'
                                                 disabled={draftStatus < 4 ? false:true}
+                                                rows={1}
+                                                maxLength={500}
                                                 onChange={(e)=>{
+                                                    
                                                     const value = e.currentTarget.value;
-                                                    let dumyAllValues:TComment[] = JSON.parse(JSON.stringify(allBodySelectedText));
-                                                    for (let i = 0; i < dumyAllValues.length; i++) {
-                                                        if (dumyAllValues[i].comment_index === commentItem.comment_index) {
-                                                            dumyAllValues[i].comment = value;
-                                                            break;
-                                                        }
-                                                    };
-                                                    setAllBodySelectedText(dumyAllValues);
+                                                    const checkLength = value.length >= 500;
+                                                    if (checkLength) {
+                                                        const cuttingValue = value.substring(0, 500);
+                                                        let dumyAllValues:TComment[] = JSON.parse(JSON.stringify(allBodySelectedText));
+                                                        for (let i = 0; i < dumyAllValues.length; i++) {
+                                                            if (dumyAllValues[i].comment_index === commentItem.comment_index) {
+                                                                dumyAllValues[i].comment = value;
+                                                                break;
+                                                            }
+                                                        };
+                                                        setAllBodySelectedText(dumyAllValues);
+                                                        
+                                                        commonAlertOpen({
+                                                            messages: [
+                                                                'The comment cannot exceed 500 characters.'
+                                                            ],
+                                                            useOneButton: true,
+                                                            yesButtonLabel: 'OK'
+                                                        })
+                                                    } else {
+                                                        let dumyAllValues:TComment[] = JSON.parse(JSON.stringify(allBodySelectedText));
+                                                        for (let i = 0; i < dumyAllValues.length; i++) {
+                                                            if (dumyAllValues[i].comment_index === commentItem.comment_index) {
+                                                                dumyAllValues[i].comment = value;
+                                                                break;
+                                                            }
+                                                        };
+                                                        e.currentTarget.style.height = 'auto';
+                                                        e.currentTarget.style.height = e.currentTarget.scrollHeight + 'px';
+                                                        setAllBodySelectedText(dumyAllValues);
+                                                    }
+
                                                 }}
                                                 value={commentItem.comment}
                                             />
@@ -1902,11 +1933,11 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                                         })
                                     }}
                                 />
-                                <div className={finalTemporarySaveFlag? 'comment-button-save hover:cursor-pointer':'comment-button-save-disabled'}
-                                    onClick={()=>draft2ndSave()}
+                                <div className={pageAuth === 'Campus' ? (finalTemporarySaveFlag? 'comment-button-save hover:cursor-pointer':'comment-button-save-disabled'):'comment-button-save-disabled'}
+                                    onClick={pageAuth === 'Campus' ? ()=>draft2ndSave():()=>{}}
                                 />
-                                <div className={finalCreateReportFlag? 'comment-button-create-report hover:cursor-pointer':'comment-button-create-report-disabled'}
-                                    onClick={async ()=>draft2ndCreateReport()}
+                                <div className={pageAuth === 'Campus' ? (finalCreateReportFlag? 'comment-button-create-report hover:cursor-pointer':'comment-button-create-report-disabled'):'comment-button-create-report-disabled'}
+                                    onClick={pageAuth === 'Campus' ? async ()=>draft2ndCreateReport():()=>{}}
                                 />
                             </div>
                         </div>

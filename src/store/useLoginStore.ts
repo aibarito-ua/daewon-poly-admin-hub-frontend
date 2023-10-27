@@ -12,6 +12,7 @@ const useLoginStore = create<IUserInfo>((set) => ({
     clientCode: '',
     employeeSttName: '',
     memberCode: '',
+    pageAuth:'',
     setUserInfo: (userInfo:IUserLoginInfo) => {
 
         set(()=>({
@@ -23,7 +24,8 @@ const useLoginStore = create<IUserInfo>((set) => ({
             clientCode: userInfo.clientCode,
             accessToken: userInfo.accessToken,
             employeeSttName: userInfo.employeeSttName,
-            memberCode: userInfo.memberCode
+            memberCode: userInfo.memberCode,
+            pageAuth: userInfo.pageAuth
         }))
     },
     setIsOpen: (boolean:boolean) => {

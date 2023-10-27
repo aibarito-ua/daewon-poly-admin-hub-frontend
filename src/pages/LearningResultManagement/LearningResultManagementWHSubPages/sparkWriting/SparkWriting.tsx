@@ -9,6 +9,8 @@ import { getAllReportByCampusLevelClass, getLMSparkWritingCampusDataAPI, getLMSp
 import useLearningManagementSparkWritingStore from "../../../../store/useLearningManagementSparkWritingStore";
 import LearningResultManagementStudentsTable from "../../../../components/commonComponents/BasicTable/LearningResultManagementStudentsTable";
 import useLearningResultManagementWHStore from "../../../../store/useLearningResultManagementWHStore";
+import useLoginStore from "../../../../store/useLoginStore";
+import { CONFIG } from "../../../../config";
 
 const ReportAndPortfolio = () => {
     // page usehook zustand
@@ -24,6 +26,9 @@ const ReportAndPortfolio = () => {
     const {
         getAllReportData, setAllReportData
     } = useLearningResultManagementWHStore();
+    const {
+        accessToken, employeeSttName, clientCode, memberCode
+    } = useLoginStore();
     
     // page states
     const [emptyPageMessage, setEmptyPageMessage] = React.useState<string>('검색 값을 선택 후 조회하세요.');
@@ -63,9 +68,20 @@ const ReportAndPortfolio = () => {
         
         console.log('laod filter data =',loadFilterData)
         setFilterAllList(loadFilterData);
+        let defaultCampus = ['','','']
         const campus_list = loadFilterData.campus.map((item) => {
-            return item.name;
+            if (employeeSttName===CONFIG.HEADCHECKVALUE) {
+                return item.name;
+            } else {
+                if (item.code === clientCode) {
+                    defaultCampus[0] = item.name;
+                    return item.name;
+                } else {
+                    return '';
+                }
+            }
         })
+        setSelectFilterValues(defaultCampus);
         setSelectFilterCampusList(campus_list);
         setFilterData(loadFilterData);
         setFilterStates(loadFilterData);

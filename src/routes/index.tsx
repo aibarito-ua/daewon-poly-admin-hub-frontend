@@ -1,11 +1,12 @@
 import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Outlet, Navigate } from 'react-router-dom';
 import { Login } from '../pages/Login';
 import { Home } from '../pages/Home';
 
 import useLoginStore from '../store/useLoginStore';
 import {routeValues} from './routeValues';
-import PrivateRoute from './PrivateRoute';import LevelAndTextBookSpeakingHub from '../pages/LevelAndTextBook/LevelAndTextBookSpeakingHub';
+// import PrivateRoute from './PrivateRoute';
+import LevelAndTextBookSpeakingHub from '../pages/LevelAndTextBook/LevelAndTextBookSpeakingHub';
 import LevelAndTextBookWritingHub from '../pages/LevelAndTextBook/LevelAndTextBookWritingHub';
 import ActivitySpeakHubMain from '../pages/ActivityManagement/ActivitySpeakHubMain';
 import IdeaExchange from '../pages/ActivityManagement/ActivitySHSubPages/IdeaExchange';
@@ -33,32 +34,59 @@ import StandbyScreen from '../components/toggleModalComponents/StandbyScreen';
 import {Cookies} from 'react-cookie'
 import { NotAuth } from '../pages/NotAuth';
 import { CONFIG } from '../config';
-
+import SimpleSnackbar from '../components/toastMessageComponents/SimpleSnackbar';
+import useNavStore from '../store/useNavStore';
+interface IPrivateRouteProps {
+    children?: React.ReactElement;
+    authenticated: boolean;
+    userData:{
+        clientCode:string, employeeSttName:string, memberCode:string, accessToken:string, pageAuth:string,
+    };
+    pageAuth?: TRole
+}
 export default function Router() {
-    const { role, isOpen } = useLoginStore();
+    const { role, isOpen, setUserInfo } = useLoginStore();
+    const [open, setOpen] = React.useState(false);
     const [isAuth, setIsAuth ] = React.useState<boolean>(false);
+    const [userData, setUserData] = React.useState<{
+        clientCode:string, employeeSttName:string, memberCode:string, accessToken:string, pageAuth:string,
+    }>({
+        clientCode:'', employeeSttName:'', memberCode:'', accessToken:'', pageAuth:'',
+    });
 
     React.useEffect(()=>{
         if (CONFIG.IS_DEV===CONFIG.IS_DEV_CHECK) {
             // dev
             setIsAuth(true);
+            const devTestData = {
+                accessToken: '',
+                clientCode: '0508003',
+                employeeSttName: '본사',
+                memberCode: '',
+                pageAuth: ''
+            }
+            setUserInfo(devTestData)
+            setUserData(devTestData)
         } else {
             const cookies = new Cookies();
             const getCheckDatas = cookies.get('data')
             if (getCheckDatas) {
                 const checkTargetData:{
-                    clientCode:string, employeeSttName:string, memberCode:string, accessToken:string
+                    clientCode:string, employeeSttName:string, memberCode:string, accessToken:string, pageAuth:string,
                 } = {
                     accessToken: getCheckDatas.accessToken ? getCheckDatas.accessToken:'',
                     clientCode: getCheckDatas.clientCode ? getCheckDatas.clientCode:'',
                     employeeSttName: getCheckDatas.employeeSttName ? getCheckDatas.employeeSttName:'',
-                    memberCode: getCheckDatas.memberCode ? getCheckDatas.memberCode:''
+                    memberCode: getCheckDatas.memberCode ? getCheckDatas.memberCode:'',
+                    pageAuth: getCheckDatas.employeeSttName ? (getCheckDatas.employeeSttName==='본사' ? 'Head':'Campus'): ''
                 };
                 const isMemberCode = checkTargetData.memberCode.length === 8 && checkTargetData.memberCode!=='';
                 const isEmp = checkTargetData.employeeSttName !== '';
                 const isClient = checkTargetData.clientCode!=='';
                 if (isMemberCode && isEmp && isClient) {
                     setIsAuth(true)
+                    setUserData(checkTargetData)
+                    // setUserInfo(checkTargetData)
                 } else {
                     setIsAuth(false)
                 }
@@ -66,7 +94,7 @@ export default function Router() {
                 setIsAuth(false)
             }
         }
-    })
+    }, [])
     const publicRoutes = () => {
         const routeValue = routeValues.publicRoutes;
         // 각 권한별 기본 페이지
@@ -76,7 +104,7 @@ export default function Router() {
             )
         );
         return (
-            <Route element={<PrivateRoute authenticated={isAuth} />}>
+            <Route element={<PrivateRoute authenticated={isAuth} userData={userData} />}>
                 {routeValue.map((publicRoute, publicIndex) => {
                     if (publicRoute.path === '/') {
                         return <Route key={publicIndex} path={publicRoute.path} element={mainPage}/>
@@ -87,32 +115,51 @@ export default function Router() {
             </Route>
         )
     }
-    // const privateRoutes = () => {
-    //     const routeValue = routeValues.privateRoutes;
-    // }
+    const PrivateRoute = ({
+        authenticated, pageAuth,userData
+    }:IPrivateRouteProps) => {
+        if (authenticated) {
+            if (pageAuth) {
+                if (userData.pageAuth === pageAuth) {
+                    return <Outlet />    
+                } else {
+                    // toast message
+                    // return <SimpleSnackbar/>
+                    setOpen(true);
+                    return <Navigate to="/" />
+                }
+            } else {
+                return <Outlet />
+            }
+        } else {
+            // 권한 필요 x, 로그인 체크 x
+            setOpen(true);
+            return <NotAuth />
+        }
+    }
     return (
         <div className="display-page-screen">
             {!isAuth && <NotAuth />}
             {isAuth && 
                 <Routes>
                     {/* No Login Pages */}
-                    {publicRoutes()}
+                    {/* {publicRoutes()} */}
                     {/* 본사 전용 페이지 */}
-                    <Route element={<PrivateRoute authenticated={isAuth} pageAuth='Head' />} >
-                        
-                    </Route>
-                    {/* 캠퍼스 전용 페이지 */}
-                    <Route element={<PrivateRoute authenticated={isAuth} pageAuth='Campus' />} >
-
-                    </Route>
-                    {/* 본사&캠퍼스 전체 페이지 */}
-                    <Route element={<PrivateRoute authenticated={isAuth} />} >
+                    <Route element={<PrivateRoute authenticated={isAuth} userData={userData} pageAuth='Head' />} >
                         <Route path={'/LevelandTextbook/SpeakingHub'} element={<LevelAndTextBookSpeakingHub />}/>
                         <Route path={'/LevelandTextbook/WritingHub'} element={<LevelAndTextBookWritingHub />} />
                         <Route path={'/ActivityManagement/SpeakingHub/IdeaExchange'} element={<ActivitySpeakHubMain children={<IdeaExchange />}  />}/>
                         <Route path={'/ActivityManagement/SpeakingHub/StoryVlog'} element={<ActivitySpeakHubMain children={<StoryVlog />} />} />
                         <Route path={'/ActivityManagement/SpeakingHub/RolePlay'} element={<ActivitySpeakHubMain children={<RolePlay />} />} />
                         <Route path={'/ActivityManagement/WritingHub/SparkWriting'} element={<ActivityWritingHubMain children={<SparkWriting />} />} />
+                    </Route>
+                    {/* 캠퍼스 전용 페이지 */}
+                    <Route element={<PrivateRoute authenticated={isAuth} userData={userData} pageAuth='Campus' />} >
+
+                    </Route>
+                    {/* 본사&캠퍼스 전체 페이지 */}
+                    <Route element={<PrivateRoute authenticated={isAuth} userData={userData} />} >
+                        
                         <Route path={'/LearningManagement/WritingHub/SparkWriting'} element={<LearningManagementWritingHub children={<LMSparkWriting />}/>} />
                         <Route path={'/LearningManagement/WritingHub/SparkWriting/feedback/:studentCode/:DraftId'} element={<LearningManagementSparkWritingFeedbackPage/>} />
 
@@ -134,6 +181,7 @@ export default function Router() {
             }
             <CommonAlertModalComponent />
             <StandbyScreen />
+            <SimpleSnackbar toastOpen={open} setToastOpen={setOpen}/>
         </div>
 
     )

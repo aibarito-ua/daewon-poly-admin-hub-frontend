@@ -3,6 +3,8 @@ import { Menu, Transition } from '@headlessui/react'
 import useNavStore from '../../../store/useNavStore';
 import { useNavigate } from 'react-router-dom';
 import useControlAlertStore from '../../../store/useControlAlertStore';
+import {Cookies} from 'react-cookie'
+import { CONFIG } from '../../../config';
 type navItemValues = {
   name:string,
   path:string,
@@ -22,6 +24,7 @@ export default function TextareaDropdown (props: {
         onChangeValue,
         currentIndex
     } = props;
+    
     const [selectName, setSelectName] = useState(displayButtonValue)
     const [selectActive, setSelectActive] = useState<number|undefined>(undefined);
     const [stateDropNameList, setStateDropNameList] = useState<navItemValues[]>(dropValueList);
@@ -34,7 +37,7 @@ export default function TextareaDropdown (props: {
         navigateBlockMessage,
         navigateBlockAlertYesFn,
         navigateBlockAlertNoFn,
-        
+
     } = useNavStore();
     const {
         commonAlertOpen, commonAlertClose,
@@ -47,6 +50,8 @@ export default function TextareaDropdown (props: {
       ) : ''
       const pathString = rolePath === '' ? `/${link}` : `/${rolePath}/${link}`
       console.log('path test =',pathString)
+    //   auth
+
       if (!navigateBlockFlag) {
         navigate(pathString);
       } else {
@@ -120,6 +125,8 @@ export default function TextareaDropdown (props: {
                                     : "CSS-dropdown-munu-item-a-default" ):"CSS-dropdown-munu-item-a-default" 
                                 }
                                 onClick={()=>{
+                                    
+
                                     onChangeValue(nameItem)
                                     setSelectActive(i)
                                     const navigationValues = [selectName, nameItem.name]
