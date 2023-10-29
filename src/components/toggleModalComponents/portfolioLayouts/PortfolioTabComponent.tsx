@@ -262,7 +262,7 @@ export default function PortfolioTabComponent(props: {
                     set.setTeachersComments(comments);
                     set.setCompletionDates(dates)
                     setFeedbackDataInStudent(dumyData);
-                    set.setReportAPIData(reportData);
+                    set.setReportAPIData(reportData, target.rubric);
                     checkMoveFlag(target.unit_index);
                     set.initCurrentDisplay(target.unit_index, target.topic);
                     return true;
@@ -396,7 +396,7 @@ export default function PortfolioTabComponent(props: {
                         }
                         set.setTeachersComments(comments);
                         set.setCompletionDates(dates);
-                        set.setReportAPIData(reportData);
+                        set.setReportAPIData(reportData, target.rubric);
                         setFeedbackDataInStudent(dumyData);
                         checkMoveFlag(target.unit_index);
                         set.initCurrentDisplay(target.unit_index, target.topic);
@@ -456,7 +456,7 @@ export default function PortfolioTabComponent(props: {
                         set.setTeachersComments(comments);
                         set.setCompletionDates(dates)
                         setFeedbackDataInStudent(dumyData);
-                        set.setReportAPIData(reportData);
+                        set.setReportAPIData(reportData, target.rubric);
                         checkMoveFlag(target.unit_index);
                         set.initCurrentDisplay(target.unit_index, target.topic);
                         break;
@@ -486,7 +486,7 @@ export default function PortfolioTabComponent(props: {
             if (orderIdx === 1) {
                 // title
                 return <div key={key} className='flex flex-row w-full justify-center pb-[40px]'>
-                    <div className='flex portfolio-modal-contents-font'>{portfolioItem.content}</div>
+                    <div className='flex portfolio-modal-contents-font-title'>{portfolioItem.content}</div>
                 </div>
             } else {
                 // body
@@ -546,8 +546,8 @@ export default function PortfolioTabComponent(props: {
                 </div>
             </div>
             {/* content */}
-            <div className='flex flex-col w-[1200px] h-[531px] mt-[32px] ml-[30px] overflow-y-auto relative'>
-                <div className='flex flex-col w-[1200px] min-h-[531px] pt-[50px] border-[1px] bg-[#f9f9f9] border-[#dddddd] rounded-[20px]'>
+            <div className='flex flex-col w-[1200px] h-[531px] mt-[32px] ml-[30px] border-[1px] bg-[#f9f9f9] border-[#dddddd] border-b-transparent rounded-t-[20px] overflow-y-auto relative'>
+                <div className='flex flex-col w-[1200px] min-h-[531px] pt-[50px] '>
                     {displayPortfolio(reportByUnitAPIData)}
                 </div>
                 {isCrown && <div className='absolute right-[40px] bg-svg-ic-crown w-[60px] h-[50px] ' />}

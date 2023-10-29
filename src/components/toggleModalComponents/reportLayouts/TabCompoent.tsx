@@ -43,7 +43,7 @@ function CustomTabPanel(props: TabPanelProps) {
       hidden={value !== index}
       id={`simple-tabpanel-${index}`}
       aria-labelledby={`simple-tab-${index}`}
-      className='bg-white flex flex-row w-full'
+      className='bg-white flex flex-row w-full report-modal-selected-area'
       {...other}
       style={{
         borderRadius: '30px',
@@ -93,6 +93,7 @@ const StyledTab = styled((props: StyledTabProps) => (
     '&.Mui-selected': {
       color: '#0fa9cb',
       backgroundColor: '#fff',
+      boxShadow: '3px 3px 10px 0 rgba(0, 0, 0, 0.08)',
     },
     '&.Mui-focusVisible': {
     //   backgroundColor: 'rgba(100, 95, 228, 0.32)',
@@ -324,7 +325,7 @@ export default function BasicTabs(props: {
                         }
                         set.setTeachersComments(comments);
                         set.setCompletionDates(dates);
-                        set.setReportAPIData(reportData);
+                        set.setReportAPIData(reportData, target.rubric);
                         setFeedbackDataInStudent(dumyData);
                         checkMoveFlag(target.unit_index);
                         set.initCurrentDisplay(target.unit_index, target.topic);
@@ -382,7 +383,7 @@ export default function BasicTabs(props: {
                         set.setTeachersComments(comments);
                         set.setCompletionDates(dates)
                         setFeedbackDataInStudent(dumyData);
-                        set.setReportAPIData(reportData);
+                        set.setReportAPIData(reportData, target.rubric);
                         checkMoveFlag(target.unit_index);
                         set.initCurrentDisplay(target.unit_index, target.topic);
                         break;
@@ -405,6 +406,7 @@ export default function BasicTabs(props: {
           <StyledTab sx={{
             marginRight: '10px'
           }} label="Overall Report" {...a11yProps(0)}/>
+          
           <StyledTab label="Report by Unit" {...a11yProps(1)} />
           {/* <StyledTab label="print component" {...a11yProps(2)} /> */}
         </Tabs>

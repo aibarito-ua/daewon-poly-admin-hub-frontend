@@ -418,7 +418,7 @@ const TableBody = (props:{
                                                     }
                                                     set.setTeachersComments(comments);
                                                     set.setCompletionDates(dates);
-                                                    set.setReportAPIData(reportData);
+                                                    set.setReportAPIData(reportData, secondDraftData.rubric);
                                                     setOverallReportByStu(overallData);
                                                     
                                                     console.log('dumy ===',dumyData)

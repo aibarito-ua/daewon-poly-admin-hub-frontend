@@ -131,7 +131,7 @@ export const Nav = () => {
     )
     return (
         
-        <nav className="block bg-[#0fa9cb] h-[120px] min-w-[1920px] w-full">
+        <nav className="block bg-[#0fa9cb] h-[120px] min-w-[1501px] w-full">
             {/* menu nav main area */}
             <div className="max-w-screen w-full h-[80px] flex flex-row items-center mx-auto px-[40px] font-bold text-[18px]">
                 <div className="flex flex-row justify-start items-center w-[430px] h-full pl-[20px] cursor-default">

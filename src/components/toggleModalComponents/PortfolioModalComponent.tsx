@@ -49,6 +49,8 @@ export default function PortfolioModalComponent ( props: IPortfolioComponentProp
                     width: '100%',
                     maxWidth: '1300px',
                     minWidth: '1300px',
+                    padding:0,
+                    height: '850px',
                 }
             }} >
                 {/* Title */}
@@ -69,7 +71,9 @@ export default function PortfolioModalComponent ( props: IPortfolioComponentProp
                 {/* Content */}
                 <DialogContent sx={{
                     height: '800px',
-                    backgroundColor: '#f2f9ff'
+                    minHeight: '800px',
+                    backgroundColor: '#f2f9ff',
+                    paddingX:'20px',
                 }}>
                     <PortfolioTabComponent student_code={student_code} from={from} modalClose={handleClose}/>
                 </DialogContent>

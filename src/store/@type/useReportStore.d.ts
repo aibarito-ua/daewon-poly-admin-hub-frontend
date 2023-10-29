@@ -13,7 +13,7 @@ interface IUseReportStore {
         setCompletionDates: (dates: TDraftStringsData) => void;
         setRubricTooltips: (data:TRubricReportAll) => void;
 
-        setReportAPIData: (data:TStudentUnitReportRes) => void;
+        setReportAPIData: (data:TStudentUnitReportRes, rubric:TActivitySparkWritingBookRubricItem) => void;
     },
     reportByUnitData:TUnitReportModalData;
     reportByUnitAPIData: TStudentUnitReportRes;
@@ -87,6 +87,7 @@ type TAllDoughnutDatas = {
         selectName: string;
         fillColor: string;
         fillBorderColor: string;
+        innerLineColor: string;
         tooltip: {
             title:string,
             content: string

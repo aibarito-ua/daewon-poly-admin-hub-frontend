@@ -14,7 +14,7 @@ const textmainCss:React.CSSProperties = {
 const text1Css:React.CSSProperties = {
 width: '54px',
 height: '24px',
-textShadow: '2px 2px 0 rgba(0,0,0,0.16)',
+// textShadow: '2px 2px 0 rgba(0,0,0,0.16)',
 fontFamily: 'GothamRounded',
 fontSize: '20px',
 fontWeight: 'bold',
@@ -26,7 +26,7 @@ letterSpacing: 'normal',
 const text2Css:React.CSSProperties = {
 width: '54px',
 height: '24px',
-textShadow: '2px 2px 0 rgba(0,0,0,0.16)',
+// textShadow: '2px 2px 0 rgba(0,0,0,0.16)',
 fontFamily: 'GothamRounded',
 fontSize: '14px',
 fontWeight: 'bold',
@@ -71,10 +71,38 @@ const textLabelCss:React.CSSProperties = {
     height: '80px',
     backgroundColor: '#ffffff',
     fill: payload.fillBorderColor,
-    textTransform: 'capitalize'
+    textTransform: 'capitalize',
+    fontFamily: 'GothamRounded',
+    fontSize: '15px',
+    fontWeight: 500,
+    fontStretch: 'normal',
+    fontStyle: 'normal',
+    lineHeight: 1.33,
+    letterSpacing: 'normal',
+    textAlign: 'center'
+
 }
 const percentValue = Math.round(payload.value*10)/10;
 const percentDotCheck = Math.round(payload.value*10)%10 === 0;
+
+const mainPercentString = percentValue.toString();
+const replaceDot = mainPercentString.replace('.','')
+const checkPercentDigit = percentValue === 100 ? '3': (
+    percentValue >= 0 && percentValue < 10 ? '1': '2'
+)
+const checkDot = mainPercentString === replaceDot;
+
+const cx2dot1 = cx+30;
+const cx2dotN = cx+20;
+const cx1dot1 = cx+25;
+const cx1dotN = cx+15;
+const percentCharacterPositionX = checkPercentDigit === '3' ? cx2dot1 : (
+    checkPercentDigit === '2' ? (
+        checkDot ? cx2dotN : cx2dot1
+    ) : (
+        checkDot ? cx1dotN : cx1dot1
+    )
+)
 
 const titleName:string[] = payload.name.split(' ')
   return (
@@ -82,7 +110,7 @@ const titleName:string[] = payload.name.split(' ')
         <circle cx={cx} cy={cy}
             r={trackRadius}
             fill="#fff"
-            stroke="#f5f5f5"
+            stroke={payload.innerLineColor}
             strokeWidth={4}
         />
         <text x={cx} y={cy} textAnchor="middle" width={104} height={28} style={textLabelCss}
@@ -92,18 +120,18 @@ const titleName:string[] = payload.name.split(' ')
             return <tspan x={cx} y={cy} key={textTitleIdx} textAnchor="middle" dy={checkTextLength>1 ? d2y-18: d2y-5}>{textTitle}</tspan>
         })}</text>
         <text x={cx} y={cy} dy={0} dx={0} textAnchor="middle" style={textmainCss} width={80} height={80} 
-        className="rounded-[50%] shadow-[1px_1px_5px_rgba(0,0,0,0.16)]">
+        >
             <tspan x={cx} y={cy} dy={15} dx={-5} textAnchor="middle" style={text1Css}>
                 {percentValue}
             </tspan>
-            <tspan x={percentDotCheck ? cx+20: cx+30} y={cy} dy={15} dx={-5} style={text2Css}>%</tspan>
+            <tspan x={percentCharacterPositionX} y={cy} dy={15} dx={-5} style={text2Css}>%</tspan>
         </text>
         {payload.selectName!=='' && (
             <Sector
                 cx={cx}
                 cy={cy}
-                innerRadius={innerRadius-2}
-                outerRadius={outerRadius+2}
+                innerRadius={innerRadius-1}
+                outerRadius={outerRadius+1}
                 startAngle={startAngle+0.5}
                 endAngle={endAngle-0.5}
                 fill={payload.fillBorderColor}
@@ -125,13 +153,13 @@ const titleName:string[] = payload.name.split(' ')
 };
 const CustomTooltipDIV = (props:any) => {
     const { active, payload, label} = props;
+    console.log('CustomTooltipDIV =',payload[0])
     if (active && payload && payload.length) {
         const classNameStr = `custom-tooltip-${payload[0].name.replace(' ','')}`
         return (
           <div className={`${classNameStr}`}>
             <p className="custom-tooltip-title z-20">{`${payload[0].payload.tooltip.title}`}</p>
-            <p className="custom-tooltip-content z-20">{`${payload[0].payload.tooltip.content}`}</p>
-            
+            <p className="custom-tooltip-content mt-[4px] z-20">{`${payload[0].payload.tooltip.content}`}</p>
           </div>
         );
     } else return null
@@ -147,6 +175,7 @@ export default function App() {
       const data = report.doughnutChart;
       const dumpData:TAllDoughnutDatas = JSON.parse(JSON.stringify(data));
       setAllData(dumpData);
+      console.log('allData ===',allData)
   },[reportByUnitAPIData])
     
   const mouseOnEvent = (e:any)=>{
@@ -205,8 +234,8 @@ export default function App() {
               data={dataItem.data}
               cx={polygonDot.cx}
               cy={polygonDot.cy}
-              innerRadius={48}
-              outerRadius={56}
+              innerRadius={59}
+              outerRadius={71}
               fill={dataItem.data[0].fillColor}
               dataKey="value"
               onMouseOver={mouseOnEvent}
@@ -236,6 +265,9 @@ export default function App() {
         fontWeight={700}
         fontSize={35}
         fill="#333"
+        style={{
+            textShadow: '3px 3px 0 rgba(0, 0, 0, 0.16)'
+        }}
         >{report.avrage.data[0].value}
         <tspan 
         fontSize={28}

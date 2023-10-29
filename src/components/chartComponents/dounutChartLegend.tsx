@@ -27,7 +27,7 @@ const DoughnutChartLegend = (props:IDoughnutChartLegendPropt) => {
         </div>
     })
     return (
-        <div className='grid grid-cols-3 grid-rows-2 w-fit h-[53px] gap-x-[30px]'>
+        <div className='grid grid-cols-3 grid-rows-2 w-fit h-[53px] gap-x-[30px] gap-y-[15px]'>
            {legendJsx}
         </div>
     )

@@ -193,7 +193,7 @@ const ReportTeachersComments = (
     return (
         <div className='flex flex-col w-[640px]'>
             <div className='flex flex-row justify-center'>
-                <span>{`Teacher's Comments`}</span>
+                <span className='report-chart-righ-word-count-title-span select-none'>{`Teacher's Comments`}</span>
             </div>
             <div className='report-chart-teacher-comment-content-box'>
                 {/* <span>{`1st Draft: ${teacherComments[0].draft_index===1? teacherComments[0].comment : teacherComments[1].comment}`}</span> */}

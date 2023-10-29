@@ -330,19 +330,21 @@ body {
   /* width: 100vw;
   height: 100vh;
   background-color: black; */
+  
   *::-webkit-scrollbar {
     width: 9px;
-    height: 9px;
+    height: 0px;
   };
   *::-webkit-scrollbar-thumb {
     background-color: #cccccc;
     background-clip: padding-box;
     border-right: 7px solid transparent;
-    border-bottom: 7px solid transparent;
+    border-bottom: 1px solid transparent;
   };
   *::-webkit-scrollbar-corner {
     display: none;
   }
+
   @apply
   m-0
   
@@ -433,7 +435,8 @@ body {
   flex-1
   flex-col
   w-full
-  min-w-fit
+  /* min-w-[1880px] */
+  min-w-[1501px]
   h-full
   justify-start
   bg-white
@@ -684,9 +687,8 @@ body {
 /* tr */
 .table-tbody-tr-basic {
   @apply
-  /* max-h-[2.5rem] */
   max-h-[76px]
-  h-[38px]
+  h-[76px]
 }
 
 /* td */
@@ -1015,7 +1017,7 @@ body {
   flex-col
   justify-center
   items-center
-  h-[76px] gap-[7px]
+  h-full gap-[7px]
 }
 .learning-management-class-table-button {
   @apply
@@ -1114,6 +1116,16 @@ body {
   flex w-full min-h-[42px] h-fit bg-[#f9f9f9] px-[15px] py-[12px]
   rounded-[2px]
 }
+.draft-viewer-container-body-wrap {
+  @apply
+  flex
+  flex-col
+  flex-1
+  w-full
+  overflow-auto
+  bg-[#f9f9f9]
+  justify-start
+}
 .draft-viewer-container-body {
   @apply
   flex
@@ -1121,7 +1133,7 @@ body {
   mt-[10px]
   p-[25px]
   w-full
-  h-[calc(100vh-455px)]
+  /* h-[calc(100vh-455px)] */
   overflow-auto
   bg-[#f9f9f9]
   justify-start
@@ -1129,7 +1141,8 @@ body {
 .final-draft-viewer-2nd-preview {
   @apply
   min-w-[400px] bg-white
-  h-[calc(100vh-400px)]
+  /* h-[calc(100vh-400px)] */
+  h-full
 }
 
 .update-words {
@@ -1238,19 +1251,29 @@ body {
   placeholder:text-[#999]
 }
 .final-component-title-label-font {
-  @apply
-  font-notoSansCJKKR text-[16px] text-[#222] leading-[1.13]
+  font-family: NotoSansCJKKR;
+  font-size: 16px;
+  font-weight: 500;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.13;
+  letter-spacing: normal;
+  text-align: left;
+  color: #222;
+  /* @apply */
+  /* font-notoSansCJKKR text-[16px] text-[#222] leading-[1.13] */
 }
 .comment-final-overall-textarea {
   @apply
   flex
+  text-[#222]
   w-[600px]
   h-[180px]
   border-[1px]
   border-[#dbdbdb]
   outline-none
   focus:outline-none
-  focus:ring-0
+  focus:ring-[#333]
   focus:border-[#dbdbdb]
   resize-none disabled:bg-white
 
@@ -1470,6 +1493,31 @@ body {
   bg-no-repeat
   bg-svg-bt-info-magnifying-glass-icon
   hover:cursor-pointer
+}
+/* evaluate rubric */
+.rubric-evaluation-font-description {
+  font-family: 'NotoSansCJKKR';
+  font-size: 13px;
+  font-weight: normal;
+  font-stretch: normal;
+  font-style: normal;
+  letter-spacing: normal;
+  line-height: 1.77;
+  color: #222;
+}
+.rubric-evaluation-font-label {
+  font-family: 'NotoSansCJKKR';
+  font-size: 14px;
+  font-weight: 500;
+  font-stretch: normal;
+  font-style: normal;
+  letter-spacing: normal;
+  line-height: 1.57;
+  text-align: center;
+  vertical-align: middle;
+  color: #fff;
+  @apply
+  w-full
 }
 
 /* export 학습관리 */
@@ -1999,8 +2047,20 @@ body {
   text-[#0fa9cb]
   flex flex-row
   pl-[10px]
+  items-center
 }
 
+.portfolio-modal-contents-font-title {
+  font-family: 'NotoSansCJKKR';
+  font-size: 13px;
+  font-weight: 500;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.92;
+  letter-spacing: normal;
+  text-align: left;
+  color: '#222'
+}
 
 .portfolio-modal-contents-font {
   font-family: 'NotoSansCJKKR';
@@ -2036,15 +2096,15 @@ body {
   capitalize
 }
 .report-chart-righ-correction-content-item-value {
-  font-family: 'NotoSansCJKKR';
-  font-size: 13px;
-  font-weight: 400;
-  line-height: 1.54;
+  font-family: 'GothamRounded';
+  font-size: 12px;
   text-align: left;
+  line-height: 1.5;
   @apply
   text-[#0fa9cb]
   flex flex-row
   pl-[10px]
+  items-center
 }
 .report-chart-righ-correction-content-item-arrow {
   @apply
@@ -2185,7 +2245,7 @@ body {
   h-full
   px-[25px]
   pt-[10px]
-  pb-[20px]
+  pb-[25px]
   flow-root
 }
 .custom-tooltip-voice {
@@ -2197,7 +2257,7 @@ body {
   h-full
   px-[25px]
   pt-[10px]
-  pb-[20px]
+  pb-[25px]
   flow-root
 }
 .custom-tooltip-conventions {
@@ -2209,7 +2269,7 @@ body {
   h-full
   px-[25px]
   pt-[10px]
-  pb-[20px]
+  pb-[25px]
   flow-root
 }
 .custom-tooltip-sentencefluency {
@@ -2221,7 +2281,7 @@ body {
   h-full
   px-[25px]
   pt-[10px]
-  pb-[20px]
+  pb-[25px]
   flow-root
 }
 .custom-tooltip-wordchoice {
@@ -2233,7 +2293,7 @@ body {
   h-full
   px-[25px]
   pt-[10px]
-  pb-[20px]
+  pb-[25px]
   flow-root
 }
 .custom-tooltip-ideas {
@@ -2245,7 +2305,7 @@ body {
   h-full
   px-[25px]
   pt-[10px]
-  pb-[20px]
+  pb-[25px]
   flow-root
 }
 .custom-tooltip-title {
@@ -2259,7 +2319,7 @@ body {
   line-height: 1.43;
   @apply
   text-[#222]
-  
+  capitalize
 }
 .custom-tooltip-content {
   font-family: 'NotoSansCJKKR';
@@ -2319,4 +2379,7 @@ body {
   bg-no-repeat
   bg-report-export-print-btn
   hover:bg-report-export-print-btn-over
+}
+.report-modal-selected-area {
+  box-shadow: 3px 3px 10px 0 rgba(0, 0, 0, 0.08);
 }

@@ -139,12 +139,12 @@ const TableBody = (props:{
     console.log('studentDataInClass ::',studentDataInClass)
     console.log('dataModel:: ',dataModel)
     return (
-        <tbody className='table-tbody-basic text-[13px] font-sans font-normal text-[#444444] bg-[#fff] border-b-[1px]'>
+        <tbody className='table-tbody-basic min-w-[1172px] text-[13px] font-sans font-normal text-[#444444] bg-[#fff] border-b-[1px]'>
             {dataModel&& dataModel.map((rowData, rowIdx)=>{
                 // student row
-                
+                const isBackgroundChange = rowIdx%2 === 0;
                 return <tr key={rowIdx}
-                    className='table-tbody-tr-basic max-h-[76px]'
+                    className={isBackgroundChange ? 'table-tbody-tr-basic min-w-[1172px]':'table-tbody-tr-basic min-w-[1172px] bg-[#f9f9f9]'}
                 >{
                     rowData.map((cellData, cellIdx) => {
                         const userInfoData = cellData.value.userInfo;
@@ -152,7 +152,7 @@ const TableBody = (props:{
                             // category "NO"
                             return <td
                                 key={cellData.key}
-                                className={`border-l-[1px] border-l-[#e2e3e6] border-r-[1px] border-r-[#e2e3e6]`}
+                                className={`border-l-[1px] border-l-[#e2e3e6] border-r-[1px] border-r-[#e2e3e6] p-0 h-[76px] max-h-[76px]`}
                                 style={{minWidth: cellData.width}}
                             >
                                 <span className='inline-flex items-center justify-center w-full'>
@@ -162,8 +162,8 @@ const TableBody = (props:{
                             // category "Student"
                             return <td
                                 key={cellData.key}
-                                className={`border-l-[1px] border-l-[#e2e3e6] border-r-[1px] border-r-[#e2e3e6]`}
-                                style={{width: cellData.width}}
+                                className={`border-l-[1px] border-l-[#e2e3e6] border-r-[1px] border-r-[#e2e3e6] p-0 h-[76px] max-h-[76px]`}
+                                
                             ><span className='w-full inline-flex flex-col justify-center items-center'>
                                 <span className='learning-management-class-table-text'>{cellData.value.nameset?.student_name_kr}</span>
                                 <span className='learning-management-class-table-text'>{`(${cellData.value.nameset?.student_name_en})`}</span>
@@ -179,8 +179,8 @@ const TableBody = (props:{
                                     console.log('displayDate =',displayDate)
                                     return <td
                                         key={cellData.key}
-                                        className={`border-l-[1px] border-l-[#e2e3e6] border-r-[1px] border-r-[#e2e3e6]`}
-                                        style={{minWidth: cellData.width}}
+                                        className={`border-l-[1px] border-l-[#e2e3e6] border-r-[1px] border-r-[#e2e3e6] p-0 w-[95px] h-[76px] max-h-[76px]`}
+                                        style={{minWidth: '95px'}}
                                     >
                                         <span className='learning-management-class-table-item-wrap'>
                                         <ReportModalComponent 
@@ -219,7 +219,7 @@ const TableBody = (props:{
                                                 const dates:TDraftStringsData = {draft1st: formatDate(submitDate1st,'-'), draft2nd: formatDate(submitDate2nd,'-')};
                                                 set.setTeachersComments(comments);
                                                 set.setCompletionDates(dates);
-                                                set.setReportAPIData(reportDataAPI);
+                                                set.setReportAPIData(reportDataAPI, reportData.rubric);
                                                 setOverallReportByStu(overallDataAPI);
                                                 setFeedbackDataInStudent(dumyData);
                                                 return true;
@@ -232,16 +232,16 @@ const TableBody = (props:{
                                 } else {
                                     return <td
                                         key={cellData.key}
-                                        className={`border-l-[1px] border-l-[#e2e3e6] border-r-[1px] border-r-[#e2e3e6] text-center`}
-                                        style={{width: cellData.width}}
+                                        className={`border-l-[1px] border-l-[#e2e3e6] border-r-[1px] border-r-[#e2e3e6] text-center p-0 h-[76px] max-h-[76px]`}
+                                        
                                     >{'-'}</td>
                                 }
 
                             } else {
                                 return <td
                                     key={cellData.key}
-                                    className={`border-l-[1px] border-l-[#e2e3e6] border-r-[1px] border-r-[#e2e3e6] text-center`}
-                                    style={{width: cellData.width}}
+                                    className={`border-l-[1px] border-l-[#e2e3e6] border-r-[1px] border-r-[#e2e3e6] text-center p-0 h-[76px] max-h-[76px]`}
+                                    
                                 >{'-'}</td>
                             }
                         } else {
@@ -264,8 +264,8 @@ const TableBody = (props:{
 
                                 return <td
                                     key={cellData.key}
-                                    className={`border-l-[1px] border-l-[#e2e3e6] border-r-[1px] border-r-[#aaa]`}
-                                    style={{width: cellData.width}}
+                                    className={`border-l-[1px] border-l-[#e2e3e6] border-r-[1px] border-r-[#aaa] p-0 h-[76px] max-h-[76px]`}
+                                    
                                     onClick={async ()=>{
 
                                     }}
@@ -301,7 +301,7 @@ const TableBody = (props:{
                                                 const dates:TDraftStringsData = {draft1st: formatDate(submitDate1st,'-'), draft2nd: formatDate(submitDate2nd,'-')};
                                                 set.setTeachersComments(comments);
                                                 set.setCompletionDates(dates);
-                                                set.setReportAPIData(reportDataAPI);
+                                                set.setReportAPIData(reportDataAPI, reportData.rubric);
                                                 setOverallReportByStu(overallDataAPI);
                                                 setFeedbackDataInStudent(dumyData);
                                                 return true;
@@ -315,8 +315,7 @@ const TableBody = (props:{
                             } else {
                                 return <td
                                     key={cellData.key}
-                                    className={`border-l-[1px] border-l-[#e2e3e6] border-r-[1px] border-r-[#aaa] text-center`}
-                                    style={{width: cellData.width}}
+                                    className={`border-l-[1px] border-l-[#e2e3e6] border-r-[1px] border-r-[#aaa] text-center p-0 h-[76px] max-h-[76px]`}
                                 >{'-'}</td>
                             }
 
@@ -337,7 +336,7 @@ export default function LearningResultManagementStudentsTable (props:{
     if (props.dataModel.length > 0) {
         return (
             <div className='table-wrap-div'>
-                <table className='table-aside'>
+                <table className='table-aside min-w-[1172px]'>
                     <TableHeader head={props.dataHead}/>
                     <TableBody dataModel={props.dataModel}
                     />

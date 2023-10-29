@@ -521,7 +521,7 @@ const rubricEvaluation = (
                 borderBottomStyle: 'solid',
                 borderBottomWidth: '1px'
             }}>
-                <div className={`flex flex-col justify-center items-center capitalize w-full max-w-[120px] text-white`}
+                <div className={`flex flex-col justify-center items-center capitalize w-full max-w-[120px] rubric-evaluation-font-label`}
                     style={{
                         backgroundColor: rubricColor.main,
                     }}
@@ -529,7 +529,9 @@ const rubricEvaluation = (
                     const titleCategoryKey = 'rubric-evaluation-preview-box-category-'+categoryStrIdx;
                     return <div key={titleCategoryKey}>{categoryStr}</div>
                 })}</div>
-                <div className='flex flex-col'>
+                <div className='flex flex-col flex-1 p-[15px] rubric-evaluation-font-description' style={{
+                            backgroundColor: rubricColor.inner,
+                        }}>
                     {rubric.explanation.map((rubricEx, rubricExIndex) => {
                         const rubricExkey = 'rubric-explanation-'+rubricExIndex;
                         return <p key={rubricExkey}>{ '- '+rubricEx}</p>

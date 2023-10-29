@@ -40,6 +40,8 @@ const LearningManagementSparkWritingFeedbackPage = () => {
     const navigate = useNavigate();
     const locationHook = useLocation();
 
+    const canvasRef = React.useRef<HTMLDivElement>(null);
+
     const {
         selectNavigationTitles, setSelectNavigationTitles,
         navigateBlockFlag, navigateBlockMessage
@@ -898,6 +900,7 @@ const LearningManagementSparkWritingFeedbackPage = () => {
     }
     const [advisorOpen, setAdvisorOpen] = React.useState<boolean>(false);
     // div width
+    
     // divide state
     const [divAResize, setDivAResize] = React.useState<TDivsControlConfig>({
         advisor: {x: 0, w: 0},
@@ -910,13 +913,43 @@ const LearningManagementSparkWritingFeedbackPage = () => {
 
     const inrange = (v: number, min: number, max:number) => {
         const boundary = boundaryRef.current?.getBoundingClientRect();
+        const maxWidth = 1920;
         if (boundary) {
             const bourdaryMax = boundary.width;
-            // console.log('boundary width =',bourdaryMax)
+            console.log('v =',v)
+            console.log('boundary width =',bourdaryMax)
             if(v < min) return min;
-            if (v > bourdaryMax) return bourdaryMax;
+            if (v > max) return max;
             return v;
         } else return v;
+    }
+    const inrangeR = (v: number, min: number, max:number) => {
+        const boundary = boundaryRef.current?.getBoundingClientRect();
+        
+        if (boundary) {
+            const bourdaryMax = boundary.width;
+            // console.log('v =',v)
+            // console.log('boundary width =',bourdaryMax)
+            const minusLeft = 400-v;
+            // console.log('minus left =',minusLeft)
+            if(v < min) return [min,minusLeft];
+            if (v > 1072) return [1072,minusLeft];
+            return [v,minusLeft];
+        } else return [v,0];
+    }
+    const inrangeL = (v: number, min: number, max:number) => {
+        const boundary = boundaryRef.current?.getBoundingClientRect();
+        
+        if (boundary) {
+            const bourdaryMax = boundary.width;
+            // console.log('v =',v)
+            // console.log('boundary width =',bourdaryMax)
+            const minusLeft = 400-v;
+            // console.log('minus left =',minusLeft)
+            if(v < min) return [min,minusLeft];
+            if (v > max) return [max,minusLeft];
+            return [v,minusLeft];
+        } else return [v,0];
     }
 
     // 2nd draft save
@@ -1005,6 +1038,7 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                 }
             })
         }
+        
         if (feedbackDataInStudent.status?.status) {
             setDraftStatus(feedbackDataInStudent.status.status);
             if (feedbackDataInStudent.status.status >2) {
@@ -1051,6 +1085,12 @@ const LearningManagementSparkWritingFeedbackPage = () => {
             })
         }
         if (feedbackDataInStudent.draft_2nd_data) {
+            if (divAResize.advisor.w === 0 && feedbackDataInStudent.defautInfo.step_label!=='1st Draft') {
+                console.log('2nd adviosr set')
+                let dumyStates:TDivsControlConfig = JSON.parse(JSON.stringify(divAResize));
+                dumyStates.advisor.w = 400;
+                setDivAResize(dumyStates);
+            }
             console.log('DATA:=', feedbackDataInStudent)
             console.log('feedbackDataInStudent.draft_2nd_data =995=',feedbackDataInStudent.draft_2nd_data)
             const draft2ndData = feedbackDataInStudent.draft_2nd_data;
@@ -1218,7 +1258,7 @@ const LearningManagementSparkWritingFeedbackPage = () => {
         )
     }
     return (
-        <section className="section-feedback-canvas">
+        <section className="section-feedback-canvas" ref={canvasRef}>
             <div className='flex flex-1 flex-col bg-white relative w-full min-w-[1120px] max-h-[185px] border-b-[1px] border-b-[#111] pt-[10px] px-[20px] pb-[20px]'>
                 <TopInfomationBar />
                 <div className='flex flex-row items-center h-[24px] gap-[8px] mt-[20px]'>
@@ -1262,6 +1302,9 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                                             if (checkAlreadyAdvisorUsed) {
                                                 let dumyStates:TDivsControlConfig = JSON.parse(JSON.stringify(divAResize));
                                                 dumyStates.advisor.w = 400;
+                                                dumyStates.divideAD.x = 400;
+                                                dumyStates.draft.w = 400;
+                                                dumyStates.divideDC.x = 400;
                                                 setDivAResize(dumyStates);
                                                 setAdvisorOpen(true);
                                                 
@@ -1272,6 +1315,9 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                                                     setAdvisor(advisorResponse);
                                                     let dumyStates:TDivsControlConfig = JSON.parse(JSON.stringify(divAResize));
                                                     dumyStates.advisor.w = 400;
+                                                    dumyStates.divideAD.x = 400;
+                                                    dumyStates.draft.w = 400;
+                                                    dumyStates.divideDC.x = 400;
                                                     setDivAResize(dumyStates);
                                                     setAdvisorOpen(true)
                                                 }
@@ -1286,7 +1332,15 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                                 style={{width: `${divAResize.advisor.w}px`}}>
                                     {/* advisor header */}
                                     <div className='flex flex-col w-full h-fit relative'>
-                                        <div className='absolute top-[2px] right-[0px] hover:cursor-pointer' onClick={() => setAdvisorOpen(false)} ><CloseButton /></div>
+                                        <div className='absolute top-[2px] right-[0px] hover:cursor-pointer' onClick={() => {
+                                            let dumyStates:TDivsControlConfig = JSON.parse(JSON.stringify(divAResize));
+                                            dumyStates.advisor.w = 0;
+                                            dumyStates.divideAD.x = 0;
+                                            dumyStates.draft.w = 400;
+                                            dumyStates.divideDC.x = 400;
+                                            setDivAResize(dumyStates)
+                                            setAdvisorOpen(false)
+                                        }} ><CloseButton /></div>
                                         <div className='comment-div-title-label-wrap'>
                                             <div className='comment-div-title-label-before-bar'></div>
                                             <div className='comment-div-title-label-text'>{`writing advisor`}</div>
@@ -1393,23 +1447,40 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                             className='h-[55px] hover:cursor-grab'
                             onMouseDown={(clickEvent: React.MouseEvent<Element, MouseEvent>) => {
                                 const mouseMoveHandler = (moveEvent: MouseEvent) => {
-                                    const boundary = boundaryRef.current?.getBoundingClientRect();
-                                    
-                                    if (boundary) {
-                                        // 2️⃣
-                                        const deltaX = moveEvent.screenX - clickEvent.screenX;
+                                    const canvasCurrentRef = canvasRef.current;
+                                    if (canvasCurrentRef) {
+                                        const maxWidth = canvasCurrentRef.clientWidth;
                                         
-                                        const resizeX = inrange(
-                                            divAResize.divideAD.x + deltaX,
-                                            // Math.floor(-boundary.width / 2 + 5 + 10),
-                                            400,
-                                            Math.floor(boundary.width- 5 - 10),
-                                        )
-                                        let dumyStates:TDivsControlConfig = JSON.parse(JSON.stringify(divAResize));
-                                        dumyStates.advisor.w = resizeX
-                                        dumyStates.divideAD.x = resizeX
-                                        // 3️⃣
-                                        setDivAResize(dumyStates);
+                                        const boundary = boundaryRef.current?.getBoundingClientRect();
+                                        if (boundary) {
+                                            // 2️⃣
+                                            const deltaX = moveEvent.screenX - clickEvent.screenX;
+                                            
+                                            const resizeX = inrange(
+                                                divAResize.divideAD.x + deltaX,
+                                                // Math.floor(-boundary.width / 2 + 5 + 10),
+                                                400,
+                                                1052,
+                                            )
+                                            let dumyStates:TDivsControlConfig = JSON.parse(JSON.stringify(divAResize));
+                                            const gapX = dumyStates.advisor.w - resizeX;
+                                            // advisor, draft, comment 합이 1852보다 클때 다른 영역 사이즈 줄이기
+                                            // ad + dra = 1219
+                                            // 2nd draft max width
+                                            if (dumyStates.draft.w > 400) {
+                                                dumyStates.advisor.w = resizeX
+                                                dumyStates.divideAD.x = resizeX
+                                                dumyStates.draft.w = dumyStates.draft.w +gapX;
+                                                dumyStates.divideDC.x = dumyStates.divideDC.x + gapX;
+                                                setDivAResize(dumyStates);
+                                            } else {
+                                                dumyStates.advisor.w = resizeX
+                                                dumyStates.divideAD.x = resizeX
+                                                dumyStates.draft.w = 400;
+                                                dumyStates.divideDC.x = 400;
+                                                setDivAResize(dumyStates);
+                                            }
+                                        }
                                     }
                                 };
 
@@ -1489,21 +1560,86 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                             className='h-[55px] hover:cursor-grab'
                             onMouseDown={(clickEvent: React.MouseEvent<Element, MouseEvent>) => {
                                 const mouseMoveHandler = (moveEvent: MouseEvent) => {
-                                    const boundary = boundaryRef.current?.getBoundingClientRect();
-                                    if (boundary) {
-                                        // 2️⃣
-                                        const deltaX = moveEvent.screenX - clickEvent.screenX;
-                                        const resizeX = inrange(
-                                            divAResize.divideDC.x + deltaX,
-                                            // Math.floor(-boundary.width / 2 + 5 + 10),
-                                            400,
-                                            Math.floor(boundary.width - 5 - 10),
-                                        )
-                                        let dumyStates:TDivsControlConfig = JSON.parse(JSON.stringify(divAResize));
-                                        dumyStates.draft.w = resizeX
-                                        dumyStates.divideDC.x = resizeX
-                                        // 3️⃣
-                                        setDivAResize(dumyStates);
+                                    const canvasCurrentRef = canvasRef.current;
+                                    if (canvasCurrentRef) {
+                                        const maxWidth = canvasCurrentRef.clientWidth>1200 ? canvasCurrentRef.clientWidth : 1200;
+                                        const boundary = boundaryRef.current?.getBoundingClientRect();
+                                        if (boundary) {
+                                            // 2️⃣
+                                            const deltaX = moveEvent.screenX - clickEvent.screenX;
+                                            
+                                            let dumyStates:TDivsControlConfig = JSON.parse(JSON.stringify(divAResize));
+                                            if (advisorOpen) {
+                                                const resizeX = inrange(
+                                                    divAResize.divideDC.x + deltaX,
+                                                    400,
+                                                    1052
+                                                )
+                                                // depth 3
+                                                // advisor + draft 최대 1452
+                                                const gapX = dumyStates.draft.w - resizeX;
+                                                const maxW = dumyStates.advisor.w + resizeX > 1452;
+                                                if (deltaX > 0) {
+                                                    // 우측으로 드레그중
+                                                    if (!maxW) {
+                                                        dumyStates.draft.w = resizeX;
+                                                        dumyStates.divideDC.x = resizeX;
+                                                        setDivAResize(dumyStates);
+                                                    }
+                                                } else if (deltaX < 0) {
+                                                    // 좌측으로 드레그중
+                                                    if (gapX > 0) {
+                                                        dumyStates.draft.w = resizeX;
+                                                        dumyStates.divideDC.x = resizeX;
+                                                        setDivAResize(dumyStates);
+                                                    } else {
+                                                        if (dumyStates.advisor.w > 400) {
+                                                            dumyStates.advisor.w = dumyStates.advisor.w + deltaX;
+                                                            dumyStates.divideAD.x = dumyStates.divideAD.x + deltaX;
+                                                            setDivAResize(dumyStates);
+                                                        }
+
+                                                    }
+                                                } else {
+                                                    // 움직임 없음
+                                                }
+                                            } else {
+                                                // depth 2
+                                                console.log('depth 2')
+                                                const maxResizeWidth = maxWidth - 108 - 400;
+                                                const resizeX = inrange(
+                                                    divAResize.divideAD.x + deltaX,
+                                                    // Math.floor(-boundary.width / 2 + 5 + 10),
+                                                    400,
+                                                    maxResizeWidth,
+                                                );
+                                                // draft 최대 1472
+                                                console.log('resize x =',resizeX)
+                                                console.log('maxResizeWidth =',maxResizeWidth)
+                                                const moveW = dumyStates.draft.w + divAResize.divideAD.x + deltaX;
+                                                
+                                                console.log('moveW =',moveW)
+                                                
+                                                if (moveW >= 400 && moveW <= maxResizeWidth) {
+                                                    dumyStates.draft.w = moveW;
+                                                    dumyStates.divideDC.x = moveW;
+                                                    setDivAResize(dumyStates);
+                                                } else if (moveW < 400) {
+                                                    dumyStates.draft.w = 400;
+                                                    dumyStates.divideDC.x = 400;
+                                                    setDivAResize(dumyStates);
+                                                } else {
+                                                    dumyStates.draft.w = maxResizeWidth;
+                                                    dumyStates.divideDC.x = maxResizeWidth;
+                                                    setDivAResize(dumyStates);
+                                                }
+                                            }
+                                            
+                                            // 3️⃣
+                                            // setDivAResize(dumyStates);
+    
+                                        }
+
                                     }
                                 };
 
@@ -1519,7 +1655,7 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                         <div className='flex h-[calc(50%-27.5px)] w-[1px] bg-[#d1d1d1]'/>
                     </div>
                     {/* comment div */}
-                    <div className='flex flex-1 flex-col gap-[20px] bg-white h-full w-full min-w-[300px]'>
+                    <div className='flex flex-1 flex-col gap-[20px] bg-white h-full w-full min-w-[400px]'>
                         
                         <div className='flex flex-col w-full h-[calc(100%-284px)] max-h-[calc(100%-284px)] min-h-[calc(100%-284px)] pr-[20px] pl-[13px] pt-[20px] gap-[10px]'>
                             <div className='comment-overall-label'>{'correction comments'}</div>
@@ -1711,7 +1847,7 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                                     draftStatus < 4 ? saveButtonEvent:()=>{}
                                 ):()=>{}}
                             />
-                            <div className={(allBodySelectedText.length > 0 && overallComment.length>0)? (
+                            <div className={(overallComment.length>0)? (
                                 draftStatus < 4 ? 'comment-button-send': 'comment-button-send-disabled'
                             ):'comment-button-send-disabled'}
                                 onClick={(allBodySelectedText.length > 0 || overallComment.length > 0) ? (
@@ -1728,10 +1864,10 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                 >
                     {/* 1st draft preview */}
                     <div className='final-draft-viewer-2nd-preview'
-                        style={{width: `${divAResize.advisor.w===0? 400: divAResize.advisor.w}px`}}
+                        style={{width: `${divAResize.advisor.w}px`}}
                     >
-                        <div className='flex flex-col w-full h-full pl-[20px] py-[20px]'>
-                            <div className='flex flex-row relative min-h-[36px] h-[36px] items-center font-notoSansCJKKR text-[16px] text-[#222] leading-[1.13]'>
+                        <div className='flex flex-col w-full h-full pl-[20px] py-[20px] gap-[10px]'>
+                            <div className='flex flex-row relative min-h-[36px] max-h-[36px] h-[36px] items-center font-notoSansCJKKR text-[16px] text-[#222] leading-[1.13]'>
                                 <span>1st Draft</span>
                                 <span className='absolute top-0 right-0 flex gap-[5px]'>
                                     <PDFExportButton 
@@ -1749,13 +1885,13 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                                 </span>
                             </div>
                             <div id='draft-title-wrap-div'
-                            className='flex flex-row mt-[10px] h-[42px] gap-[15px] font-notoSansCJKKR text-[13px] text-[#222] leading-[1.38] items-center'>
+                            className='flex flex-row min-h-[42px] h-fit gap-[15px] font-notoSansCJKKR text-[13px] text-[#222] leading-[1.38] items-center'>
                                 <div className='flex'>Title: </div>
                                 <div className='draft-viewer-container-title'>
                                     {feedbackDataInStudent.draft_data && draftViewBox.loadFinalDraftTitle({feedbackDataInStudent: feedbackDataInStudent.draft_data.draft_outline, draft:'1'})}
                                 </div>
                             </div>
-                            <div id='draft-body-wrap-div' ref={container1stDraftBody}>
+                            <div id='draft-body-wrap-div' ref={container1stDraftBody} className='draft-viewer-container-body-wrap'>
                                 <div className='draft-viewer-container-body gap-[13px]'>
                                     {feedbackDataInStudent.draft_data && draftViewBox.loadFinalDraftBody({feedbackDataInStudent:feedbackDataInStudent.draft_data.draft_outline, draft: '1' })}
                                 </div>
@@ -1770,24 +1906,42 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                         className='h-[55px] hover:cursor-grab'
                         onMouseDown={(clickEvent: React.MouseEvent<Element, MouseEvent>) => {
                             const mouseMoveHandler = (moveEvent: MouseEvent) => {
-                                const boundary = boundaryRef.current?.getBoundingClientRect();
-                                
-                                if (boundary) {
-                                    // 2️⃣
-                                    const deltaX = moveEvent.screenX - clickEvent.screenX;
-                                    
-                                    const resizeX = inrange(
-                                        divAResize.divideAD.x + deltaX,
-                                        // Math.floor(-boundary.width / 2 + 5 + 10),
-                                        400,
-                                        Math.floor(boundary.width- 5 - 10),
-                                    )
-                                    let dumyStates:TDivsControlConfig = JSON.parse(JSON.stringify(divAResize));
-                                    dumyStates.advisor.w = resizeX
-                                    dumyStates.divideAD.x = resizeX
-                                    // 3️⃣
-                                    setDivAResize(dumyStates);
+                                const canvasCurrentRef = canvasRef.current;
+                                if (canvasCurrentRef) {
+                                    const maxWidth = canvasCurrentRef.clientWidth;
+                                    const advisorMax = maxWidth - 28 - 633 - 400;
+                                    const boundary = boundaryRef.current?.getBoundingClientRect();
+                                    if (boundary) {
+                                        // 2️⃣
+                                        const deltaX = moveEvent.screenX - clickEvent.screenX;
+                                        
+                                        const resizeX = inrange(
+                                            divAResize.divideAD.x + deltaX,
+                                            // Math.floor(-boundary.width / 2 + 5 + 10),
+                                            400,
+                                            advisorMax,
+                                        )
+                                        let dumyStates:TDivsControlConfig = JSON.parse(JSON.stringify(divAResize));
+                                        const gapX = dumyStates.advisor.w - resizeX;
+                                        // advisor, draft, comment 합이 1852보다 클때 다른 영역 사이즈 줄이기
+                                        // ad + dra = 1219
+                                        // 2nd draft max width
+                                        if (dumyStates.draft.w > 400) {
+                                            dumyStates.advisor.w = resizeX
+                                            dumyStates.divideAD.x = resizeX
+                                            dumyStates.draft.w = dumyStates.draft.w +gapX;
+                                            dumyStates.divideDC.x = dumyStates.divideDC.x + gapX;
+                                            setDivAResize(dumyStates);
+                                        } else {
+                                            dumyStates.advisor.w = resizeX
+                                            dumyStates.divideAD.x = resizeX
+                                            dumyStates.draft.w = 400;
+                                            dumyStates.divideDC.x = 400;
+                                            setDivAResize(dumyStates);
+                                        }
+                                    }
                                 }
+                                
                             };
 
                             const mouseUpHandler = () => {
@@ -1805,7 +1959,7 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                         style={{
                             width: `${divAResize.draft.w}px`
                     }}>
-                        <div className='flex flex-col w-full h-full pl-[20px] py-[20px]'>
+                        <div className='flex flex-col w-full h-full pl-[20px] py-[20px] gap-[10px]'>
                             <div className='flex flex-row final-component-title-label-font relative min-h-[36px] h-[36px]'>
                                 <span>2nd Draft</span>
                                 {feedbackDataInStudent.draft_2nd_data && (
@@ -1825,14 +1979,14 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                             </div>
                             {/* title */}
                             <div id='draft-title-wrap-div'
-                            className='flex flex-row mt-[10px] h-[42px] gap-[15px] font-notoSansCJKKR text-[13px] text-[#222] leading-[1.38] items-center'>
+                            className='flex flex-row min-h-[42px] gap-[15px] font-notoSansCJKKR text-[13px] text-[#222] leading-[1.38] items-center'>
                                 <div className='flex'>Title: </div>
                                 <div className='draft-viewer-container-title'>
                                     {feedbackDataInStudent.draft_2nd_data && draftViewBox.loadFinalDraftTitle({feedbackDataInStudent: feedbackDataInStudent.draft_2nd_data.draft_outline, draft:'2'})}
                                 </div>
                             </div>
                             {/* body */}
-                            <div id='draft-body-wrap-div'>
+                            <div id='draft-body-wrap-div' className='draft-viewer-container-body-wrap'>
                                 <div className='draft-viewer-container-body'>
                                     {feedbackDataInStudent.draft_2nd_data && draftViewBox.loadFinalDraftBody({feedbackDataInStudent:feedbackDataInStudent.draft_2nd_data.draft_outline, draft: '2' })}
                                 </div>
@@ -1849,21 +2003,62 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                             className='h-[55px] hover:cursor-grab'
                             onMouseDown={(clickEvent: React.MouseEvent<Element, MouseEvent>) => {
                                 const mouseMoveHandler = (moveEvent: MouseEvent) => {
-                                    const boundary = boundaryRef.current?.getBoundingClientRect();
-                                    if (boundary) {
-                                        // 2️⃣
-                                        const deltaX = moveEvent.screenX - clickEvent.screenX;
-                                        const resizeX = inrange(
-                                            divAResize.divideDC.x + deltaX,
-                                            // Math.floor(-boundary.width / 2 + 5 + 10),
-                                            400,
-                                            Math.floor(boundary.width - 5 - 10),
-                                        )
-                                        let dumyStates:TDivsControlConfig = JSON.parse(JSON.stringify(divAResize));
-                                        dumyStates.draft.w = resizeX
-                                        dumyStates.divideDC.x = resizeX
-                                        // 3️⃣
-                                        setDivAResize(dumyStates);
+                                    const canvasCurrentRef = canvasRef.current;
+                                    if (canvasCurrentRef) {
+                                        const maxWidth = canvasCurrentRef.clientWidth;
+                                        const draftMax = maxWidth - 28 - 633 - 400;
+                                        const left2AreaMaxWidth = maxWidth - 28 - 633;
+                                        const boundary = boundaryRef.current?.getBoundingClientRect();
+                                        
+                                        if (boundary) {
+                                            // 2️⃣
+                                            const deltaX = moveEvent.screenX - clickEvent.screenX;
+                                            console.log('deltaX =',deltaX)
+                                            const resizeX = inrange(
+                                                divAResize.divideDC.x + deltaX,
+                                                // Math.floor(-boundary.width / 2 + 5 + 10),
+                                                400,
+                                                draftMax,
+                                            )
+                                            let dumyStates:TDivsControlConfig = JSON.parse(JSON.stringify(divAResize));
+                                            const gapX = dumyStates.draft.w - resizeX;
+                                            
+                                            const maxW = dumyStates.advisor.w + resizeX > left2AreaMaxWidth
+                                            console.log('gap x =',gapX)
+                                            // advisor + draft 최대 1219
+                                            if (deltaX > 0) {
+                                                // move to right
+                                                console.log('move to right')
+                                                // 2nd 영역만 조절
+                                                if (maxW) {
+                                                    
+                                                } else {
+                                                    dumyStates.draft.w = resizeX;
+                                                    dumyStates.divideDC.x = resizeX;
+                                                    setDivAResize(dumyStates);
+                                                }
+                                            } else if (deltaX < 0) {
+                                                // move to left
+                                                console.log('move to left')
+                                                if (gapX > 0) {
+                                                    dumyStates.draft.w = resizeX;
+                                                    dumyStates.divideDC.x = resizeX;
+                                                    setDivAResize(dumyStates);
+                                                } else {
+                                                    if (dumyStates.advisor.w > 400) {
+                                                        dumyStates.advisor.w = dumyStates.advisor.w + deltaX;
+                                                        dumyStates.divideAD.x = dumyStates.divideAD.x + deltaX;
+                                                        setDivAResize(dumyStates);
+                                                    }
+                                                }
+                                            } else {
+                                                // 움직임 없음
+                                            }
+
+                                            // 3️⃣
+                                            // setDivAResize(dumyStates);
+                                        }
+
                                     }
                                 };
 
@@ -1880,7 +2075,10 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                     </div>
 
                     {/* overall comments & rubric evaluation */}
-                    <div className='flex flex-1 flex-col bg-white h-full w-full min-w-[300px]'>
+                    <div className='flex flex-1 flex-col bg-white h-full w-full min-w-[633px]'
+                        style={{
+                            minWidth: '633px',
+                    }}>
                         {/* final overall comment */}
                         <div className='flex flex-col flex-1 overflow-auto'>
                             <div className='flex flex-col w-full h-[214px] pr-[20px] pl-[13px] pt-[20px]'>

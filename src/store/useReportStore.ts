@@ -60,6 +60,46 @@ const useReportStore = create<IUseReportStore>((set, get) => ({
         ],
         doughnutChart: [
             {
+                target: 'organization',
+                data: [
+                    {
+                        name: 'organization',
+                        value: 0,
+                        selectName: '',
+                        fillColor: '#f6914d',
+                        fillBorderColor: '#ee711e',
+                        innerLineColor: '#fcddc8',
+                        tooltip: {
+                            title: 'organization',
+                            content: 'The narrative has a clear topic and purpose that is well- focused. All the details are well-developed, interesting, and important to the narrative.'
+                        }
+                    }
+                ],
+                addWidth: 40,
+                fitText: 40,
+                toolLineColor: '#ee711e'
+            },
+            {
+                target: 'voice',
+                data: [
+                    {
+                        name: 'voice',
+                        value: 0,
+                        selectName: '',
+                        fillColor: '#aa6bd4',
+                        fillBorderColor: '#863fb5',
+                        innerLineColor: '#E5D1F1',
+                        tooltip: {
+                            title: 'voice',
+                            content: 'The narrative has a clear topic and purpose that is well- focused. All the details are well-developed, interesting, and important to the narrative.'
+                        }
+                    }
+                ],
+                addWidth: 10,
+                fitText: 14,
+                toolLineColor: '#863fb5'
+            },
+            {
                 target: 'conventions',
                 data: [
                     {
@@ -68,6 +108,7 @@ const useReportStore = create<IUseReportStore>((set, get) => ({
                         selectName: '',
                         fillColor: '#db5757',
                         fillBorderColor: '#be1f1f',
+                        innerLineColor: '#F4CBCB',
                         tooltip: {
                             title: 'conventions',
                             content: 'The narrative has a clear topic and purpose that is well- focused. All the details are well-developed, interesting, and important to the narrative.'
@@ -87,6 +128,7 @@ const useReportStore = create<IUseReportStore>((set, get) => ({
                         selectName: '',
                         fillColor: '#6865cc',
                         fillBorderColor: '#433fa7',
+                        innerLineColor: '#E2E1FD',
                         tooltip: {
                             title: 'sentence fluency',
                             content: 'The narrative has a clear topic and purpose that is well- focused. All the details are well-developed, interesting, and important to the narrative.'
@@ -106,6 +148,7 @@ const useReportStore = create<IUseReportStore>((set, get) => ({
                         selectName: '',
                         fillColor: '#30c194',
                         fillBorderColor: '#12986f',
+                        innerLineColor: '#DCF4EC',
                         tooltip: {
                             title: 'word choice',
                             content: 'The narrative has a clear topic and purpose that is well- focused. All the details are well-developed, interesting, and important to the narrative.'
@@ -117,44 +160,6 @@ const useReportStore = create<IUseReportStore>((set, get) => ({
                 toolLineColor: '#12986f'
             },
             {
-                target: 'voice',
-                data: [
-                    {
-                        name: 'voice',
-                        value: 0,
-                        selectName: '',
-                        fillColor: '#aa6bd4',
-                        fillBorderColor: '#863fb5',
-                        tooltip: {
-                            title: 'voice',
-                            content: 'The narrative has a clear topic and purpose that is well- focused. All the details are well-developed, interesting, and important to the narrative.'
-                        }
-                    }
-                ],
-                addWidth: 10,
-                fitText: 14,
-                toolLineColor: '#863fb5'
-            },
-            {
-                target: 'organization',
-                data: [
-                    {
-                        name: 'organization',
-                        value: 0,
-                        selectName: '',
-                        fillColor: '#f6914d',
-                        fillBorderColor: '#ee711e',
-                        tooltip: {
-                            title: 'organization',
-                            content: 'The narrative has a clear topic and purpose that is well- focused. All the details are well-developed, interesting, and important to the narrative.'
-                        }
-                    }
-                ],
-                addWidth: 40,
-                fitText: 40,
-                toolLineColor: '#ee711e'
-            },
-            {
                 target: 'ideas',
                 data: [
                     {
@@ -163,6 +168,7 @@ const useReportStore = create<IUseReportStore>((set, get) => ({
                         selectName: '',
                         fillColor: '#588ee1',
                         fillBorderColor: '#1f61c8',
+                        innerLineColor: '#C5DBFC',
                         tooltip: {
                             title: 'ideas',
                             content: 'The narrative has a clear topic and purpose that is well- focused. All the details are well-developed, interesting, and important to the narrative.'
@@ -279,25 +285,45 @@ const useReportStore = create<IUseReportStore>((set, get) => ({
             }
         },
         // set report by unit API data
-        setReportAPIData: (data)=>{
+        setReportAPIData: (data, rubric)=>{
             let dumyReport:{
                 barChar: TBarchartDatas;
                 doughnutChart: TAllDoughnutDatas;
                 avrage: TPrintReportDoughnutData;
             } = JSON.parse(JSON.stringify(get().report))
+            console.log(' === setReportAPIData ===')
+            console.log(' data=',rubric)
             const dumyDoughnutChart = dumyReport.doughnutChart;
             const rubrics = data.rubric.categories;
             for (let i =0; i < dumyDoughnutChart.length; i++) {
                 const targetName = dumyDoughnutChart[i].target;
                 for (let j = 0; j < rubrics.length; j++) {
                     const currentRubric = rubrics[j];
+                    console.log('currentRubric =',currentRubric)
                     if (currentRubric.category === targetName) {
-                        dumyReport.doughnutChart[i].data[0].value = currentRubric.score*10;
-                        dumyReport.doughnutChart[i].data[0].tooltip.content = currentRubric.description;
+                        const score = currentRubric.score*10;
+                        dumyReport.doughnutChart[i].data[0].value = score;
+                        if (currentRubric.score === 10) {
+                            dumyReport.doughnutChart[i].data[0].tooltip.title = 'excellent';
+                            dumyReport.doughnutChart[i].data[0].tooltip.content = rubric.rubric_description[0].excellent;
+                        } else if (currentRubric.score === 8) {
+                            dumyReport.doughnutChart[i].data[0].tooltip.title = 'very good';
+                            dumyReport.doughnutChart[i].data[0].tooltip.content = rubric.rubric_description[0].very_good;
+                        } else if (currentRubric.score === 6) {
+                            dumyReport.doughnutChart[i].data[0].tooltip.title = 'good';
+                            dumyReport.doughnutChart[i].data[0].tooltip.content = rubric.rubric_description[0].good;
+                        } else if (currentRubric.score === 4) {
+                            dumyReport.doughnutChart[i].data[0].tooltip.title = 'fair';
+                            dumyReport.doughnutChart[i].data[0].tooltip.content = rubric.rubric_description[0].fair;
+                        } else if (currentRubric.score === 2) {
+                            dumyReport.doughnutChart[i].data[0].tooltip.title = 'poor';
+                            dumyReport.doughnutChart[i].data[0].tooltip.content = rubric.rubric_description[0].poor;
+                        }
                         break;
                     }
                 }
             }
+            console.log('after data =',dumyReport)
             const average = ((data.rubric.overall_score*10)/6).toFixed(1)
             dumyReport.avrage.data[0].value = parseFloat(average);
 
@@ -468,6 +494,7 @@ const useReportStore = create<IUseReportStore>((set, get) => ({
                     selectName: '',
                     fillColor: '#db5757',
                     fillBorderColor: '#be1f1f',
+                    innerLineColor: '',
                     tooltip: {
                         title: 'conventions',
                         content: ''
@@ -487,6 +514,7 @@ const useReportStore = create<IUseReportStore>((set, get) => ({
                     selectName: '',
                     fillColor: '#6865cc',
                     fillBorderColor: '#433fa7',
+                    innerLineColor: '',
                     tooltip: {
                         title: 'sentence fluency',
                         content: ''
@@ -506,6 +534,7 @@ const useReportStore = create<IUseReportStore>((set, get) => ({
                     selectName: '',
                     fillColor: '#30c194',
                     fillBorderColor: '#12986f',
+                    innerLineColor: '',
                     tooltip: {
                         title: 'word choice',
                         content: ''
@@ -525,6 +554,7 @@ const useReportStore = create<IUseReportStore>((set, get) => ({
                     selectName: '',
                     fillColor: '#aa6bd4',
                     fillBorderColor: '#863fb5',
+                    innerLineColor: '',
                     tooltip: {
                         title: 'voice',
                         content: ''
@@ -544,6 +574,7 @@ const useReportStore = create<IUseReportStore>((set, get) => ({
                     selectName: '',
                     fillColor: '#f6914d',
                     fillBorderColor: '#ee711e',
+                    innerLineColor: '',
                     tooltip: {
                         title: 'organization',
                         content: ''
@@ -563,6 +594,7 @@ const useReportStore = create<IUseReportStore>((set, get) => ({
                     selectName: '',
                     fillColor: '#588ee1',
                     fillBorderColor: '#1f61c8',
+                    innerLineColor: '#f5f8fd',
                     tooltip: {
                         title: 'ideas',
                         content: ''

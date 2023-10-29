@@ -103,7 +103,8 @@ export default function ReportModalComponent(
         </DialogTitle>
         <DialogContent 
           sx={{
-            height: 'fit-content'
+            height: 'fit-content',
+            paddingX: '20px',
           }}
             className='flex flex-1 min-w-[1260px] w-full h-full bg-[#f2f9ff]'
         >
