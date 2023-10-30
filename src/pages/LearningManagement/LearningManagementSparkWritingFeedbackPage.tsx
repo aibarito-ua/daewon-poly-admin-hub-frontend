@@ -14,6 +14,7 @@ import useActivityWritingHubStore from '../../store/useActivityWritingHubStore';
 import PrintExportButton from '../../components/commonComponents/customComponents/exportButtons/PrintExportButton';
 import ReportModalComponent from '../../components/toggleModalComponents/ReportModalComponent';
 import useLoginStore from '../../store/useLoginStore';
+import { Cookies } from 'react-cookie';
 
 type TDivsControlConfig = {
     advisor: {
@@ -59,7 +60,9 @@ const LearningManagementSparkWritingFeedbackPage = () => {
         commonAlertOpen, commonAlertClose
     } = useControlAlertStore();
 
-    const {pageAuth} = useLoginStore();
+    const cookies = new Cookies();
+    const cookieData = cookies.get('data');
+    const pageAuth = cookieData.mcYn;
 
     // Save -> go back flag
     const [saveComplete, setSaveComplete] = React.useState<boolean>(false);
