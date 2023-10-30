@@ -1889,19 +1889,27 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                                     })
                                 }}
                             />
-                            <div className={(allBodySelectedText.length > 0 || overallComment.length > 0) ? (
-                                draftStatus < 4 ? 'comment-button-save': 'comment-button-save-disabled'
-                            ):'comment-button-save-disabled'} 
-                                onClick={(allBodySelectedText.length > 0 || overallComment.length > 0) ? (
-                                    draftStatus < 4 ? saveButtonEvent:()=>{}
-                                ):()=>{}}
+                            <div className={ pageAuth === 'N' 
+                                ? ((allBodySelectedText.length > 0 || overallComment.length > 0) 
+                                    ? ( draftStatus < 4 ? 'comment-button-save': 'comment-button-save-disabled' )
+                                    :'comment-button-save-disabled')
+                                : 'comment-button-save-disabled' } 
+                                onClick={
+                                    pageAuth === 'N' ? (
+                                        (allBodySelectedText.length > 0 || overallComment.length > 0) ? (
+                                            draftStatus < 4 ? saveButtonEvent:()=>{}
+                                        ):()=>{}
+                                    ) : ()=>{} }
                             />
-                            <div className={(overallComment.length>0)? (
-                                draftStatus < 4 ? 'comment-button-send': 'comment-button-send-disabled'
-                            ):'comment-button-send-disabled'}
-                                onClick={(allBodySelectedText.length > 0 || overallComment.length > 0) ? (
-                                    draftStatus < 4 ? sendButtonEvent: ()=>{}
-                                ):()=>{}}
+                            <div className={ pageAuth === 'N' 
+                                ? ((overallComment.length>0)
+                                    ? ( draftStatus < 4 ? 'comment-button-send': 'comment-button-send-disabled' )
+                                    :'comment-button-send-disabled')
+                                : 'comment-button-send-disabled' }
+                                onClick={ pageAuth === 'N' 
+                                    ? ((allBodySelectedText.length > 0 || overallComment.length > 0) ? (
+                                        draftStatus < 4 ? sendButtonEvent: ()=>{}
+                                    ):()=>{}) : () => {} }
                             />
                         </div>
                     </div>

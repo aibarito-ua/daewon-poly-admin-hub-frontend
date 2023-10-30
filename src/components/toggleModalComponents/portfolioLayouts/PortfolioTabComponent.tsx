@@ -125,18 +125,19 @@ export default function PortfolioTabComponent(props: {
             const currentStudentCode = studentsArr[studentIdx].student_code;
             if (currentStudentCode === student_code) {
                 return studentsArr[studentIdx].units;
-            } else return [];
+            }
         }
         return [];
     }
     // check reports 
-    const checkIsReport = (data: TLMSparkWritingStudentUnitItemInClass[]):TAvailableReportsArr[] => {
+    const checkIsPortfolio = (data: TLMSparkWritingStudentUnitItemInClass[]):TAvailableReportsArr[] => {
         let unitFlagArr:TAvailableReportsArr[] = Array.from({length:5},(__v,i)=>{return {availableFlag:false, draft2ndId:-1, draft1stId: -1, unitIdx:-1}});
-        
+        // console.log('=== checkIsPortfolio ====',data)
         for (let i = 0; i < data.length; i++) {
             const unitIdx = data[i].unit_index;
             const status2nd = data[i].draft_2_status;
-            if (data[i].draft_2_status) {
+
+            if (status2nd) {
                 if (status2nd.status === 4) {
                     unitFlagArr[i].unitIdx= unitIdx;
                     unitFlagArr[i].availableFlag = true;
@@ -155,6 +156,7 @@ export default function PortfolioTabComponent(props: {
                 unitFlagArr[i].draft2ndId = -1;
             }
         }
+        console.log("=== unitFlagArr : ",unitFlagArr)
         return unitFlagArr;
     }
     // LRM connect check reports
@@ -181,36 +183,59 @@ export default function PortfolioTabComponent(props: {
     }
     const checkMoveFlag = (unit:number) => {
         console.log('in checkMoveFlag availableReports =',availableReports)
-        if (availableReports.length===0) {
-
-        } else {
-            for (let i =0; i < availableReports.length; i++) {
-                
-                const currentUnitIndex = availableReports[i].unitIdx
-                if (currentUnitIndex === unit) {
-                    if (unit===1) {
-                        // check next arr
-                        const nextTarget = availableReports[i+1];
-                        console.log('nextTarget =',nextTarget)
-                        setIsLeftAvailable(false);
-                        setIsRightAvailable(nextTarget.availableFlag);
-                    } else if (unit === 5) {
-                        // check before arr
-                        const beforeTarget = availableReports[i-1];
-                        console.log('before Target =',beforeTarget)
-                        setIsLeftAvailable(beforeTarget.availableFlag);
-                        setIsRightAvailable(false);
-                    } else {
-                        const nextTarget = availableReports[i+1];
-                        const beforeTarget = availableReports[i-1];
-                        console.log('next ===',nextTarget);
-                        console.log('before ===',beforeTarget)
-                        setIsLeftAvailable(beforeTarget.availableFlag);
-                        setIsRightAvailable(nextTarget.availableFlag)
-                    }
+        let nextIdxs:number[] = [];
+        let prevIdxs:number[] = [];
+        for (let i =0; i < availableReports.length; i++) {
+            const currentAvailableReports = availableReports[i];
+            if (currentAvailableReports.availableFlag) {
+                if (currentAvailableReports.unitIdx > unit) {
+                    nextIdxs.push(currentAvailableReports.unitIdx);
+                } else if (currentAvailableReports.unitIdx < unit) {
+                    prevIdxs.push(currentAvailableReports.unitIdx);
                 }
             }
         }
+        if (nextIdxs.length > 0) {
+            setIsRightAvailable(true);
+        } else {
+            setIsRightAvailable(false);
+        }
+
+        if (prevIdxs.length > 0) {
+            setIsLeftAvailable(true)
+        } else {
+            setIsLeftAvailable(false)
+        }
+        // if (availableReports.length===0) {
+
+        // } else {
+        //     for (let i =0; i < availableReports.length; i++) {
+                
+        //         const currentUnitIndex = availableReports[i].unitIdx
+        //         if (currentUnitIndex === unit) {
+        //             if (unit===1) {
+        //                 // check next arr
+        //                 const nextTarget = availableReports[i+1];
+        //                 console.log('nextTarget =',nextTarget)
+        //                 setIsLeftAvailable(false);
+        //                 setIsRightAvailable(nextTarget.availableFlag);
+        //             } else if (unit === 5) {
+        //                 // check before arr
+        //                 const beforeTarget = availableReports[i-1];
+        //                 console.log('before Target =',beforeTarget)
+        //                 setIsLeftAvailable(beforeTarget.availableFlag);
+        //                 setIsRightAvailable(false);
+        //             } else {
+        //                 const nextTarget = availableReports[i+1];
+        //                 const beforeTarget = availableReports[i-1];
+        //                 console.log('next ===',nextTarget);
+        //                 console.log('before ===',beforeTarget)
+        //                 setIsLeftAvailable(beforeTarget.availableFlag);
+        //                 setIsRightAvailable(nextTarget.availableFlag)
+        //             }
+        //         }
+        //     }
+        // }
     }
     const initSettingData = async () => {
         console.log("test2")
@@ -271,9 +296,9 @@ export default function PortfolioTabComponent(props: {
         }
         return false;
     }
-    useComponentWillMount(async()=>{
-        // await initSettingData();
-    })
+    // useComponentWillMount(async()=>{
+    //     // await initSettingData();
+    // })
     React.useEffect(()=>{
         console.log(' === Portfolio === modal ===')
         const selectUnit = feedbackDataInStudent.defautInfo.unit_index;
@@ -281,18 +306,21 @@ export default function PortfolioTabComponent(props: {
         console.log('select unit =',selectUnit)
         set.initCurrentDisplay(selectUnit, selectUnitTopic);
         const data = selectDataByStudentCode(student_code);
+
+        const isReportArr = checkIsPortfolio(data);
+        setAvailableReports(isReportArr);
         console.log('data ==',data)
         calcAvrCrown(reportByUnitAPIData);
-        checkMoveFlag(selectUnit);
+        // checkMoveFlag(selectUnit);
     },[])
 
     React.useEffect(()=>{
         const currentUnit = reportByUnitData.currentUnitInfo.unit_index;
-        if (availableReports.length === 0) {
-            const data = selectDataByStudentCode(student_code);
-            const isReportArr = checkIsReport(data);
-            setAvailableReports(isReportArr);
-        }
+        // if (availableReports.length === 0) {
+        //     const data = selectDataByStudentCode(student_code);
+        //     const isReportArr = checkIsReport(data);
+        //     setAvailableReports(isReportArr);
+        // }
         calcAvrCrown(reportByUnitAPIData);
         checkMoveFlag(currentUnit);
         set.initCurrentDisplay(currentUnit, reportByUnitData.currentUnitInfo.unit_topic);
@@ -350,59 +378,72 @@ export default function PortfolioTabComponent(props: {
             // before data set
             let dumyData:TFeedbackStates = JSON.parse(JSON.stringify(feedbackDataInStudent));
             const currentUnit = dumyData.defautInfo.unit_index;
-            const dataByStu = selectDataByStudentCode(student_code);
-            
-            for (let i = 0; i < dataByStu.length; i++) {
-                const targetData = dataByStu[i].unit_index;
-                if (currentUnit+1 === targetData) {
-                    const target = dataByStu[i];
-                    const draft_1st_id = target.draft_1_status.draft_id.toString();
-                    const draft_2nd_id = target.draft_2_status.draft_id.toString();
-                    const rsp1st = await getDraftInfoByDraftId(draft_1st_id);
-                    const rsp2nd = await getDraftInfoByDraftId(draft_2nd_id);
-                    const searchData = {
-                        campus_code: dumyData.defautInfo.campus.code,
-                        level_name: dumyData.defautInfo.level.name,
-                        class_code: dumyData.defautInfo.class.code,
-                        unit_index: target.unit_index,
-                        student_code: student_code
-                    }
-                    console.log('search data =',searchData)
-                    const reportData = await getReportOneDataByStu(searchData)
-                    console.log('rsp1st =',rsp1st)
-                    console.log('rsp2nd =',rsp2nd)
-                    if (rsp1st.draft_index > 0 && rsp2nd.draft_index > 0 && reportData) {
-                        dumyData.draft_2nd_data=rsp2nd;
-                        dumyData.draft_data=rsp1st;
-                        const submitDate2nd = selectDate(target.draft_2_status, true);
-                        const submitDate1st = selectDate(target.draft_1_status, true);
-                        dumyData.defautInfo.submit_date=formatDate(submitDate2nd);
-                        dumyData.defautInfo.unit_index=target.unit_index;
-                        dumyData.defautInfo.unit_topic = target.topic;
-                        dumyData.defautInfo.select_draft_id= draft_2nd_id;
-                        dumyData.defautInfo.step_label="2nd Draft"
-
-                        dumyData.status = target.draft_2_status
-                        dumyData.overall_comment = rsp2nd.overall_comment;
-                        dumyData.rubric = target.rubric
-                        dumyData.status_1st = target.draft_1_status;
-                        const comments:TDraftStringsData = {
-                            draft1st: rsp1st.overall_comment,
-                            draft2nd: rsp2nd.overall_comment
-                        }
-                        const dates:TDraftStringsData = {
-                            draft1st: formatDate(submitDate1st,'-'),
-                            draft2nd: formatDate(submitDate2nd,'-')
-                        }
-                        set.setTeachersComments(comments);
-                        set.setCompletionDates(dates);
-                        set.setReportAPIData(reportData, target.rubric);
-                        setFeedbackDataInStudent(dumyData);
-                        checkMoveFlag(target.unit_index);
-                        set.initCurrentDisplay(target.unit_index, target.topic);
+            // next index check
+            let nextIndex = 0;
+            for (let cIdx = 0; cIdx < availableReports.length; cIdx++) {
+                if ( availableReports[cIdx].unitIdx > currentUnit) {
+                    if (availableReports[cIdx].availableFlag) {
+                        nextIndex = availableReports[cIdx].unitIdx;
                         break;
                     }
                 }
+            }
+            if (nextIndex !== 0) {
+                const dataByStu = selectDataByStudentCode(student_code);
+                
+                for (let i = 0; i < dataByStu.length; i++) {
+                    const targetData = dataByStu[i].unit_index;
+                    if (nextIndex === targetData) {
+                        const target = dataByStu[i];
+                        const draft_1st_id = target.draft_1_status.draft_id.toString();
+                        const draft_2nd_id = target.draft_2_status.draft_id.toString();
+                        const rsp1st = await getDraftInfoByDraftId(draft_1st_id);
+                        const rsp2nd = await getDraftInfoByDraftId(draft_2nd_id);
+                        const searchData = {
+                            campus_code: dumyData.defautInfo.campus.code,
+                            level_name: dumyData.defautInfo.level.name,
+                            class_code: dumyData.defautInfo.class.code,
+                            unit_index: target.unit_index,
+                            student_code: student_code
+                        }
+                        console.log('search data =',searchData)
+                        const reportData = await getReportOneDataByStu(searchData)
+                        console.log('rsp1st =',rsp1st)
+                        console.log('rsp2nd =',rsp2nd)
+                        if (rsp1st.draft_index > 0 && rsp2nd.draft_index > 0 && reportData) {
+                            dumyData.draft_2nd_data=rsp2nd;
+                            dumyData.draft_data=rsp1st;
+                            const submitDate2nd = selectDate(target.draft_2_status, true);
+                            const submitDate1st = selectDate(target.draft_1_status, true);
+                            dumyData.defautInfo.submit_date=formatDate(submitDate2nd);
+                            dumyData.defautInfo.unit_index=target.unit_index;
+                            dumyData.defautInfo.unit_topic = target.topic;
+                            dumyData.defautInfo.select_draft_id= draft_2nd_id;
+                            dumyData.defautInfo.step_label="2nd Draft"
+    
+                            dumyData.status = target.draft_2_status
+                            dumyData.overall_comment = rsp2nd.overall_comment;
+                            dumyData.rubric = target.rubric
+                            dumyData.status_1st = target.draft_1_status;
+                            const comments:TDraftStringsData = {
+                                draft1st: rsp1st.overall_comment,
+                                draft2nd: rsp2nd.overall_comment
+                            }
+                            const dates:TDraftStringsData = {
+                                draft1st: formatDate(submitDate1st,'-'),
+                                draft2nd: formatDate(submitDate2nd,'-')
+                            }
+                            set.setTeachersComments(comments);
+                            set.setCompletionDates(dates);
+                            set.setReportAPIData(reportData, target.rubric);
+                            setFeedbackDataInStudent(dumyData);
+                            checkMoveFlag(target.unit_index);
+                            set.initCurrentDisplay(target.unit_index, target.topic);
+                            break;
+                        }
+                    }
+                }
+
             }
         }
     }
@@ -411,57 +452,69 @@ export default function PortfolioTabComponent(props: {
             // after unit check and set
             let dumyData:TFeedbackStates = JSON.parse(JSON.stringify(feedbackDataInStudent));
             const currentUnit = dumyData.defautInfo.unit_index;
-            console.log('currentUnit =',currentUnit)
-            const dataByStu = selectDataByStudentCode(student_code);
-            
-            for (let i = 0; i < dataByStu.length; i++) {
-                const targetData = dataByStu[i].unit_index;
-                if (currentUnit-1 === targetData) {
-                    const target = dataByStu[i];
-                    const draft_1st_id = target.draft_1_status.draft_id.toString();
-                    const draft_2nd_id = target.draft_2_status.draft_id.toString();
-                    const rsp1st = await getDraftInfoByDraftId(draft_1st_id);
-                    const rsp2nd = await getDraftInfoByDraftId(draft_2nd_id);
-                    const searchData = {
-                        campus_code: dumyData.defautInfo.campus.code,
-                        level_name: dumyData.defautInfo.level.name,
-                        class_code: dumyData.defautInfo.class.code,
-                        unit_index: target.unit_index,
-                        student_code: student_code
-                    }
-                    const reportData = await getReportOneDataByStu(searchData)
-                    if (rsp1st.draft_index > 0 && rsp2nd.draft_index > 0 && reportData) {
-                        dumyData.draft_2nd_data=rsp2nd;
-                        dumyData.draft_data=rsp1st;
-                        const submitDate2nd = selectDate(target.draft_2_status, true);
-                        const submitDate1st = selectDate(target.draft_1_status, true);
-                        dumyData.defautInfo.submit_date=formatDate(submitDate2nd);
-                        dumyData.defautInfo.unit_index=target.unit_index;
-                        dumyData.defautInfo.unit_topic = target.topic;
-                        dumyData.defautInfo.select_draft_id= draft_2nd_id;
-                        dumyData.defautInfo.step_label="2nd Draft"
-                        dumyData.status = target.draft_2_status
-                        dumyData.overall_comment = rsp2nd.overall_comment;
-                        dumyData.rubric = target.rubric
-                        dumyData.status_1st = target.draft_1_status;
-                        const comments:TDraftStringsData = {
-                            draft1st: rsp1st.overall_comment,
-                            draft2nd: rsp2nd.overall_comment
-                        }
-    
-                        const dates:TDraftStringsData = {
-                            draft1st: formatDate(submitDate1st,'-'),
-                            draft2nd: formatDate(submitDate2nd,'-')
-                        }
-                        set.setTeachersComments(comments);
-                        set.setCompletionDates(dates)
-                        setFeedbackDataInStudent(dumyData);
-                        set.setReportAPIData(reportData, target.rubric);
-                        checkMoveFlag(target.unit_index);
-                        set.initCurrentDisplay(target.unit_index, target.topic);
+            // next index check
+            let prevIndex = 0;
+            for (let cIdx = 4; cIdx < availableReports.length; cIdx--) {
+                if ( availableReports[cIdx].unitIdx < currentUnit) {
+                    if (availableReports[cIdx].availableFlag) {
+                        prevIndex = availableReports[cIdx].unitIdx;
                         break;
                     }
                 }
+            }
+            if (prevIndex !== 0) {
+                const dataByStu = selectDataByStudentCode(student_code);
+                
+                for (let i = 0; i < dataByStu.length; i++) {
+                    const targetData = dataByStu[i].unit_index;
+                    if (prevIndex === targetData) {
+                        const target = dataByStu[i];
+                        const draft_1st_id = target.draft_1_status.draft_id.toString();
+                        const draft_2nd_id = target.draft_2_status.draft_id.toString();
+                        const rsp1st = await getDraftInfoByDraftId(draft_1st_id);
+                        const rsp2nd = await getDraftInfoByDraftId(draft_2nd_id);
+                        const searchData = {
+                            campus_code: dumyData.defautInfo.campus.code,
+                            level_name: dumyData.defautInfo.level.name,
+                            class_code: dumyData.defautInfo.class.code,
+                            unit_index: target.unit_index,
+                            student_code: student_code
+                        }
+                        const reportData = await getReportOneDataByStu(searchData)
+                        if (rsp1st.draft_index > 0 && rsp2nd.draft_index > 0 && reportData) {
+                            dumyData.draft_2nd_data=rsp2nd;
+                            dumyData.draft_data=rsp1st;
+                            const submitDate2nd = selectDate(target.draft_2_status, true);
+                            const submitDate1st = selectDate(target.draft_1_status, true);
+                            dumyData.defautInfo.submit_date=formatDate(submitDate2nd);
+                            dumyData.defautInfo.unit_index=target.unit_index;
+                            dumyData.defautInfo.unit_topic = target.topic;
+                            dumyData.defautInfo.select_draft_id= draft_2nd_id;
+                            dumyData.defautInfo.step_label="2nd Draft"
+                            dumyData.status = target.draft_2_status
+                            dumyData.overall_comment = rsp2nd.overall_comment;
+                            dumyData.rubric = target.rubric
+                            dumyData.status_1st = target.draft_1_status;
+                            const comments:TDraftStringsData = {
+                                draft1st: rsp1st.overall_comment,
+                                draft2nd: rsp2nd.overall_comment
+                            }
+        
+                            const dates:TDraftStringsData = {
+                                draft1st: formatDate(submitDate1st,'-'),
+                                draft2nd: formatDate(submitDate2nd,'-')
+                            }
+                            set.setTeachersComments(comments);
+                            set.setCompletionDates(dates)
+                            setFeedbackDataInStudent(dumyData);
+                            set.setReportAPIData(reportData, target.rubric);
+                            checkMoveFlag(target.unit_index);
+                            set.initCurrentDisplay(target.unit_index, target.topic);
+                            break;
+                        }
+                    }
+                }
+
             }
         }
     }

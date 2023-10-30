@@ -15,7 +15,7 @@ class ComponentToPrint extends React.PureComponent<IComponentToPrintProps> {
         
         // console.log('this=',this.props)
         const userInfo = this.props.userInfo;
-        const dateCompleted_ori = userInfo.status_1st?.review_complete_date;
+        const dateCompleted_ori = this.props.draft===1 ? userInfo.status_1st?.review_complete_date:userInfo.status?.review_complete_date;
         const dateCompleted = dateCompleted_ori?.substring(2,10)
         // console.log('dateCompleted =',dateCompleted)
         const draft_str = this.props.draft===1 ? '1st': '2nd';

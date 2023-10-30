@@ -103,7 +103,7 @@ const displayJSX = (data:TLMSparkWritingStudentUnitItemInClass,isReport:boolean)
     
     if (data && isReport) {
         const target = data.draft_2_status.review_complete_date;
-        
+        console.log('===date target =',data)
         if (target) {
             const displayDate = new Date(target).toISOString().slice(2,10);
             return <span className='learning-management-class-table-text'>{displayDate}</span>
@@ -136,8 +136,8 @@ const TableBody = (props:{
 
 
     }
-    console.log('studentDataInClass ::',studentDataInClass)
-    console.log('dataModel:: ',dataModel)
+    // console.log('studentDataInClass ::',studentDataInClass)
+    // console.log('dataModel:: ',dataModel)
     return (
         <tbody className='table-tbody-basic min-w-[1172px] text-[13px] font-sans font-normal text-[#444444] bg-[#fff] border-b-[1px]'>
             {dataModel&& dataModel.map((rowData, rowIdx)=>{
@@ -176,7 +176,7 @@ const TableBody = (props:{
                                 const checkReportData = portfolioData.report.is_completed;
                                 if (checkReportData) {
                                     const displayDate = displayJSX(reportData,true)
-                                    console.log('displayDate =',displayDate)
+                                    // console.log('displayDate =',displayDate)
                                     return <td
                                         key={cellData.key}
                                         className={`border-l-[1px] border-l-[#e2e3e6] border-r-[1px] border-r-[#e2e3e6] p-0 w-[95px] h-[76px] max-h-[76px]`}
@@ -187,8 +187,8 @@ const TableBody = (props:{
                                         feedbackStates={feedbackDataInStudent}
                                         studend_code={userInfoData.student_code}
                                         initSettingData={async () => {
-                                            console.log('displayDate =',displayDate)
-                                            console.log('click report ===',cellData.value)
+                                            // console.log('displayDate =',displayDate)
+                                            // console.log('click report ===',cellData.value)
                                             const draft_1st_id = reportData.draft_1_status.draft_id.toString();
                                             const draft_2nd_id = reportData.draft_2_status.draft_id.toString();
                                             const rsp1st = await getDraftInfoByDraftId(draft_1st_id);
@@ -249,7 +249,7 @@ const TableBody = (props:{
                             const firstDraftData = cellData.value.portfolio;
                             const data = cellData.value.report;
                             
-                            console.log('data ===',firstDraftData )
+                            // console.log('data ===',firstDraftData )
                             if (firstDraftData?.report.is_completed && data) {
                                 const isCompleted = firstDraftData.report.is_completed;
                                 const targetDate = firstDraftData.report.completion_date[1].date
@@ -272,8 +272,8 @@ const TableBody = (props:{
                                 >
                                     <span className='learning-management-class-table-item-wrap'>
                                         <PortfolioModalComponent studentCode={userInfoData.student_code} feedbackStates={feedbackDataInStudent} initSettings={async()=>{
-                                            console.log('displayDate =',displayDate)
-                                            console.log('click report ===',cellData.value)
+                                            // console.log('displayDate =',displayDate)
+                                            // console.log('click report ===',cellData.value)
                                             const reportData = data;
                                             const draft_1st_id = reportData.draft_1_status.draft_id.toString();
                                             const draft_2nd_id = reportData.draft_2_status.draft_id.toString();
