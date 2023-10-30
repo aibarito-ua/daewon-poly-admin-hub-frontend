@@ -125,15 +125,15 @@ const draftBody = (props:{feedbackDataInStudent:TFeedbackStates}) => {
                                 const reasons = wordItem[0].correction_reason;
                                 if (compareWordFlag === 1) {
                                     returnValue = <span key={mainTagKey} 
-                                        className='text-[#00be91]'
+                                        className='text-[#00be91] draft-body-select-area-check-span'
                                     >{currentWord}</span>
                                 } else if (compareWordFlag === -1) {
                                     returnValue = <span key={mainTagKey}
-                                        className='text-[#eb3a3a]'
+                                        className='text-[#eb3a3a] line-through draft-body-select-area-check-span'
                                     >{currentWord}</span>
                                 } else {
                                     // type 0
-                                    returnValue = <span className='h-fit' key={mainTagKey}>{currentWord}</span>
+                                    returnValue = <span className='h-fit draft-body-select-area-check-span' key={mainTagKey}>{currentWord}</span>
                                 }
                             } else {
                                 // delete and add word set
@@ -168,9 +168,9 @@ const draftBody = (props:{feedbackDataInStudent:TFeedbackStates}) => {
                                 // console.log('add word =',addWord)
                                 // console.log('delete word =',deleteWord)
                                 returnValue = <span key={mainTagKey} >
-                                    <span className='text-[#eb3a3a] line-through'>{deleteWord}</span>
+                                    <span className='text-[#eb3a3a] line-through draft-body-select-area-check-span'>{deleteWord}</span>
                                     {' '}
-                                    <span className='text-[#00be91]'>{addWord}</span>
+                                    <span className='text-[#00be91] draft-body-select-area-check-span'>{addWord}</span>
                                 </span>
                             }
                             return returnValue;
@@ -337,15 +337,15 @@ const loadTemporaryDraftBody = (
                 // make word value
                 // type check
                 if (currentType === -1) {
-                    const jsxTag = <span key={mainTagKey} className='text-[#eb3a3a]'>{wordItem.text}</span>;
+                    const jsxTag = <span key={mainTagKey} className='text-[#eb3a3a] line-through draft-body-select-area-check-span'>{wordItem.text}</span>;
                     returnValue.push(jsxTag);
                     
                 } else if (currentType === 1) {
-                    const jsxTag=<span key={mainTagKey} className='text-[#00be91]'>{wordItem.text}</span>;
+                    const jsxTag=<span key={mainTagKey} className='text-[#00be91] draft-body-select-area-check-span'>{wordItem.text}</span>;
                     returnValue.push(jsxTag);
                 } else {
                     // type 0
-                    const jsxTag=<span key={mainTagKey} className='h-fit'>{wordItem.text}</span>;
+                    const jsxTag=<span key={mainTagKey} className='h-fit draft-body-select-area-check-span'>{wordItem.text}</span>;
                     returnValue.push(jsxTag);
                 }
                 // comment check

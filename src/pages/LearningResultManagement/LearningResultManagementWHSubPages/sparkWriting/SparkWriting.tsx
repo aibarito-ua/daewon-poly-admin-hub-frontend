@@ -391,7 +391,7 @@ const ReportAndPortfolio = () => {
             // <div className='flex flex-1 w-full h-full justify-center items-center'>
                 <div className='section-common-canvas'>
                     {/* filter row */}
-                    <div className='scetion-common-filter-row-div py-[11px] pl-[20px] bg-white'>
+                    <div className='scetion-common-filter-row-div py-[11px] pl-[20px] bg-white border-b-[1px] border-b-[#111]'>
                         <div className='section-common-filter-columns-div'>
                             {/* filter 1 : Campus */}
                             <DebouncedDropdowFilter 
@@ -438,7 +438,7 @@ const ReportAndPortfolio = () => {
                             <div className="flex flex-col">
                                 <div className="flex flex-row h-[41px] py-[11px] pl-[21px] pr-[10px] bg-[#f5f5f5] border-t-[1px] border-t-[#ddd] border-b-[1px] border-b-[#ddd]">
                                     <div className="learning-management-class-info-text justify-start">{`${filterAllList.year}년 ${filterAllList.semester}학기 / ${selectCampusCode.name} / ${selectLevelCode.name} / ${selectClassCode.name}`}</div>
-                                    <div className="learning-management-class-info-text justify-end">{`* 현재 학기에 대해서만 Spark Writing 첨삭이 가능합니다.`}</div>
+                                    <div className="learning-management-class-info-text justify-end">{`* 현재 학기에 대해서만 결과 조회가 가능합니다.`}</div>
                                 </div>
                                 <div className="flex flex-row h-[50px] items-center pl-[21px]">
                                     <div className="flex flex-row items-center h-[24px] gap-[8px]">

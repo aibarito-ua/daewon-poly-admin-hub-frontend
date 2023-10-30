@@ -88,7 +88,7 @@ const StyledTab = styled((props: StyledTabProps) => (
     textAlign: 'center',
     paddingLeft: '50px',
     paddingRight: '55px',
-    textTransform: 'capitalize',
+    textTransform: 'inherit',
     userSelect: 'none',
     '&.Mui-selected': {
       color: '#0fa9cb',

@@ -134,15 +134,14 @@ class PortfolioComponentToPrint extends React.PureComponent<IPortfolioComponentT
                                 <div className='flex flex-col'>
                                     <div className='flex items-center export-portfolio-wr-userinfo-font-label'>{'student'}</div>
                                     <div className='flex items-center flex-row export-portfolio-wr-userinfo-font-value'>
-                                        <span>{feedbackDataInStudent.defautInfo.student_code}</span>
-                                        <span>{`${feedbackDataInStudent.defautInfo.student_name.student_name_kr}(${feedbackDataInStudent.defautInfo.student_name.student_name_en})`}</span>
+                                        {`${feedbackDataInStudent.defautInfo.student_code} ${feedbackDataInStudent.defautInfo.student_name.student_name_kr}(${feedbackDataInStudent.defautInfo.student_name.student_name_en})`}
                                     </div>
                                 </div>
                                 <div className='flex flex-col'>
                                     <div className='flex items-center export-portfolio-wr-userinfo-font-label'>{'date completed'}</div>
                                     <div className='flex items-center flex-row export-portfolio-wr-userinfo-font-value'>
                                     <span>{`1st : ${completeDate1st}`}</span>
-                                    <span className='w-[0.247mm] h-[1.935mm] bg-[#aaa]'></span>
+                                    <span className='w-[0.247mm] h-[1.935mm] bg-[#aaa] mx-[1.93mm]'></span>
                                     <span>{`2nd : ${completeDate2nd}`}</span>
                                     </div>
                                 </div>

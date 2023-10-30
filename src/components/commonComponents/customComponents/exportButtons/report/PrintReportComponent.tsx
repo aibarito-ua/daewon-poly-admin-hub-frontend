@@ -56,6 +56,8 @@ class ReportComponentToPrint extends React.PureComponent<IReportComponentToPrint
         score_desc: string,
     ) => {
         const colors = this.getCategoryColor(category);
+        const score_name_split = score_name.split('_')
+        const score_title = score_name_split.length > 1 ? `${score_name_split[0]} ${score_name_split[1]}` : score_name
         // 52.483
         return <div key={key} className={`flex w-[98.824mm] h-[52.483mm]`}>
             <div className={`flex flex-col w-[98.824mm] h-[49.339mm] mt-[3.144mm] border-[0.24mm] rounded-[4.89mm] relative`} style={{
@@ -66,15 +68,16 @@ class ReportComponentToPrint extends React.PureComponent<IReportComponentToPrint
                 }}>{category}</div>
 
                 {/* aimed result */}
-                <div className='flex export-report-wr-sa-ar-title uppercase ml-[4.941mm] mt-[1.451mm]'>{'aimed result'}</div>
-                <ul className='list-disc list-inside export-report-wr-sa-ar-value ml-[4.941mm] h-[12.335mm]'>
+                {/* mt-[1.451mm] */}
+                <div className='flex export-report-wr-sa-ar-title uppercase px-[4.941mm] mt-[4.66mm]'>{'aimed result'}</div>
+                <ul className='list-disc list-inside export-report-wr-sa-ar-value px-[4.941mm] h-[12.335mm] mt-[0.233mm]'>
                     {aimed_result.map((aimedResult, aimedResultIdx) => {
                         return <li className=''>{aimedResult}</li>
                     })}
                 </ul>
                 {/* score */}
-                <div className='flex export-report-wr-sa-ar-title uppercase ml-[4.941mm] mt-[1.451mm]'>{score_name}</div>
-                <p className='export-report-wr-sa-ar-value ml-[4.941mm]'>{score_desc}</p>
+                <div className='flex export-report-wr-sa-ar-title capitalize px-[4.941mm] mt-[1.465mm]'>{score_title}</div>
+                <p className='export-report-wr-sa-ar-value px-[4.941mm]'>{score_desc}</p>
             </div>
 
         </div>

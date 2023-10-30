@@ -277,6 +277,7 @@ const LMSparkWriting = () => {
                     maintainStates('save', {
                         isSearch: true, isAllSelected:true,
                     });
+                    setIsLoadData(false);
                 } else {
                     setStudentDataInClass({book_name:'',students:[]})
                     setEmptyPageMessage('No data to display!')

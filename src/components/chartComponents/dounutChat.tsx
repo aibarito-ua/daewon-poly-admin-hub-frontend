@@ -164,6 +164,7 @@ export default function App(props: {data: TAllDoughnutDatas}) {
         value: 0, outerRadius: 0
     });
 
+    console.log('props.data =',props.data)
     const [allData, setAllData] = useState<TAllDoughnutDatas>(props.data);
     const [addWidth, setAddWidth] = useState<number>(0);
     const [decText, setDecText] = useState<number>(0);
@@ -415,6 +416,7 @@ Z
     <tspan
     fontFamily="GothamRounded"
     fontSize={14}
+    style={{textTransform:'capitalize'}}
     >{`${clickIndex}: ${scoreResult}`}</tspan>
     <tspan
     fontFamily="GothamRounded"
@@ -461,6 +463,10 @@ const mouseOffEvent = (e:any) => {
     setAllData(dumpAllData)
 }
 
+const allDataSortValues = [
+    'conventions', 'sentence fluency', 'word choice','voice','organization','ideas'
+]
+
   return (
     <PieChart width={500} height={500}>
         
@@ -471,7 +477,9 @@ const mouseOffEvent = (e:any) => {
             <tspan x={cx+30} y={cy} dy={12} style={text2Css}>%</tspan>
         </text>
         
-        {allData.map((dataItem, dataIndex)=>{
+        {allData.sort((a,b)=>{
+            return allDataSortValues.indexOf(a.target) - allDataSortValues.indexOf(b.target);
+        }).map((dataItem, dataIndex)=>{
             const currentR = radiusDatas[dataIndex]
             return <Pie key={dataItem.target}
                 className="pie-button-effect-none"

@@ -1211,6 +1211,7 @@ body {
   flex
   flex-row
   capitalize
+  select-none
 }
 .learning-management-title-label {
   font-family: NotoSansCJKKR;
@@ -1226,6 +1227,7 @@ body {
   flex
   flex-row
   capitalize
+  select-none
 }
 .comment-overall-textarea {
   font-family: NotoSansCJKKR;
@@ -1671,7 +1673,8 @@ body {
   font-weight: 500;
   font-stretch: normal;
   font-style: normal;
-  line-height: 8.465mm;
+  /* line-height: 8.465mm; */
+  line-height: 1.55;
   letter-spacing: normal;
   text-align: left;
   color: #222;
