@@ -19,6 +19,7 @@ class ComponentToPrint extends React.PureComponent<IComponentToPrintProps> {
         const dateCompleted = dateCompleted_ori?.substring(2,10)
         // console.log('dateCompleted =',dateCompleted)
         const draft_str = this.props.draft===1 ? '1st': '2nd';
+        const draftTopLeftTitle = this.props.draft===1 ? '1st Draft': '2nd Draft';
         const body = <div className='export-lm-wh-content-body'>{this.props.body}</div>
         
       return (
@@ -48,7 +49,7 @@ class ComponentToPrint extends React.PureComponent<IComponentToPrintProps> {
                             <div className='flex items-center justify-center rounded-[3.175mm] w-full h-full bg-[#0fa9cb]'>
                                 <span className='export-lm-wh-font-step-span' style={{
                                     fontSize: '2.910417mm'
-                                }}>1st draft</span>
+                                }}>{draftTopLeftTitle}</span>
                             </div>
                         </div>
                     </div>

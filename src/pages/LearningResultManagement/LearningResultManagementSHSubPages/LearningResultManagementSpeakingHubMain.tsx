@@ -289,7 +289,7 @@ export default function LearningResultManagementSpeakingHubMain (props: TLearnin
                 <div className='flex flex-1 -ml-[234px] pl-[234px] w-full h-full'>
                     <div className='section-common-canvas'>
                         {/* filter row */}
-                        <div className='scetion-common-filter-row-div py-[11px] pl-[20px] bg-white'>
+                        <div className='scetion-common-filter-row-div py-[11px] pl-[20px] bg-white border-b-[1px] border-b-[#111]'>
                             <div className='section-common-filter-columns-div'>
                                 {/* filter 1 : Campus */}
                                 <DebouncedDropdowFilter 

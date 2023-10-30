@@ -1084,13 +1084,36 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                 }
             })
         }
-        if (feedbackDataInStudent.draft_2nd_data) {
-            if (divAResize.advisor.w === 0 && feedbackDataInStudent.defautInfo.step_label!=='1st Draft') {
-                console.log('2nd adviosr set')
+        if (feedbackDataInStudent.defautInfo.step_label === '1st Draft') {
+            const canvasCurrentRef = canvasRef.current;
+            if (canvasCurrentRef) {
+                const maxScreenWidth = canvasCurrentRef.clientWidth - 14;
+                const defaultLeftAreaWidth = maxScreenWidth/2;
                 let dumyStates:TDivsControlConfig = JSON.parse(JSON.stringify(divAResize));
-                dumyStates.advisor.w = 400;
-                setDivAResize(dumyStates);
+                dumyStates.draft.w = defaultLeftAreaWidth;
+                dumyStates.divideDC.x = defaultLeftAreaWidth;
+                setDivAResize(dumyStates)
             }
+        } else if (feedbackDataInStudent.defautInfo.step_label === '2nd Draft') {
+            const canvasCurrentRef = canvasRef.current;
+            if (canvasCurrentRef) {
+                const maxScreenWidth = canvasCurrentRef.clientWidth - 28;
+                const defaultLeftAreaWidth = maxScreenWidth/3;
+                let dumyStates:TDivsControlConfig = JSON.parse(JSON.stringify(divAResize));
+                dumyStates.advisor.w = defaultLeftAreaWidth;
+                dumyStates.divideAD.x = defaultLeftAreaWidth;
+                dumyStates.draft.w = defaultLeftAreaWidth;
+                dumyStates.divideDC.x = defaultLeftAreaWidth;
+                setDivAResize(dumyStates)
+            }
+        }
+        if (feedbackDataInStudent.draft_2nd_data) {
+            // if (divAResize.advisor.w === 0 && feedbackDataInStudent.defautInfo.step_label!=='1st Draft') {
+            //     console.log('2nd adviosr set')
+            //     let dumyStates:TDivsControlConfig = JSON.parse(JSON.stringify(divAResize));
+            //     dumyStates.advisor.w = 400;
+            //     setDivAResize(dumyStates);
+            // }
             console.log('DATA:=', feedbackDataInStudent)
             console.log('feedbackDataInStudent.draft_2nd_data =995=',feedbackDataInStudent.draft_2nd_data)
             const draft2ndData = feedbackDataInStudent.draft_2nd_data;
@@ -1300,12 +1323,17 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                                             const checkAlreadyAdvisorUsed = advisor.draft_index > 0;
                                             
                                             if (checkAlreadyAdvisorUsed) {
-                                                let dumyStates:TDivsControlConfig = JSON.parse(JSON.stringify(divAResize));
-                                                dumyStates.advisor.w = 400;
-                                                dumyStates.divideAD.x = 400;
-                                                dumyStates.draft.w = 400;
-                                                dumyStates.divideDC.x = 400;
-                                                setDivAResize(dumyStates);
+                                                const canvasCurrentRef = canvasRef.current;
+                                                if (canvasCurrentRef) {
+                                                    const maxScreenWidth = canvasCurrentRef.clientWidth - 28;
+                                                    const defaultLeftAreaWidth = maxScreenWidth/3;
+                                                    let dumyStates:TDivsControlConfig = JSON.parse(JSON.stringify(divAResize));
+                                                    dumyStates.advisor.w = defaultLeftAreaWidth;
+                                                    dumyStates.divideAD.x = defaultLeftAreaWidth;
+                                                    dumyStates.draft.w = defaultLeftAreaWidth;
+                                                    dumyStates.divideDC.x = defaultLeftAreaWidth;
+                                                    setDivAResize(dumyStates)
+                                                }
                                                 setAdvisorOpen(true);
                                                 
                                             } else {
@@ -1313,12 +1341,17 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                                                 if (advisorResponse.draft_index > 0) {
                                                     console.log('advisor response =',advisorResponse)
                                                     setAdvisor(advisorResponse);
-                                                    let dumyStates:TDivsControlConfig = JSON.parse(JSON.stringify(divAResize));
-                                                    dumyStates.advisor.w = 400;
-                                                    dumyStates.divideAD.x = 400;
-                                                    dumyStates.draft.w = 400;
-                                                    dumyStates.divideDC.x = 400;
-                                                    setDivAResize(dumyStates);
+                                                    const canvasCurrentRef = canvasRef.current;
+                                                    if (canvasCurrentRef) {
+                                                        const maxScreenWidth = canvasCurrentRef.clientWidth - 28;
+                                                        const defaultLeftAreaWidth = maxScreenWidth/3;
+                                                        let dumyStates:TDivsControlConfig = JSON.parse(JSON.stringify(divAResize));
+                                                        dumyStates.advisor.w = defaultLeftAreaWidth;
+                                                        dumyStates.divideAD.x = defaultLeftAreaWidth;
+                                                        dumyStates.draft.w = defaultLeftAreaWidth;
+                                                        dumyStates.divideDC.x = defaultLeftAreaWidth;
+                                                        setDivAResize(dumyStates)
+                                                    }
                                                     setAdvisorOpen(true)
                                                 }
                                             }
@@ -1450,6 +1483,7 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                                     const canvasCurrentRef = canvasRef.current;
                                     if (canvasCurrentRef) {
                                         const maxWidth = canvasCurrentRef.clientWidth;
+                                        const maxResizeX = maxWidth - 828 > 1052 ? maxWidth - 828 : 1052;
                                         
                                         const boundary = boundaryRef.current?.getBoundingClientRect();
                                         if (boundary) {
@@ -1460,7 +1494,7 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                                                 divAResize.divideAD.x + deltaX,
                                                 // Math.floor(-boundary.width / 2 + 5 + 10),
                                                 400,
-                                                1052,
+                                                maxResizeX,
                                             )
                                             let dumyStates:TDivsControlConfig = JSON.parse(JSON.stringify(divAResize));
                                             const gapX = dumyStates.advisor.w - resizeX;
@@ -1563,6 +1597,7 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                                     const canvasCurrentRef = canvasRef.current;
                                     if (canvasCurrentRef) {
                                         const maxWidth = canvasCurrentRef.clientWidth>1200 ? canvasCurrentRef.clientWidth : 1200;
+                                        
                                         const boundary = boundaryRef.current?.getBoundingClientRect();
                                         if (boundary) {
                                             // 2️⃣
@@ -1570,15 +1605,17 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                                             
                                             let dumyStates:TDivsControlConfig = JSON.parse(JSON.stringify(divAResize));
                                             if (advisorOpen) {
+                                                const maxResizeWidth = maxWidth - 828 > 1052 ? maxWidth - 828 : 1052;
                                                 const resizeX = inrange(
                                                     divAResize.divideDC.x + deltaX,
                                                     400,
-                                                    1052
+                                                    maxResizeWidth
                                                 )
                                                 // depth 3
                                                 // advisor + draft 최대 1452
+                                                // advisor + draft maxWidth - 28 - 400
                                                 const gapX = dumyStates.draft.w - resizeX;
-                                                const maxW = dumyStates.advisor.w + resizeX > 1452;
+                                                const maxW = dumyStates.advisor.w + resizeX > maxResizeWidth;
                                                 if (deltaX > 0) {
                                                     // 우측으로 드레그중
                                                     if (!maxW) {
@@ -1606,7 +1643,7 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                                             } else {
                                                 // depth 2
                                                 console.log('depth 2')
-                                                const maxResizeWidth = maxWidth - 108 - 400;
+                                                const maxResizeWidth = maxWidth - 28 - 400;
                                                 const resizeX = inrange(
                                                     divAResize.divideAD.x + deltaX,
                                                     // Math.floor(-boundary.width / 2 + 5 + 10),

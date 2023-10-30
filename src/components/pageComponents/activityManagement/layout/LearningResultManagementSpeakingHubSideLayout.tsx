@@ -72,7 +72,7 @@ export default function LearningResultManagementSpeakingHubSideLayout (props:{
     const SideListItem = (props:{label:string, selectIndex:number, subTitleList: TLMSparkWritingNavAsideSubTitleList[]}) => {
         const {label, selectIndex, subTitleList} = props;
         return (
-            <li className={`flex flex-col w-full text-black hover:cursor-pointer border font-sans font-light`}>
+            <li className={`flex flex-col w-full text-black hover:cursor-pointer font-sans font-light`}>
                 <div
                     className={`flex items-center w-full h-[45px] border-b-[1px] border-b-[#ddd] ${subListOpen[selectIndex]===-2 ? 'bg-[#ECFAFC] text-[#0fa9cb] border-r-[3px] border-r-[#0FA9CB]' : ''}`}
                     onClick={() => handleSubListToggle(selectIndex, -2)}
@@ -123,7 +123,7 @@ export default function LearningResultManagementSpeakingHubSideLayout (props:{
                 </div>
             </div>
             <div className="flex flex-1 justify-start w-[234px] h-full">
-                <ul className="w-[234px] border-collapse">
+                <ul className="w-[234px] border-collapse h-fit">
                     {sideNav.titleList.map((sideNavItem, sideNavIndex)=>{
                         console.log('nav ==',sideNavItem)
                         // path title subTitleList: [{title path},...]
