@@ -1447,7 +1447,7 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                                         }} ><CloseButton /></div>
                                         <div className='comment-div-title-label-wrap'>
                                             <div className='comment-div-title-label-before-bar'></div>
-                                            <div className='comment-div-title-label-text select-none'>{`writing advisor`}</div>
+                                            <div className='comment-div-title-label-text select-none capitalize'>{`writing advisor`}</div>
                                         </div>
                                     </div>
                                     {/* advisor */}
@@ -2263,10 +2263,10 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                                     }}
                                 />
                                 <div className={pageAuth === 'N' ? (finalTemporarySaveFlag? 'comment-button-save hover:cursor-pointer':'comment-button-save-disabled'):'comment-button-save-disabled'}
-                                    onClick={pageAuth === 'N' ? ()=>draft2ndSave():()=>{}}
+                                    onClick={pageAuth === 'N' ? (finalTemporarySaveFlag ? ()=>draft2ndSave():()=>{}):()=>{}}
                                 />
                                 <div className={pageAuth === 'N' ? (finalCreateReportFlag? 'comment-button-create-report hover:cursor-pointer':'comment-button-create-report-disabled'):'comment-button-create-report-disabled'}
-                                    onClick={pageAuth === 'N' ? async ()=>draft2ndCreateReport():()=>{}}
+                                    onClick={pageAuth === 'N' ?  ( finalCreateReportFlag ? async ()=>draft2ndCreateReport():()=>{}):()=>{}}
                                 />
                             </div>
                         </div>

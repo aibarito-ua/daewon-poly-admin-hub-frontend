@@ -49,7 +49,7 @@ export default function LearningManagementWritingHubSideLayout (props:{
                     className={`flex items-center w-full h-[45px] border-b-[1px] font-normal border-b-[#ddd] ${subListOpen[selectIndex]===-2 ? 'bg-[#ECFAFC] text-[#0fa9cb] border-r-[3px] border-r-[#0FA9CB]' : ''}`}
                     onClick={() => handleSubListToggle(selectIndex, -2)}
                 >
-                    <span className="flex flex-row items-center justify-between flex-1 mx-[20px] whitespace-nowrap learning-management-left-side-menu-font text-[#0fa9cb]">
+                    <span className="flex flex-row items-center justify-between flex-1 mx-[20px] whitespace-nowrap learning-management-left-side-menu-font text-[#0fa9cb] capitalize">
                         {label}
                         {subListOpen[selectIndex]===-1 ? <commonSvgIcons.SideMenuPlusSVGIcon className='w-[11px] h-[11px]'/>: <commonSvgIcons.SideMenuMinusSVGIcon/>}
                         
@@ -67,7 +67,7 @@ export default function LearningManagementWritingHubSideLayout (props:{
                                     setSideSelected(selectIndex, subIndex, subTitle.path)
                                 }}
                             >
-                                <span className='flex flex-row items-center h-[42px] gap-[5px]'>
+                                <span className='flex flex-row items-center h-[42px] gap-[5px] capitalize'>
                                     {subListOpen[selectIndex] === subIndex 
                                     ? <commonSvgIcons.SideSubMenuOpenActiveSVGIcon className='w-[6px] h-[6px]'/>
                                     :<commonSvgIcons.SideSubMenuOpenSVGIcon className='w-[6px] h-[6px]'/>}
