@@ -393,95 +393,101 @@ const LearningManagementSparkWritingFeedbackPage = () => {
             const boundary = containerTitleRef.current.getBoundingClientRect();
             if (boundary) {
                 const selection = window.getSelection();
-                const checkTextData = selection?.anchorNode?.parentElement?.className;
-                const text = selection?.toString();
-                if (text && text.trim()!=='') {
-                    const range = selection?.getRangeAt(0);
-                    if (range) {
-                        const containerNode = containerTitleRef.current; // Assuming this is the container div element
-                        let startIndex = 0;
-                        let endIndex = 0;
-                
-                        // Calculate start index
-                        const startRange = document.createRange();
-                        startRange.selectNodeContents(containerNode);
-                        startRange.setEnd(range.startContainer, range.startOffset);
-                        startIndex = startRange.toString().length;
-                
-                        // Calculate end index
-                        endIndex = startIndex + text.length;
-                
-                        // console.log('Start Index:', startIndex);
-                        // console.log('End Index:', endIndex);
-                        // console.log('Full text :',containerNode.textContent)
-                        // 추가: 다른 div에 있을 경우 처리
-                        let isDragOverOtherDiv = false;
-                        // 드래그 된 범위의 id 비교   
-                        const checkParent = (target:HTMLElement) => {
-                            let targetElement:HTMLElement|null = target;
-                            while(targetElement && targetElement.id==='') {
-                                targetElement = targetElement.parentElement;
-                            }
-                            if (targetElement) return targetElement.id;
-                        }
-                        let getIdName = '';
-                        if (range.startContainer.parentElement) {
-                            const startId = checkParent(range.startContainer.parentElement);
-                            // console.log(' startId = ',startId)
-                            if (range.endContainer.parentElement) {
-                                const endId = checkParent(range.endContainer.parentElement);
-                                // console.log(' end id = ',endId)
-                                getIdName=typeof(endId)==='string' ? endId: '';
-                                if (startId !== endId) {
-                                    isDragOverOtherDiv=true;        
+                if (selection) {
+                    console.log('===selection===',selection)
+                    const text = selection?.toString();
+                    if (text && text.trim()!=='') {
+                        const range = selection.getRangeAt(0);
+                        if (range) {
+                            const checkTextData = selection.anchorNode?.parentElement?.className;
+                            console.log('===checkTextData ===',checkTextData)
+                            const containerNode = containerTitleRef.current; // Assuming this is the container div element
+                            let startIndex = 0;
+                            let endIndex = 0;
+                    
+                            // Calculate start index
+                            const startRange = document.createRange();
+                            startRange.selectNodeContents(containerNode);
+                            startRange.setEnd(range.startContainer, range.startOffset);
+                            startIndex = startRange.toString().length;
+                    
+                            // Calculate end index
+                            endIndex = startIndex + text.length;
+                    
+                            // console.log('Start Index:', startIndex);
+                            // console.log('End Index:', endIndex);
+                            // console.log('Full text :',containerNode.textContent)
+                            // 추가: 다른 div에 있을 경우 처리
+                            let isDragOverOtherDiv = false;
+                            // 드래그 된 범위의 id 비교   
+                            const checkParent = (target:HTMLElement) => {
+                                console.log('===checkParent===')
+                                let targetElement:HTMLElement|null = target;
+                                while(targetElement && targetElement.id==='') {
+                                    targetElement = targetElement.parentElement;
                                 }
+                                if (targetElement) return targetElement.id;
                             }
-    
-                            // select 범위 안에 이미 선택된 범위가 있는지 체크
-                            // get paraghraph name 
-                            
-                            // console.log('divName =',getIdName)
-                            if (allBodySelectedText.length>0) {
-                                for (let i = 0; i < allBodySelectedText.length; i++) {
-                                    const rowSelectedTextData = allBodySelectedText[i];
-                                    if (rowSelectedTextData.paraghragh_name === getIdName) {
-                                        const rowSelectedTextStartIndex = rowSelectedTextData.start_index;
-                                        const rowSelectedTextEndIndex = rowSelectedTextData.end_index;
-                                        
-                                        if (rowSelectedTextStartIndex >= endIndex || rowSelectedTextEndIndex <= startIndex) {
-                                            // 곂치지 않는 경우
-                                        } else {
-                                            // 곂치는 경우
-                                            isDragOverOtherDiv=true;
-                                            break;
+                            let getIdName = '';
+                            if (range.startContainer.parentElement) {
+                                const startId = checkParent(range.startContainer.parentElement);
+                                // console.log(' startId = ',startId)
+                                if (range.endContainer.parentElement) {
+                                    const endId = checkParent(range.endContainer.parentElement);
+                                    // console.log(' end id = ',endId)
+                                    getIdName=typeof(endId)==='string' ? endId: '';
+                                    if (startId !== endId) {
+                                        isDragOverOtherDiv=true;        
+                                    }
+                                }
+        
+                                // select 범위 안에 이미 선택된 범위가 있는지 체크
+                                // get paraghraph name 
+                                
+                                // console.log('divName =',getIdName)
+                                if (allBodySelectedText.length>0) {
+                                    for (let i = 0; i < allBodySelectedText.length; i++) {
+                                        const rowSelectedTextData = allBodySelectedText[i];
+                                        if (rowSelectedTextData.paraghragh_name === getIdName) {
+                                            const rowSelectedTextStartIndex = rowSelectedTextData.start_index;
+                                            const rowSelectedTextEndIndex = rowSelectedTextData.end_index;
+                                            
+                                            if (rowSelectedTextStartIndex >= endIndex || rowSelectedTextEndIndex <= startIndex) {
+                                                // 곂치지 않는 경우
+                                            } else {
+                                                // 곂치는 경우
+                                                isDragOverOtherDiv=true;
+                                                break;
+                                            }
                                         }
                                     }
                                 }
+                                // parent 범위 이탈
+                                if (checkTextData !== 'update-words') {
+                                    isDragOverOtherDiv=true;
+                                }
                             }
-                            // parent 범위 이탈
-                            if (checkTextData !== 'update-words') {
-                                isDragOverOtherDiv=true;
+                            if (isDragOverOtherDiv) {
+                                selection.removeAllRanges();
+                                setTitleSelectedText('');
+                                setTitleCommentBoxVisible(false);
+                                return;
+                            } else {
+                                setTitleSelectedText(text);
+                                setTitleCommentBoxVisible(true);        
                             }
                         }
-                        if (isDragOverOtherDiv) {
-                            selection?.removeAllRanges();
-                            setTitleSelectedText('');
-                            setTitleCommentBoxVisible(false);
-                            return;
-                        } else {
-                            setTitleSelectedText(text);
-                            setTitleCommentBoxVisible(true);        
-                        }
+                        
+                        const rect = selection.getRangeAt(0).getBoundingClientRect();
+                        if (rect) {
+                            const top = rect.top + window.scrollY - 25;
+                            const left = rect.left + window.scrollX + rect.width / 2;
+                            setCommentBoxPosition({top,left})
+                        };
+                    } else {
+                        setTitleCommentBoxVisible(false);
                     }
-                    
-                    const rect = selection?.getRangeAt(0).getBoundingClientRect();
-                    if (rect) {
-                        const top = rect.top + window.scrollY - 25;
-                        const left = rect.left + window.scrollX + rect.width / 2;
-                        setCommentBoxPosition({top,left})
-                    };
-                } else {
-                    setTitleCommentBoxVisible(false);
+
                 }
 
             }
@@ -526,6 +532,7 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                         }
                         if (targetElement) return targetElement.id;
                     }
+                    
 
                     // 
                     let getIdName = '';
@@ -545,19 +552,45 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                         // get paraghraph name 
                         
                         // console.log('divName =',getIdName)
+                        // console.log('554 allBodySelectedText =',allBodySelectedText)
                         if (allBodySelectedText.length>0) {
+                            const reCheckElement = (target:HTMLElement|null) => {
+                                let targetElement:HTMLElement|null = target;
+                                while(targetElement && targetElement.id==='') {
+                                    targetElement = targetElement.parentElement;
+                                }
+                                if (targetElement) return targetElement;
+                            }
+                            const selectedFindStartEndIndex = (target: HTMLElement|null) => {
+                                if (selection) {
+                                    const selectedCheckTarget = reCheckElement(target);
+                                    const range = selection.getRangeAt(0),
+                                            text = selection.toString();
+                                    if (selectedCheckTarget&& text) {
+                                        const selectedStartRange = document.createRange();
+                                        selectedStartRange.selectNodeContents(selectedCheckTarget);
+                                        selectedStartRange.setEnd(range.startContainer, range.startOffset);
+                                        const startIdx = selectedStartRange.toString().length;
+                                        const endIdx = startIdx + text.length;
+                                        return { startIdx, endIdx }
+                                    }
+                                }
+                            }
+                            const targetIndexInfo = selectedFindStartEndIndex(range.startContainer.parentElement)
                             for (let i = 0; i < allBodySelectedText.length; i++) {
                                 const rowSelectedTextData = allBodySelectedText[i];
                                 if (rowSelectedTextData.paraghragh_name === getIdName) {
+                                    // console.log(' 559 = rowSelectedTextData =',rowSelectedTextData)
                                     const rowSelectedTextStartIndex = rowSelectedTextData.start_index;
                                     const rowSelectedTextEndIndex = rowSelectedTextData.end_index;
-                                    
-                                    if (rowSelectedTextStartIndex >= endIndex || rowSelectedTextEndIndex <= startIndex) {
-                                        // 곂치지 않는 경우
-                                    } else {
-                                        // 곂치는 경우
-                                        isDragOverOtherDiv=true;
-                                        break;
+                                    if (targetIndexInfo) {
+                                        if (rowSelectedTextStartIndex >= targetIndexInfo.endIdx || rowSelectedTextEndIndex <= targetIndexInfo.startIdx) {
+                                            // 곂치지 않는 경우
+                                        } else {
+                                            // 곂치는 경우
+                                            isDragOverOtherDiv=true;
+                                            break;
+                                        }
                                     }
                                 }
                             }
@@ -701,7 +734,7 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                 endIndex = startIndex + text.length;
     
                 let dumyComment:TComment[] = allBodySelectedText;
-                const currentCommentIndex = dumyComment.length;
+                // const currentCommentIndex = dumyComment.length;
                 const styles:React.CSSProperties = {
                     backgroundColor: 'yellow',
                     userSelect:'none',
@@ -821,7 +854,7 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                 endIndex = startIndex + text.length;
     
                 let dumyComment:TComment[] = allBodySelectedText;
-                const currentCommentIndex = dumyComment.length;
+                // const currentCommentIndex = dumyComment.length;
                 const styles:React.CSSProperties = {
                     backgroundColor: 'yellow',
                     userSelect:'none',
@@ -1038,7 +1071,34 @@ const LearningManagementSparkWritingFeedbackPage = () => {
             setAdvisorControlDiv(dumyControler)
         }
     },[advisorOpen])
+    const resize = (target_id:string) => {
+        let textarea = document.getElementById(target_id);
+        if (textarea) {
+            textarea.style.height = '0px';
+            let scrollHeight = textarea.scrollHeight;
+            let style = window.getComputedStyle(textarea);
+            let borderTop = parseInt(style.borderTop);
+            let borderBottom = parseInt(style.borderBottom);
+            textarea.style.height = (scrollHeight+borderTop+borderBottom)+'px';
+            return 1;
+        } else return 0;
+    }
+    React.useLayoutEffect(()=>{
+        console.log(' === use layout effect!!!')
+        console.log('allBodySelectedText =',allBodySelectedText)
+        const allCommentLength = allBodySelectedText.length;
+        const checkAllCommentTextarea = allBodySelectedText.map((item)=>{
+            const itemCn = item.comment_className;
+            const itemCi = item.comment_index;
+            const itemId = `comment-${itemCn}-${itemCi}`;
+            const resized = resize(itemId);
+            return resized;
+        })
+
+        // comment-highlight-body-0-0
+    }, [divAResize])
     React.useEffect(()=>{
+        // console.log('useEffect [] 실행.')
         if (feedbackDataInStudent.draft_data.draft_index === 0) {
             commonAlertOpen({
                 messages:['학생 데이터를 선택해주세요.'],
@@ -1540,17 +1600,21 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                         /><div className='flex h-[calc(50%-27.5px)] w-[1px] bg-[#d1d1d1]'/></div>
                     )}
                     {/* draft view div */}
-                    <div className='min-w-[400px] bg-white'
+                    <div className='min-w-[400px] bg-white h-full'
                         style={{
                             width: advisorOpen ?
                                 `${divAResize.draft.w}px`:
                                 `${divAResize.draft.w-divAResize.divideAD.x}px`
                         }}
                     >
-                        <div className='flex flex-col w-full h-full pl-[20px] py-[20px]'>
-                            <div className='comment-overall-label'>1st Draft</div>
+                        <div className='flex flex-col w-full h-full pl-[20px] py-[20px] gap-[10px]'>
+                            {/* <div className='comment-overall-label'>1st Draft</div> */}
+                            <div className='flex flex-row final-component-title-label-font relative min-h-[36px] h-[36px]'>
+                                <span>1st Draft</span>
+                            </div>
+
                             <div id='draft-title-wrap-div'
-                            className='flex flex-row mt-[10px] h-[42px] gap-[15px] font-notoSansCJKKR text-[13px] text-[#222] leading-[1.38] items-center'>
+                            className='flex flex-row h-[42px] gap-[15px] font-notoSansCJKKR text-[13px] text-[#222] leading-[1.38] items-center'>
                                 <div className='learning-management-title-label'>Title: </div>
                                 <div className='draft-viewer-container-title'
                                     ref={containerTitleRef}
@@ -1573,8 +1637,9 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                                     )}
                                 </div>
                             </div>
-                            <div id='draft-body-wrap-div'>
-                                <div className='flex flex-col gap-[13px] mt-[10px] p-[35px] w-full h-full bg-[#f9f9f9] justify-start'
+
+                            <div id='draft-body-wrap-div' className='draft-viewer-container-body-wrap'>
+                                <div className='flex flex-col gap-[13px] p-[35px] w-full h-full bg-[#f9f9f9] justify-start'
                                     id='draft-body-selection-area'
                                 // flex flex-col justify-start
                                     ref={containerBodyRef}
@@ -1718,7 +1783,7 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                                 {allBodySelectedText.length > 0 && allBodySelectedText.map((commentItem, commentIndex) => {
                                     // console.log('claa =',commentItem.comment_className)
                                     console.log('allBodySelectedText ==',allBodySelectedText)
-                                    const commentKey = 'comment-'+commentItem.comment_className+commentItem.comment_index
+                                    const commentKey = 'comment-'+commentItem.comment_className+'-'+commentItem.comment_index
                                     return (
                                         <div className='comment-wrapper'
                                         key={commentKey}
@@ -1742,8 +1807,12 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                                         }}>
                                             <textarea className='comment-input disabled:bg-white'
                                                 disabled={draftStatus < 4 ? false:true}
-                                                rows={1}
+                                                // rows={1}
+                                                id={commentKey}
                                                 maxLength={500}
+                                                onInput={(e)=>{
+                                                    console.log('on input e =',e)
+                                                }}
                                                 onChange={(e)=>{
                                                     
                                                     const value = e.currentTarget.value;
@@ -1790,7 +1859,7 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                                                 e.preventDefault();
                                                 const targetElement = document.getElementById(commentItem.comment_className) as HTMLElement;
                                                 // const clickedElement = e.target as HTMLElement;
-                                                console.log('click =',targetElement.parentElement)
+                                                // console.log('click =',targetElement.parentElement)
                                                 // find parent element className by target
                                                 const checkParent = (target:HTMLElement) => {
                                                     let targetElement:HTMLElement|null = target;
@@ -1800,7 +1869,7 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                                                     if (targetElement) return targetElement;
                                                 }
                                                 const parent = checkParent(targetElement);
-                                                console.log('parent ==',parent)
+                                                // console.log('parent ==',parent)
                                                 const checkElement = (target:HTMLElement|null) => {
                                                     let targetElement:HTMLElement|null = target;
                                                     while(targetElement && targetElement.id==='') {
@@ -1815,6 +1884,9 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                                                     const parentContent = Array.from(parent.childNodes);
                                                     const newParent = document.createElement('span');
                                                     parentContent.forEach(content => {
+                                                        // console.log('===parentContent.forEach===')
+                                                        // console.log('content ==',content)
+                                                        // console.log('content === targetElement =',content === targetElement)
                                                         if (content === targetElement) {
                                                         const originalContent = Array.from(content.childNodes);
                                                         originalContent.forEach(original => {
@@ -1824,22 +1896,24 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                                                         newParent.appendChild(content.cloneNode(true));
                                                         }
                                                     });
-                                                    parent.replaceWith(newParent);
+                                                    // console.log('newParent ==',newParent)
+                                                    const replaceNewParentText = newParent.textContent ? newParent.textContent : '';
+                                                    parent.replaceWith(replaceNewParentText);
 
                                                     let dumyComment:TComment[] = allBodySelectedText;
-                                                    console.log('before ==',dumyComment)
-                                                    console.log('commentItem = ',commentItem)
+                                                    // console.log('before ==',dumyComment)
+                                                    // console.log('commentItem = ',commentItem)
                                                     let flag = false;
                                                     // classNameValue currentCommentIndex divName
                                                     for (let i =0; i< dumyComment.length; i++) {
-                                                        console.log('dumyComment[i] =',dumyComment[i])
-                                                        console.log('divName =',divName)
+                                                        // console.log('dumyComment[i] =',dumyComment[i])
+                                                        // console.log('divName =',divName)
                                                         // const checkName = dumyComment[i].paraghragh_name===divName;
                                                         const checkClassName = dumyComment[i].comment_className === commentItem.comment_className;
                                                         const checkIndex = dumyComment[i].comment_index === commentItem.comment_index;
                                                         // console.log('checkName =',checkName)
-                                                        console.log('checkClassName =',checkClassName)
-                                                        console.log('checkIndex =',checkIndex)
+                                                        // console.log('checkClassName =',checkClassName)
+                                                        // console.log('checkIndex =',checkIndex)
                                                         if ( checkClassName && checkIndex) {
                                                             console.log('delete', dumyComment[i])
                                                             flag=true;

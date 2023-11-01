@@ -1157,7 +1157,7 @@ body {
   w-full
   pl-[10px]
   h-fit
-  min-h-[40px]
+  /* min-h-[40px] */
   border-[1px]
   border-[#dbdbdb]
 }
@@ -1166,8 +1166,11 @@ body {
   font-weight: 400;
   line-height: 1.77;
   @apply
-  flex w-[calc(100%-30px)] 
+  flex 
+  w-[calc(100%-30px)] 
   max-w-[calc(100%-30px)]
+  h-fit
+  /* min-h-[40px] */
   overflow-hidden
   
   outline-none
@@ -1212,6 +1215,18 @@ body {
   flex-row
   capitalize
   select-none
+  /* min-h-[36px] h-[36px] */
+}
+.draft-body-select-area-check-span {
+  font-family: NotoSansCJKKR;
+  font-size: 13px;
+  font-weight: normal;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.92;
+  letter-spacing: normal;
+  text-align: left;
+  color: #222;
 }
 .learning-management-title-label {
   font-family: NotoSansCJKKR;
@@ -1225,7 +1240,7 @@ body {
   color: #222;
   @apply
   flex
-  flex-row
+  /* flex-row */
   capitalize
   select-none
 }

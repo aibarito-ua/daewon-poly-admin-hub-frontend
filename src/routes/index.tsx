@@ -62,9 +62,9 @@ export default function Router() {
             const devTestData = {
                 accessToken: '',
                 clientCode: '0508003',
-                mcYn: 'Y',
+                mcYn: 'N',
                 memberCode: '23100091',
-                pageAuth: "Y"
+                pageAuth: "N"
             }
             const cookies = new Cookies();
             cookies.set('data', devTestData)
