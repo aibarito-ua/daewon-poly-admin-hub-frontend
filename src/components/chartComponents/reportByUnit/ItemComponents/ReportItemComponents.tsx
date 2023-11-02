@@ -86,7 +86,7 @@ const ReportCorrectionSummaryComponent = (
                 <div className='flex flex-row select-none'>
                     <span className='report-chart-righ-correction-content-item-title'>{`- grammar`}</span>
                     <span className='report-chart-righ-correction-content-item-arrow'>{ selectReason === 'grammar' ? <SelectUpArrow/>: <SelectDownArrow/>}</span>
-                    <span className='report-chart-righ-correction-content-item-value'>{grammar.sentences_count}</span>
+                    <span className='report-chart-righ-correction-content-item-value'>{grammar.corrections_count}</span>
                 </div>
                 <div className={ selectReason === 'grammar' ? 'report-chart-righ-correction-content-wrap-2':'hidden'}>
                     {correctionDiv}
@@ -120,7 +120,7 @@ const ReportCorrectionSummaryComponent = (
                 <div className='flex flex-row select-none'>
                     <span className='report-chart-righ-correction-content-item-title'>{`- punctuation`}</span>
                     <span className='report-chart-righ-correction-content-item-arrow'>{ selectReason === 'punctuation' ? <SelectUpArrow/>: <SelectDownArrow/>}</span>
-                    <span className='report-chart-righ-correction-content-item-value'>{punctuation.sentences_count}</span>
+                    <span className='report-chart-righ-correction-content-item-value'>{punctuation.corrections_count}</span>
                 </div>
                 <div className={ selectReason === 'punctuation' ? 'report-chart-righ-correction-content-wrap-2':'hidden'}>
                     {correctionDiv}
@@ -154,7 +154,7 @@ const ReportCorrectionSummaryComponent = (
                 <div className='flex flex-row select-none'>
                     <span className='report-chart-righ-correction-content-item-title'>{`- spelling`}</span>
                     <span className='report-chart-righ-correction-content-item-arrow'>{ selectReason === 'spelling' ? <SelectUpArrow/>: <SelectDownArrow/>}</span>
-                    <span className='report-chart-righ-correction-content-item-value'>{punctuation.sentences_count}</span>
+                    <span className='report-chart-righ-correction-content-item-value'>{punctuation.corrections_count}</span>
                 </div>
                 <div className={ selectReason === 'spelling' ? 'report-chart-righ-correction-content-wrap-2':'hidden'}>
                     {correctionDiv}

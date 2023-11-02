@@ -295,6 +295,43 @@ const useReportStore = create<IUseReportStore>((set, get) => ({
             console.log(' data=',rubric)
             const dumyDoughnutChart = dumyReport.doughnutChart;
             const rubrics = data.rubric.categories;
+            const findRubric = (score:number, category:string) => {
+                for (let i = 0; i < rubric.rubric_description.length; i++) {
+                    if (rubric.rubric_description[i].category === category) {
+                        if (score === 10) {
+                            return {
+                                title: 'Excellent',
+                                content: rubric.rubric_description[i].excellent
+                            }
+                        } else if (score === 8) {
+                            return {
+                                title: 'Very Good',
+                                content: rubric.rubric_description[i].very_good
+                            }
+                        } else if (score === 6) {
+                            return {
+                                title: 'Good',
+                                content: rubric.rubric_description[i].good
+                            }
+                        } else if (score === 4) {
+                            return {
+                                title: 'Fair',
+                                content: rubric.rubric_description[i].fair
+                            }
+                        } else if (score === 2) {
+                            return {
+                                title: 'Poor',
+                                content: rubric.rubric_description[i].poor
+                            }
+                        } else {
+                            return {
+                                title: '',
+                                content: ''
+                            }
+                        }
+                    }
+                }
+            }
             for (let i =0; i < dumyDoughnutChart.length; i++) {
                 const targetName = dumyDoughnutChart[i].target;
                 for (let j = 0; j < rubrics.length; j++) {
@@ -303,21 +340,10 @@ const useReportStore = create<IUseReportStore>((set, get) => ({
                     if (currentRubric.category === targetName) {
                         const score = currentRubric.score*10;
                         dumyReport.doughnutChart[i].data[0].value = score;
-                        if (currentRubric.score === 10) {
-                            dumyReport.doughnutChart[i].data[0].tooltip.title = 'excellent';
-                            dumyReport.doughnutChart[i].data[0].tooltip.content = rubric.rubric_description[0].excellent;
-                        } else if (currentRubric.score === 8) {
-                            dumyReport.doughnutChart[i].data[0].tooltip.title = 'very good';
-                            dumyReport.doughnutChart[i].data[0].tooltip.content = rubric.rubric_description[0].very_good;
-                        } else if (currentRubric.score === 6) {
-                            dumyReport.doughnutChart[i].data[0].tooltip.title = 'good';
-                            dumyReport.doughnutChart[i].data[0].tooltip.content = rubric.rubric_description[0].good;
-                        } else if (currentRubric.score === 4) {
-                            dumyReport.doughnutChart[i].data[0].tooltip.title = 'fair';
-                            dumyReport.doughnutChart[i].data[0].tooltip.content = rubric.rubric_description[0].fair;
-                        } else if (currentRubric.score === 2) {
-                            dumyReport.doughnutChart[i].data[0].tooltip.title = 'poor';
-                            dumyReport.doughnutChart[i].data[0].tooltip.content = rubric.rubric_description[0].poor;
+                        const findCategory = findRubric(currentRubric.score, targetName);
+                        if (findCategory) {
+                            dumyReport.doughnutChart[i].data[0].tooltip.title = findCategory.title;
+                            dumyReport.doughnutChart[i].data[0].tooltip.content = findCategory.content;
                         }
                         break;
                     }
@@ -385,9 +411,9 @@ const useReportStore = create<IUseReportStore>((set, get) => ({
         is_completed: false,
         word_counts: [],
         grammar_correction: {
-            grammar:{sentences:[],sentences_count:0},
-            punctuation: {sentences:[],sentences_count:0},
-            spelling: {sentences:[],sentences_count:0},
+            grammar:{sentences:[],sentences_count:0, corrections_count:0},
+            punctuation: {sentences:[],sentences_count:0, corrections_count:0},
+            spelling: {sentences:[],sentences_count:0, corrections_count:0},
         },
         teacher_comments: [],
         rubric: { overall_score:0, categories:[]},

@@ -174,6 +174,7 @@ type TStudentUnitReportResWordCount = {
 type TStudentUnitReportResGrammarCorrectionItems = {
     sentences: TStudentUnitReportResGrammarCorrectionSentences;
     sentences_count: number;
+    corrections_count:number;
 }
 type TStudentUnitReportResGrammarCorrectionSentences=TStudentUnitReportResGrammarCorrectionSentence[]
 type TStudentUnitReportResGrammarCorrectionSentence=TStudentUnitReportResGrammarCorrectionSentenceItem[]

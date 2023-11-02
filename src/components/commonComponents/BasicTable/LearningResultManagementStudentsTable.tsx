@@ -187,8 +187,6 @@ const TableBody = (props:{
                                         feedbackStates={feedbackDataInStudent}
                                         studend_code={userInfoData.student_code}
                                         initSettingData={async () => {
-                                            // console.log('displayDate =',displayDate)
-                                            // console.log('click report ===',cellData.value)
                                             const draft_1st_id = reportData.draft_1_status.draft_id.toString();
                                             const draft_2nd_id = reportData.draft_2_status.draft_id.toString();
                                             const rsp1st = await getDraftInfoByDraftId(draft_1st_id);
@@ -206,6 +204,12 @@ const TableBody = (props:{
                                                 dumyData.draft_2nd_data = rsp2nd;
                                                 const submitDate1st = reportData.draft_1_status.review_complete_date?reportData.draft_1_status.review_complete_date:'';
                                                 const submitDate2nd = reportData.draft_2_status.review_complete_date?reportData.draft_2_status.review_complete_date:'';
+                                                dumyData.defautInfo.student_code = userInfoData.student_code;
+                                                dumyData.defautInfo.student_name = {
+                                                    student_name_en: userInfoData.student_name_en,
+                                                    student_name_kr: userInfoData.student_name_kr
+                                                }
+                                                
                                                 dumyData.defautInfo.submit_date=formatDate(submitDate2nd);
                                                 dumyData.defautInfo.unit_index=reportData.unit_index;
                                                 dumyData.defautInfo.unit_topic=reportData.topic;
@@ -286,6 +290,11 @@ const TableBody = (props:{
                                                 let dumyData:TFeedbackStates = JSON.parse(JSON.stringify(feedbackDataInStudent));
                                                 dumyData.draft_data=rsp1st;
                                                 dumyData.draft_2nd_data = rsp2nd;
+                                                dumyData.defautInfo.student_code = userInfoData.student_code;
+                                                dumyData.defautInfo.student_name = {
+                                                    student_name_en: userInfoData.student_name_en,
+                                                    student_name_kr: userInfoData.student_name_kr
+                                                }
                                                 const submitDate1st = reportData.draft_1_status.review_complete_date?reportData.draft_1_status.review_complete_date:'';
                                                 const submitDate2nd = reportData.draft_2_status.review_complete_date?reportData.draft_2_status.review_complete_date:'';
                                                 dumyData.defautInfo.submit_date=formatDate(submitDate2nd);
