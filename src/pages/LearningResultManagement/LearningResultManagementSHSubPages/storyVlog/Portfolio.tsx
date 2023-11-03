@@ -8,7 +8,7 @@ import { SvgSearchIcon } from "../../../../components/commonComponents/BasicTabl
 import LRMSpeakingHubTable from "../../../../components/commonComponents/BasicTable/LRMSpeakingHubTable";
 import { getLMRSpeakingHubAllCampusDataAPI, getLMRSpeakingHubFilterDataAPI, getLMRSpeakingHubLevelsOfCampusDataAPI, getLMRSpeakingHubStudents } from "../../../../api/LearningResultManagement/LearningResultManagementSpeakingHub";
 import useLearningResultManagementSHStore from "../../../../store/useLearningResultManagementSHStore";
-import { CompletedQuestionIcon, CompletedQuestionIconContained, VideoIcon } from "../LearningResultManagementIcons";
+import { QuestionReportIcon, VideoIcon } from "../LearningResultManagementIcons";
 import useControlAlertStore from "../../../../store/useControlAlertStore";
 
 const Portfolio = () => {
@@ -237,7 +237,7 @@ const Portfolio = () => {
                                 lesson: targetStudent.lessons[lessonNumber - 1]
                             },
                             show: targetStudent.lessons[lessonNumber - 1].is_completed_dialogue,
-                            jsxElem: <CompletedQuestionIconContained className='learning-management-class-table-complete-question-icon'/>,
+                            jsxElem: <QuestionReportIcon className='learning-management-class-table-complete-question-icon'/>,
                             modalContent: <LessonSummary lesson={targetStudent.lessons[lessonNumber - 1]}/>
                         },
                         rowspan: 1,

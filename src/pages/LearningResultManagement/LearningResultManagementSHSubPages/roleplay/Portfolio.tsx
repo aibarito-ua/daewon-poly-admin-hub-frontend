@@ -8,7 +8,7 @@ import { SvgSearchIcon } from "../../../../components/commonComponents/BasicTabl
 import LRMSpeakingHubTable from "../../../../components/commonComponents/BasicTable/LRMSpeakingHubTable";
 import { getLMRSpeakingHubAllCampusDataAPI, getLMRSpeakingHubFilterDataAPI, getLMRSpeakingHubLevelsOfCampusDataAPI, getLMRSpeakingHubStudents } from "../../../../api/LearningResultManagement/LearningResultManagementSpeakingHub";
 import useLearningResultManagementSHStore from "../../../../store/useLearningResultManagementSHStore";
-import { CompletedQuestionIconContained } from "../LearningResultManagementIcons";
+import { QuestionReportIcon } from "../LearningResultManagementIcons";
 import useControlAlertStore from "../../../../store/useControlAlertStore";
 
 const Portfolio = () => {
@@ -59,6 +59,8 @@ const Portfolio = () => {
     const [classTableHead, setClassTableHead] = React.useState<string[]>([]);
 
     const TopicReport: FC<{topic: TLRMSpeakingHubRolePlayTopic}> = ({topic}) => {
+        const conversation: string[][] = JSON.parse(topic.summary)
+
         return (
             <div>
                 <div >
@@ -69,7 +71,18 @@ const Portfolio = () => {
                     </audio>
                 </div>
                 <div className="learning-result-management-portfolio-text-box">
-                    <p className="learning-result-management-portfolio-text-span ">{topic.summary}</p>
+                    <table>
+                        {conversation.map((turn) => (
+                            <tr>
+                                <td className="learning-result-management-portfolio-text-span" style={{fontWeight: 500, textAlign: 'right', verticalAlign: 'top' }}>{turn[0]}:</td>
+                                <td style={{paddingLeft: '1rem'}}>
+                                    {turn[1].split('\n').map((speech) => (
+                                        <p className="learning-result-management-portfolio-text-span ">{speech}</p>
+                                    ))}
+                                </td>
+                            </tr>
+                        ))}
+                    </table>
                 </div>
                 
             </div>
@@ -243,7 +256,7 @@ const Portfolio = () => {
                                 month: targetStudent.months[monthNumber - 1]
                             },
                             show: targetStudent.months[monthNumber - 1].topics[(col - 2) % number_of_topics].is_completed,
-                            jsxElem: <CompletedQuestionIconContained className='learning-management-class-table-complete-question-icon'/>,
+                            jsxElem: <QuestionReportIcon className='learning-management-class-table-complete-question-icon'/>,
                             modalContent: <TopicReport topic={targetStudent.months[monthNumber - 1].topics[(col - 2) % number_of_topics]} />
                         },
                         rowspan: 1,

@@ -8,7 +8,7 @@ import { SvgSearchIcon } from "../../../../components/commonComponents/BasicTabl
 import LRMSpeakingHubTable from "../../../../components/commonComponents/BasicTable/LRMSpeakingHubTable";
 import { getLMRSpeakingHubAllCampusDataAPI, getLMRSpeakingHubFilterDataAPI, getLMRSpeakingHubLevelsOfCampusDataAPI, getLMRSpeakingHubStudents } from "../../../../api/LearningResultManagement/LearningResultManagementSpeakingHub";
 import useLearningResultManagementSHStore from "../../../../store/useLearningResultManagementSHStore";
-import { QuestionReportIcon } from "../LearningResultManagementIcons";
+import { CompletedQuestionIconContained } from "../LearningResultManagementIcons";
 import useControlAlertStore from "../../../../store/useControlAlertStore";
 
 const Progress = () => {
@@ -246,7 +246,7 @@ const Progress = () => {
                                 month: targetStudent.months[monthNumber - 1]
                             },
                             show: targetStudent.months[monthNumber - 1].topics[(col - 2) % number_of_topics].is_completed,
-                            jsxElem: <QuestionReportIcon className='learning-management-class-table-complete-question-icon'/>,
+                            jsxElem: <CompletedQuestionIconContained className='learning-management-class-table-complete-question-icon'/>,
                             modalContent: <TopicAnalysis topic={targetStudent.months[monthNumber - 1].topics[(col - 2) % number_of_topics]} />
                         },
                         rowspan: 1,

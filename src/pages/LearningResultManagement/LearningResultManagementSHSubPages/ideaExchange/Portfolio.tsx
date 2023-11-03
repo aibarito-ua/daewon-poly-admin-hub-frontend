@@ -59,6 +59,8 @@ const Portfolio = () => {
     const [classTableHead, setClassTableHead] = React.useState<string[]>([]);
 
     const QuestionReportTable: FC<{question: TLRMSpeakingHubIdeaExchangeQuestion}> = ({question}) => {
+        const conversation: string[][] = JSON.parse(question.summary)
+
         return (
             <div>
                 <div >
@@ -69,9 +71,19 @@ const Portfolio = () => {
                     </audio>
                 </div>
                 <div className="learning-result-management-portfolio-text-box">
-                    <p className="learning-result-management-portfolio-text-span ">{question.summary}</p>
+                    <table>
+                        {conversation.map((turn) => (
+                            <tr>
+                                <td className="learning-result-management-portfolio-text-span" style={{fontWeight: 500, textAlign: 'right', verticalAlign: 'top' }}>{turn[0]}:</td>
+                                <td style={{paddingLeft: '1rem'}}>
+                                    {turn[1].split('\n').map((speech) => (
+                                        <p className="learning-result-management-portfolio-text-span ">{speech}</p>
+                                    ))}
+                                </td>
+                            </tr>
+                        ))}
+                    </table>
                 </div>
-                
             </div>
         )
     }
