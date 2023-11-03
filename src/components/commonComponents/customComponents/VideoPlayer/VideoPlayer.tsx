@@ -78,7 +78,20 @@ const VideoPlayer: FC<{ src?: string, background_name: string }> = ({ src, backg
           }
         }
       })
-  }, [])
+      return () => {
+        window.removeEventListener('mousemove', (e) => {
+            if(mouseDown) {
+              const progressElem = e.target as HTMLProgressElement
+              if(progressElem.offsetParent) {
+                const pos =
+                  (e.pageX - progressElem.offsetLeft - progressElem.getBoundingClientRect().x) / progressElem.offsetWidth;
+                if (videoRef.current)
+                  (videoRef.current as HTMLVideoElement).currentTime = pos * videoTime;
+              }
+            }
+          })
+      }
+  })
 
   return (
     <div>
@@ -86,7 +99,7 @@ const VideoPlayer: FC<{ src?: string, background_name: string }> = ({ src, backg
         <div className="flex flex-col h-[346px]">
           <div className="relative h-[346px] overflow-hidden">
             <div className="flex items-center h-full w-full ">
-              <video ref={videoRef} width="660" style={{ height: '126px' }} className="scale-[1.8] translate-y-[120px] translate-x-6">
+              <video ref={videoRef} width="660" style={{ height: '126px' }} className="scale-[1.8] translate-y-[5px] translate-x-6">
                 <source className="w-30 h-30" src={src} type='video/mp4' />
               </video>
             </div>
