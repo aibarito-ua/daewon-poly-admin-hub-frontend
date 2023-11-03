@@ -59,33 +59,50 @@ const Portfolio = () => {
     const [classTableHead, setClassTableHead] = React.useState<string[]>([]);
 
     const QuestionReportTable: FC<{question: TLRMSpeakingHubIdeaExchangeQuestion}> = ({question}) => {
-        const conversation: string[][] = JSON.parse(question.summary)
+        try {
+            const conversation: string[][] = JSON.parse(question.summary)
 
-        return (
-            <div>
-                <div >
-                    <audio controls className="mt-[14px] mb-[14px] h-[29px]">
-                        <source src="horse.ogg" type="audio/ogg"/>
-                        <source src="horse.mp3" type="audio/mpeg"/>
-                        Your browser does not support the audio tag.
-                    </audio>
+            return (
+                <div>
+                    <div style={{display: 'none'}}>
+                        <audio controls className="mt-[14px] mb-[14px] h-[29px]">
+                            <source src="horse.ogg" type="audio/ogg"/>
+                            <source src="horse.mp3" type="audio/mpeg"/>
+                            Your browser does not support the audio tag.
+                        </audio>
+                    </div>
+                    <div className="learning-result-management-portfolio-text-box">
+                        <table>
+                            {conversation.map((turn) => (
+                                <tr>
+                                    <td className="learning-result-management-portfolio-text-span" style={{fontWeight: 500, textAlign: 'right', verticalAlign: 'top' }}>{turn[0]}:</td>
+                                    <td style={{paddingLeft: '1rem'}}>
+                                        {turn[1].split('\n').map((speech) => (
+                                            <p className="learning-result-management-portfolio-text-span ">{speech}</p>
+                                        ))}
+                                    </td>
+                                </tr>
+                            ))}
+                        </table>
+                    </div>
                 </div>
-                <div className="learning-result-management-portfolio-text-box">
-                    <table>
-                        {conversation.map((turn) => (
-                            <tr>
-                                <td className="learning-result-management-portfolio-text-span" style={{fontWeight: 500, textAlign: 'right', verticalAlign: 'top' }}>{turn[0]}:</td>
-                                <td style={{paddingLeft: '1rem'}}>
-                                    {turn[1].split('\n').map((speech) => (
-                                        <p className="learning-result-management-portfolio-text-span ">{speech}</p>
-                                    ))}
-                                </td>
-                            </tr>
-                        ))}
-                    </table>
+            )
+        } catch {
+            return (
+                <div>
+                    <div style={{display: 'none'}}>
+                        <audio controls className="mt-[14px] mb-[14px] h-[29px]">
+                            <source src="horse.ogg" type="audio/ogg"/>
+                            <source src="horse.mp3" type="audio/mpeg"/>
+                            Your browser does not support the audio tag.
+                        </audio>
+                    </div>
+                    <div className="learning-result-management-portfolio-text-box">
+                        
+                    </div>
                 </div>
-            </div>
-        )
+            )
+        }
     }
     React.useEffect(()=>{
         console.log('component did mount')
