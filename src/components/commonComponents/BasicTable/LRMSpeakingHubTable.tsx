@@ -33,9 +33,15 @@ const TableHeader = (props: {head:string[], subHeadingsCount: number}) => {
                     const width = cellData==='no'? 70: 140;
                     const data = {accessor, header: cellData, width }
                     headModel[iRow].push(data)
-                } else if ( (jCol-2)%2===0 ) {
+                } else if ( (jCol-2)%2===0 ) { // TODO: change '2' to number of sub-columns [i.e. number of topics in months] 
                     const splitCellData = cellData.split('_');
-                    const replaceCellData = `${splitCellData[0]} ${splitCellData[1]}` // lesson i
+                    let replaceCellData = `${splitCellData[0]} ${splitCellData[1]}` // lesson i
+                    if(splitCellData[0] == 'month') {
+                        const monthNames = ["January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December"
+];
+                        replaceCellData = `${monthNames[Number(splitCellData[1]) - 1]}`
+                    }
                     const accessor = `${splitCellData[0]}_${splitCellData[1]}${defaultKeyIdx}`;
                     const data = {accessor, header: replaceCellData, width: 120}; // 118
                     headModel[iRow].push(data)

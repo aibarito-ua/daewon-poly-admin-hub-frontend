@@ -198,7 +198,10 @@ const Portfolio = () => {
     }
     const makeTableData = (rsp: TLRMSpeakingHubRolePlay) =>{
         // we assume that month.length > 0 and quessions.length > 0
-        const monthIdxs = Array.from({length: rsp.students[0].months.length},(_, valueKIdx) => {return valueKIdx+1});
+        const monthNames = ["January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December"
+];
+        const monthIdxs = rsp.students[0].months.map((month) => month.month_index)
         const topicIdxs = Array.from({length: rsp.students[0].months[0].topics.length}, (_,valueKIdx) => {return valueKIdx+1});
         let rowKeys:string[] =['no','student'];
         for (let monthIdx=0; monthIdx<monthIdxs.length; monthIdx++) {
@@ -220,7 +223,8 @@ const Portfolio = () => {
             const number_of_topics: number = targetStudent.months[0].topics.length; // we assume that the number of months is bigger than 0
             let rowData = []
             for (let col = 0; col < rowKeys.length; col++) {
-                const monthNumber = parseInt(rowKeys[col].split('_')[1])
+                const monthIndex = parseInt(rowKeys[col].split('_')[1])
+                const monthNumber = targetStudent.months.findIndex((month) => month.month_index == monthIndex) + 1
                 if (col===0) {
                     // NO
                     const makeCellData:TLRMSpeakingHubTableCellData = {
@@ -267,7 +271,7 @@ const Portfolio = () => {
                         value:{
                             num:0,
                             nameset: null,
-                            description: `Month ${monthNumber} - Topic ${targetStudent.months[monthNumber - 1].topics[(col - 2) % number_of_topics].topic_index}`,
+                            description: `${monthNames[monthIndex - 1]} - Topic ${targetStudent.months[monthNumber - 1].topics[(col - 2) % number_of_topics].topic_index}`,
                             data: {
                                 month: targetStudent.months[monthNumber - 1]
                             },
