@@ -10,9 +10,10 @@ const VideoPlayer: FC<{ src?: string, background_name: string }> = ({ src, backg
   const videoRef = useRef(null);
   const [playing, setPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
-  const [videoTime, setVideoTime] = useState(0);
+  const [videoTime, setVideoTime] = useState<number>(0);
   const [progress, setProgress] = useState(0);
   const [mouseDown, setMouseDown] = useState(false)
+  const [draggerPos, setDraggerPos] = useState(-4)
 
   const videoHandler = (control: string) => {
     if (videoRef.current) {
@@ -45,8 +46,8 @@ const VideoPlayer: FC<{ src?: string, background_name: string }> = ({ src, backg
   //   }
   // }, 1000);
 
-  window.addEventListener('mousemove', (e) => {
-    if(mouseDown) {
+  const mouseMoveListener = (e: MouseEvent) => {
+    // if(mouseDown) {
       const progressElem = e.target as HTMLProgressElement
       if(progressElem.offsetParent) {
         const pos =
@@ -54,12 +55,17 @@ const VideoPlayer: FC<{ src?: string, background_name: string }> = ({ src, backg
         if (videoRef.current)
           (videoRef.current as HTMLVideoElement).currentTime = pos * videoTime;
       }
+    // }
+  }
+
+  const onLoad = () => {
+    if (videoRef.current) {
+      setVideoTime((videoRef.current as HTMLVideoElement).duration);
     }
-  })
+  }
 
   useEffect(() => {
     if (videoRef.current) {
-      setVideoTime((videoRef.current as HTMLVideoElement).duration);
       (videoRef.current as HTMLVideoElement).addEventListener('timeupdate', () => {
         if (videoRef.current) {
           setCurrentTime((videoRef.current as HTMLVideoElement)?.currentTime);
@@ -67,30 +73,6 @@ const VideoPlayer: FC<{ src?: string, background_name: string }> = ({ src, backg
         }
       })
     }
-    window.addEventListener('mousemove', (e) => {
-        if(mouseDown) {
-          const progressElem = e.target as HTMLProgressElement
-          if(progressElem.offsetParent) {
-            const pos =
-              (e.pageX - progressElem.offsetLeft - progressElem.getBoundingClientRect().x) / progressElem.offsetWidth;
-            if (videoRef.current)
-              (videoRef.current as HTMLVideoElement).currentTime = pos * videoTime;
-          }
-        }
-      })
-      return () => {
-        window.removeEventListener('mousemove', (e) => {
-            if(mouseDown) {
-              const progressElem = e.target as HTMLProgressElement
-              if(progressElem.offsetParent) {
-                const pos =
-                  (e.pageX - progressElem.offsetLeft - progressElem.getBoundingClientRect().x) / progressElem.offsetWidth;
-                if (videoRef.current)
-                  (videoRef.current as HTMLVideoElement).currentTime = pos * videoTime;
-              }
-            }
-          })
-      }
   })
 
   return (
@@ -99,7 +81,7 @@ const VideoPlayer: FC<{ src?: string, background_name: string }> = ({ src, backg
         <div className="flex flex-col h-[346px]">
           <div className="relative h-[346px] overflow-hidden">
             <div className="flex items-center h-full w-full ">
-              <video ref={videoRef} width="660" style={{ height: '126px' }} className="scale-[1.8] translate-y-[5px] translate-x-6">
+              <video ref={videoRef} onLoadedMetadata={onLoad} width="660" style={{ height: '126px' }} className="scale-[1.8] translate-y-[5px] translate-x-6">
                 <source className="w-30 h-30" src={src} type='video/mp4' />
               </video>
             </div>
@@ -114,7 +96,7 @@ const VideoPlayer: FC<{ src?: string, background_name: string }> = ({ src, backg
             <div className="absolute bottom-0 w-full bg-[#000]">
               <div>
                 <div className="relative h-1 bg-gray-200">
-                  <progress 
+                  {/* <progress 
                     className="absolute h-full w-full bg-red-500 flex items-center justify-end cursor-pointer" 
                     max={100} 
                     value={progress}
@@ -127,17 +109,16 @@ const VideoPlayer: FC<{ src?: string, background_name: string }> = ({ src, backg
                           (videoRef.current as HTMLVideoElement).currentTime = pos * videoTime;
                       }
                     }}
-                    onMouseDown={() => {
-                      console.log('down')
-                      setMouseDown(true)
-                    }}
-                    onMouseUp={() => {
-                      setMouseDown(false)
-                    }}
                   >
                     <div className="inline-block rounded-full w-3 h-3 bg-white shadow"></div>
-                  </progress>
+                  </progress> */}
+                  <input onChange={(e) => {
+                    setProgress(Number(e.target.value))
+                    if (videoRef.current)
+                      (videoRef.current as HTMLVideoElement).currentTime = Number(e.target.value) / 100 * videoTime;
+                  }} id="small-range" type="range" value={progress} className="absolute w-full flex items-center justify-end cursor-pointer h-1 range-xs dark:bg-gray-700" />
                 </div>
+                {/* <div className={`absolute top-[-4px] left-[-4px] rounded-full w-3 h-3 bg-white shadow hover:cursor-pointer`}></div> */}
               </div>
               <div className="flex text-xs gap-2 font-medium text-gray-500 py-2 px-3">
                 <div className="flex space-x-3">
