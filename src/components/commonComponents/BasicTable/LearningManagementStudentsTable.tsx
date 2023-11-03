@@ -222,7 +222,7 @@ const TableBody = (props:{
                 className={isBackgroundColorWhite ? 'table-tbody-tr-basic max-h-[76px] bg-white': 'table-tbody-tr-basic max-h-[76px] bg-[#f9f9f9]'}
                 >{
                     rowData.map((cellData, cellIdx) => {
-                        console.log('row idx =',rowIdx, ', studendInClass =',studentDataInClass)
+                        // console.log('row idx =',rowIdx, ', studendInClass =',studentDataInClass)
                         const studentBasicInfo = {
                             student_code: studentDataInClass.students[rowIdx] ? studentDataInClass.students[rowIdx].student_code: '',
                             student_name_en: studentDataInClass.students[rowIdx] ? studentDataInClass.students[rowIdx].student_name_en:'',
@@ -262,7 +262,7 @@ const TableBody = (props:{
                                     className={`border-l-[1px] border-l-[#e2e3e6] border-r-[1px] border-r-[#e2e3e6] w-[95px]`}
                                     style={{minWidth: cellData.width}}
                                     onClick={async ()=>{
-                                        console.log('cellData =',cellData)
+                                        // console.log('cellData =',cellData)
                                         const targetData = cellData.value.data?.draft_1_status.draft_id;
                                         const draft_id = targetData? targetData.toString() : '';
                                         const rsp =await getDraftInfoByDraftId(draft_id);
@@ -301,13 +301,13 @@ const TableBody = (props:{
                             const data = secondDraftData?.draft_2_status;
                             if (data) {
                                 const displayDate = displayJSX(data,true)
-                                console.log('displayDate =',displayDate)
+                                // console.log('displayDate =',displayDate)
                                 return <td
                                 key={cellData.key}
                                 className={`border-l-[1px] border-l-[#e2e3e6] border-r-[1px] border-r-[#e2e3e6] w-[95px]`}
                                 style={{minWidth: cellData.width}}
                                 onClick={async () => {
-                                        console.log('data ===',secondDraftData )
+                                        // console.log('data ===',secondDraftData )
                                         const targetData = cellData.value.data?.draft_2_status.draft_id;
                                         const draft_id = targetData ? targetData.toString() : '';
                                         const rsp = await getDraftInfoByDraftId(draft_id);
@@ -331,7 +331,7 @@ const TableBody = (props:{
                                             dumyData.overall_comment = rsp.overall_comment;
                                             dumyData.rubric=secondDraftData.rubric;
                                             dumyData.status_1st=rowData[cellIdx-1].value.data?.draft_1_status;
-                                            console.log('dumy ===',dumyData)
+                                            // console.log('dumy ===',dumyData)
                                             setFeedbackDataInStudent(dumyData);
                                             navigate(`/LearningManagement/WritingHub/SparkWriting/feedback/${studentBasicInfo.student_code}/${draft_id}`);
                                         }

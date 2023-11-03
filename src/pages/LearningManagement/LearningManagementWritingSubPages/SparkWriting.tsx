@@ -178,12 +178,12 @@ const LMSparkWriting = () => {
             if (beforeUrl==="?feedback=end") {
                 // draft에서 넘어온 후
                 console.log('1')
-                // maintainStates('load');
+                maintainStates('load');
                 searchEventFunction()
             } else {
                 // 다른 곳에서 넘어온 후
                 console.log('2')
-                // maintainStates('delete');
+                maintainStates('delete');
                 // beforRenderedFn();
             }
         } else {
