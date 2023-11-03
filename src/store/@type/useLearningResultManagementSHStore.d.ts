@@ -134,6 +134,7 @@ type TLRMSpeakingHubStoryVlogLesson = {
     turn_count: number;
     summary: string;
     video: string;
+    background_name: string;
 }
 
 // ===== Role Play Types =====

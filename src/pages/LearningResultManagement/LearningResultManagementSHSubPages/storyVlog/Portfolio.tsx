@@ -10,6 +10,7 @@ import { getLMRSpeakingHubAllCampusDataAPI, getLMRSpeakingHubFilterDataAPI, getL
 import useLearningResultManagementSHStore from "../../../../store/useLearningResultManagementSHStore";
 import { QuestionReportIcon, VideoIcon } from "../LearningResultManagementIcons";
 import useControlAlertStore from "../../../../store/useControlAlertStore";
+import VideoPlayer from "../../../../components/commonComponents/customComponents/VideoPlayer/VideoPlayer";
 
 const Portfolio = () => {
     // page usehook zustand
@@ -69,9 +70,10 @@ const Portfolio = () => {
     const LessonVlog: FC<{lesson: TLRMSpeakingHubStoryVlogLesson}> = ({lesson}) => {
         return (
             <div className="mt-[14px] w-[660px] h-[346px]">
-                <video width="660" style={{height: '100%'}} controls>
+                {/* <video width="660" style={{height: '100%'}} controls>
                     <source src={lesson.video} type="video/mp4"/>
-                </video>
+                </video> */}
+                <VideoPlayer src={lesson.video} background_name={lesson.background_name} />
             </div>
         )
     }
