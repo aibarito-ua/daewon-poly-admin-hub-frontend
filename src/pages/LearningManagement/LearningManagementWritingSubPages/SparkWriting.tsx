@@ -191,6 +191,9 @@ const LMSparkWriting = () => {
             // 검색한 적이 없는 경우
             // beforRenderedFn();
         }
+        return () => {
+            // setCommonStandbyScreen({openFlag:false})
+        }
     },[])
 
     React.useEffect(()=>{
@@ -269,6 +272,21 @@ const LMSparkWriting = () => {
                     dumyFeedbackData.defautInfo.level = selectLevelCode;
                     dumyFeedbackData.defautInfo.class = selectClassCode;
                     dumyFeedbackData.defautInfo.book_name = rsp.book_name;
+                    dumyFeedbackData.draft_2nd_data=undefined;
+                    dumyFeedbackData.defautInfo.student_code='';
+                    dumyFeedbackData.defautInfo.student_name={student_name_en:'',student_name_kr:''};
+                    dumyFeedbackData.defautInfo.submit_date='';
+                    dumyFeedbackData.defautInfo.unit_index=-1;
+                    dumyFeedbackData.defautInfo.unit_topic='';
+                    dumyFeedbackData.defautInfo.select_draft_id='';
+                    dumyFeedbackData.defautInfo.step_label='';
+                    dumyFeedbackData.status=null;
+                    dumyFeedbackData.overall_comment='';
+                    dumyFeedbackData.rubric={
+                        name: '',
+                        rubric_description:[]
+                    }
+                    dumyFeedbackData.status_1st=null;
                     setFeedbackDataInStudent(dumyFeedbackData);
                     // table data setting
                     setStudentDataInClass(rsp)
@@ -278,21 +296,25 @@ const LMSparkWriting = () => {
                         isSearch: true, isAllSelected:true,
                     });
                     setIsLoadData(false);
+                    setCommonStandbyScreen({openFlag:false})
                 } else {
                     setStudentDataInClass({book_name:'',students:[]})
                     setEmptyPageMessage('No data to display!')
                     setIsSearch(false)
+                    setCommonStandbyScreen({openFlag:false})
                 }
             } else {
                 setIsSearch(false)
                 setStudentDataInClass({book_name:'',students:[]})
                 setEmptyPageMessage('검색 값을 선택 후 조회하세요.')
+                setCommonStandbyScreen({openFlag:false})
                 console.log('search is not all selected')
             }
         } else {
             setIsSearch(false)
             setStudentDataInClass({book_name:'',students:[]})
             setEmptyPageMessage('검색 값을 선택 후 조회하세요.')
+            setCommonStandbyScreen({openFlag:false})
         };
     }
     const makeTableData = (rsp: TLMSparkWritingStudentsListInClass) =>{

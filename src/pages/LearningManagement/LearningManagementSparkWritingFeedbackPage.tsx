@@ -48,7 +48,7 @@ const LearningManagementSparkWritingFeedbackPage = () => {
         navigateBlockFlag, navigateBlockMessage
     } = useNavStore();
     const {
-        feedbackDataInStudent,
+        feedbackDataInStudent, setFeedbackDataInStudent,
         rubricReportValue,
         setRubricInit,
         setRubricReportAllValue
@@ -894,7 +894,10 @@ const LearningManagementSparkWritingFeedbackPage = () => {
         }
     }
     const outPage = () => {
+        outPageInitValues();
         navigate(`/LearningManagement/WritingHub/SparkWriting?feedback=end`)
+    }
+    const outPageInitValues = () => {
     }
     // send button event
     const sendButtonEvent = ()=>{
@@ -1177,39 +1180,39 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                 dumyStates.divideDC.x = defaultLeftAreaWidth;
                 setDivAResize(dumyStates)
             }
-        }
-        if (feedbackDataInStudent.draft_2nd_data) {
-            // if (divAResize.advisor.w === 0 && feedbackDataInStudent.defautInfo.step_label!=='1st Draft') {
-            //     console.log('2nd adviosr set')
-            //     let dumyStates:TDivsControlConfig = JSON.parse(JSON.stringify(divAResize));
-            //     dumyStates.advisor.w = 400;
-            //     setDivAResize(dumyStates);
-            // }
-            console.log('DATA:=', feedbackDataInStudent)
-            console.log('feedbackDataInStudent.draft_2nd_data =995=',feedbackDataInStudent.draft_2nd_data)
-            const draft2ndData = feedbackDataInStudent.draft_2nd_data;
-            if (feedbackDataInStudent.status?.status === 4 || feedbackDataInStudent.status?.status === 5 || feedbackDataInStudent.status?.status === 2|| feedbackDataInStudent.status?.status === 3) {
-                console.log(' status ===',draft2ndData.overall_comment)
-                setFinalOverallComment(draft2ndData.overall_comment)
-            }
-            if (draft2ndData.rubric_report && draft2ndData.rubric_report.length > 0) {
-                setRubricReportAllValue(draft2ndData.rubric_report)
-            }
-            const rubricDT = feedbackDataInStudent.rubric.rubric_description
-            const rubricReportDatas = draft2ndData.rubric_report ? draft2ndData.rubric_report: [];
-            if (rubricReportDatas.length > 0) {
-                let rubricSelectsValue = rubricSelected;
-                for (let i = 0; i<rubricDT.length;i++) {
-                    const rubricCategoryName = rubricDT[i].category;
-                    for (let j = 0; j < rubricReportDatas.length; j++) {
-                        const rubricReportCategoryName = rubricReportDatas[j].category;
-                        if (rubricCategoryName === rubricReportCategoryName) {
-                            rubricSelectsValue[i] = rubricReportDatas[j].selected_value;
-                            break;
+            if (feedbackDataInStudent.draft_2nd_data) {
+                // if (divAResize.advisor.w === 0 && feedbackDataInStudent.defautInfo.step_label!=='1st Draft') {
+                //     console.log('2nd adviosr set')
+                //     let dumyStates:TDivsControlConfig = JSON.parse(JSON.stringify(divAResize));
+                //     dumyStates.advisor.w = 400;
+                //     setDivAResize(dumyStates);
+                // }
+                console.log('DATA:=', feedbackDataInStudent)
+                console.log('feedbackDataInStudent.draft_2nd_data =995=',feedbackDataInStudent.draft_2nd_data)
+                const draft2ndData = feedbackDataInStudent.draft_2nd_data;
+                if (feedbackDataInStudent.status?.status === 4 || feedbackDataInStudent.status?.status === 5 || feedbackDataInStudent.status?.status === 2|| feedbackDataInStudent.status?.status === 3) {
+                    console.log(' status ===',draft2ndData.overall_comment)
+                    setFinalOverallComment(draft2ndData.overall_comment)
+                }
+                if (draft2ndData.rubric_report && draft2ndData.rubric_report.length > 0) {
+                    setRubricReportAllValue(draft2ndData.rubric_report)
+                }
+                const rubricDT = feedbackDataInStudent.rubric.rubric_description
+                const rubricReportDatas = draft2ndData.rubric_report ? draft2ndData.rubric_report: [];
+                if (rubricReportDatas.length > 0) {
+                    let rubricSelectsValue = rubricSelected;
+                    for (let i = 0; i<rubricDT.length;i++) {
+                        const rubricCategoryName = rubricDT[i].category;
+                        for (let j = 0; j < rubricReportDatas.length; j++) {
+                            const rubricReportCategoryName = rubricReportDatas[j].category;
+                            if (rubricCategoryName === rubricReportCategoryName) {
+                                rubricSelectsValue[i] = rubricReportDatas[j].selected_value;
+                                break;
+                            }
                         }
                     }
+                    setRubricSelected(rubricSelectsValue);
                 }
-                setRubricSelected(rubricSelectsValue);
             }
         }
         const handleBodyCommentClick = (event: MouseEvent) => {

@@ -250,6 +250,7 @@ const TableBody = (props:{
                             </span></td>
                         } else if ( (cellIdx-2)%3===0 ) {
                             // first draft
+                            console.log('first draft!!!')
                             const firstDraftData = cellData.value.data;
                             const data = firstDraftData?.draft_1_status;
                             // console.log('data ===',firstDraftData )
@@ -295,6 +296,7 @@ const TableBody = (props:{
                             }
                         } else if ( (cellIdx-2)%3===1 ) {
                             // second draft
+                            console.log('!!second draft!!')
                             const secondDraftData = cellData.value.data;
                             const data = secondDraftData?.draft_2_status;
                             if (data) {

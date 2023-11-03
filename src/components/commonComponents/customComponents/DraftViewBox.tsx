@@ -87,102 +87,105 @@ const draftTitle = (props:{feedbackDataInStudent:TFeedbackStates}) => {
 // status 2 body
 const draftBody = (props:{feedbackDataInStudent:TFeedbackStates}) => {
     const {feedbackDataInStudent} = props;
-    // console.log('props ==',feedbackDataInStudent)
+    console.log('props ==',feedbackDataInStudent)
     // target data set
-    let bodyData:TBodyGrammarCorrectionJSONData[] = [];
     const originOutlineData = feedbackDataInStudent.draft_data.draft_outline
-    for (let orderIndex = 0; orderIndex < originOutlineData.length; orderIndex++) {
-        const outlineData = originOutlineData[orderIndex];
-        if (outlineData.name !== 'Title') {
-            const targetJSONString:TBodyGrammarCorrectionJSONData = {
-                data: JSON.parse(outlineData.grammar_correction_content_teacher),
-                name: outlineData.name,
-                order_index: outlineData.order_index
-            };
-            bodyData.push(targetJSONString)
-        }
-    }
+    // let bodyData:TBodyGrammarCorrectionJSONData[] = []
+    // for (let orderIndex = 0; orderIndex < originOutlineData.length; orderIndex++) {
+    //     const outlineData = originOutlineData[orderIndex];
+    //     if (outlineData.name !== 'Title') {
+    //         const targetJSONString:TBodyGrammarCorrectionJSONData = {
+    //             data: JSON.parse(outlineData.grammar_correction_content_teacher),
+    //             name: outlineData.name,
+    //             order_index: outlineData.order_index
+    //         };
+    //         bodyData.push(targetJSONString)
+    //     }
+    // }
     // console.log('body Data ==',bodyData)
-    if (bodyData.length > 0) {
-        return bodyData.map((bodyItem, bodyIndex) => {
-                return bodyItem.data.map((paragraghItem, paragraghIndex) => {
-                    const paragraghKey = bodyItem.name+bodyItem.order_index+paragraghIndex;
-                    // console.log('paragraghItem =',bodyItem)
-
-                    return <div className='flow-root justify-start draft-1-body-paragragh' id={bodyItem.name} key={paragraghKey}><span className='pl-[10px]'/>
-                    {paragraghItem.map((sentenceItem, sentenceIndex) => {
-                        const sentenceKey = paragraghKey+'-'+sentenceIndex
-                        // console.log('sentence item =',sentenceItem)
-                        return sentenceItem.map((wordItem, wordIndex) => {
-                            let returnValue:JSX.Element;
-                            // console.log('wordItem = ',wordItem)
-                            const wordItemLength = wordItem.length;
-                            if (wordItemLength === 1) {
-                                const compareWordFlag = wordItem[0].type;
-                                const mainTagKey = 'body-'+paragraghIndex+wordItem[0].key;
-                                const currentWord = wordItem[0].word;
-                                // console.log('currentWord =',wordItem[0])
-                                const reasons = wordItem[0].correction_reason;
-                                if (compareWordFlag === 1) {
-                                    returnValue = <span key={mainTagKey} 
-                                        className='text-[#00be91] draft-body-select-area-check-span'
-                                    >{currentWord}</span>
-                                } else if (compareWordFlag === -1) {
-                                    returnValue = <span key={mainTagKey}
-                                        className='text-[#eb3a3a] line-through draft-body-select-area-check-span'
-                                    >{currentWord}</span>
+    return originOutlineData.map((bodyItem) => {
+        const data:TGrammarCorrectionContentData[][][][] = JSON.parse(bodyItem.grammar_correction_content_teacher);
+        const name = bodyItem.name;
+        const order_index = bodyItem.order_index;
+        if (name !== 'Title') {
+            return data.map((paragraghItem, paragraghIndex) => {
+                const paragraghKey = bodyItem.name+bodyItem.order_index+paragraghIndex;
+                // console.log('paragraghItem =',bodyItem)
+    
+                return <div className='flow-root justify-start draft-1-body-paragragh' id={bodyItem.name} key={paragraghKey}><span className='pl-[10px]'/>
+                {paragraghItem.map((sentenceItem, sentenceIndex) => {
+                    const sentenceKey = paragraghKey+'-'+sentenceIndex
+                    // console.log('sentence item =',sentenceItem)
+                    return sentenceItem.map((wordItem, wordIndex) => {
+                        let returnValue:JSX.Element;
+                        // console.log('wordItem = ',wordItem)
+                        const wordItemLength = wordItem.length;
+                        if (wordItemLength === 1) {
+                            const compareWordFlag = wordItem[0].type;
+                            const mainTagKey = 'body-'+paragraghIndex+wordItem[0].key;
+                            const currentWord = wordItem[0].word;
+                            // console.log('currentWord =',wordItem[0])
+                            const reasons = wordItem[0].correction_reason;
+                            if (compareWordFlag === 1) {
+                                returnValue = <span key={mainTagKey} 
+                                    className='text-[#00be91] draft-body-select-area-check-span'
+                                >{currentWord}</span>
+                            } else if (compareWordFlag === -1) {
+                                returnValue = <span key={mainTagKey}
+                                    className='text-[#eb3a3a] line-through draft-body-select-area-check-span'
+                                >{currentWord}</span>
+                            } else {
+                                // type 0
+                                returnValue = <span className='h-fit draft-body-select-area-check-span text-[#222]' key={mainTagKey}>{currentWord}</span>
+                            }
+                        } else {
+                            // delete and add word set
+                            let mainTagKey = 'body-'+paragraghIndex;
+                            let addKey = '';
+                            let addWord = '';
+                            
+                            let deleteKey = '';
+                            let deleteWord = '';
+    
+                            let emptyKey = '';
+    
+                            // 0 -> 1, -1 -> 2
+                            // 1, -1, 2 view
+                            for (let innerWordIndex = 0; innerWordIndex < wordItemLength; innerWordIndex++) {
+                                const targetInnerWordItem = wordItem[innerWordIndex];
+                                if (targetInnerWordItem.type === 1) {
+                                    addKey = targetInnerWordItem.key;
+                                    mainTagKey += addKey
+                                    addWord = targetInnerWordItem.word;
+                                } else if (targetInnerWordItem.type === -1) {
+                                    deleteKey = targetInnerWordItem.key;
+                                    mainTagKey += deleteKey
+                                    deleteWord = targetInnerWordItem.word;
                                 } else {
                                     // type 0
-                                    returnValue = <span className='h-fit draft-body-select-area-check-span text-[#222]' key={mainTagKey}>{currentWord}</span>
+                                    mainTagKey += targetInnerWordItem.key;
+                                    emptyKey=targetInnerWordItem.key;
                                 }
-                            } else {
-                                // delete and add word set
-                                let mainTagKey = 'body-'+paragraghIndex;
-                                let addKey = '';
-                                let addWord = '';
-                                
-                                let deleteKey = '';
-                                let deleteWord = '';
-        
-                                let emptyKey = '';
-        
-                                // 0 -> 1, -1 -> 2
-                                // 1, -1, 2 view
-                                for (let innerWordIndex = 0; innerWordIndex < wordItemLength; innerWordIndex++) {
-                                    const targetInnerWordItem = wordItem[innerWordIndex];
-                                    if (targetInnerWordItem.type === 1) {
-                                        addKey = targetInnerWordItem.key;
-                                        mainTagKey += addKey
-                                        addWord = targetInnerWordItem.word;
-                                    } else if (targetInnerWordItem.type === -1) {
-                                        deleteKey = targetInnerWordItem.key;
-                                        mainTagKey += deleteKey
-                                        deleteWord = targetInnerWordItem.word;
-                                    } else {
-                                        // type 0
-                                        mainTagKey += targetInnerWordItem.key;
-                                        emptyKey=targetInnerWordItem.key;
-                                    }
-                                    if (innerWordIndex === (wordItemLength-1)) break;
-                                } // end for word item
-                                // console.log('add word =',addWord)
-                                // console.log('delete word =',deleteWord)
-                                returnValue = <span key={mainTagKey} >
-                                    <span className='text-[#eb3a3a] line-through draft-body-select-area-check-span'>{deleteWord}</span>
-                                    {' '}
-                                    <span className='text-[#00be91] draft-body-select-area-check-span'>{addWord}</span>
-                                </span>
-                            }
-                            return returnValue;
-                        })
-                    })}</div>
+                                if (innerWordIndex === (wordItemLength-1)) break;
+                            } // end for word item
+                            // console.log('add word =',addWord)
+                            // console.log('delete word =',deleteWord)
+                            returnValue = <span key={mainTagKey} >
+                                <span className='text-[#eb3a3a] line-through draft-body-select-area-check-span'>{deleteWord}</span>
+                                {' '}
+                                <span className='text-[#00be91] draft-body-select-area-check-span'>{addWord}</span>
+                            </span>
+                        }
+                        return returnValue;
+                    })
+                })}</div>
     
-                })
-
             })
-            
 
-    } else return <></>
+        } else {
+            return <></>
+        }
+    })
 }
 
 // status 3 title

@@ -1289,7 +1289,8 @@ body {
   @apply
   flex
   text-[#222]
-  w-[600px]
+  min-w-[600px]
+  w-full
   h-[180px]
   border-[1px]
   border-[#dbdbdb]
