@@ -1383,7 +1383,7 @@ const LearningManagementSparkWritingFeedbackPage = () => {
             </div>
 
             {feedbackDataInStudent.defautInfo.step_label==='1st Draft' && (
-                <div className='comment-review-contents'
+                <div className='comment-review-contents1'
                     ref={boundaryRef}
                     >
                             {!advisorOpen && draftStatus!==5 && (
@@ -1608,13 +1608,12 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                         }}
                     >
                         <div className='flex flex-col w-full h-full pl-[20px] py-[20px] gap-[10px]'>
-                            {/* <div className='comment-overall-label'>1st Draft</div> */}
                             <div className='flex flex-row final-component-title-label-font relative min-h-[36px] h-[36px]'>
                                 <span>1st Draft</span>
                             </div>
 
                             <div id='draft-title-wrap-div'
-                            className='flex flex-row h-[42px] gap-[15px] font-notoSansCJKKR text-[13px] text-[#222] leading-[1.38] items-center'>
+                            className='flex flex-row min-h-[42px] gap-[15px] font-notoSansCJKKR text-[13px] text-[#222] leading-[1.38] items-center'>
                                 <div className='learning-management-title-label'>Title: </div>
                                 <div className='draft-viewer-container-title'
                                     ref={containerTitleRef}
@@ -1630,16 +1629,17 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                                             <button onClick={handleHighlightClick} className='comment-button-add'></button>
                                         </div>
                                     )}
-                                    {afterHighlightBoxVisible && (
+                                    {/* {afterHighlightBoxVisible && (
                                         <div style={afterHighlightBoxStyle}>
                                             <p>{'test'}</p>
                                         </div>
-                                    )}
+                                    )} */}
                                 </div>
                             </div>
 
                             <div id='draft-body-wrap-div' className='draft-viewer-container-body-wrap'>
-                                <div className='flex flex-col gap-[13px] p-[35px] w-full h-full bg-[#f9f9f9] justify-start'
+                                <div className='draft-viewer-container-body font-notoSansCJKKR text-[13px] text-[#222] leading-[1.38]'
+                                // 'flex flex-col gap-[13px] p-[35px] w-full h-full bg-[#f9f9f9] justify-start'
                                     id='draft-body-selection-area'
                                 // flex flex-col justify-start
                                     ref={containerBodyRef}
@@ -1990,7 +1990,7 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                 </div>
             )}
             {feedbackDataInStudent.defautInfo.step_label==='2nd Draft' && (
-                <div className='comment-review-contents'
+                <div className='comment-review-contents2'
                     ref={boundaryRef}
                 >
                     {/* 1st draft preview */}
@@ -2023,7 +2023,7 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                                 </div>
                             </div>
                             <div id='draft-body-wrap-div' ref={container1stDraftBody} className='draft-viewer-container-body-wrap'>
-                                <div className='draft-viewer-container-body gap-[13px]'>
+                                <div className='draft-viewer-container-body gap-[13px] font-notoSansCJKKR text-[13px] text-[#222] leading-[1.38]'>
                                     {feedbackDataInStudent.draft_data && draftViewBox.loadFinalDraftBody({feedbackDataInStudent:feedbackDataInStudent.draft_data.draft_outline, draft: '1' })}
                                 </div>
                             </div>
@@ -2111,14 +2111,14 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                             {/* title */}
                             <div id='draft-title-wrap-div'
                             className='flex flex-row min-h-[42px] gap-[15px] font-notoSansCJKKR text-[13px] text-[#222] leading-[1.38] items-center'>
-                                <div className='flex'>Title: </div>
+                                <div className='learning-management-title-label'>Title: </div>
                                 <div className='draft-viewer-container-title'>
                                     {feedbackDataInStudent.draft_2nd_data && draftViewBox.loadFinalDraftTitle({feedbackDataInStudent: feedbackDataInStudent.draft_2nd_data.draft_outline, draft:'2'})}
                                 </div>
                             </div>
                             {/* body */}
                             <div id='draft-body-wrap-div' className='draft-viewer-container-body-wrap'>
-                                <div className='draft-viewer-container-body'>
+                                <div className='draft-viewer-container-body font-notoSansCJKKR text-[13px] text-[#222] leading-[1.38]'>
                                     {feedbackDataInStudent.draft_2nd_data && draftViewBox.loadFinalDraftBody({feedbackDataInStudent:feedbackDataInStudent.draft_2nd_data.draft_outline, draft: '2' })}
                                 </div>
                             </div>

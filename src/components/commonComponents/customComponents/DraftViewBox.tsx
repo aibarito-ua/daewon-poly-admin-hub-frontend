@@ -39,7 +39,7 @@ const draftTitle = (props:{feedbackDataInStudent:TFeedbackStates}) => {
                             >{currentWord}</span></span>
                         } else {
                             // type 0
-                            returnValue = <span className='update-words' key={mainTagKey}>{currentWord}</span>
+                            returnValue = <span className='update-words' style={{color:'#222'}} key={mainTagKey}>{currentWord}</span>
                         }
                     } else {
                         // delete and add word set
@@ -133,7 +133,7 @@ const draftBody = (props:{feedbackDataInStudent:TFeedbackStates}) => {
                                     >{currentWord}</span>
                                 } else {
                                     // type 0
-                                    returnValue = <span className='h-fit draft-body-select-area-check-span' key={mainTagKey}>{currentWord}</span>
+                                    returnValue = <span className='h-fit draft-body-select-area-check-span text-[#222]' key={mainTagKey}>{currentWord}</span>
                                 }
                             } else {
                                 // delete and add word set
@@ -242,7 +242,7 @@ const loadTemporaryDraftTitle = (
                     returnValue.push(jsxTag);
                 } else {
                     // type 0
-                    const jsxTag=<span className='update-words' key={mainTagKey}>{wordItem.text}</span>
+                    const jsxTag=<span className='update-words' style={{color:'#222'}} key={mainTagKey}>{wordItem.text}</span>
                     returnValue.push(jsxTag);
                 }
                 // comment check
@@ -345,7 +345,7 @@ const loadTemporaryDraftBody = (
                     returnValue.push(jsxTag);
                 } else {
                     // type 0
-                    const jsxTag=<span key={mainTagKey} className='h-fit draft-body-select-area-check-span'>{wordItem.text}</span>;
+                    const jsxTag=<span key={mainTagKey} className='h-fit draft-body-select-area-check-span text-[#222]'>{wordItem.text}</span>;
                     returnValue.push(jsxTag);
                 }
                 // comment check

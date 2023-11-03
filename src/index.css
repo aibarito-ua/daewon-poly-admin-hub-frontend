@@ -1127,6 +1127,11 @@ body {
   bg-[#f9f9f9]
   justify-start
 }
+.draft-viewer-container-wrap {
+  @apply
+  min-w-[400px] bg-white
+  h-full
+}
 .draft-viewer-container-body {
   @apply
   flex
@@ -1147,8 +1152,8 @@ body {
 }
 
 .update-words {
-  @apply
-  h-fit
+  /* @apply */
+  /* h-fit */
 }
 .comment-wrapper {
   @apply
@@ -1227,7 +1232,6 @@ body {
   line-height: 1.92;
   letter-spacing: normal;
   text-align: left;
-  color: #222;
 }
 .learning-management-title-label {
   font-family: NotoSansCJKKR;
@@ -1465,7 +1469,11 @@ body {
   /* max-h-[calc(100vh-380px)] */
   overflow-y-auto
 }
-.comment-review-contents {
+.comment-review-contents1 {
+  @apply
+  flex flex-row h-[calc(100vh-335px)] w-full min-w-[1200px]
+}
+.comment-review-contents2 {
   @apply
   flex flex-row h-[calc(100vh-320px)] w-full min-w-[1200px]
 }
