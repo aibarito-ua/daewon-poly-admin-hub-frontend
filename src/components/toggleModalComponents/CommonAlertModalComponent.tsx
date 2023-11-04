@@ -74,7 +74,9 @@ export default function CommonAlertModalComponent(
       PaperProps={{sx:{
         borderRadius: '5px',
       }}}
-      open={commonAlertOpenFlag} onClose={handleClose}>
+      open={commonAlertOpenFlag} 
+      // onClose={handleClose}
+      >
         <DialogTitle
           sx={{
             backgroundColor: '#ffffff',

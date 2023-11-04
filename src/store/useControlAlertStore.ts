@@ -19,6 +19,10 @@ interface IUseControlAlertStore {
     // standbyScreen Controller
     commonStandbyScreen: TCommonStandbyScreen,
     setCommonStandbyScreen: (controlData:TCommonStandbyScreen) => void;
+
+    // returnedFeedbackModalFlag
+    returnedFeedbackModalFlag:boolean;
+    setReturnedFeedbackModalFlag: (flag:boolean) => void;
 }
 // standby screen
 type TCommonStandbyScreen = {
@@ -91,6 +95,11 @@ const useControlAlertStore = create<IUseControlAlertStore>((set, get) => ({
     },
     setCommonStandbyScreen: (data) => {
         set(()=>({commonStandbyScreen:data}))
+    },
+
+    returnedFeedbackModalFlag: false,
+    setReturnedFeedbackModalFlag: (flag) => {
+        set(()=>({returnedFeedbackModalFlag:flag}))
     }
 }))
 

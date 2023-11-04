@@ -15,6 +15,7 @@ import PrintExportButton from '../../components/commonComponents/customComponent
 import ReportModalComponent from '../../components/toggleModalComponents/ReportModalComponent';
 import useLoginStore from '../../store/useLoginStore';
 import { Cookies } from 'react-cookie';
+import ReturnedFeedbackModalComponent from '../../components/toggleModalComponents/ReturnedFeedbackModalComponent';
 
 type TDivsControlConfig = {
     advisor: {
@@ -57,7 +58,8 @@ const LearningManagementSparkWritingFeedbackPage = () => {
         rubricDataHead
     } = useActivityWritingHubStore();
     const { 
-        commonAlertOpen, commonAlertClose
+        commonAlertOpen, commonAlertClose,
+        setReturnedFeedbackModalFlag
     } = useControlAlertStore();
 
     const cookies = new Cookies();
@@ -1168,6 +1170,10 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                 dumyStates.divideDC.x = defaultLeftAreaWidth;
                 setDivAResize(dumyStates)
             }
+
+            if (feedbackDataInStudent.status?.status === 5) {
+                setReturnedFeedbackModalFlag(true)
+            }
         } else if (feedbackDataInStudent.defautInfo.step_label === '2nd Draft') {
             const canvasCurrentRef = canvasRef.current;
             if (canvasCurrentRef) {
@@ -1260,7 +1266,7 @@ const LearningManagementSparkWritingFeedbackPage = () => {
         console.log('rubricReportValue ==',rubricReportValue)
         const status2ndDraft = feedbackDataInStudent.status?.status;
         if (status2ndDraft === 2 ||status2ndDraft === 3) {
-            if (finalOverallComment!=='') {
+            if (finalOverallComment.replace(' ','') !=='') {
                 if (rubricReportValue.length === 6) {
                     // save & submit open
                     setFinalCreateReportFlag(true);
@@ -1382,6 +1388,12 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                         setReturnFeedbackValue={setReturnFeedback}
                         returnFeedFunction={returnFeed}
                     />
+                }
+                {pageAuth === 'N' && draftStatus === 5 && 
+                    <ReturnedFeedbackModalComponent
+                    feedbackDataInStudent={feedbackDataInStudent}
+                    isReturned={true}
+                />
                 }
             </div>
 
@@ -1951,6 +1963,9 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                         {/* buttons */}
                         <div className='comment-button-wrap-div'>
                             <div className='comment-button-close'
+                                style={pageAuth === 'N' && draftStatus === 5 ? {
+                                    zIndex: 2300000000
+                                }:{}}
                                 onClick={()=>{
                                     commonAlertOpen({
                                         head: 'Review 1st Draft',
@@ -1967,24 +1982,24 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                                 }}
                             />
                             <div className={ pageAuth === 'N' 
-                                ? ((allBodySelectedText.length > 0 || overallComment.length > 0) 
+                                ? ((allBodySelectedText.length > 0 || overallComment.replace(' ','').length > 0) 
                                     ? ( draftStatus < 4 ? 'comment-button-save': 'comment-button-save-disabled' )
                                     :'comment-button-save-disabled')
                                 : 'comment-button-save-disabled' } 
                                 onClick={
                                     pageAuth === 'N' ? (
-                                        (allBodySelectedText.length > 0 || overallComment.length > 0) ? (
+                                        (allBodySelectedText.length > 0 || overallComment.replace(' ','').length > 0) ? (
                                             draftStatus < 4 ? saveButtonEvent:()=>{}
                                         ):()=>{}
                                     ) : ()=>{} }
                             />
                             <div className={ pageAuth === 'N' 
-                                ? ((overallComment.length>0)
+                                ? ((overallComment.replace(' ','').length>0)
                                     ? ( draftStatus < 4 ? 'comment-button-send': 'comment-button-send-disabled' )
                                     :'comment-button-send-disabled')
                                 : 'comment-button-send-disabled' }
                                 onClick={ pageAuth === 'N' 
-                                    ? ((allBodySelectedText.length > 0 || overallComment.length > 0) ? (
+                                    ? ((allBodySelectedText.length > 0 || overallComment.replace(' ','').length > 0) ? (
                                         draftStatus < 4 ? sendButtonEvent: ()=>{}
                                     ):()=>{}) : () => {} }
                             />

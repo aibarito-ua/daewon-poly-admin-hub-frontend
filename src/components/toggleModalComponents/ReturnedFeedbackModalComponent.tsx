@@ -7,71 +7,86 @@ import { DialogActions, FormControlLabel, Input, Radio, RadioGroup, RadioProps }
 import useControlAlertStore from '../../store/useControlAlertStore';
 import { useNavigate } from 'react-router-dom';
 interface IReturnFeedbackProps {
-    returnFeedbackValue: TReturnFeedback;
-    setReturnFeedbackValue: Function;
-    returnFeedFunction: (feedback_return: TReturnFeedback) => Promise<boolean>;
+    feedbackDataInStudent:TFeedbackStates
+    isReturned:boolean;
 }
 
-export default function ReturnFeedbackModalComponent (props: IReturnFeedbackProps) {
+export default function ReturnedFeedbackModalComponent (props: IReturnFeedbackProps) {
     const {
-        returnFeedFunction, returnFeedbackValue, setReturnFeedbackValue,
+        // returnFeedFunction, returnFeedbackValue, setReturnFeedbackValue,
+        feedbackDataInStudent,
+        isReturned
     } = props;
-  const [open, setOpen] = React.useState(false);
+//   const [open, setOpen] = React.useState(false);
   const [reasonStr, setReasonStr] = React.useState<string>('');
   const [otherReason, setOtherReason] = React.useState<string>('');
+  const [returnTeacherReason, setReturnTeacherReason] = React.useState<string>('');
   const navigate = useNavigate();
   const {
-    commonAlertOpen
+    commonAlertOpen,
+    returnedFeedbackModalFlag, setReturnedFeedbackModalFlag,
   } = useControlAlertStore();
   const modalTitle = 'Please choose the reason for returning the work to the student.';
   
   React.useEffect(()=>{
-    if (!open) {
+    if (!returnedFeedbackModalFlag) {
         setReasonStr('')
         setOtherReason('')
-    } 
-    // else {
-    //     setReasonStr(radioLabelandString[0])
-    // }
-  }, [open])
+    } else {
+        console.log('feedbackDataInStudent =',feedbackDataInStudent)
+        const radioLabelandString = ['Incomplete Writing', 'Irrelevant Content', 'Other']
+        if (radioLabelandString[0] === feedbackDataInStudent.draft_data.return_reason) {
+            setReasonStr(feedbackDataInStudent.draft_data.return_reason)
+        } else if (radioLabelandString[1] === feedbackDataInStudent.draft_data.return_reason) {
+            setReasonStr(feedbackDataInStudent.draft_data.return_reason)
+        } else {
+            setReasonStr('Other')
+            setOtherReason(feedbackDataInStudent.draft_data.return_reason)
+        }
+        
+        
+        setReturnTeacherReason(feedbackDataInStudent.draft_data.return_teacher_comment)
+    }
+  }, [returnedFeedbackModalFlag])
 
   const handleClickOpen = () => {
-    setOpen(true);
+    setReturnedFeedbackModalFlag(true);
   };
 
   const handleClose = () => {
-    setOpen(false);
+    setReturnedFeedbackModalFlag(false);
   };
 
   const send = async () => {
     const reason = reasonStr==='Other'? otherReason: reasonStr;
-    const teacher_comment = returnFeedbackValue.teacher_comment;
-    const rsp = await returnFeedFunction({ is_return: true, reason, teacher_comment });
-    if (rsp) {
-        setOpen(false);
-        commonAlertOpen({
-            head: 'RETURN',
-            messages: ['Sent.','Return to the main menu.'],
-            useOneButton: true,
-            yesButtonLabel: 'OK',
-            yesEvent: () => {
-                // navigate(`/LearningManagement/WritingHub/SparkWriting`);
-                // window.location.reload();
-                navigate(`/LearningManagement/WritingHub/SparkWriting?feedback=end`)
-            }
-        })
-    } else {
-        commonAlertOpen({
-            head: 'Error',
-            messages: ['잠시 후 다시 시도해주세요.'],
-            useOneButton: true,
-            yesButtonLabel: 'OK'
-        })
-    }
+    // const teacher_comment = returnFeedbackValue.teacher_comment;
+    // const rsp = await returnFeedFunction({ is_return: true, reason, teacher_comment });
+    // if (rsp) {
+    //     setReturnedFeedbackModalFlag(false);
+    //     commonAlertOpen({
+    //         head: 'RETURN',
+    //         messages: ['Sent.','Return to the main menu.'],
+    //         useOneButton: true,
+    //         yesButtonLabel: 'OK',
+    //         yesEvent: () => {
+    //             // navigate(`/LearningManagement/WritingHub/SparkWriting`);
+    //             // window.location.reload();
+    //             navigate(`/LearningManagement/WritingHub/SparkWriting?feedback=end`)
+    //         }
+    //     })
+    // } else {
+    //     commonAlertOpen({
+    //         head: 'Error',
+    //         messages: ['잠시 후 다시 시도해주세요.'],
+    //         useOneButton: true,
+    //         yesButtonLabel: 'OK'
+    //     })
+    // }
     
   }
   const cancel = () => {
-    setOpen(false);
+    setReturnedFeedbackModalFlag(false);
+    navigate(`/LearningManagement/WritingHub/SparkWriting?feedback=end`)
   }
 
   const radioLabelandString = ['Incomplete Writing', 'Irrelevant Content', 'Other']
@@ -91,18 +106,19 @@ export default function ReturnFeedbackModalComponent (props: IReturnFeedbackProp
             aria-labelledby="demo-controlled-radio-buttons-group"
             name="controlled-radio-buttons-group"
             // defaultValue={radioLabelandString[0]}
+            
             value={reasonStr}
-            onChange={(e)=>{
-                console.log(e.currentTarget.value)
-                const value = e.currentTarget.value;
-                if (value!=='Other') {
-                    setOtherReason('')
-                }
-                setReasonStr(e.currentTarget.value)
-                // let dumyReturn:TReturnFeedback = JSON.parse(JSON.stringify(returnFeedbackValue));
-                // dumyReturn.reason=e.currentTarget.value;
-                // setReturnFeedbackValue(dumyReturn);
-            }}
+            // onChange={(e)=>{
+            //     console.log(e.currentTarget.value)
+            //     const value = e.currentTarget.value;
+            //     if (value!=='Other') {
+            //         setOtherReason('')
+            //     }
+            //     setReasonStr(e.currentTarget.value)
+            //     // let dumyReturn:TReturnFeedback = JSON.parse(JSON.stringify(returnFeedbackValue));
+            //     // dumyReturn.reason=e.currentTarget.value;
+            //     // setReturnFeedbackValue(dumyReturn);
+            // }}
         >
             <FormControlLabel 
                 sx={{'.MuiFormControlLabel-label': {
@@ -137,15 +153,15 @@ export default function ReturnFeedbackModalComponent (props: IReturnFeedbackProp
 
   return (
     <div className='flex'>
-        <div className='learning-management-feedback-return-button' 
-        onClick={handleClickOpen}/>
+        {/* <div className='learning-management-feedback-return-button' 
+        onClick={handleClickOpen}/> */}
       <Dialog className=''
       PaperProps={{sx:{
         paddingX: '20px',
         paddingY: '30px',
         width: '340px'
       }}}
-      open={open} 
+      open={returnedFeedbackModalFlag} 
     //   onClose={handleClose}
       >
         <DialogTitle sx={{
@@ -171,13 +187,14 @@ export default function ReturnFeedbackModalComponent (props: IReturnFeedbackProp
                 <div className='flex flex-row font-notoSansCJKKR leading-[1.43] text-[#222] text-[14px] mt-[30px] mb-[10px]'>{`Teacher's Comment:`}</div>
                 <textarea 
                     className='w-[300px] h-[100px] resize-none border-[#ddd] outline-none ring-0 focus:border-[#ddd] focus:outline-none focus:ring-0'
-                    value={returnFeedbackValue.teacher_comment}
+                    value={returnTeacherReason}
                     placeholder=''
+                    disabled
                     onChange={(e)=>{
-                        const textareaValue = e.currentTarget.value;
-                        let dumyReturn:TReturnFeedback = JSON.parse(JSON.stringify(returnFeedbackValue));
-                        dumyReturn.teacher_comment=textareaValue;
-                        setReturnFeedbackValue(dumyReturn);
+                        // const textareaValue = e.currentTarget.value;
+                        // let dumyReturn:TReturnFeedback = JSON.parse(JSON.stringify(returnFeedbackValue));
+                        // dumyReturn.teacher_comment=textareaValue;
+                        // setReturnFeedbackValue(dumyReturn);
                     }}
                 />
                 <div className='flex flex-col justify-center items-center mt-[30px] w-[300] h-[83px] font-notoSansCJKKR leading-[1.81] text-[#ee4e4e] font-bold text-[16px]'>
@@ -193,16 +210,9 @@ export default function ReturnFeedbackModalComponent (props: IReturnFeedbackProp
           margin:0,
         }}>
             <div className='flex flex-1 flex-row justify-center w-full items-center gap-[10px]'>
-                {((reasonStr === 'Other' && otherReason != '') || (reasonStr !== 'Other' && reasonStr !== '')) && returnFeedbackValue.teacher_comment != '' ? 
-                    <div className='return-feedback-modal-buttons bg-[#0fa9cb] text-[#ffffff]'
-                    onClick={send}
-                    >{'send'}</div>
-                    :
-                    <div className='return-feedback-modal-disabled-buttons'
-                    >{'send'}</div>
-                }
-                <div className='return-feedback-modal-buttons bg-[#e5e5e5] text-[#222222]'
-                onClick={cancel}
+                <div className='return-feedback-modal-disabled-buttons'
+                >{'send'}</div>
+                <div className='return-feedback-modal-disabled-buttons'
                 >{'cancel'}</div>
             </div>
         </DialogActions>
