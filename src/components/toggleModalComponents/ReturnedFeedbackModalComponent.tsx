@@ -7,15 +7,15 @@ import { DialogActions, FormControlLabel, Input, Radio, RadioGroup, RadioProps }
 import useControlAlertStore from '../../store/useControlAlertStore';
 import { useNavigate } from 'react-router-dom';
 interface IReturnFeedbackProps {
-    feedbackDataInStudent:TFeedbackStates
-    isReturned:boolean;
+  feedbackDataInStudent:TFeedbackStates;
+  draft: number;  
 }
 
 export default function ReturnedFeedbackModalComponent (props: IReturnFeedbackProps) {
     const {
         // returnFeedFunction, returnFeedbackValue, setReturnFeedbackValue,
         feedbackDataInStudent,
-        isReturned
+        draft
     } = props;
 //   const [open, setOpen] = React.useState(false);
   const [reasonStr, setReasonStr] = React.useState<string>('');
@@ -35,17 +35,30 @@ export default function ReturnedFeedbackModalComponent (props: IReturnFeedbackPr
     } else {
         console.log('feedbackDataInStudent =',feedbackDataInStudent)
         const radioLabelandString = ['Incomplete Writing', 'Irrelevant Content', 'Other']
-        if (radioLabelandString[0] === feedbackDataInStudent.draft_data.return_reason) {
-            setReasonStr(feedbackDataInStudent.draft_data.return_reason)
-        } else if (radioLabelandString[1] === feedbackDataInStudent.draft_data.return_reason) {
-            setReasonStr(feedbackDataInStudent.draft_data.return_reason)
-        } else {
-            setReasonStr('Other')
-            setOtherReason(feedbackDataInStudent.draft_data.return_reason)
+        if (draft === 1) {
+          if (radioLabelandString[0] === feedbackDataInStudent.draft_data.return_reason) {
+              setReasonStr(feedbackDataInStudent.draft_data.return_reason)
+          } else if (radioLabelandString[1] === feedbackDataInStudent.draft_data.return_reason) {
+              setReasonStr(feedbackDataInStudent.draft_data.return_reason)
+          } else {
+              setReasonStr('Other')
+              setOtherReason(feedbackDataInStudent.draft_data.return_reason)
+          }
+          setReturnTeacherReason(feedbackDataInStudent.draft_data.return_teacher_comment)
+        } else if (draft === 2 && feedbackDataInStudent.draft_2nd_data) {
+          if (radioLabelandString[0] === feedbackDataInStudent.draft_2nd_data.return_reason) {
+            setReasonStr(feedbackDataInStudent.draft_2nd_data.return_reason)
+          } else if (radioLabelandString[1] === feedbackDataInStudent.draft_2nd_data.return_reason) {
+              setReasonStr(feedbackDataInStudent.draft_2nd_data.return_reason)
+          } else {
+              setReasonStr('Other')
+              setOtherReason(feedbackDataInStudent.draft_2nd_data.return_reason)
+          }
+          setReturnTeacherReason(feedbackDataInStudent.draft_2nd_data.return_teacher_comment)
         }
         
         
-        setReturnTeacherReason(feedbackDataInStudent.draft_data.return_teacher_comment)
+        
     }
   }, [returnedFeedbackModalFlag])
 

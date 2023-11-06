@@ -448,26 +448,50 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                                 
                                 // console.log('divName =',getIdName)
                                 if (allBodySelectedText.length>0) {
+                                    const reCheckElement = (target:HTMLElement|null) => {
+                                        let targetElement:HTMLElement|null = target;
+                                        while(targetElement && targetElement.id==='') {
+                                            targetElement = targetElement.parentElement;
+                                        }
+                                        if (targetElement) return targetElement;
+                                    }
+                                    const selectedFindStartEndIndex = (target: HTMLElement|null) => {
+                                        if (selection) {
+                                            const selectedCheckTarget = reCheckElement(target);
+                                            const range = selection.getRangeAt(0),
+                                                    text = selection.toString();
+                                            if (selectedCheckTarget&& text) {
+                                                const selectedStartRange = document.createRange();
+                                                selectedStartRange.selectNodeContents(selectedCheckTarget);
+                                                selectedStartRange.setEnd(range.startContainer, range.startOffset);
+                                                const startIdx = selectedStartRange.toString().length;
+                                                const endIdx = startIdx + text.length;
+                                                return { startIdx, endIdx }
+                                            }
+                                        }
+                                    }
+                                    const targetIndexInfo = selectedFindStartEndIndex(range.startContainer.parentElement);
                                     for (let i = 0; i < allBodySelectedText.length; i++) {
                                         const rowSelectedTextData = allBodySelectedText[i];
                                         if (rowSelectedTextData.paraghragh_name === getIdName) {
                                             const rowSelectedTextStartIndex = rowSelectedTextData.start_index;
                                             const rowSelectedTextEndIndex = rowSelectedTextData.end_index;
-                                            
-                                            if (rowSelectedTextStartIndex >= endIndex || rowSelectedTextEndIndex <= startIndex) {
-                                                // 곂치지 않는 경우
-                                            } else {
-                                                // 곂치는 경우
-                                                isDragOverOtherDiv=true;
-                                                break;
+                                            if (targetIndexInfo) {
+                                                if (rowSelectedTextStartIndex >= targetIndexInfo.endIdx || rowSelectedTextEndIndex <= targetIndexInfo.startIdx) {
+                                                    // 곂치지 않는 경우
+                                                } else {
+                                                    // 곂치는 경우
+                                                    isDragOverOtherDiv=true;
+                                                    break;
+                                                }
                                             }
                                         }
                                     }
                                 }
                                 // parent 범위 이탈
-                                if (checkTextData !== 'update-words') {
-                                    isDragOverOtherDiv=true;
-                                }
+                                // if (checkTextData !== 'update-words') {
+                                //     isDragOverOtherDiv=true;
+                                // }
                             }
                             if (isDragOverOtherDiv) {
                                 selection.removeAllRanges();
@@ -601,9 +625,6 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                             isDragOverOtherDiv=true;
                         }
                     }
-                    
-                    
-
                     if (isDragOverOtherDiv) {
                         selection?.removeAllRanges(); // 드래그 취소
                         setBodySelectedText('');
@@ -716,14 +737,16 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                 if (targetElement) return targetElement;
             }
             const selectElement = range.startContainer.parentElement;
+            // console.log('selectElement =',selectElement)
             
             const divName = checkElement(selectElement)
             const newTarget = reCheckElement(selectElement);
+            // console.log('newTarget =',newTarget)
 
             if (containerNode && divName && newTarget) {
                 
                 const newText = newTarget.textContent;
-                console.log('test ===',newText)
+                // console.log('test ===',newText)
                 let startIndex = 0;
                 let endIndex = 0;
                 // Calculate start index
@@ -755,7 +778,7 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                     parent_text: containerNode.textContent ? containerNode.textContent : '',
                     targetStyles: styles
                 }
-                console.log('create comment =',commentData)
+                // console.log('create comment =',commentData)
                 dumyComment.push(commentData)
                 // span.=styles;
                 setAllBodySelectedText(dumyComment);
@@ -836,10 +859,14 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                 if (targetElement) return targetElement;
             }
             const selectElement = range.startContainer.parentElement;
-            
-            const divName = checkElement(selectElement)
-            const newTarget = reCheckElement(selectElement);
 
+            const selectEndElement = range.endContainer.parentElement;
+            console.log('selectElement =',selectElement)
+            console.log('selectEndElement =',selectEndElement)
+            const divName = checkElement(selectElement)
+            console.log('divName =',divName)
+            const newTarget = reCheckElement(selectElement);
+            console.log('newTarget =',newTarget)
             if (containerNode && divName && newTarget) {
                 
                 const newText = newTarget.textContent;
@@ -879,18 +906,18 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                 dumyComment.push(commentData)
                 // span.=styles;
                 setAllBodySelectedText(dumyComment);
+
+                span.style.backgroundColor = 'yellow';
+                span.style.userSelect='none';
+                span.style.height = 'fit-content'
+                span.style.cursor = 'pointer'
+                
+                span.appendChild(range.extractContents());
+                range.insertNode(span);
             }
-            span.style.backgroundColor = 'yellow';
-            span.style.userSelect='none';
-            span.style.height = 'fit-content'
-            span.style.cursor = 'pointer'
-            
-
-            span.appendChild(range.extractContents());
-            range.insertNode(span);
 
 
-            console.log('all body comment =',allBodySelectedText)
+            // console.log('all body comment =',allBodySelectedText)
             setBodyCommentBoxVisible(false);
             setBodySelectedText('')
         }
@@ -1220,6 +1247,9 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                     setRubricSelected(rubricSelectsValue);
                 }
             }
+            if (feedbackDataInStudent.status?.status === 5) {
+                setReturnedFeedbackModalFlag(true)
+            }
         }
         const handleBodyCommentClick = (event: MouseEvent) => {
             if (
@@ -1392,7 +1422,7 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                 {pageAuth === 'N' && draftStatus === 5 && 
                     <ReturnedFeedbackModalComponent
                     feedbackDataInStudent={feedbackDataInStudent}
-                    isReturned={true}
+                    draft={feedbackDataInStudent.defautInfo.step_label==='1st Draft' ? 1:2}
                 />
                 }
             </div>
@@ -1514,13 +1544,14 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                                                 {advisor.draft_outline.map((advisorParagraphItem) => {
                                                     const revisedSentence = advisorParagraphItem.revised_text;
                                                     const revisedSentenceName = advisorParagraphItem.name;
+                                                    const key = `revised-${revisedSentenceName}-${advisorParagraphItem.order_index}`
                                                     if (revisedSentenceName==='Title') {
                                                         return (
-                                                            <div className='flex h-fit'>{`Title: ${revisedSentence}`}</div>
+                                                            <div key={key} className='flex h-fit'>{`Title: ${revisedSentence}`}</div>
                                                         )
                                                     } else {
                                                         return (
-                                                            <div className='flow-root h-fit'><span className='pl-[10px]'/>{revisedSentence}</div>
+                                                            <div key={key} className='flow-root h-fit'><span className='pl-[10px]'/>{revisedSentence}</div>
                                                         )
                                                     }
                                                 })}
@@ -1543,13 +1574,14 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                                                 {advisor.draft_outline.map((advisorParagraphItem) => {
                                                     const similarSentence = advisorParagraphItem.similar_text;
                                                     const similarSentenceName = advisorParagraphItem.name;
+                                                    const key = `similar-${similarSentenceName}-${advisorParagraphItem.order_index}`
                                                     if (similarSentenceName==='Title') {
                                                         return (
-                                                            <div className='flex h-fit'>{`Title: ${similarSentence}`}</div>
+                                                            <div key={key} className='flex h-fit'>{`Title: ${similarSentence}`}</div>
                                                         )
                                                     } else {
                                                         return (
-                                                            <div className='flow-root h-fit'><span className='pl-[10px]'/>{similarSentence}</div>
+                                                            <div key={key} className='flow-root h-fit'><span className='pl-[10px]'/>{similarSentence}</div>
                                                         )
                                                     }
                                                 })}
@@ -1644,19 +1676,12 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                                             <button onClick={handleHighlightClick} className='comment-button-add'></button>
                                         </div>
                                     )}
-                                    {/* {afterHighlightBoxVisible && (
-                                        <div style={afterHighlightBoxStyle}>
-                                            <p>{'test'}</p>
-                                        </div>
-                                    )} */}
                                 </div>
                             </div>
 
                             <div id='draft-body-wrap-div' className='draft-viewer-container-body-wrap'>
                                 <div className='draft-viewer-container-body font-notoSansCJKKR text-[13px] text-[#222] leading-[1.38]'
-                                // 'flex flex-col gap-[13px] p-[35px] w-full h-full bg-[#f9f9f9] justify-start'
                                     id='draft-body-selection-area'
-                                // flex flex-col justify-start
                                     ref={containerBodyRef}
                                     onContextMenu={(e)=>draftStatus>3 ? ()=>{}: bodyDragHandlerSelection(e)}
                                 >
@@ -1874,7 +1899,7 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                                                 e.preventDefault();
                                                 const targetElement = document.getElementById(commentItem.comment_className) as HTMLElement;
                                                 // const clickedElement = e.target as HTMLElement;
-                                                // console.log('click =',targetElement.parentElement)
+                                                console.log('click =',targetElement.parentElement)
                                                 // find parent element className by target
                                                 const checkParent = (target:HTMLElement) => {
                                                     let targetElement:HTMLElement|null = target;
@@ -1884,7 +1909,7 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                                                     if (targetElement) return targetElement;
                                                 }
                                                 const parent = checkParent(targetElement);
-                                                // console.log('parent ==',parent)
+                                                console.log('parent ==',parent)
                                                 const checkElement = (target:HTMLElement|null) => {
                                                     let targetElement:HTMLElement|null = target;
                                                     while(targetElement && targetElement.id==='') {
@@ -1897,27 +1922,28 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                                                     const divName = checkElement(parent.parentElement)
                                                     console.log('div name =',divName)
                                                     const parentContent = Array.from(parent.childNodes);
-                                                    const newParent = document.createElement('span');
+                                                    // const newParent = document.createElement('<>');
+                                                    const newParent = document.createDocumentFragment();
                                                     parentContent.forEach(content => {
-                                                        // console.log('===parentContent.forEach===')
-                                                        // console.log('content ==',content)
-                                                        // console.log('content === targetElement =',content === targetElement)
+                                                        console.log('===parentContent.forEach===', targetElement)
+                                                        console.log('content ==',typeof(content))
+                                                        console.log('content === targetElement =',content === targetElement)
                                                         if (content === targetElement) {
-                                                        const originalContent = Array.from(content.childNodes);
-                                                        originalContent.forEach(original => {
-                                                            newParent.appendChild(original.cloneNode(true));
-                                                        });
+                                                            const originalContent = Array.from(content.childNodes);
+                                                            console.log('originalContent =',originalContent)
+                                                            originalContent.forEach(original => {
+                                                                newParent.appendChild(original.cloneNode(true));
+                                                            });
                                                         } else {
-                                                        newParent.appendChild(content.cloneNode(true));
+                                                            newParent.appendChild(content.cloneNode(true));
                                                         }
                                                     });
-                                                    // console.log('newParent ==',newParent)
-                                                    const replaceNewParentText = newParent.textContent ? newParent.textContent : '';
-                                                    parent.replaceWith(replaceNewParentText);
+                                                    console.log('newParent ==',newParent)
+                                                    parent.replaceWith(newParent);
 
                                                     let dumyComment:TComment[] = allBodySelectedText;
-                                                    // console.log('before ==',dumyComment)
-                                                    // console.log('commentItem = ',commentItem)
+                                                    console.log('before ==',dumyComment)
+                                                    console.log('commentItem = ',commentItem)
                                                     let flag = false;
                                                     // classNameValue currentCommentIndex divName
                                                     for (let i =0; i< dumyComment.length; i++) {
@@ -1927,8 +1953,8 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                                                         const checkClassName = dumyComment[i].comment_className === commentItem.comment_className;
                                                         const checkIndex = dumyComment[i].comment_index === commentItem.comment_index;
                                                         // console.log('checkName =',checkName)
-                                                        // console.log('checkClassName =',checkClassName)
-                                                        // console.log('checkIndex =',checkIndex)
+                                                        console.log('checkClassName =',checkClassName)
+                                                        console.log('checkIndex =',checkIndex)
                                                         if ( checkClassName && checkIndex) {
                                                             console.log('delete', dumyComment[i])
                                                             flag=true;
@@ -2265,6 +2291,9 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                         <div className='flex w-full relative min-h-[81px] h-[81px] items-center border-t-[1px] border-t-[#e2e3e6] bg-white'>
                             <div className='absolute flex right-[20px] gap-[10px]'>
                                 <div className='comment-button-close hover:cursor-pointer'
+                                    style={pageAuth === 'N' && draftStatus === 5 ? {
+                                        zIndex: 2300000000
+                                    }:{}}
                                     onClick={()=>{
                                         commonAlertOpen({
                                             head: 'Evaluate 2nd Draft',
