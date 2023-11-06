@@ -113,16 +113,16 @@ export default function OutlineFormatModalComponent(props:IOutlineFormatModalCom
         >
           <div className='w-[850px] h-[800px] px-[20px] pt-[10px] '>
             {title==='OL01' && 
-              <div className='bg-outline-format-image-ol-01 bg-no-repeat bg-cover w-[810px] h-[1100px] pb-[20px]'></div>
+              <div className='bg-outline-format-image-ol-01 bg-no-repeat bg-contain w-[810px] h-[1100px] pb-[20px]'></div>
             }
             {title==='OL02' && 
-              <div className='bg-outline-format-image-ol-02 bg-no-repeat bg-cover w-[810px] h-[1220px] pb-[20px]'></div>
+              <div className='bg-outline-format-image-ol-02 bg-no-repeat bg-contain w-[810px] h-[1220px] pb-[20px]'></div>
             }
             {title==='OL03' && 
-              <div className='bg-outline-format-image-ol-03 bg-no-repeat bg-cover w-[810px] h-[1340px] pb-[20px]'></div>
+              <div className='bg-outline-format-image-ol-03 bg-no-repeat bg-contain w-[810px] h-[1340px] pb-[20px]'></div>
             }
             {title==='OL04' && 
-              <div className='bg-outline-format-image-ol-04 bg-no-repeat bg-cover w-[810px] h-[1220px] pb-[20px]'></div>
+              <div className='bg-outline-format-image-ol-04 bg-no-repeat bg-contain w-[810px] h-[1220px] pb-[20px]'></div>
             }
           </div>
 
