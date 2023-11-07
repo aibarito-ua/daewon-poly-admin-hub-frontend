@@ -62,10 +62,11 @@ const ReportCorrectionSummaryComponent = (
     }
     const GrammarSentence = (grammar:TStudentUnitReportResGrammarCorrectionItems) => {
         let correctionDiv:JSX.Element[]=[];
+        console.log('grammar =', grammar)
         if ( selectReason === 'grammar') {
             correctionDiv = grammar.sentences.map((sentenceItem, sentenceIndex) => {
-                return <div className='flow-root indent-[1rem]'>{sentenceItem.map((wordItem , wordIndex) => {
-                    console.log('word ==',wordItem)
+                return <div className='flex flex-row gap-[0.4rem]'><span>{'•'}</span><span className='grammar-tooltip-custom-content-list-item'>{sentenceItem.map((wordItem , wordIndex) => {
+                    // console.log('word ==',wordItem)
                     const key = 'grammar-'+sentenceIndex+'-'+wordIndex+'-'+wordItem.type;
                     if (wordItem.type === 1) {
                         return <span key={key} className='report-chart-correction-content-add-text'>{wordItem.word}</span>
@@ -74,7 +75,7 @@ const ReportCorrectionSummaryComponent = (
                     } else {
                         return <span key={key} className='grammar-tooltip-custom-content-normal-text'>{wordItem.word}</span>
                     }
-                })}</div>
+                })}</span></div>
             })
         } else {correctionDiv=[]};
         return (
@@ -96,10 +97,11 @@ const ReportCorrectionSummaryComponent = (
     }
     const PuctuationSentence = (punctuation:TStudentUnitReportResGrammarCorrectionItems) => {
         let correctionDiv:JSX.Element[]=[];
+        console.log('punctuation =',punctuation)
         if ( selectReason === 'punctuation') {
             correctionDiv = punctuation.sentences.map((sentenceItem, sentenceIndex) => {
-                return <div className='flow-root indent-[1rem]'>{sentenceItem.map((wordItem , wordIndex) => {
-                    console.log('word ==',wordItem)
+                return <div className='flex flex-row gap-[0.4rem]'><span>{'•'}</span><span className='grammar-tooltip-custom-content-list-item'>{sentenceItem.map((wordItem , wordIndex) => {
+                    // console.log('word ==',wordItem)
                     const key = 'punctuation-'+sentenceIndex+'-'+wordIndex+'-'+wordItem.type;
                     if (wordItem.type === 1) {
                         return <span key={key} className='report-chart-correction-content-add-text'>{wordItem.word}</span>
@@ -108,7 +110,7 @@ const ReportCorrectionSummaryComponent = (
                     } else {
                         return <span key={key} className='grammar-tooltip-custom-content-normal-text'>{wordItem.word}</span>
                     }
-                })}</div>
+                })}</span></div>
             })
         } else {correctionDiv=[]};
         return (
@@ -130,19 +132,21 @@ const ReportCorrectionSummaryComponent = (
     }
     const SpellingSentence = (punctuation:TStudentUnitReportResGrammarCorrectionItems) => {
         let correctionDiv:JSX.Element[]=[];
+        console.log('punctuation =',punctuation)
         if ( selectReason === 'spelling') {
             correctionDiv = punctuation.sentences.map((sentenceItem, sentenceIndex) => {
-                return <div className='flow-root indent-[1rem]'>{sentenceItem.map((wordItem , wordIndex) => {
-                    console.log('word ==',wordItem)
+                return <div className='flex flex-row gap-[0.4rem]'><span>{'•'}</span><span className='grammar-tooltip-custom-content-list-item'>{sentenceItem.map((wordItem , wordIndex) => {
+                    // console.log('word ==',wordItem)
                     const key = 'spelling-'+sentenceIndex+'-'+wordIndex+'-'+wordItem.type;
                     if (wordItem.type === 1) {
+                        // •
                         return <span key={key} className='report-chart-correction-content-add-text'>{wordItem.word}</span>
                     } else if (wordItem.type === -1 ) {
                         return <span key={key} className='report-chart-correction-content-delete-text'>{wordItem.word}</span>
                     } else {
                         return <span key={key} className='grammar-tooltip-custom-content-normal-text'>{wordItem.word}</span>
                     }
-                })}</div>
+                })}</span></div>
             })
         } else {correctionDiv=[]};
         return (

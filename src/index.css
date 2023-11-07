@@ -2152,6 +2152,7 @@ body {
   @apply
   flex flex-1
   flex-col
+  gap-[7px]
   border-[1px]
   border-[#eee]
   bg-[#f9f9f9]
@@ -2219,6 +2220,11 @@ body {
   rounded-[5px]
   text-[#222]
   h-fit
+}
+.grammar-tooltip-custom-content-list-item {
+  line-height: 0.9;
+  @apply
+  flow-root
 }
 .report-chart-report-by-unit-title {
   font-family: 'GothamRounded';
