@@ -175,7 +175,7 @@ const ReportCorrectionSummaryComponent = (
             <div className='report-chart-righ-correction-content'>
 
                 <div className='report-chart-righ-correction-content-wrap-1'>
-                    <div className='report-chart-righ-word-count-content-title select-none'>1st drafts</div>
+                    <div className='report-chart-righ-word-count-content-title select-none'>1st Draft</div>
                     <div className='report-chart-righ-correction-content-items'>
                         {item.grammar_correction.grammar && GrammarSentence(item.grammar_correction.grammar)}
                         {item.grammar_correction.spelling && SpellingSentence(item.grammar_correction.spelling)}

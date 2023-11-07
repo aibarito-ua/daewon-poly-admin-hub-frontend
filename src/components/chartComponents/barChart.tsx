@@ -54,7 +54,23 @@ export default function App(props: {
       <YAxis tickCount={5} ticks={[0,1,2,3,4,5,6,7,8,9,10,11]} tickLine={false} axisLine={false} tickFormatter={()=>''} />
       {/* <Tooltip /> */}
       <Legend iconType="circle" align="center" 
-        formatter={(value, entry, index) => <span className="capitalize pr-[40px]" style={{color: '#555', fontSize: '13px',lineHeight:'20px',fontFamily:'Noto Sans CJK KR'}}>{value}</span>} 
+        formatter={(value, entry, index) => {
+          if (value==='Unit1') value='Unit 1'
+          else if (value==='Unit2') value='Unit 2'
+          else if (value==='Unit3') value='Unit 3'
+          else if (value==='Unit4') value='Unit 4'
+          else if (value==='Unit5') value='Unit 5'
+          console.log('value ==',index,'::',value)
+          return <span className="capitalize pr-[40px]" style={{color: '#555', fontSize: '13px',lineHeight:'20px',fontFamily:'Noto Sans CJK KR'}}>{
+            index===0 ? 'Unit 1': (
+              index===1 ? 'Unit 2' : (
+                index===2 ? 'Unit 3' : (
+                  index===3 ? 'Unit 4': 'Unit 5'
+                )
+              )
+            )
+          }</span>
+        }} 
         height={50} verticalAlign="bottom" wrapperStyle={{paddingTop: 40, paddingLeft:140}} />
 
       <Bar dataKey="unit1" fill="#3dbcbf" label={check.unit1?{position:'top',fontFamily: 'GothamRounded',fontWeight:500,color:'#222',fontSize:14}:''} barSize={10} radius={[5,5,0,0]} />

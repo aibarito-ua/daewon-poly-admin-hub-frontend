@@ -1396,11 +1396,15 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                 <TopInfomationBar />
                 <div className='flex flex-row items-center h-[24px] gap-[8px] mt-[20px] select-none'>
                     <div className='flex w-[3px] h-[12px] bg-[#0fa9cb]'></div>
-                    <div className='flex font-notoSansCJKKR leading-[1.13] text-left text-[16px] text-[#222] font-medium'>{`Review ${feedbackDataInStudent.defautInfo.step_label}`}</div>
+                    <div className='flex font-notoSansCJKKR leading-[1.13] text-left text-[16px] text-[#222] font-medium'>{
+                        feedbackDataInStudent.defautInfo.step_label==='1st Draft' 
+                        ? `Review ${feedbackDataInStudent.defautInfo.step_label}`
+                        : `Evaluate ${feedbackDataInStudent.defautInfo.step_label}`
+                    }</div>
                 </div>
                 <div className='flex flex-col font-notoSansCJKKR leading-[1.77] text-left text-[13px] font-normal text-[#222] pl-[11px] mt-[10px] select-none'>
                     {feedbackDataInStudent.defautInfo.step_label === '2nd Draft' ? 
-                        <span>{`Review the student\’s 2nd draft and prepare a final evaluation.`}</span>
+                        <span>{`Assess the 2nd draft and submit your final evaluation.`}</span>
                         :
                         <>
                             <span>{`Highlight the selected parts you want to correct, then right-click to leave a correction comment.`}</span>

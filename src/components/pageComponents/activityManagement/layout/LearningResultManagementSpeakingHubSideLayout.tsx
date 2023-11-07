@@ -77,7 +77,7 @@ export default function LearningResultManagementSpeakingHubSideLayout (props:{
                     className={`flex items-center w-full h-[45px] border-b-[1px] border-b-[#ddd] ${subListOpen[selectIndex]===-2 ? 'bg-[#ECFAFC] text-[#0fa9cb] border-r-[3px] border-r-[#0FA9CB]' : ''}`}
                     onClick={() => handleSubListToggle(selectIndex, -2)}
                 >
-                    <span className="flex flex-row items-center justify-between flex-1 mx-[20px] whitespace-nowrap">
+                    <span className="flex flex-row items-center justify-between flex-1 mx-[20px] whitespace-nowrap capitalize">
                         {label}
                         {subListOpen[selectIndex]===-1 ? <commonSvgIcons.SideMenuPlusSVGIcon className='w-[11px] h-[11px]'/>: <commonSvgIcons.SideMenuMinusSVGIcon/>}
                         

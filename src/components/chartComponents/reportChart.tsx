@@ -92,8 +92,8 @@ const checkPercentDigit = percentValue === 100 ? '3': (
 )
 const checkDot = mainPercentString === replaceDot;
 
-const cx2dot1 = cx+30;
-const cx2dotN = cx+20;
+const cx2dot1 = cx+28;
+const cx2dotN = cx+22;
 const cx1dot1 = cx+25;
 const cx1dotN = cx+15;
 const percentCharacterPositionX = checkPercentDigit === '3' ? cx2dot1 : (
