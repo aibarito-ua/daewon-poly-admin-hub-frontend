@@ -1419,7 +1419,7 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                         returnFeedFunction={returnFeed}
                     />
                 }
-                {pageAuth === 'N' && draftStatus === 5 && 
+                { draftStatus === 5 && 
                     <ReturnedFeedbackModalComponent
                     feedbackDataInStudent={feedbackDataInStudent}
                     draft={feedbackDataInStudent.defautInfo.step_label==='1st Draft' ? 1:2}
@@ -1989,7 +1989,7 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                         {/* buttons */}
                         <div className='comment-button-wrap-div'>
                             <div className='comment-button-close'
-                                style={pageAuth === 'N' && draftStatus === 5 ? {
+                                style={ draftStatus === 5 ? {
                                     zIndex: 2300000000
                                 }:{}}
                                 onClick={()=>{
@@ -2291,7 +2291,7 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                         <div className='flex w-full relative min-h-[81px] h-[81px] items-center border-t-[1px] border-t-[#e2e3e6] bg-white'>
                             <div className='absolute flex right-[20px] gap-[10px]'>
                                 <div className='comment-button-close hover:cursor-pointer'
-                                    style={pageAuth === 'N' && draftStatus === 5 ? {
+                                    style={ draftStatus === 5 ? {
                                         zIndex: 2300000000
                                     }:{}}
                                     onClick={()=>{
