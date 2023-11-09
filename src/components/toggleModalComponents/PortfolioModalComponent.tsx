@@ -4,59 +4,59 @@ import PortfolioTabComponent from './portfolioLayouts/PortfolioTabComponent';
 import useLearningManagementSparkWritingStore from '../../store/useLearningManagementSparkWritingStore';
 import useReportStore from '../../store/useReportStore';
 interface IPortfolioComponentProps {
-    feedbackStates:TFeedbackStates;
-    otherModalCloseFn?: Function;
-    from?:''|'LM-Report';
-    initSettings?:Function;
-    studentCode?:string;
+    // feedbackStates:TFeedbackStates;
+    // initSettings?:Function;
+    // studentCode?:string;
+    // from?:''|'LM-Report';
+    // otherModalCloseFn?: Function;
 }
-export default function PortfolioModalComponent ( props: IPortfolioComponentProps ) {
-    const {
-         otherModalCloseFn, from, initSettings, studentCode
-    } = props;
-    const [open, setOpen] = React.useState<boolean>(false);
+export default function PortfolioModalComponent (  ) {
+    // const {
+    //      otherModalCloseFn, from, initSettings, studentCode
+    // } = props;
+    // const [open, setOpen] = React.useState<boolean>(false);
+    const [studentCode, setStudentCode] = React.useState<string>('');
     const {
         isModalOpen, setIsModalOpen
     } = useReportStore();
-    const {feedbackDataInStudent} = useLearningManagementSparkWritingStore()
-    const student_code=studentCode?studentCode:feedbackDataInStudent.defautInfo.student_code;
+    const {
+        feedbackDataInStudent
+    } = useLearningManagementSparkWritingStore()
+    // const student_code=isModalOpen.studend_code;
     React.useEffect(()=>{
-        // if (open) {
-        //     if (isModalOpen==='report') {
-        //         console.log('portfolio closed')
-        //         setOpen(false)
-        //     }
-        // }
-    },[open,isModalOpen])
+       
+    },[isModalOpen])
     const handleClickOpen = async () => {
-        if (initSettings) {
-            const setInitComplete = await initSettings();
-            if (setInitComplete) {
-                setOpen(true);
-                setIsModalOpen('portfolio')
-            }
-        } else {
-            setOpen(true);
-            setIsModalOpen('portfolio')
-        }
+        // if (isModalOpen.initSettingData) {
+        //     const setInitComplete = await isModalOpen.initSettingData();
+        //     if (setInitComplete) {
+        //         setIsModalOpen({
+        //             isOpen: {
+        //                 portfolio:true,
+        //                 report:false
+        //             }
+        //         })
+        //     }
+        // } else {
+        //     setIsModalOpen({
+        //         isOpen: {
+        //             portfolio:true,
+        //             report:false
+        //         }
+        //     })
+        // }
     }
     const handleClose = () => {
-        if (otherModalCloseFn) {
-            otherModalCloseFn();
-        }
-        setOpen(false);
-        setIsModalOpen('')
+        setIsModalOpen({
+            isPortfolioOpen:false,
+            isReportOpen:false,
+        })
     }
 
     return (
         <div className='flex'>
-            <div className={from==='LM-Report' 
-                ? 'bg-no-repeat w-[124.3px] h-[40px] bg-svg-bt-portfolio hover:bg-svg-bt-portfolio-over hover:cursor-pointer select-none'
-                : 'bg-no-repeat w-[38px] h-[44px] bg-svg-ic-portfolio hover:cursor-pointer select-none'}
-            onClick={async() => await handleClickOpen()}>
-            </div>
             <Dialog className=''
-            open={open}
+            open={isModalOpen.isPortfolioOpen}
             // onClose={handleClose}
             
             PaperProps={{
@@ -90,7 +90,7 @@ export default function PortfolioModalComponent ( props: IPortfolioComponentProp
                     backgroundColor: '#f2f9ff',
                     paddingX:'20px',
                 }}>
-                    <PortfolioTabComponent student_code={student_code} from={from} modalClose={handleClose}/>
+                    <PortfolioTabComponent/>
                 </DialogContent>
             </Dialog>
         </div>

@@ -8,7 +8,7 @@ interface IUserInfo {
     isOpen: boolean;
     setIsOpen: any;
 
-    clientCode:string,
+    clientCode:string[],
     mcYn:string,
     memberCode:string,
     accessToken:string,
@@ -17,7 +17,7 @@ interface IUserInfo {
     setUserInfo: (userLoginInfomation: IUserLoginInfo)=>void;
 }
 interface IUserLoginInfo {
-    clientCode:string,
+    clientCode:string[],
     mcYn:string,
     memberCode:string,
     accessToken:string,

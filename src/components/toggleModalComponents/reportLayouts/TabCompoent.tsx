@@ -3,10 +3,8 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import useChartDataStore from '../../../store/useChartDataStore';
 import BarChartComponent from '../../chartComponents/barChart'
 import DoughnutChartComponent from '../../chartComponents/dounutChat'
-import DoughnutChartLegend from '../../chartComponents/dounutChartLegend';
 import { styled } from '@mui/material/styles';
 import ReportByUnitComponent from '../../chartComponents/reportByUnit/ReportByUnitComponent';
 import ReportChart from '../../chartComponents/reportChart';
@@ -14,9 +12,6 @@ import useLearningManagementSparkWritingStore from '../../../store/useLearningMa
 import useReportStore from '../../../store/useReportStore';
 import { getDraftInfoByDraftId, getReportOneDataByStu, getReportOverallDatabyStu } from '../../../api/LearningManagement/LearningManagementSparkWriting.api';
 import PrintReportExportButton from '../../commonComponents/customComponents/exportButtons/report/PrintReportExportButton';
-import ReportComponentToPrint from '../../commonComponents/customComponents/exportButtons/report/PrintReportComponent';
-import CalculatorPXtoMM from '../CalculatorPXtoMM';
-import PortfolioModalComponent from '../PortfolioModalComponent';
 import RubricTypeModalComponent from '../RubricTypeModalComponent';
 import useActivityWritingHubStore from '../../../store/useActivityWritingHubStore';
 interface TabPanelProps {
@@ -24,15 +19,6 @@ interface TabPanelProps {
   index: number;
   value: number;
 }
-
-// const dumyCircleData:TCircleLegendItems[] = [
-//     {circleColor: '#588ee1', circleLabel:'idea'},
-//     {circleColor: '#f6914d', circleLabel:'organization'},
-//     {circleColor: '#aa6bd4', circleLabel:'voice'},
-//     {circleColor: '#30c194', circleLabel:'word choice'},
-//     {circleColor: '#6865cc', circleLabel:'sentence fluency'},
-//     {circleColor: '#db5757', circleLabel:'conventions'},
-// ]
 
 function CustomTabPanel(props: TabPanelProps) {
   const { children, value, index, ...other } = props;
@@ -102,27 +88,23 @@ const StyledTab = styled((props: StyledTabProps) => (
 
 export default function BasicTabs(props: {
     doughnutValues:TAllDoughnutDatas;
-    student_code:string;
-    otherModalCloseFn?: Function;
 }) {
     const {
-        doughnutValues,student_code, otherModalCloseFn
+        doughnutValues
     } = props;
     const [value, setValue] = React.useState(1);
     // car
     const [availableReports, setAvailableReports] = React.useState<TAvailableReportsArr[]>([]);
     const [isLeftAvailable, setIsLeftAvailable] = React.useState<boolean>(false);
     const [isRightAvailable, setIsRightAvailable] = React.useState<boolean>(false);
-    const [currentUnit, setCurrentUnit] = React.useState<number>(0);
 
-
-    const {doughnutData, barChartData} = useChartDataStore();
     const {
         rubricDataHead
     } = useActivityWritingHubStore();
     const {
         report, reportByUnitData, set, currentSelectCodes, reportByUnitAPIData,
-        setOverallReportByStu, overallDoughnutChartData, overallBarChartData
+        setOverallReportByStu, overallDoughnutChartData, overallBarChartData,
+        isModalOpen, setIsModalOpen
     } = useReportStore();
 
     const {feedbackDataInStudent, studentDataInClass, setFeedbackDataInStudent} = useLearningManagementSparkWritingStore();
@@ -133,7 +115,7 @@ export default function BasicTabs(props: {
     const getOverallDatas = async () => {
         const getOverallDataFromAPI = await getReportOverallDatabyStu({
             level_name: feedbackDataInStudent.defautInfo.level.name,
-            student_code: student_code
+            student_code: feedbackDataInStudent.defautInfo.student_code
         });
         if (getOverallDataFromAPI) {
             setOverallReportByStu(getOverallDataFromAPI);
@@ -187,14 +169,9 @@ export default function BasicTabs(props: {
                 unitFlagArr[i].draft2ndId = -1;
             }
         }
-        // console.log('unitFlagArr =',unitFlagArr)
-        // console.log('=== checkIsReport FINISHED ===')
         return unitFlagArr;
     }
     const checkMoveFlag = (unit:number) => {
-        // console.log('===checkMoveFlag====',feedbackDataInStudent)
-        // console.log('unit =',unit)
-        // console.log('in checkMoveFlag availableReports =',availableReports)
         let nextIdxs:number[] = [];
         let prevIdxs:number[] = [];
         for (let i =0; i < availableReports.length; i++) {
@@ -218,14 +195,13 @@ export default function BasicTabs(props: {
         } else {
             setIsLeftAvailable(false)
         }
-        // console.log('===checkMoveFlag===FINISHED=')
     }
     React.useEffect(()=>{
         const selectUnit = feedbackDataInStudent.defautInfo.unit_index;
         const selectUnitTopic = feedbackDataInStudent.defautInfo.unit_topic;
         console.log('select unit =',selectUnit)
         set.initCurrentDisplay(selectUnit, selectUnitTopic);
-        const data = selectDataByStudentCode(student_code);
+        const data = selectDataByStudentCode(feedbackDataInStudent.defautInfo.student_code);
         // console.log('data ==',data)
         const isReportArr = checkIsReport(data);
         
@@ -301,7 +277,7 @@ export default function BasicTabs(props: {
                 }
             }
             if (nextIndex !== 0) {
-                const dataByStu = selectDataByStudentCode(student_code);
+                const dataByStu = selectDataByStudentCode(feedbackDataInStudent.defautInfo.student_code);
                 
                 for (let i = 0; i < dataByStu.length; i++) {
                     const targetData = dataByStu[i].unit_index;
@@ -314,7 +290,7 @@ export default function BasicTabs(props: {
                         const searchData = {
                             level_name: dumyData.defautInfo.level.name,
                             unit_index: target.unit_index,
-                            student_code: student_code
+                            student_code: feedbackDataInStudent.defautInfo.student_code
                         }
                         const reportData = await getReportOneDataByStu(searchData)
                         console.log('rsp1st =',rsp1st)
@@ -372,7 +348,7 @@ export default function BasicTabs(props: {
                 }
             }
             if (prevIndex !== 0) {
-                const dataByStu = selectDataByStudentCode(student_code);
+                const dataByStu = selectDataByStudentCode(feedbackDataInStudent.defautInfo.student_code);
                 
                 for (let i = 0; i < dataByStu.length; i++) {
                     const targetData = dataByStu[i].unit_index;
@@ -385,7 +361,7 @@ export default function BasicTabs(props: {
                         const searchData = {
                             level_name: dumyData.defautInfo.level.name,
                             unit_index: target.unit_index,
-                            student_code: student_code
+                            student_code: feedbackDataInStudent.defautInfo.student_code
                         }
                         const reportData = await getReportOneDataByStu(searchData)
                         if (rsp1st.draft_index > 0 && rsp2nd.draft_index > 0 && reportData) {
@@ -426,7 +402,7 @@ export default function BasicTabs(props: {
     }
 
   return (
-    <Box sx={{ width: '1260px', paddingTop: '30px' }}>
+    <Box sx={{ width: '1260px', paddingTop: '20px' }}>
       <Box sx={{ paddingLeft: '72px' }}>
         <Tabs sx={{
             
@@ -462,7 +438,7 @@ export default function BasicTabs(props: {
         </div>
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
-        <div className='flex flex-col w-[1260px]'>
+        <div className='flex flex-col w-[1260px] h-[700px]'>
             {/* head 케로셀 & 버튼 */}
             <div className='flex flex-row relative justify-center items-center gap-[20px] w-full pt-[30px] px-[30px]'>
                 <div className={`bg-no-repeat w-[36px] h-[36px] ${isLeftAvailable ? 'bg-svg-bt-left hover:bg-svg-bt-left-over': 'bg-svg-bt-left-disabled'}`}
@@ -474,12 +450,21 @@ export default function BasicTabs(props: {
                 ></div>
                 
                 <div className='absolute right-[30px] '>
-                 <PortfolioModalComponent feedbackStates={feedbackDataInStudent} from='LM-Report' studentCode={student_code} otherModalCloseFn={otherModalCloseFn}/>
+                <div className={ 
+                    'bg-no-repeat w-[124.3px] h-[40px] bg-svg-bt-portfolio hover:bg-svg-bt-portfolio-over hover:cursor-pointer select-none'
+                    }
+                onClick={async() => {
+                    setIsModalOpen({
+                        isPortfolioOpen:true,
+                        isReportOpen:false,
+                    })
+                }}
+                />
                 </div>
             </div>
             {/* 좌 - 그래프, 우 - summary, correction, t comment */}
-            <div className='flex flex-row w-full px-[30px]'>
-                <div className='flex flex-1'>
+            <div className='flex flex-row w-full px-[30px] h-[561px]'>
+                <div className='flex flex-1 mt-[20px]'>
                     <ReportChart />
                 </div>
 
@@ -488,7 +473,7 @@ export default function BasicTabs(props: {
                 </div>
             </div>
             {/* foot: print, complete date */}
-            <div className="flex flex-row border-t-[1px] border-t-[#e2e3e6] relative h-[70px] w-full pt-[17px] px-[30px]">
+            <div className='flex flex-row w-full h-[70px] min-h-[70px] border-t-[1px] border-t-[#e2e3e6] relative pl-[30px] items-center'>
                 <PrintReportExportButton feedbackDataInStudent={feedbackDataInStudent} reportByUnitAPIData={reportByUnitAPIData}/>
 
                 <div className='absolute bottom-[25px] right-[30px] flex flex-row capitalize items-center gap-[5px]'>
@@ -501,12 +486,6 @@ export default function BasicTabs(props: {
 
         </div>
       </CustomTabPanel>
-      {/* <CustomTabPanel value={value} index={2}>
-        <div className='flex flex-col gap-[20px]'>
-            <CalculatorPXtoMM />
-
-        </div>
-      </CustomTabPanel> */}
     </Box>
   );
 }

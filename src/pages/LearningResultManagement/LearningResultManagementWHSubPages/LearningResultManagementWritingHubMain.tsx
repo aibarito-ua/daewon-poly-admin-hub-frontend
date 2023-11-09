@@ -5,6 +5,8 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import LearningResultManagementSpeakingHubSideLayout from '../../../components/pageComponents/activityManagement/layout/LearningResultManagementSpeakingHubSideLayout';
 import useLearningResultManagementWHStore from '../../../store/useLearningResultManagementWHStore';
 import LearningManagementWritingHubSideLayout from '../../../components/pageComponents/activityManagement/layout/LearningManagementWritingHubSideLayout';
+import ReportModalComponent from '../../../components/toggleModalComponents/ReportModalComponent';
+import PortfolioModalComponent from '../../../components/toggleModalComponents/PortfolioModalComponent';
 
 type TLearningResultManagementWritingHubMainProps = {
     children: React.ReactNode;
@@ -73,6 +75,8 @@ export default function LearningResultManagementWritingHubMain (props: TLearning
                     {props.children}
                 </div>
             </div>
+            <ReportModalComponent />
+            <PortfolioModalComponent />
         </section>
     )
 }

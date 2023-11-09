@@ -9,18 +9,13 @@ const useLoginStore = create<IUserInfo>((set) => ({
     role: "logout",
     isOpen: false,
     accessToken: '',
-    clientCode: '',
+    clientCode: [],
     mcYn: '',
     memberCode: '',
     pageAuth:'',
     setUserInfo: (userInfo:IUserLoginInfo) => {
 
         set(()=>({
-            // name: userInfo.name,
-            // class: userInfo.class,
-            // subClass: userInfo.subClass,
-            // email: 'test@una.co.kr',
-            // role:userInfo.role
             clientCode: userInfo.clientCode,
             accessToken: userInfo.accessToken,
             mcYn: userInfo.mcYn,

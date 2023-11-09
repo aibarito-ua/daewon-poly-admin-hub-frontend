@@ -131,43 +131,80 @@ const LMSparkWriting = () => {
 
         const userInfo = cookies.get('data');
         const mcYn = userInfo.mcYn;
-        const clientCode = userInfo.clientCode;
+        const clientCode:string[] = userInfo.clientCode;
         let defaultCampus = {name:'', code:''};
-        const campus_list = loadFilterData.campus.map((item) => {
+        const campus_list_map = loadFilterData.campus.map((item) => {
             if (mcYn===CONFIG.HEADCHECKVALUE) {
-                if (item.code === clientCode) {console.log('item =',item)}
-                return item.name;    
-            } else {
-                if (item.code === clientCode) {
-                    // 시범 캠퍼스 테스트
-                    // if (item.code === "0508003"){
-                    // console.log('')
-                    defaultCampus = {code: item.code, name: item.name}
-                    return item.name;
-                } else {
-                    return ''
+                for (let i = 0; i < clientCode.length; i++) {
+                    if (item.code === clientCode[i]) {
+                        if (defaultCampus.name==='') {
+                            defaultCampus = {code: item.code, name: item.name}
+                        }
+                        return item.name;
+                    }
                 }
+                return ''
+            } else {
+                for (let i = 0; i < clientCode.length; i++) {
+                    if (item.code === clientCode[i]) {
+                        if (defaultCampus.name==='') {
+                            defaultCampus = {code: item.code, name: item.name}
+                        }
+                        return item.name;
+                    }
+                }
+                return ''
             }
-        })
-        // console.log('get list =',campus_list)
+        });
+        let campus_list:string[] =[]; 
+        for (let l = 0; l < campus_list_map.length; l++) {
+            if (campus_list_map[l] !== '') {
+                campus_list.push(campus_list_map[l])
+            }
+        }
         setSelectFilterCampusList(campus_list);
         setFilterData(loadFilterData);
         setFilterStates(loadFilterData);
         // campus default 
+        console.log('mcYn =',mcYn)
+        console.log('CONFIG.HEADCHECKVALUE=',CONFIG.HEADCHECKVALUE)
         if (mcYn===CONFIG.HEADCHECKVALUE) {
-            setSelectCampusCode({name:'',code:''})
+            if (maintainFilterValues.length === 0) {
+                if (campus_list.length === 1) {
+                    setSelectFilterValues([defaultCampus.name])
+                } else {
+                    setSelectFilterValues([])
+                }
+            }
+            if(campus_list.length > 1) {
+                setSelectCampusCode({name:'',code:''})
+            } else if (campus_list.length === 1) {
+                setSelectCampusCode(defaultCampus)
+            } else {
+                setSelectCampusCode({name:'',code:''})
+            }
         } else {
             if (maintainFilterValues.length === 0) {
-                setSelectFilterValues([defaultCampus.name])
+                if (campus_list.length === 1) {
+                    setSelectFilterValues([defaultCampus.name])
+                } else {
+                    setSelectFilterValues([])
+                }
             }
-            setSelectCampusCode(defaultCampus)
+            if(campus_list.length > 1) {
+                setSelectCampusCode({name:'',code:''})
+            } else if (campus_list.length === 1) {
+                setSelectCampusCode(defaultCampus)
+            } else {
+                setSelectCampusCode({name:'',code:''})
+            }
         }
         setSelectLevelCode({name:'',code:''});
         setSelectClassCode({name:'',code:''});
         if (maintainFilterValues.length > 0) {
             setSelectFilterValues(maintainFilterValues)
         }
-        console.log('beforeRenderedFn complete')
+        console.log('beforeRenderedFn complete',maintainFilterValues)
     }
     
     

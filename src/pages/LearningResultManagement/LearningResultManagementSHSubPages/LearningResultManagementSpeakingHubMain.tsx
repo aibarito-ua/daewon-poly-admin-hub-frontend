@@ -73,19 +73,28 @@ export default function LearningResultManagementSpeakingHubMain (props: TLearnin
             const mcYn = userInfo.mcYn;
             const clientCode = userInfo.clientCode
             const defaultCampus = ['', '', '']
-            const campus_list = loadFilterData.campus.map((item, index) => {
-                if (mcYn===CONFIG.HEADCHECKVALUE) {
-                    return item.name;
-                } else {
-                    if (item.code === clientCode) {
-                        defaultCampus[0] = item.name;
-                        setChosenCampus(item)
+            let defaultChosenCampuse = {code:'', name:''}
+            const campus_list_map = loadFilterData.campus.map((item, index) => {
+                for (let i = 0; i < clientCode.length; i++) {
+                    if (item.code === clientCode[i]) {
+                        if (defaultChosenCampuse.name==='') {
+                            defaultChosenCampuse = {code:item.code, name:item.name}
+                        }
                         return item.name;
-                    } else {
-                        return '';
                     }
                 }
+                return '';
             })
+            let campus_list:string[] =[]; 
+            for (let l = 0; l < campus_list_map.length; l++) {
+                if (campus_list_map[l] !== '') {
+                    campus_list.push(campus_list_map[l])
+                }
+            }
+            if (campus_list.length === 1) {
+                defaultCampus[0] = campus_list[0]
+                setChosenCampus(defaultChosenCampuse)
+            }
             console.log('Default search values:', defaultCampus)
             const index = loadFilterData.campus.findIndex(item => item.name == defaultCampus[0])
             if(index != -1)

@@ -26,8 +26,26 @@ interface IUseReportStore {
     overallDoughnutChartData: TAllDoughnutDatas;
 
     // report / portfolio open
-    isModalOpen: ''|'report'|'portfolio';
-    setIsModalOpen: (target:''|'report'|'portfolio') => void;
+    isModalOpen: TModalOpenItems;
+    setIsModalOpen: (options: TModalOpenItemOptions) => void;
+}
+type TModalOpenItems = {
+    isReportOpen:boolean;
+    isPortfolioOpen: boolean;
+    feedbackStates:TFeedbackStates|null;
+    student_code:string;
+    initSettingData: Function|null;
+    reportFrom:''|'portfolioModal'|'portfolioModalLRM',
+    portfolioFrom: ''|'LM-Report'
+}
+type TModalOpenItemOptions = {
+    isReportOpen:boolean;
+    isPortfolioOpen: boolean;
+    feedbackStates?:TFeedbackStates;
+    student_code?:string;
+    initSettingData?: Function;
+    reportFrom?:''|'portfolioModal'|'portfolioModalLRM',
+    portfolioFrom?: ''|'LM-Report'
 }
 type TOverallBarChartData = {
     name: string;

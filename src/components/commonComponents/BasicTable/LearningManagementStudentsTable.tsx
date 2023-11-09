@@ -188,7 +188,8 @@ const TableBody = (props:{
     } = useLearningManagementSparkWritingStore();
     
     const {
-        set, currentSelectCodes, setOverallReportByStu
+        set, currentSelectCodes, setOverallReportByStu,
+        isModalOpen, setIsModalOpen,
     } = useReportStore()
 
     const {
@@ -250,7 +251,7 @@ const TableBody = (props:{
                             </span></td>
                         } else if ( (cellIdx-2)%3===0 ) {
                             // first draft
-                            console.log('first draft!!!')
+                            // console.log('first draft!!!')
                             const firstDraftData = cellData.value.data;
                             const data = firstDraftData?.draft_1_status;
                             // console.log('data ===',firstDraftData )
@@ -296,7 +297,7 @@ const TableBody = (props:{
                             }
                         } else if ( (cellIdx-2)%3===1 ) {
                             // second draft
-                            console.log('!!second draft!!')
+                            // console.log('!!second draft!!')
                             const secondDraftData = cellData.value.data;
                             const data = secondDraftData?.draft_2_status;
                             if (data) {
@@ -360,7 +361,7 @@ const TableBody = (props:{
                                 
                                 if (checkReport) {
                                     const displayDate = displayJSX(data,false)
-                                    console.log('displayDate =',displayDate)
+                                    // console.log('displayDate =',displayDate)
                                     return <td
                                         key={cellData.key}
                                         // className={`border-l-[1px] border-l-[#e2e3e6] border-r-[1px] border-r-[#aaa] h-full flex items-center justify-center`}
@@ -368,69 +369,75 @@ const TableBody = (props:{
                                         style={{minWidth: cellData.width}}
                                     >
                                         <span className='w-full h-full flex justify-center items-center'>
-                                        <ReportModalComponent 
-                                        feedbackStates={feedbackDataInStudent}
-                                        studend_code={studentBasicInfo.student_code}
-                                        initSettingData={async () => {
-                                            const secondDraftData = rowData[cellIdx-1].value.data;
-                                            const firstDraftData = rowData[cellIdx-2].value.data;
-                                            if (firstDraftData && secondDraftData) {
-                                                console.log('data ===',secondDraftData )
-                                                const targetData = cellData.value.data?.draft_2_status.draft_id;
-                                                const draft_id = targetData ? targetData.toString() : '';
-                                                const rsp = await getDraftInfoByDraftId(draft_id);
-                                                const target1stData = cellData.value.data?.draft_1_status.draft_id;
-                                                const draft_1st_id = target1stData ? target1stData.toString():'';
-                                                const rsp1st = await getDraftInfoByDraftId(draft_1st_id);
-                                                const data = {
-                                                    level_name: feedbackDataInStudent.defautInfo.level.name,
-                                                    unit_index: secondDraftData.unit_index,
-                                                    student_code: studentBasicInfo.student_code
+                                        <button 
+                                            className={`chatbot-modal-button justify-center`}
+                                            onClick={async()=> {
+                                                if (!isModalOpen.isReportOpen) {
+                                                    const secondDraftData = rowData[cellIdx-1].value.data;
+                                                    const firstDraftData = rowData[cellIdx-2].value.data;
+                                                    if (firstDraftData && secondDraftData) {
+                                                        console.log('data ===',secondDraftData )
+                                                        const targetData = cellData.value.data?.draft_2_status.draft_id;
+                                                        const draft_id = targetData ? targetData.toString() : '';
+                                                        const rsp = await getDraftInfoByDraftId(draft_id);
+                                                        const target1stData = cellData.value.data?.draft_1_status.draft_id;
+                                                        const draft_1st_id = target1stData ? target1stData.toString():'';
+                                                        const rsp1st = await getDraftInfoByDraftId(draft_1st_id);
+                                                        const data = {
+                                                            level_name: feedbackDataInStudent.defautInfo.level.name,
+                                                            unit_index: secondDraftData.unit_index,
+                                                            student_code: studentBasicInfo.student_code
+                                                        }
+                                                        const reportData = await getReportOneDataByStu(data);
+                                                        const overallData = await getReportOverallDatabyStu({level_name: data.level_name, student_code: data.student_code})
+                                                        console.log('onClick reportData = ',reportData)
+                                                        console.log('onClick overallData =',overallData)
+                                                        if (rsp.draft_index > 0 && reportData && overallData) {
+                                                            let dumyData:TFeedbackStates = JSON.parse(JSON.stringify(feedbackDataInStudent));
+                                                            console.log('data 2nd draft ==',rsp)
+                                                            dumyData.draft_2nd_data=rsp;
+                                                            dumyData.draft_data=rsp1st;
+                                                            dumyData.defautInfo.student_code=studentBasicInfo.student_code;
+                                                            dumyData.defautInfo.student_name={student_name_en: studentBasicInfo.student_name_en, student_name_kr: studentBasicInfo.student_name_kr}
+                                                            
+                                                            const submitDate2nd = selectDate(secondDraftData.draft_2_status, true);
+                                                            const submitDate1st = selectDate(secondDraftData.draft_1_status, true);
+                                                            dumyData.defautInfo.submit_date=formatDate(submitDate2nd);
+                                                            dumyData.defautInfo.unit_index=secondDraftData.unit_index;
+                                                            dumyData.defautInfo.unit_topic=secondDraftData.topic;
+                                                            dumyData.defautInfo.select_draft_id=draft_id;
+                                                            dumyData.defautInfo.step_label="2nd Draft"
+                                                            dumyData.status=secondDraftData.draft_2_status;
+                                                            dumyData.overall_comment = rsp.overall_comment;
+                                                            dumyData.rubric=secondDraftData.rubric;
+                                                            dumyData.status_1st=rowData[cellIdx-1].value.data?.draft_1_status;
+                                                            const comments:TDraftStringsData = {
+                                                                draft1st: rsp1st.overall_comment,
+                                                                draft2nd: rsp.overall_comment
+                                                            }
+                                                            const dates:TDraftStringsData = {
+                                                                draft1st: formatDate(submitDate1st,'-'),
+                                                                draft2nd: formatDate(submitDate2nd,'-')
+                                                            }
+                                                            set.setTeachersComments(comments);
+                                                            set.setCompletionDates(dates);
+                                                            set.setReportAPIData(reportData, secondDraftData.rubric);
+                                                            setOverallReportByStu(overallData);
+                                                            
+                                                            console.log('dumy ===',dumyData)
+                                                            setFeedbackDataInStudent(dumyData);
+                                                            setIsModalOpen({
+                                                                isReportOpen:true,
+                                                                isPortfolioOpen:false,
+                                                            })
+                                                        }
                                                 }
-                                                const reportData = await getReportOneDataByStu(data);
-                                                const overallData = await getReportOverallDatabyStu({level_name: data.level_name, student_code: data.student_code})
-                                                console.log('onClick reportData = ',reportData)
-                                                console.log('onClick overallData =',overallData)
-                                                if (rsp.draft_index > 0 && reportData && overallData) {
-                                                    let dumyData:TFeedbackStates = JSON.parse(JSON.stringify(feedbackDataInStudent));
-                                                    console.log('data 2nd draft ==',rsp)
-                                                    dumyData.draft_2nd_data=rsp;
-                                                    dumyData.draft_data=rsp1st;
-                                                    dumyData.defautInfo.student_code=studentBasicInfo.student_code;
-                                                    dumyData.defautInfo.student_name={student_name_en: studentBasicInfo.student_name_en, student_name_kr: studentBasicInfo.student_name_kr}
-                                                    
-                                                    const submitDate2nd = selectDate(secondDraftData.draft_2_status, true);
-                                                    const submitDate1st = selectDate(secondDraftData.draft_1_status, true);
-                                                    dumyData.defautInfo.submit_date=formatDate(submitDate2nd);
-                                                    dumyData.defautInfo.unit_index=secondDraftData.unit_index;
-                                                    dumyData.defautInfo.unit_topic=secondDraftData.topic;
-                                                    dumyData.defautInfo.select_draft_id=draft_id;
-                                                    dumyData.defautInfo.step_label="2nd Draft"
-                                                    dumyData.status=secondDraftData.draft_2_status;
-                                                    dumyData.overall_comment = rsp.overall_comment;
-                                                    dumyData.rubric=secondDraftData.rubric;
-                                                    dumyData.status_1st=rowData[cellIdx-1].value.data?.draft_1_status;
-                                                    const comments:TDraftStringsData = {
-                                                        draft1st: rsp1st.overall_comment,
-                                                        draft2nd: rsp.overall_comment
-                                                    }
-                                                    const dates:TDraftStringsData = {
-                                                        draft1st: formatDate(submitDate1st,'-'),
-                                                        draft2nd: formatDate(submitDate2nd,'-')
-                                                    }
-                                                    set.setTeachersComments(comments);
-                                                    set.setCompletionDates(dates);
-                                                    set.setReportAPIData(reportData, secondDraftData.rubric);
-                                                    setOverallReportByStu(overallData);
-                                                    
-                                                    console.log('dumy ===',dumyData)
-                                                    setFeedbackDataInStudent(dumyData);
-                                                    return true;       
                                                 }
-                                            }
-                                            return false;
-                                        }}
-                                    />
+                                                
+                                            }}
+                                        ><div className={'lm-bt-report-in-table'}/></button>
+                                        {/* isModalOpen.portfolioFrom ? 'bt-go-report-in-modal': */}
+                                        
                                     </span>
                                     </td>
                                 } else {

@@ -74,18 +74,23 @@ const ReportAndPortfolio = () => {
         const mcYn = userInfo.mcYn;
         const clientCode = userInfo.clientCode;
         let defaultCampus = ['','','']
-        const campus_list = loadFilterData.campus.map((item) => {
-            if (mcYn===CONFIG.HEADCHECKVALUE) {
-                return item.name;
-            } else {
-                if (item.code === clientCode) {
-                    defaultCampus[0] = item.name;
+        const campus_list_map = loadFilterData.campus.map((item) => {
+            for (let i = 0; i < clientCode.length; i++) {
+                if (item.code === clientCode[i]) {
                     return item.name;
-                } else {
-                    return '';
                 }
             }
+            return '';
         })
+        let campus_list:string[] =[]; 
+        for (let l = 0; l < campus_list_map.length; l++) {
+            if (campus_list_map[l] !== '') {
+                campus_list.push(campus_list_map[l])
+            }
+        }
+        if (campus_list.length === 1) {
+            defaultCampus[0] = campus_list[0]
+        }
         setSelectFilterValues(defaultCampus);
         setSelectFilterCampusList(campus_list);
         setFilterData(loadFilterData);

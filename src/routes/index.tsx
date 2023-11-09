@@ -1,11 +1,9 @@
 import React from 'react';
 import { Routes, Route, Outlet, Navigate } from 'react-router-dom';
-import { Login } from '../pages/Login';
 import { Home } from '../pages/Home';
 
 import useLoginStore from '../store/useLoginStore';
 import {routeValues} from './routeValues';
-// import PrivateRoute from './PrivateRoute';
 import LevelAndTextBookSpeakingHub from '../pages/LevelAndTextBook/LevelAndTextBookSpeakingHub';
 import LevelAndTextBookWritingHub from '../pages/LevelAndTextBook/LevelAndTextBookWritingHub';
 import ActivitySpeakHubMain from '../pages/ActivityManagement/ActivitySpeakHubMain';
@@ -35,23 +33,24 @@ import {Cookies} from 'react-cookie'
 import { NotAuth } from '../pages/NotAuth';
 import { CONFIG } from '../config';
 import SimpleSnackbar from '../components/toastMessageComponents/SimpleSnackbar';
-import useNavStore from '../store/useNavStore';
+
 interface IPrivateRouteProps {
     children?: React.ReactElement;
     authenticated: boolean;
     userData:{
-        clientCode:string, mcYn:string, memberCode:string, accessToken:string, pageAuth:string,
+        clientCode:string[], mcYn:string, memberCode:string, accessToken:string, pageAuth:string,
     };
     pageAuth?: TRole
 }
 export default function Router() {
+    // const routeRef = React.useRef<HTMLDivElement|null>(null);
     const { role, isOpen, setUserInfo } = useLoginStore();
     const [open, setOpen] = React.useState(false);
     const [isAuth, setIsAuth ] = React.useState<boolean>(false);
     const [userData, setUserData] = React.useState<{
-        clientCode:string, mcYn:string, memberCode:string, accessToken:string, pageAuth:string,
+        clientCode:string[], mcYn:string, memberCode:string, accessToken:string, pageAuth:string,
     }>({
-        clientCode:'', mcYn:'', memberCode:'', accessToken:'', pageAuth:'',
+        clientCode:[], mcYn:'', memberCode:'', accessToken:'', pageAuth:'',
     });
 
     React.useEffect(()=>{
@@ -61,7 +60,8 @@ export default function Router() {
             // "memberCode":"23100091","clientCode":"0508003","mcYn":"N","accessToken":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImtGbDA2aWs2cXdkQ2U5UEtnQitRMlFFbUtBdUhOelFXWnJ4cmMrTndrSHc9IiwiaWF0IjoxNjk4MzkwODE5LCJleHAiOjE2OTg0NzcyMTl9.TJc-VnfvXibsTCE8ZISd9A99CffOEWS0ml_BnAH5cdA"
             const devTestData = {
                 accessToken: '',
-                clientCode: '0508003',
+                clientCode: ['0508003','1301003'],
+                // 
                 mcYn: 'N',
                 memberCode: '23100091',
                 pageAuth: "N"
@@ -75,10 +75,10 @@ export default function Router() {
             const getCheckDatas = cookies.get('data')
             if (getCheckDatas) {
                 const checkTargetData:{
-                    clientCode:string, mcYn:string, memberCode:string, accessToken:string, pageAuth:string,
+                    clientCode:string[], mcYn:string, memberCode:string, accessToken:string, pageAuth:string,
                 } = {
                     accessToken: getCheckDatas.accessToken ? getCheckDatas.accessToken:'',
-                    clientCode: getCheckDatas.clientCode ? getCheckDatas.clientCode:'',
+                    clientCode: getCheckDatas.clientCode ? getCheckDatas.clientCode:[],
                     mcYn: getCheckDatas.mcYn ? getCheckDatas.mcYn:'',
                     memberCode: getCheckDatas.memberCode ? getCheckDatas.memberCode:'',
                     pageAuth: getCheckDatas.mcYn ? getCheckDatas.mcYn:'',
@@ -86,7 +86,7 @@ export default function Router() {
                 
                 const isMemberCode = checkTargetData.memberCode.length === 8 && checkTargetData.memberCode!=='';
                 const isEmp = checkTargetData.mcYn !== '';
-                const isClient = checkTargetData.clientCode!=='';
+                const isClient = checkTargetData.clientCode.length ;
                 if (isMemberCode && isEmp && isClient) {
                     setIsAuth(true)
                     console.log('test id =',checkTargetData)
@@ -100,6 +100,10 @@ export default function Router() {
             }
         }
     }, [])
+    // React.useEffect(()=>{
+    //     const onUnload = routeRef.current;
+
+    // },[routeRef])
     const publicRoutes = () => {
         const routeValue = routeValues.publicRoutes;
         // 각 권한별 기본 페이지

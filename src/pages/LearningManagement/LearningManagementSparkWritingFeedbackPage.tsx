@@ -16,6 +16,7 @@ import ReportModalComponent from '../../components/toggleModalComponents/ReportM
 import useLoginStore from '../../store/useLoginStore';
 import { Cookies } from 'react-cookie';
 import ReturnedFeedbackModalComponent from '../../components/toggleModalComponents/ReturnedFeedbackModalComponent';
+import PortfolioModalComponent from '../../components/toggleModalComponents/PortfolioModalComponent';
 
 type TDivsControlConfig = {
     advisor: {
@@ -2325,7 +2326,6 @@ const LearningManagementSparkWritingFeedbackPage = () => {
 
                 </div>
             )}
-            
         </section>
     )
 }

@@ -195,8 +195,8 @@ const ReportTeachersComments = (
 ) => {
     const {teacherComments}=props;
     return (
-        <div className='flex flex-col w-[640px]'>
-            <div className='flex flex-row justify-center'>
+        <div className='report-chart-righ-word-count-div'>
+            <div className='report-chart-righ-word-count-title'>
                 <span className='report-chart-righ-word-count-title-span select-none'>{`Teacher's Comments`}</span>
             </div>
             <div className='report-chart-teacher-comment-content-box'>

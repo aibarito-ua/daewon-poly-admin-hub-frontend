@@ -85,6 +85,7 @@ const TableHeader = (props: {head:string[] }) => {
 }
 const formatDate = (inputDate: string, split?:string): string => {
     const date = new Date(inputDate);
+    
     const formattedDate = date.toLocaleDateString('en-US', {
       year: 'numeric',
       month: '2-digit',
@@ -127,7 +128,8 @@ const TableBody = (props:{
         getAllReportData
     } = useLearningResultManagementWHStore();
     const {
-        set, currentSelectCodes, setOverallReportByStu
+        set, currentSelectCodes, setOverallReportByStu,
+        setIsModalOpen
     } = useReportStore()
     // click enter feedback page
     const enterFeedbackEvent = (draft:string, unit_index:number, unit_topic:string, step_label:string, ) => {
@@ -183,10 +185,9 @@ const TableBody = (props:{
                                         style={{minWidth: '95px'}}
                                     >
                                         <span className='learning-management-class-table-item-wrap'>
-                                        <ReportModalComponent 
-                                        feedbackStates={feedbackDataInStudent}
-                                        studend_code={userInfoData.student_code}
-                                        initSettingData={async () => {
+                                            <button 
+                                        className={`chatbot-modal-button justify-center`}
+                                        onClick={async()=>{
                                             const draft_1st_id = reportData.draft_1_status.draft_id.toString();
                                             const draft_2nd_id = reportData.draft_2_status.draft_id.toString();
                                             const rsp1st = await getDraftInfoByDraftId(draft_1st_id);
@@ -226,11 +227,14 @@ const TableBody = (props:{
                                                 set.setReportAPIData(reportDataAPI, reportData.rubric);
                                                 setOverallReportByStu(overallDataAPI);
                                                 setFeedbackDataInStudent(dumyData);
-                                                return true;
+                                                setIsModalOpen({
+                                                    isPortfolioOpen:false,
+                                                    isReportOpen:true,
+                                                })
                                             }
-                                            return false;
                                         }}
-                                    />{displayDate}
+                                    ><div className={'lm-bt-report-in-table'}/></button>
+                                    {displayDate}
                                     </span>
                                     </td>
                                 } else {
@@ -275,7 +279,50 @@ const TableBody = (props:{
                                     }}
                                 >
                                     <span className='learning-management-class-table-item-wrap'>
-                                        <PortfolioModalComponent studentCode={userInfoData.student_code} feedbackStates={feedbackDataInStudent} initSettings={async()=>{
+                                    <div className={'bg-no-repeat w-[38px] h-[44px] bg-svg-ic-portfolio hover:cursor-pointer select-none'}
+                                    onClick={async() => {
+                                        const reportData = data;
+                                        const draft_1st_id = reportData.draft_1_status.draft_id.toString();
+                                        const draft_2nd_id = reportData.draft_2_status.draft_id.toString();
+                                        
+                                        const rsp1st = await getDraftInfoByDraftId(draft_1st_id);
+                                        const rsp2nd = await getDraftInfoByDraftId(draft_2nd_id);
+                                        const reportDataAPI = await getReportOneDataByStu(searchData);
+                                        const overallDataAPI = await getReportOverallDatabyStu({level_name:searchData.level_name, student_code: searchData.student_code});
+                                        if (rsp1st && rsp2nd && reportDataAPI && overallDataAPI) {
+                                            let dumyData:TFeedbackStates = JSON.parse(JSON.stringify(feedbackDataInStudent));
+                                            dumyData.draft_data=rsp1st;
+                                            dumyData.draft_2nd_data = rsp2nd;
+                                            dumyData.defautInfo.student_code = userInfoData.student_code;
+                                            dumyData.defautInfo.student_name = {
+                                                student_name_en: userInfoData.student_name_en,
+                                                student_name_kr: userInfoData.student_name_kr
+                                            }
+                                            const submitDate1st = reportData.draft_1_status.review_complete_date?reportData.draft_1_status.review_complete_date:'';
+                                            const submitDate2nd = reportData.draft_2_status.review_complete_date?reportData.draft_2_status.review_complete_date:'';
+                                            dumyData.defautInfo.submit_date=formatDate(submitDate2nd);
+                                            dumyData.defautInfo.unit_index=reportData.unit_index;
+                                            dumyData.defautInfo.unit_topic=reportData.topic;
+                                            dumyData.defautInfo.select_draft_id=reportData.draft_2_status.draft_id.toString();
+                                            dumyData.defautInfo.step_label="2nd Draft";
+                                            dumyData.status=reportData.draft_2_status;
+                                            dumyData.overall_comment=rsp2nd.overall_comment;
+                                            dumyData.rubric=reportData.rubric;
+                                            dumyData.status_1st=reportData.draft_1_status;
+                                            const comments: TDraftStringsData = {draft1st: rsp1st.overall_comment, draft2nd: rsp2nd.overall_comment};
+                                            const dates:TDraftStringsData = {draft1st: formatDate(submitDate1st,'-'), draft2nd: formatDate(submitDate2nd,'-')};
+                                            set.setTeachersComments(comments);
+                                            set.setCompletionDates(dates);
+                                            set.setReportAPIData(reportDataAPI, reportData.rubric);
+                                            setOverallReportByStu(overallDataAPI);
+                                            setFeedbackDataInStudent(dumyData);
+                                            setIsModalOpen({
+                                                isPortfolioOpen:true,
+                                                isReportOpen:false
+                                            })
+                                        }
+                                    }} />
+                                        {/* <PortfolioModalComponent studentCode={userInfoData.student_code} feedbackStates={feedbackDataInStudent} initSettings={async()=>{
                                             // console.log('displayDate =',displayDate)
                                             // console.log('click report ===',cellData.value)
                                             const reportData = data;
@@ -316,7 +363,7 @@ const TableBody = (props:{
                                                 return true;
                                             }
                                             return false;
-                                        }}/>
+                                        }}/> */}
                                         {displayDate}
                                     </span>
                                     

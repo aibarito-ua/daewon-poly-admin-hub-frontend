@@ -1963,12 +1963,14 @@ body {
   @apply
   flex flex-col
   w-[640px]
-  gap-[15px]
+  h-fit
+  /* gap-[15px] */
 }
 .report-chart-righ-word-count-div {
   @apply
   flex flex-col
   w-[640px]
+  mt-[15px]
   justify-center
 }
 .report-chart-righ-word-count-title {
@@ -1981,7 +1983,7 @@ body {
   rounded-t-[15px]
   text-[#222]
   w-[640px]
-  h-[20px]
+  h-[19px]
   pb-[7px]
 }
 .report-chart-righ-word-count-title-span {
@@ -2000,7 +2002,7 @@ body {
   rounded-t-[15px]
   text-[#222]
   w-[180px]
-  h-[20px]
+  h-[19px]
 }
 .report-chart-righ-word-count-content {
   @apply

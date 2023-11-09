@@ -5,6 +5,9 @@ import useActivityWritingHubStore from '../../store/useActivityWritingHubStore';
 import { CommonFunctions } from '../../util/common/commonFunctions';
 import LearningManagementWritingHubSideLayout from '../../components/pageComponents/activityManagement/layout/LearningManagementWritingHubSideLayout';
 import useLearningManagementSparkWritingStore from '../../store/useLearningManagementSparkWritingStore';
+import ReportModalComponent from '../../components/toggleModalComponents/ReportModalComponent';
+import PortfolioModalComponent from '../../components/toggleModalComponents/PortfolioModalComponent';
+import useReportStore from '../../store/useReportStore';
 
 type TLearningManagementWritingHubMainProps = {
     children: React.ReactNode;
@@ -21,6 +24,10 @@ export default function LearningManagementWritingHub (props: TLearningManagement
         selectNavigationTitles, setSelectNavigationTitles,
         navigateBlockFlag, navigateBlockMessage
     } = useNavStore();
+    const {
+        report,
+        isModalOpen, setIsModalOpen,
+      } = useReportStore();
 
     // side list select
     const [sideSelected, setSideSelected] = React.useState<number[]>([0,0]);
@@ -68,6 +75,10 @@ export default function LearningManagementWritingHub (props: TLearningManagement
         } 
     },[selectNavigationTitles ])
 
+    React.useEffect(()=>{
+    console.log('isModalOpen =',isModalOpen)
+    },[isModalOpen])
+
     return (
         <section className="section-common-aside-layout">
             <div className='flex flex-1 flex-row w-full h-full'>
@@ -80,6 +91,8 @@ export default function LearningManagementWritingHub (props: TLearningManagement
                     {props.children}
                 </div>
             </div>
+            <ReportModalComponent />
+            <PortfolioModalComponent />
         </section>
     )
 }

@@ -12,11 +12,11 @@ const ReportByUnitComponent = () => {
                 {/* {unitReportModal.unitTitle} */}
                 </span>
             </div>
-            <div className='flex flex-row mt-[30px] gap-[40px] justify-center'>
+            <div className='flex flex-row mt-[32px] gap-[40px] justify-center'>
                 <div className='flex'>
                     {/* <ReportChart/> */}
                 </div>
-                <div className='report-chart-right-components-div pb-[20px]'>
+                <div className='report-chart-right-components-div'>
                     <ReportItemComponents.ReportWordCountSummaryComponent 
                         // item={reportByUnitData.wordCountSummary}
                         item={reportByUnitAPIData}

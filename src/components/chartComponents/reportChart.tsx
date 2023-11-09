@@ -249,7 +249,7 @@ export default function App() {
         fontWeight={500}
         fontSize={17}
         fill="#222"
-        >{`unit ${reportByUnitData.currentUnitInfo.unit_index}`}</text>
+        >{`Unit ${reportByUnitData.currentUnitInfo.unit_index}`}</text>
         <text x={stDotX} y={stDotY}
         dy={-5}
         fontFamily="GothamRounded"
@@ -257,7 +257,7 @@ export default function App() {
         fontSize={17}
         fill="#222"
         textAnchor="middle"
-        >{`overall score`}</text>
+        >{`Overall Score`}</text>
         <text x={stDotX} y={stDotY} width={190} height={80}
         dx={5} dy={35}
         textAnchor="middle"

@@ -632,9 +632,37 @@ const useReportStore = create<IUseReportStore>((set, get) => ({
             toolLineColor: '#1f61c8'
         },
     ],
-    isModalOpen: '',
-    setIsModalOpen: (target) => {
-        set(()=>({isModalOpen: target}))
+    isModalOpen: {
+        isReportOpen:false,
+        isPortfolioOpen:false,
+        feedbackStates:null,
+        initSettingData: null,
+        portfolioFrom:'',
+        reportFrom:'',
+        student_code:''
+    },
+    setIsModalOpen: (item) => {
+        let getIsModalOpen:TModalOpenItems = JSON.parse(JSON.stringify(get().isModalOpen));
+        const isReportOpen = item.isReportOpen;
+        const isPortfolioOpen = item.isPortfolioOpen;
+        const feedbackStates = item.feedbackStates ? item.feedbackStates : getIsModalOpen.feedbackStates;
+        const initSettingData = item.initSettingData ? item.initSettingData : getIsModalOpen.initSettingData;
+        const portfolioFrom = item.portfolioFrom ? item.portfolioFrom : getIsModalOpen.portfolioFrom;
+        const reportFrom = item.reportFrom ? item.reportFrom : getIsModalOpen.reportFrom;
+        const student_code = item.student_code ? item.student_code : getIsModalOpen.student_code;
+
+        set(()=>({
+            isModalOpen: {
+                isPortfolioOpen,
+                isReportOpen,
+                feedbackStates,
+                initSettingData,
+                portfolioFrom,
+                reportFrom,
+                student_code
+            },
+
+        }))
     }
 }))
 

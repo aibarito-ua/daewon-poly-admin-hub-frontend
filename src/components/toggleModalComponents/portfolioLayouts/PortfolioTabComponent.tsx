@@ -83,14 +83,8 @@ const StyledTab = styled((props: StyledTabProps) => (
     },
   }));
 
-export default function PortfolioTabComponent(props: {
-    student_code:string;
-    from?:''|'LM-Report';
-    modalClose?: Function;
-}) {
-    const {
-        student_code, from, modalClose
-    } = props;
+export default function PortfolioTabComponent() {
+    
     const [value, setValue] = React.useState(0);
     // car
     const [availableReports, setAvailableReports] = React.useState<TAvailableReportsArr[]>([]);
@@ -99,7 +93,10 @@ export default function PortfolioTabComponent(props: {
     // crown check flag
     const [isCrown, setIsCrown] = React.useState<boolean>(false);
 
-    const {report, reportByUnitData, set, currentSelectCodes, reportByUnitAPIData} = useReportStore();
+    const {
+        report, reportByUnitData, set, currentSelectCodes, reportByUnitAPIData,
+        setIsModalOpen,
+    } = useReportStore();
     const {getAllReportData} = useLearningResultManagementWHStore();
     const {feedbackDataInStudent, studentDataInClass, setFeedbackDataInStudent} = useLearningManagementSparkWritingStore();
     const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -197,43 +194,13 @@ export default function PortfolioTabComponent(props: {
         } else {
             setIsLeftAvailable(false)
         }
-        // if (availableReports.length===0) {
-
-        // } else {
-        //     for (let i =0; i < availableReports.length; i++) {
-                
-        //         const currentUnitIndex = availableReports[i].unitIdx
-        //         if (currentUnitIndex === unit) {
-        //             if (unit===1) {
-        //                 // check next arr
-        //                 const nextTarget = availableReports[i+1];
-        //                 console.log('nextTarget =',nextTarget)
-        //                 setIsLeftAvailable(false);
-        //                 setIsRightAvailable(nextTarget.availableFlag);
-        //             } else if (unit === 5) {
-        //                 // check before arr
-        //                 const beforeTarget = availableReports[i-1];
-        //                 console.log('before Target =',beforeTarget)
-        //                 setIsLeftAvailable(beforeTarget.availableFlag);
-        //                 setIsRightAvailable(false);
-        //             } else {
-        //                 const nextTarget = availableReports[i+1];
-        //                 const beforeTarget = availableReports[i-1];
-        //                 console.log('next ===',nextTarget);
-        //                 console.log('before ===',beforeTarget)
-        //                 setIsLeftAvailable(beforeTarget.availableFlag);
-        //                 setIsRightAvailable(nextTarget.availableFlag)
-        //             }
-        //         }
-        //     }
-        // }
     }
     const initSettingData = async () => {
         console.log("test2")
         let dumyData:TFeedbackStates = JSON.parse(JSON.stringify(feedbackDataInStudent));
         const currentUnit = dumyData.defautInfo.unit_index;
         console.log('currentUnit =',currentUnit)
-        const dataByStu = selectDataByStudentCode(student_code);
+        const dataByStu = selectDataByStudentCode(feedbackDataInStudent.defautInfo.student_code);
         
         for (let i = 0; i < dataByStu.length; i++) {
             const targetData = dataByStu[i].unit_index;
@@ -248,7 +215,7 @@ export default function PortfolioTabComponent(props: {
                     level_name: dumyData.defautInfo.level.name,
                     class_code: dumyData.defautInfo.class.code,
                     unit_index: target.unit_index,
-                    student_code: student_code
+                    student_code: feedbackDataInStudent.defautInfo.student_code
                 }
                 console.log('searche data =',searchData)
                 const reportData = await getReportOneDataByStu(searchData)
@@ -296,7 +263,7 @@ export default function PortfolioTabComponent(props: {
         const selectUnitTopic = feedbackDataInStudent.defautInfo.unit_topic;
         console.log('select unit =',selectUnit)
         set.initCurrentDisplay(selectUnit, selectUnitTopic);
-        const data = selectDataByStudentCode(student_code);
+        const data = selectDataByStudentCode(feedbackDataInStudent.defautInfo.student_code);
 
         const isReportArr = checkIsPortfolio(data);
         setAvailableReports(isReportArr);
@@ -380,7 +347,7 @@ export default function PortfolioTabComponent(props: {
                 }
             }
             if (nextIndex !== 0) {
-                const dataByStu = selectDataByStudentCode(student_code);
+                const dataByStu = selectDataByStudentCode(feedbackDataInStudent.defautInfo.student_code);
                 
                 for (let i = 0; i < dataByStu.length; i++) {
                     const targetData = dataByStu[i].unit_index;
@@ -395,7 +362,7 @@ export default function PortfolioTabComponent(props: {
                             level_name: dumyData.defautInfo.level.name,
                             class_code: dumyData.defautInfo.class.code,
                             unit_index: target.unit_index,
-                            student_code: student_code
+                            student_code: feedbackDataInStudent.defautInfo.student_code
                         }
                         console.log('search data =',searchData)
                         const reportData = await getReportOneDataByStu(searchData)
@@ -454,7 +421,7 @@ export default function PortfolioTabComponent(props: {
                 }
             }
             if (prevIndex !== 0) {
-                const dataByStu = selectDataByStudentCode(student_code);
+                const dataByStu = selectDataByStudentCode(feedbackDataInStudent.defautInfo.student_code);
                 
                 for (let i = 0; i < dataByStu.length; i++) {
                     const targetData = dataByStu[i].unit_index;
@@ -469,7 +436,7 @@ export default function PortfolioTabComponent(props: {
                             level_name: dumyData.defautInfo.level.name,
                             class_code: dumyData.defautInfo.class.code,
                             unit_index: target.unit_index,
-                            student_code: student_code
+                            student_code: feedbackDataInStudent.defautInfo.student_code
                         }
                         const reportData = await getReportOneDataByStu(searchData)
                         if (rsp1st.draft_index > 0 && rsp2nd.draft_index > 0 && reportData) {
@@ -573,18 +540,24 @@ export default function PortfolioTabComponent(props: {
                     ></div>
                     
                     <div className='absolute right-[30px] '>
-                        {/* {from && from==='LM-Report' && <div className='bt-go-report-in-modal hover:cursor-pointer' onClick={()=>{
-                            console.log("test1")
-                            if (modalClose) {
-                                modalClose();
-                            }
-                        }}></div>}
-                        {!from && */}
-                            <ReportModalComponent feedbackStates={feedbackDataInStudent} 
-                                initSettingData={async()=>await initSettingData()}
-                                from={'portfolioModalLRM'}
-                                studend_code={student_code?student_code:feedbackDataInStudent.defautInfo.student_code}
-                                modalClose={modalClose}
+                    <div className={
+                        'bg-no-repeat w-[124.3px] h-[40px] bg-svg-bt-portfolio hover:bg-svg-bt-portfolio-over hover:cursor-pointer select-none'
+                        // : 'bg-no-repeat w-[38px] h-[44px] bg-svg-ic-portfolio hover:cursor-pointer select-none'
+                    }
+                    onClick={async() => {
+                        setIsModalOpen({
+                            isPortfolioOpen:false,
+                            isReportOpen:true,
+                        })
+                    }}
+                    >
+                    </div>
+                            <ReportModalComponent 
+                                // feedbackStates={feedbackDataInStudent} 
+                                // initSettingData={async()=>await initSettingData()}
+                                // from={'portfolioModalLRM'}
+                                // studend_code={student_code?student_code:feedbackDataInStudent.defautInfo.student_code}
+                                // modalClose={modalClose}
                             />
                         {/* } */}
                     </div>
@@ -599,7 +572,7 @@ export default function PortfolioTabComponent(props: {
                 
             </div>
             {/* footer */}
-            <div className='flex flex-row w-full h-[70px] border-t-[1px] border-t-[#e2e3e6] relative pl-[30px] items-center'>
+            <div className='flex flex-row w-full h-[70px] min-h-[70px] border-t-[1px] border-t-[#e2e3e6] relative pl-[30px] items-center'>
                 <PrintPortfolioExportButton feedbackDataInStudent={feedbackDataInStudent} reportByUnitAPIData={reportByUnitAPIData} isCrown={isCrown}/>
                 
                 <div className='absolute bottom-[25px] right-[30px] flex flex-row capitalize items-center gap-[5px]'>
@@ -612,12 +585,6 @@ export default function PortfolioTabComponent(props: {
 
         </div>
       </CustomTabPanel>
-      {/* <CustomTabPanel value={value} index={1}>
-        <div className='flex flex-col gap-[20px] w-full h-full overflow-auto'>
-            <CalculatorPXtoMM />
-            <PrintPortfolioExportButton feedbackDataInStudent={feedbackDataInStudent} reportByUnitAPIData={reportByUnitAPIData} isCrown={isCrown}/>
-        </div>
-      </CustomTabPanel> */}
     </Box>
   );
 }
