@@ -132,29 +132,15 @@ const LMSparkWriting = () => {
         const userInfo = cookies.get('data');
         const mcYn = userInfo.mcYn;
         const clientCode:string[] = userInfo.clientCode;
-        let defaultCampus = {name:'', code:''};
+        let defaultCampus = ['', '', ''];
+        
         const campus_list_map = loadFilterData.campus.map((item) => {
-            if (mcYn===CONFIG.HEADCHECKVALUE) {
-                for (let i = 0; i < clientCode.length; i++) {
-                    if (item.code === clientCode[i]) {
-                        if (defaultCampus.name==='') {
-                            defaultCampus = {code: item.code, name: item.name}
-                        }
-                        return item.name;
-                    }
+            for (let i = 0; i < clientCode.length; i++) {
+                if (item.code === clientCode[i]) {
+                    return item.name;
                 }
-                return ''
-            } else {
-                for (let i = 0; i < clientCode.length; i++) {
-                    if (item.code === clientCode[i]) {
-                        if (defaultCampus.name==='') {
-                            defaultCampus = {code: item.code, name: item.name}
-                        }
-                        return item.name;
-                    }
-                }
-                return ''
             }
+            return ''
         });
         let campus_list:string[] =[]; 
         for (let l = 0; l < campus_list_map.length; l++) {
@@ -162,43 +148,23 @@ const LMSparkWriting = () => {
                 campus_list.push(campus_list_map[l])
             }
         }
+        if (campus_list.length === 1) {
+            defaultCampus[0] = campus_list[0]
+        }
         setSelectFilterCampusList(campus_list);
         setFilterData(loadFilterData);
         setFilterStates(loadFilterData);
         // campus default 
-        console.log('mcYn =',mcYn)
-        console.log('CONFIG.HEADCHECKVALUE=',CONFIG.HEADCHECKVALUE)
-        if (mcYn===CONFIG.HEADCHECKVALUE) {
-            if (maintainFilterValues.length === 0) {
-                if (campus_list.length === 1) {
-                    setSelectFilterValues([defaultCampus.name])
-                } else {
-                    setSelectFilterValues([])
-                }
-            }
-            if(campus_list.length > 1) {
-                setSelectCampusCode({name:'',code:''})
-            } else if (campus_list.length === 1) {
-                setSelectCampusCode(defaultCampus)
-            } else {
-                setSelectCampusCode({name:'',code:''})
-            }
-        } else {
-            if (maintainFilterValues.length === 0) {
-                if (campus_list.length === 1) {
-                    setSelectFilterValues([defaultCampus.name])
-                } else {
-                    setSelectFilterValues([])
-                }
-            }
-            if(campus_list.length > 1) {
-                setSelectCampusCode({name:'',code:''})
-            } else if (campus_list.length === 1) {
-                setSelectCampusCode(defaultCampus)
-            } else {
-                setSelectCampusCode({name:'',code:''})
-            }
+        
+        if (maintainFilterValues.length === 0) {
+            setSelectFilterValues(defaultCampus)
         }
+        // if (campus_list.length === 1) {
+        //     setSelectCampusCode(defaultCampus)
+        // } else {
+        // }
+        setSelectCampusCode({name:'',code:''})
+        
         setSelectLevelCode({name:'',code:''});
         setSelectClassCode({name:'',code:''});
         if (maintainFilterValues.length > 0) {
