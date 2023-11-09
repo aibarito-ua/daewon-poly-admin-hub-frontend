@@ -11,23 +11,31 @@ export default function ReportModalComponent(
     feedbackStates:TFeedbackStates;
     studend_code:string;
     initSettingData: Function;
-    from?: ''|'portfolioModal'|'portfolioModalLRM'
+    from?: ''|'portfolioModal'|'portfolioModalLRM',
+    modalClose?:Function;
   }
 ) {
   const { 
     feedbackStates,
     studend_code,
-    initSettingData, from
+    initSettingData, from,
+    modalClose
 } = props;
   const [open, setOpen] = React.useState(false);
 
   const {
-    report, set
+    report, set,
+    isModalOpen, setIsModalOpen,
   } = useReportStore();
   
   React.useEffect(()=>{
-    
-  }, [open])
+    // if (open) {
+    //   if (isModalOpen=='portfolio') {
+    //     console.log('report closed')
+    //     setOpen(false)
+    //   }
+    // }
+  },[open,isModalOpen])
 
   const handleClickOpen = async () => {
     if (from==='portfolioModal') {
@@ -42,18 +50,25 @@ export default function ReportModalComponent(
         // set.doughnutChart(dumyData);
         console.log('open')
         setOpen(true);
+        setIsModalOpen('report')
       }
     } else {
       const init = await initSettingData();
       if (init) {
         // set.doughnutChart(dumyData);
         setOpen(true);
+        setIsModalOpen('report')
       }
     }
   };
 
   const handleClose = () => {
+    if (modalClose) {
+      modalClose();
+    }
     setOpen(false);
+    setIsModalOpen('')
+
   };
 
   const dumyData:TRubricScoreData[] = [
@@ -82,7 +97,8 @@ export default function ReportModalComponent(
             
           }
         }}
-      open={open} onClose={handleClose}
+      open={open} 
+      // onClose={handleClose}
       
       >
         <DialogTitle sx={{

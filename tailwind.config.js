@@ -95,6 +95,14 @@ module.exports = {
 
         // toast icon
         'toast-warning-ic': "url('/src/util/png/ic_warning_toast.png')",
+
+        // report doughnut chart legends
+        'report-doughnut-chart-legend-ideas': "url('/src/components/chartComponents/doughnutChartImages/legend_ideas.svg')",
+        'report-doughnut-chart-legend-organization': "url('/src/components/chartComponents/doughnutChartImages/legend_organization.svg')",
+        'report-doughnut-chart-legend-voice': "url('/src/components/chartComponents/doughnutChartImages/legend_voice.svg')",
+        'report-doughnut-chart-legend-word-choice': "url('/src/components/chartComponents/doughnutChartImages/legend_word_choice.svg')",
+        'report-doughnut-chart-legend-sentence-fluency': "url('/src/components/chartComponents/doughnutChartImages/legend_sentence_fluency.svg')",
+        'report-doughnut-chart-legend-conventions': "url('/src/components/chartComponents/doughnutChartImages/legend_conventions.svg')",
       }
     },
     borderWidth: {

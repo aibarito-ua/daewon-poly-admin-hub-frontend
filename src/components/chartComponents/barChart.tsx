@@ -6,7 +6,8 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend
+  Legend,
+  ReferenceArea
 } from "recharts";
 import useReportStore from "../../store/useReportStore";
 export default function App(props: {
@@ -46,13 +47,42 @@ export default function App(props: {
       className="font-[NotoSansCJKKR] capitalize"
       
     >
+      <ReferenceArea shape={(props:any)=>{
+        console.log('props ===',props)
+        return <rect 
+          x={60}
+          y={30}
+          height={404}
+          width={110}
+          fill="#f5f5f5"
+        />
+      }}/>
+      <ReferenceArea shape={(props:any)=>{
+        console.log('props ===',props)
+        return <rect 
+          x={280} 
+          y={30}
+          height={404}
+          width={110}
+          fill="#f5f5f5"
+        />
+      }}/>
+      <ReferenceArea shape={(props:any)=>{
+        console.log('props ===',props)
+        return <rect 
+          x={500} 
+          y={30}
+          height={404}
+          width={110}
+          fill="#f5f5f5"
+        />
+      }}/>
       <CartesianGrid strokeDasharray="3 3" vertical={false}/>
       <XAxis dataKey="name" tick={true} minTickGap={0} ticks={['ideas','organization','voice','word choice', 'sentence fluency','conventions']} 
         tickLine={false} tickMargin={10} axisLine={false} interval={0}
          fontSize={13} fontFamily="NotoSansCJKKR" className="capitalize"
       />
       <YAxis tickCount={5} ticks={[0,1,2,3,4,5,6,7,8,9,10,11]} tickLine={false} axisLine={false} tickFormatter={()=>''} />
-      {/* <Tooltip /> */}
       <Legend iconType="circle" align="center" 
         formatter={(value, entry, index) => {
           if (value==='Unit1') value='Unit 1'

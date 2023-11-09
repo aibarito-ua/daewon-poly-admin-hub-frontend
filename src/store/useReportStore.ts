@@ -632,6 +632,10 @@ const useReportStore = create<IUseReportStore>((set, get) => ({
             toolLineColor: '#1f61c8'
         },
     ],
+    isModalOpen: '',
+    setIsModalOpen: (target) => {
+        set(()=>({isModalOpen: target}))
+    }
 }))
 
 export default useReportStore;

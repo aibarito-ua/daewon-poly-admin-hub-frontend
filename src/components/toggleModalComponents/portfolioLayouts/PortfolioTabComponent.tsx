@@ -18,15 +18,6 @@ interface TabPanelProps {
   value: number;
 }
 
-const dumyCircleData:TCircleLegendItems[] = [
-    {circleColor: '#588ee1', circleLabel:'idea'},
-    {circleColor: '#f6914d', circleLabel:'organization'},
-    {circleColor: '#aa6bd4', circleLabel:'voice'},
-    {circleColor: '#30c194', circleLabel:'word choice'},
-    {circleColor: '#6865cc', circleLabel:'sentence fluency'},
-    {circleColor: '#db5757', circleLabel:'conventions'},
-]
-
 function CustomTabPanel(props: TabPanelProps) {
   const { children, value, index, ...other } = props;
 
@@ -582,19 +573,20 @@ export default function PortfolioTabComponent(props: {
                     ></div>
                     
                     <div className='absolute right-[30px] '>
-                        {from && from==='LM-Report' && <div className='bt-go-report-in-modal hover:cursor-pointer' onClick={()=>{
+                        {/* {from && from==='LM-Report' && <div className='bt-go-report-in-modal hover:cursor-pointer' onClick={()=>{
                             console.log("test1")
                             if (modalClose) {
                                 modalClose();
                             }
                         }}></div>}
-                        {!from &&
+                        {!from && */}
                             <ReportModalComponent feedbackStates={feedbackDataInStudent} 
                                 initSettingData={async()=>await initSettingData()}
                                 from={'portfolioModalLRM'}
                                 studend_code={student_code?student_code:feedbackDataInStudent.defautInfo.student_code}
+                                modalClose={modalClose}
                             />
-                        }
+                        {/* } */}
                     </div>
                 </div>
             </div>

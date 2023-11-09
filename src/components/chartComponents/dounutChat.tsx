@@ -166,21 +166,19 @@ export default function App(props: {data: TAllDoughnutDatas}) {
 
     console.log('props.data =',props.data)
     const [allData, setAllData] = useState<TAllDoughnutDatas>(props.data);
+    const [legendData, setLegendData] = useState<TCircleLegendItems[]>([]);
     const [addWidth, setAddWidth] = useState<number>(0);
     const [decText, setDecText] = useState<number>(0);
     const [tooltipLineColor, setTooltipLineColor] = useState<string>('');
     const [average, setAverage] = useState<number>(0);
-
-    React.useEffect(()=>{
-        const dumpData:TAllDoughnutDatas = JSON.parse(JSON.stringify(allData));
-        const length = dumpData.length
-        let sum_val = 0;
-        for (let i = 0; i < length; i++) {
-            sum_val += dumpData[i].data[0].value;
-        }
-        const avr = sum_val/length;
-        setAverage(avr)
-    },[])
+    const labelNames = [
+        'ideas',
+        'organization',
+        'voice',
+        'word choice',
+        'sentence fluency',
+        'conventions'
+    ];
     const radiusDatas = [
         { innerRadius: 47, outerRadius: 67 },
         { innerRadius: 77, outerRadius: 97 },
@@ -189,6 +187,31 @@ export default function App(props: {data: TAllDoughnutDatas}) {
         { innerRadius: 167, outerRadius: 187 },
         { innerRadius: 197, outerRadius: 217 }
     ]
+
+    React.useEffect(()=>{
+        const dumpData:TAllDoughnutDatas = JSON.parse(JSON.stringify(allData));
+        let dumyLegendData:TCircleLegendItems[]=[];
+        const length = dumpData.length
+        let sum_val = 0;
+        for (let i = 0; i < length; i++) {
+            sum_val += dumpData[i].data[0].value;
+            let dumyLegendItem:TCircleLegendItems = {
+                circleColor: dumpData[i].data[0].fillColor,
+                circleLabel: dumpData[i].target,
+                eventValue: dumpData[i].data[0].value,
+                innerRadius: radiusDatas[i].innerRadius,
+                key: `report-legend-pie-chart-${dumpData[i].target}`
+            }
+            dumyLegendData.push(dumyLegendItem)
+        }
+        dumyLegendData.sort((a,b) => {
+            return labelNames.indexOf(a.circleLabel)-labelNames.indexOf(b.circleLabel)
+        });
+        setLegendData(dumyLegendData);
+        const avr = sum_val/length;
+        setAverage(avr)
+    },[])
+    
     
     // const avr = 90;
     const cx = 250;
@@ -427,19 +450,20 @@ Z
     )
 
 }
-const mouseOnEvent = (e:any)=>{
+const mouseOnEvent = (e:any, name?:string, eventValue?:number, legendInnerRadius?:number )=>{
     console.log('click =',e)
     console.log('active',activeIndex)
-    setClickIndex(e.name)
-    let value= e.value;
+    let eName = e.name? e.name: name;
+    let value= e.value? e.value: eventValue;
     //   let outerR = e.outerRadius;
-    let outerR = e.innerRadius;
+    let outerR = e.innerRadius?e.innerRadius: legendInnerRadius;
+    setClickIndex(eName)
       let dumpAllData:TAllDoughnutDatas = JSON.parse(JSON.stringify(allData));
       for (let i = 0; i < dumpAllData.length; i++) {
         const currentPayloadData = dumpAllData[i].data[0];
-        if (currentPayloadData.name === e.name) {
+        if (currentPayloadData.name === eName) {
             
-            dumpAllData[i].data[0].selectName=e.name
+            dumpAllData[i].data[0].selectName=eName
             setTooltipLineColor(dumpAllData[i].toolLineColor)
             setDecText(dumpAllData[i].fitText);
             setAddWidth(dumpAllData[i].addWidth);
@@ -468,37 +492,74 @@ const allDataSortValues = [
 ]
 
   return (
-    <PieChart width={500} height={500}>
-        
-        <text x={cx} y={cy} dy={12} textAnchor="middle" style={textmainCss} width={80} height={80} className="rounded-[50%] bg-black shadow-[1px_1px_5px_rgba(0,0,0,0.16)]">
-            <tspan x={cx} y={cy} dy={12} textAnchor="middle" style={text1Css}>
-                {Math.round(average*10)/10}
-            </tspan>
-            <tspan x={cx+30} y={cy} dy={12} style={text2Css}>%</tspan>
-        </text>
-        
-        {allData.sort((a,b)=>{
-            return allDataSortValues.indexOf(a.target) - allDataSortValues.indexOf(b.target);
-        }).map((dataItem, dataIndex)=>{
-            const currentR = radiusDatas[dataIndex]
-            return <Pie key={dataItem.target}
-                className="pie-button-effect-none"
-              activeIndex={0}
-              activeShape={renderActiveShape}
-              data={dataItem.data}
-              cx={cx}
-              cy={cy}
-              innerRadius={currentR.innerRadius}
-              outerRadius={currentR.outerRadius}
-              fill={dataItem.data[0].fillColor}
-              dataKey="value"
-              onMouseEnter={mouseOnEvent}
-              onMouseOut={mouseOffEvent}
-            //   onClick={}
-            />
+    <div className='flex flex-col'>
+        <div className='flex'>
+            <PieChart width={500} height={500}>
+                
+                <text x={cx} y={cy} dy={12} textAnchor="middle" style={textmainCss} width={80} height={80} className="rounded-[50%] bg-black shadow-[1px_1px_5px_rgba(0,0,0,0.16)]">
+                    <tspan x={cx} y={cy} dy={12} textAnchor="middle" style={text1Css}>
+                        {Math.round(average*10)/10}
+                    </tspan>
+                    <tspan x={cx+30} y={cy} dy={12} style={text2Css}>%</tspan>
+                </text>
+                
+                {allData.sort((a,b)=>{
+                    return allDataSortValues.indexOf(a.target) - allDataSortValues.indexOf(b.target);
+                }).map((dataItem, dataIndex)=>{
+                    const currentR = radiusDatas[dataIndex]
+                    return <Pie key={dataItem.target}
+                        className="pie-button-effect-none"
+                    activeIndex={0}
+                    activeShape={renderActiveShape}
+                    data={dataItem.data}
+                    cx={cx}
+                    cy={cy}
+                    innerRadius={currentR.innerRadius}
+                    outerRadius={currentR.outerRadius}
+                    fill={dataItem.data[0].fillColor}
+                    dataKey="value"
+                    onMouseEnter={(e)=>mouseOnEvent(e)}
+                    onMouseOut={mouseOffEvent}
+                    //   onClick={}
+                    />
 
-        })}
-        {clickIndex!=='' && textTooltip()}
-    </PieChart>
+                })}
+                {clickIndex!=='' && textTooltip()}
+            </PieChart>
+        </div>
+        <div className="flex flex-row justify-center">
+            <div className="flex flex-col w-[398px] h-[54px] gap-[14px]">
+                <div className="flex flex-row">
+                    <div className="w-[124px] h-[20px] bg-no-repeat bg-origin-border bg-contain bg-report-doughnut-chart-legend-ideas hover:cursor-pointer" 
+                        onMouseEnter={(e)=>mouseOnEvent(e, legendData[0].circleLabel, legendData[0].eventValue, legendData[0].innerRadius)}
+                        onMouseOut={mouseOffEvent}
+                    />
+                    <div className="w-[155px] h-[20px] bg-no-repeat bg-origin-border bg-contain bg-report-doughnut-chart-legend-organization hover:cursor-pointer" 
+                        onMouseEnter={(e)=>mouseOnEvent(e, legendData[1].circleLabel, legendData[1].eventValue, legendData[1].innerRadius)}
+                        onMouseOut={mouseOffEvent}
+                    />
+                    <div className="w-[110px] h-[20px] bg-no-repeat bg-origin-border bg-contain bg-report-doughnut-chart-legend-voice hover:cursor-pointer" 
+                        onMouseEnter={(e)=>mouseOnEvent(e, legendData[2].circleLabel, legendData[2].eventValue, legendData[2].innerRadius)}
+                        onMouseOut={mouseOffEvent}
+                    />
+                </div>
+                <div className="flex flex-row">
+                    <div className="w-[124px] h-[20px] bg-no-repeat bg-origin-border bg-contain bg-report-doughnut-chart-legend-word-choice hover:cursor-pointer" 
+                        onMouseEnter={(e)=>mouseOnEvent(e, legendData[3].circleLabel, legendData[3].eventValue, legendData[3].innerRadius)}
+                        onMouseOut={mouseOffEvent}
+                    />
+                    <div className="w-[155px] h-[20px] bg-no-repeat bg-origin-border bg-contain bg-report-doughnut-chart-legend-sentence-fluency hover:cursor-pointer" 
+                        onMouseEnter={(e)=>mouseOnEvent(e, legendData[4].circleLabel, legendData[4].eventValue, legendData[4].innerRadius)}
+                        onMouseOut={mouseOffEvent}
+                    />
+                    <div className="w-[110px] h-[20px] bg-no-repeat bg-origin-border bg-contain bg-report-doughnut-chart-legend-conventions hover:cursor-pointer" 
+                        onMouseEnter={(e)=>mouseOnEvent(e, legendData[5].circleLabel, legendData[5].eventValue, legendData[5].innerRadius)}
+                        onMouseOut={mouseOffEvent}
+                    />
+                </div>
+            </div>
+        </div>
+
+    </div>
   );
 }

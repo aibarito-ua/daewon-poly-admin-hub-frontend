@@ -2,6 +2,7 @@ import { Dialog, DialogContent, DialogTitle } from '@mui/material';
 import React from 'react';
 import PortfolioTabComponent from './portfolioLayouts/PortfolioTabComponent';
 import useLearningManagementSparkWritingStore from '../../store/useLearningManagementSparkWritingStore';
+import useReportStore from '../../store/useReportStore';
 interface IPortfolioComponentProps {
     feedbackStates:TFeedbackStates;
     otherModalCloseFn?: Function;
@@ -14,23 +15,37 @@ export default function PortfolioModalComponent ( props: IPortfolioComponentProp
          otherModalCloseFn, from, initSettings, studentCode
     } = props;
     const [open, setOpen] = React.useState<boolean>(false);
+    const {
+        isModalOpen, setIsModalOpen
+    } = useReportStore();
     const {feedbackDataInStudent} = useLearningManagementSparkWritingStore()
     const student_code=studentCode?studentCode:feedbackDataInStudent.defautInfo.student_code;
     React.useEffect(()=>{
-        
-    },[open])
+        // if (open) {
+        //     if (isModalOpen==='report') {
+        //         console.log('portfolio closed')
+        //         setOpen(false)
+        //     }
+        // }
+    },[open,isModalOpen])
     const handleClickOpen = async () => {
         if (initSettings) {
             const setInitComplete = await initSettings();
             if (setInitComplete) {
                 setOpen(true);
+                setIsModalOpen('portfolio')
             }
         } else {
             setOpen(true);
+            setIsModalOpen('portfolio')
         }
     }
     const handleClose = () => {
+        if (otherModalCloseFn) {
+            otherModalCloseFn();
+        }
         setOpen(false);
+        setIsModalOpen('')
     }
 
     return (
@@ -42,7 +57,7 @@ export default function PortfolioModalComponent ( props: IPortfolioComponentProp
             </div>
             <Dialog className=''
             open={open}
-            onClose={handleClose}
+            // onClose={handleClose}
             
             PaperProps={{
                 sx: {

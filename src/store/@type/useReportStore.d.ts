@@ -24,6 +24,10 @@ interface IUseReportStore {
     setOverallReportByStu: (data:TOverallReportAPI) => void;
     overallBarChartData: TOverallBarChartData[];
     overallDoughnutChartData: TAllDoughnutDatas;
+
+    // report / portfolio open
+    isModalOpen: ''|'report'|'portfolio';
+    setIsModalOpen: (target:''|'report'|'portfolio') => void;
 }
 type TOverallBarChartData = {
     name: string;
@@ -77,7 +81,10 @@ type TUnitScoreData = {
 
 type TCircleLegendItems = {
     circleColor: string;
-    circleLabel: string;       
+    circleLabel: string;
+    eventValue: number;
+    innerRadius: number;
+    key: string;      
 }
 type TAllDoughnutDatas = {
     target: string;

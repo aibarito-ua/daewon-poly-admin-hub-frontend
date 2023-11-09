@@ -25,14 +25,14 @@ interface TabPanelProps {
   value: number;
 }
 
-const dumyCircleData:TCircleLegendItems[] = [
-    {circleColor: '#588ee1', circleLabel:'idea'},
-    {circleColor: '#f6914d', circleLabel:'organization'},
-    {circleColor: '#aa6bd4', circleLabel:'voice'},
-    {circleColor: '#30c194', circleLabel:'word choice'},
-    {circleColor: '#6865cc', circleLabel:'sentence fluency'},
-    {circleColor: '#db5757', circleLabel:'conventions'},
-]
+// const dumyCircleData:TCircleLegendItems[] = [
+//     {circleColor: '#588ee1', circleLabel:'idea'},
+//     {circleColor: '#f6914d', circleLabel:'organization'},
+//     {circleColor: '#aa6bd4', circleLabel:'voice'},
+//     {circleColor: '#30c194', circleLabel:'word choice'},
+//     {circleColor: '#6865cc', circleLabel:'sentence fluency'},
+//     {circleColor: '#db5757', circleLabel:'conventions'},
+// ]
 
 function CustomTabPanel(props: TabPanelProps) {
   const { children, value, index, ...other } = props;
@@ -444,14 +444,7 @@ export default function BasicTabs(props: {
       </Box>
       <CustomTabPanel value={value} index={0} >
         <div className='flex flex-row pb-[65px]'>
-            <div className='flex flex-col'>
-                <div className='flex'>
-                    <DoughnutChartComponent data={overallDoughnutChartData}/>
-                </div>
-                <div className='flex justify-center'>
-                    <DoughnutChartLegend data={dumyCircleData}/>
-                </div>
-            </div>
+            <DoughnutChartComponent data={overallDoughnutChartData} />
             <div className='flex flex-col'>
                 <div className='flex flex-row h-[36px] mt-[30px] relative' >
                     <RubricTypeModalComponent 
@@ -481,7 +474,7 @@ export default function BasicTabs(props: {
                 ></div>
                 
                 <div className='absolute right-[30px] '>
-                 <PortfolioModalComponent feedbackStates={feedbackDataInStudent} from='LM-Report' studentCode={student_code}/>
+                 <PortfolioModalComponent feedbackStates={feedbackDataInStudent} from='LM-Report' studentCode={student_code} otherModalCloseFn={otherModalCloseFn}/>
                 </div>
             </div>
             {/* 좌 - 그래프, 우 - summary, correction, t comment */}
