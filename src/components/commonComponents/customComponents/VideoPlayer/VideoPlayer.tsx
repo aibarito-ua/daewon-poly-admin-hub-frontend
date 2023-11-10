@@ -75,13 +75,34 @@ const VideoPlayer: FC<{ src?: string, background_name: string }> = ({ src, backg
     }
   })
 
+  useEffect(() => {
+    if(progress == 100) {
+      setPlaying(false)
+    }
+  }, [progress])
+
+  const bg_1_classNames = "scale-[1.9] scale-x-[-1.9] relative top-[-24px] left-[13px]"
+  const bg_2_classNames = "scale-[1.8] scale-x-[-1.8] relative top-[-56px] left-[1px]"
+  const bg_3_classNames = "scale-[1.9] scale-x-[-1.9] relative top-[-24px] left-[-6px]"
+  const bg_4_classNames = "scale-[2.0] scale-x-[-2.0] relative top-[-45px] left-[2px]"
+
   return (
     <div>
       <div className='flex w-full h-[346px] bg-white overflow-hidden mx-auto'>
         <div className="flex flex-col h-[346px]">
           <div className="relative h-[346px] overflow-hidden">
-            <div className="flex items-center h-full w-full ">
-              <video ref={videoRef} onLoadedMetadata={onLoad} width="660" style={{ height: '126px' }} className="scale-[1.8] translate-y-[5px] translate-x-6">
+            <div className="flex items-center h-full w-full bg-[#000] ">
+              <video 
+                ref={videoRef}
+                onLoadedMetadata={onLoad}
+                width="660"
+                style={{ height: '126px' }}
+                className={`
+                  ${background_name === 'video_bg1' && bg_1_classNames}
+                  ${background_name === 'video_bg2' && bg_2_classNames}
+                  ${background_name === 'video_bg3' && bg_3_classNames}
+                  ${background_name === 'video_bg4' && bg_4_classNames}
+                `}>
                 <source className="w-30 h-30" src={src} type='video/mp4' />
               </video>
             </div>
@@ -96,29 +117,12 @@ const VideoPlayer: FC<{ src?: string, background_name: string }> = ({ src, backg
             <div className="absolute bottom-0 w-full bg-[#000]">
               <div>
                 <div className="relative h-1 bg-gray-200">
-                  {/* <progress 
-                    className="absolute h-full w-full bg-red-500 flex items-center justify-end cursor-pointer" 
-                    max={100} 
-                    value={progress}
-                    onClick={(e) => {
-                      const progressElem = e.target as HTMLProgressElement
-                      if(progressElem.offsetParent) {
-                        const pos =
-                          (e.pageX - progressElem.offsetLeft - progressElem.getBoundingClientRect().x) / progressElem.offsetWidth;
-                        if (videoRef.current)
-                          (videoRef.current as HTMLVideoElement).currentTime = pos * videoTime;
-                      }
-                    }}
-                  >
-                    <div className="inline-block rounded-full w-3 h-3 bg-white shadow"></div>
-                  </progress> */}
                   <input onChange={(e) => {
                     setProgress(Number(e.target.value))
                     if (videoRef.current)
                       (videoRef.current as HTMLVideoElement).currentTime = Number(e.target.value) / 100 * videoTime;
                   }} id="small-range" type="range" value={progress} className="absolute w-full flex items-center justify-end cursor-pointer h-1 range-xs dark:bg-gray-700" />
                 </div>
-                {/* <div className={`absolute top-[-4px] left-[-4px] rounded-full w-3 h-3 bg-white shadow hover:cursor-pointer`}></div> */}
               </div>
               <div className="flex text-xs gap-2 font-medium text-gray-500 py-2 px-3">
                 <div className="flex space-x-3">
