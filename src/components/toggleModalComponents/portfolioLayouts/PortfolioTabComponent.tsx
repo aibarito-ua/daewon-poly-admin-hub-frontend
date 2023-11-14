@@ -538,28 +538,18 @@ export default function PortfolioTabComponent() {
                     <div className={`bg-no-repeat w-[36px] h-[36px] ${isRightAvailable ? 'bg-svg-bt-right hover:bg-svg-bt-right-over': 'bg-svg-bt-right-disabled'}`}
                         onClick={async()=>await onClickStepperRight()}
                     ></div>
-                    
                     <div className='absolute right-[30px] '>
-                    <div className={
-                        'bg-no-repeat w-[124.3px] h-[40px] bg-svg-bt-portfolio hover:bg-svg-bt-portfolio-over hover:cursor-pointer select-none'
-                        // : 'bg-no-repeat w-[38px] h-[44px] bg-svg-ic-portfolio hover:cursor-pointer select-none'
-                    }
-                    onClick={async() => {
-                        setIsModalOpen({
-                            isPortfolioOpen:false,
-                            isReportOpen:true,
-                        })
-                    }}
-                    >
-                    </div>
-                            <ReportModalComponent 
-                                // feedbackStates={feedbackDataInStudent} 
-                                // initSettingData={async()=>await initSettingData()}
-                                // from={'portfolioModalLRM'}
-                                // studend_code={student_code?student_code:feedbackDataInStudent.defautInfo.student_code}
-                                // modalClose={modalClose}
-                            />
-                        {/* } */}
+                        <div className={
+                            'bg-no-repeat w-[124.3px] h-[40px] bg-svg-bt-go-report hover:bg-svg-bt-go-report-over hover:cursor-pointer select-none'
+                        }
+                        onClick={async() => {
+                            setIsModalOpen({
+                                isPortfolioOpen:false,
+                                isReportOpen:true,
+                            })
+                        }}
+                        >
+                        </div>
                     </div>
                 </div>
             </div>

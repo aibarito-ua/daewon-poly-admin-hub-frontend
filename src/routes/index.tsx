@@ -60,8 +60,8 @@ export default function Router() {
             // "memberCode":"23100091","clientCode":"0508003","mcYn":"N","accessToken":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImtGbDA2aWs2cXdkQ2U5UEtnQitRMlFFbUtBdUhOelFXWnJ4cmMrTndrSHc9IiwiaWF0IjoxNjk4MzkwODE5LCJleHAiOjE2OTg0NzcyMTl9.TJc-VnfvXibsTCE8ZISd9A99CffOEWS0ml_BnAH5cdA"
             const devTestData = {
                 accessToken: '',
-                clientCode: ['0508003','1301003'],
-                // 
+                clientCode: ['0508003'],
+                // ,'1301003'
                 mcYn: 'N',
                 memberCode: '23100091',
                 pageAuth: "N"

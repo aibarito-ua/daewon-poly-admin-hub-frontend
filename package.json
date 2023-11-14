@@ -1,6 +1,6 @@
 {
   "name": "poly_admin_hub",
-  "version": "0.1.2311101030",
+  "version": "0.1.2311141530",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.11.1",
