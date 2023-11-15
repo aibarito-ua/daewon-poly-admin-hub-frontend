@@ -931,31 +931,33 @@ const LearningManagementSparkWritingFeedbackPage = () => {
     }
     // send button event
     const sendButtonEvent = ()=>{
-        commonAlertOpen({
-            head: 'Review 1st Draft',
-            messages: [
-                'Do you want to send your feedback to the student?'
-            ],
-            yesButtonLabel: 'Yes',
-            noButtonLabel: 'No',
-            alertType: 'continue',
-            yesEvent: async ()=>{
-                const save = await makeData('send');
-                if (save) {
-                    commonAlertOpen({
-                        head: 'Review 1st Draft',
-                        messages: ['Sent.','Return to the main menu.'],
-                        useOneButton: true,
-                        yesButtonLabel: 'OK',
-                        yesEvent: async () => {
-                            outPage();
-                            // window.location.reload();
-                            commonAlertClose();
-                        }
-                    })
+        if (pageAuth==='N' && overallComment.replace(' ','').length>0 && draftStatus < 4 ) {
+            commonAlertOpen({
+                head: 'Review 1st Draft',
+                messages: [
+                    'Do you want to send your feedback to the student?'
+                ],
+                yesButtonLabel: 'Yes',
+                noButtonLabel: 'No',
+                alertType: 'continue',
+                yesEvent: async ()=>{
+                    const save = await makeData('send');
+                    if (save) {
+                        commonAlertOpen({
+                            head: 'Review 1st Draft',
+                            messages: ['Sent.','Return to the main menu.'],
+                            useOneButton: true,
+                            yesButtonLabel: 'OK',
+                            yesEvent: async () => {
+                                outPage();
+                                // window.location.reload();
+                                commonAlertClose();
+                            }
+                        })
+                    }
                 }
-            }
-        })
+            })
+        }
     }
     // save button event
     const saveButtonEvent = ()=>{
@@ -1050,7 +1052,8 @@ const LearningManagementSparkWritingFeedbackPage = () => {
     // 2nd draft create report
     const draft2ndCreateReport = async () => {
         console.log('finalCreateReportFlag =',finalCreateReportFlag)
-        if (finalCreateReportFlag) {
+        // pageAuth === 'N' ? (finalCreateReportFlag?
+        if (pageAuth==='N' && finalCreateReportFlag) {
             commonAlertOpen({
                 head: 'Evaluate 2nd Draft',
                 messages: [
@@ -2029,10 +2032,7 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                                     ? ( draftStatus < 4 ? 'comment-button-send': 'comment-button-send-disabled' )
                                     :'comment-button-send-disabled')
                                 : 'comment-button-send-disabled' }
-                                onClick={ pageAuth === 'N' 
-                                    ? ((allBodySelectedText.length > 0 || overallComment.replace(' ','').length > 0) ? (
-                                        draftStatus < 4 ? sendButtonEvent: ()=>{}
-                                    ):()=>{}) : () => {} }
+                                onClick={ ()=> sendButtonEvent() }
                             />
                         </div>
                     </div>
@@ -2318,7 +2318,7 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                                     onClick={pageAuth === 'N' ? (finalTemporarySaveFlag ? ()=>draft2ndSave():()=>{}):()=>{}}
                                 />
                                 <div className={pageAuth === 'N' ? (finalCreateReportFlag? 'comment-button-create-report hover:cursor-pointer':'comment-button-create-report-disabled'):'comment-button-create-report-disabled'}
-                                    onClick={pageAuth === 'N' ?  ( finalCreateReportFlag ? async ()=>draft2ndCreateReport():()=>{}):()=>{}}
+                                    onClick={async ()=>draft2ndCreateReport()}
                                 />
                             </div>
                         </div>
