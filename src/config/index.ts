@@ -1,4 +1,4 @@
-const HOST_URL:string = process.env.REACT_APP_HOST_URL?process.env.REACT_APP_HOST_URL:'';
+const HOST_URL:string = process.env.REACT_APP_HOST_URL as string;
 
 const GRAMMAR_CHECK:string = process.env.REACT_APP_GRAMMAR_CREATE_ORIGIN_CHANGE_TEXTS?process.env.REACT_APP_GRAMMAR_CREATE_ORIGIN_CHANGE_TEXTS:'';
 const GRAMMAR_COMPARE:string = process.env.REACT_APP_GRAMMAR_COMPARE_TEXTS?process.env.REACT_APP_GRAMMAR_COMPARE_TEXTS:'';
