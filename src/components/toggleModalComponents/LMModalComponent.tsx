@@ -79,7 +79,7 @@ export default function LMModalComponent(props:{
                   </span>
                   <span>
                       <span className='learning-management-analysis-info-name'>Name:</span> 
-                      <span className='mr-0 font-medium'>({props.student?.student_name_kr}) {props.student?.student_name_kr}</span>
+                      <span className='mr-0 font-medium'>{props.student?.student_name_kr} ({props.student?.student_name_en})</span>
                   </span>
               </div>
           </div>

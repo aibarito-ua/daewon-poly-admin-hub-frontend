@@ -102,7 +102,7 @@ const ModalButton: FC<{cellData: TLRMSpeakingHubTableCellData}> = ({ cellData })
         <>
             <LMModalComponent open={open} setOpen={setOpen} title={cellData.title} description={cellData.value.description ?? ''} student={cellData.student} content={cellData.value.modalContent ?? (<></>)}/>
             <div 
-                className='learning-management-class-table-complete-question-wrapper' 
+                className={`learning-management-class-table-complete-question-wrapper ${cellData?.clickable !== false ? "hover:cursor-pointer hover:brightness-90" : ""}`}
                 onClick={() => {
                     if(cellData?.clickable === false)
                         return
