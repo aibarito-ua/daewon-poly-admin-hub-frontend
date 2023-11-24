@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import App from './App2311151150';
+import App from './App2311241000';
 import reportWebVitals from './reportWebVitals';
 import {CookiesProvider} from 'react-cookie'
 
