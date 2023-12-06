@@ -1461,7 +1461,7 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                                                 setAdvisorOpen(true);
                                                 
                                             } else {
-                                                const advisorResponse = await getSparkWritingAdvisor(draftId);
+                                                const advisorResponse = await getSparkWritingAdvisor(draftId, feedbackDataInStudent.defautInfo.student_name.student_name_en);
                                                 if (advisorResponse.draft_index > 0) {
                                                     console.log('advisor response =',advisorResponse)
                                                     setAdvisor(advisorResponse);

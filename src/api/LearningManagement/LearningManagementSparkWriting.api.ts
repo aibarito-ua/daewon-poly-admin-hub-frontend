@@ -137,8 +137,8 @@ export async function getDraftInfoByDraftId(draft_id:string):Promise<TFindDraftI
 }
 
 // advisor
-export async function getSparkWritingAdvisor(draft_id:string): Promise<TWritingAdvisor> {
-    const reqUrl = CONFIG.LEARNING_MANAGEMENT.WRITING.SPARK_WRITING.GET.WRITING_ADVISOR.replace(/{draft_id}/gmi, draft_id);
+export async function getSparkWritingAdvisor(draft_id:string, student_name_en:string): Promise<TWritingAdvisor> {
+    const reqUrl = CONFIG.LEARNING_MANAGEMENT.WRITING.SPARK_WRITING.GET.WRITING_ADVISOR.replace(/{draft_id}/gmi, draft_id).replace(/{student_name_en}/gmi, student_name_en);
     return await axios.get(reqUrl,{
         headers: {
             Accept: 'application/json',
