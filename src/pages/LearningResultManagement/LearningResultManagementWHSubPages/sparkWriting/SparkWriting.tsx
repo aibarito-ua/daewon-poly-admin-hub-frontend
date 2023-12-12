@@ -12,6 +12,7 @@ import useLearningResultManagementWHStore from "../../../../store/useLearningRes
 import useLoginStore from "../../../../store/useLoginStore";
 import { CONFIG } from "../../../../config";
 import { Cookies } from "react-cookie";
+import { useNavigate } from "react-router-dom";
 
 const ReportAndPortfolio = () => {
     // page usehook zustand
@@ -29,7 +30,9 @@ const ReportAndPortfolio = () => {
     } = useLearningResultManagementWHStore();
     const {
         // accessToken, mcYn, clientCode, memberCode
+        setMaintenanceData
     } = useLoginStore();
+    const navigate = useNavigate();
     
     // page states
     const [emptyPageMessage, setEmptyPageMessage] = React.useState<string>('검색 값을 선택 후 조회하세요.');
@@ -66,7 +69,21 @@ const ReportAndPortfolio = () => {
     // initialize setting before render screen
     const beforRenderedFn = async () => {
         const loadFilterData = await getLMSparkWritingCampusDataAPI();
-        
+        if (loadFilterData.error) {
+            const reject = loadFilterData.error
+            if (loadFilterData.error.statusCode===555) {
+                if (reject.data.maintenanceInfo) {
+                    let dumyMaintenanceData:TMaintenanceData = {
+                        alertTitle: 'System Maintenance Notice',
+                        data: reject.data.maintenanceInfo,
+                        open: false,
+                        type: ''
+                    };
+                    setMaintenanceData(dumyMaintenanceData)
+                    navigate('/');
+                }
+            }
+        }
         console.log('laod filter data =',loadFilterData)
         setFilterAllList(loadFilterData);
         const cookies = new Cookies();
@@ -162,11 +179,41 @@ const ReportAndPortfolio = () => {
                     classCode:selectClassCode.code
                 }
                 const rsp = await getLMSparkWritingStudents(reqData);
+                if (rsp.error) {
+                    const reject = rsp.error;
+                    if (reject.statusCode===555 && reject.data.maintenanceInfo) {
+                        let dumyMaintenanceData:TMaintenanceData = {
+                            alertTitle: 'System Maintenance Notice',
+                            data: reject.data.maintenanceInfo,
+                            open: false,
+                            type: ''
+                        };
+                        setMaintenanceData(dumyMaintenanceData)
+                        navigate('/');
+                    }
+                }
                 const overallData = await getAllReportByCampusLevelClass({
                     campus_code:selectCampusCode.code,
                     level_code:selectLevelCode.code,
                     class_code:selectClassCode.code
+                }).then((res)=>{
+                    if (res.data===null) {
+                        if (res.error) {
+                            const reject = res.error
+                            if (reject.data.maintenanceInfo) {
+                                let dumyMaintenanceData:TMaintenanceData = {
+                                    alertTitle: 'System Maintenance Notice',
+                                    data: reject.data.maintenanceInfo,
+                                    open: false,
+                                    type: ''
+                                };
+                                setMaintenanceData(dumyMaintenanceData)
+                                navigate('/');
+                            }
+                        }
+                    } else return res.data;
                 })
+                
                 console.log('stu rsp ==',rsp)
                 if (rsp.students.length > 0 && overallData) {
                     // feedback value setting
@@ -325,7 +372,21 @@ const ReportAndPortfolio = () => {
             for (let campusIndex= 0; campusIndex < targetCampus.length; campusIndex++) {
                 if (targetCampus[campusIndex].name === value) {
                     setSelectCampusCode({name: value, code: targetCampus[campusIndex].code})
-                    const levelsAtSelectCampus = (await getLMSparkWritingLevelsOfCampusDataAPI(targetCampus[campusIndex].code)).level
+                    const levelsAtSelectCampusAPI = await getLMSparkWritingLevelsOfCampusDataAPI(targetCampus[campusIndex].code)
+                    if (levelsAtSelectCampusAPI.error) {
+                        const reject = levelsAtSelectCampusAPI.error;
+                        if (reject.statusCode===555 && reject.data.maintenanceInfo) {
+                            let dumyMaintenanceData:TMaintenanceData = {
+                                alertTitle: 'System Maintenance Notice',
+                                data: reject.data.maintenanceInfo,
+                                open: false,
+                                type: ''
+                            };
+                            setMaintenanceData(dumyMaintenanceData)
+                            navigate('/');
+                        }
+                    }
+                    const levelsAtSelectCampus = levelsAtSelectCampusAPI.level;
                     targetCampus[campusIndex].level = levelsAtSelectCampus
                     for (let i = 0; i < levelsAtSelectCampus.length; i++) {
                         const levelTarget = levelsAtSelectCampus[i].name;

@@ -7,6 +7,7 @@ import ReportModalComponent from '../../toggleModalComponents/ReportModalCompone
 import useReportStore from '../../../store/useReportStore';
 import useLearningResultManagementWHStore from '../../../store/useLearningResultManagementWHStore';
 import PortfolioModalComponent from '../../toggleModalComponents/PortfolioModalComponent';
+import useLoginStore from '../../../store/useLoginStore';
 
 const TableHeader = (props: {head:string[] }) => {
     let tableHeadDatas = props.head;
@@ -121,6 +122,7 @@ const TableBody = (props:{
         dataModel
     } = props;
     const navigate = useNavigate();
+    const {setMaintenanceData} = useLoginStore()
     const {
         feedbackDataInStudent, setFeedbackDataInStudent, studentDataInClass, setRubricReportAllValue
     } = useLearningManagementSparkWritingStore();
@@ -135,9 +137,8 @@ const TableBody = (props:{
     const enterFeedbackEvent = (draft:string, unit_index:number, unit_topic:string, step_label:string, ) => {
         // basic info setting
         const dumyFeedbackPageValue:TFeedbackStates = JSON.parse(JSON.stringify(feedbackDataInStudent));
-
-
     }
+    
     // console.log('studentDataInClass ::',studentDataInClass)
     // console.log('dataModel:: ',dataModel)
     return (
@@ -192,13 +193,75 @@ const TableBody = (props:{
                                             const draft_2nd_id = reportData.draft_2_status.draft_id.toString();
                                             const rsp1st = await getDraftInfoByDraftId(draft_1st_id);
                                             const rsp2nd = await getDraftInfoByDraftId(draft_2nd_id);
+                                            if (rsp1st.error) {
+                                                const reject = rsp1st.error;
+                                                if (reject.statusCode===555 && reject.data.maintenanceInfo) {
+                                                    let dumyMaintenanceData:TMaintenanceData = {
+                                                        alertTitle: 'System Maintenance Notice',
+                                                        data: reject.data.maintenanceInfo,
+                                                        open: false,
+                                                        type: ''
+                                                    };
+                                                    setMaintenanceData(dumyMaintenanceData)
+                                                    navigate('/');
+                                                }
+                                            }
+                                            if (rsp2nd.error) {
+                                                const reject = rsp2nd.error;
+                                                if (reject.statusCode===555 && reject.data.maintenanceInfo) {
+                                                    let dumyMaintenanceData:TMaintenanceData = {
+                                                        alertTitle: 'System Maintenance Notice',
+                                                        data: reject.data.maintenanceInfo,
+                                                        open: false,
+                                                        type: ''
+                                                    };
+                                                    setMaintenanceData(dumyMaintenanceData)
+                                                    navigate('/');
+                                                }
+                                            }
                                             const searchData = {
                                                 level_name: feedbackDataInStudent.defautInfo.level.name,
                                                 unit_index: cellData.dataIndex[2],
                                                 student_code: userInfoData.student_code
                                             }
-                                            const reportDataAPI = await getReportOneDataByStu(searchData);
-                                            const overallDataAPI = await getReportOverallDatabyStu({level_name:searchData.level_name, student_code: searchData.student_code});
+                                            const reportDataAPI = await getReportOneDataByStu(searchData).then((res) => {
+                                                if (res.data===null) {
+                                                    if (res.error) {
+                                                        const reject = res.error
+                                                        if (reject.data.maintenanceInfo) {
+                                                            let dumyMaintenanceData:TMaintenanceData = {
+                                                                alertTitle: 'System Maintenance Notice',
+                                                                data: reject.data.maintenanceInfo,
+                                                                open: false,
+                                                                type: ''
+                                                            };
+                                                            setMaintenanceData(dumyMaintenanceData)
+                                                            navigate('/');
+                                                        }
+                                                    }
+                                                } else {
+                                                    return res.data
+                                                }
+                                            });
+                                            const overallDataAPI = await getReportOverallDatabyStu({level_name:searchData.level_name, student_code: searchData.student_code}).then((res) => {
+                                                if (res.data===null) {
+                                                    if (res.error) {
+                                                        const reject = res.error
+                                                        if (reject.data.maintenanceInfo) {
+                                                            let dumyMaintenanceData:TMaintenanceData = {
+                                                                alertTitle: 'System Maintenance Notice',
+                                                                data: reject.data.maintenanceInfo,
+                                                                open: false,
+                                                                type: ''
+                                                            };
+                                                            setMaintenanceData(dumyMaintenanceData)
+                                                            navigate('/');
+                                                        }
+                                                    }
+                                                } else {
+                                                    return res.data
+                                                }
+                                            });
                                             if (rsp1st && rsp2nd && reportDataAPI && overallDataAPI) {
                                                 let dumyData:TFeedbackStates = JSON.parse(JSON.stringify(feedbackDataInStudent));
                                                 dumyData.draft_data=rsp1st;
@@ -287,8 +350,70 @@ const TableBody = (props:{
                                         
                                         const rsp1st = await getDraftInfoByDraftId(draft_1st_id);
                                         const rsp2nd = await getDraftInfoByDraftId(draft_2nd_id);
-                                        const reportDataAPI = await getReportOneDataByStu(searchData);
-                                        const overallDataAPI = await getReportOverallDatabyStu({level_name:searchData.level_name, student_code: searchData.student_code});
+                                        if (rsp1st.error) {
+                                            const reject = rsp1st.error;
+                                            if (reject.statusCode===555 && reject.data.maintenanceInfo) {
+                                                let dumyMaintenanceData:TMaintenanceData = {
+                                                    alertTitle: 'System Maintenance Notice',
+                                                    data: reject.data.maintenanceInfo,
+                                                    open: false,
+                                                    type: ''
+                                                };
+                                                setMaintenanceData(dumyMaintenanceData)
+                                                navigate('/');
+                                            }
+                                        }
+                                        if (rsp2nd.error) {
+                                            const reject = rsp2nd.error;
+                                            if (reject.statusCode===555 && reject.data.maintenanceInfo) {
+                                                let dumyMaintenanceData:TMaintenanceData = {
+                                                    alertTitle: 'System Maintenance Notice',
+                                                    data: reject.data.maintenanceInfo,
+                                                    open: false,
+                                                    type: ''
+                                                };
+                                                setMaintenanceData(dumyMaintenanceData)
+                                                navigate('/');
+                                            }
+                                        }
+                                        const reportDataAPI = await getReportOneDataByStu(searchData).then((res) => {
+                                            if (res.data===null) {
+                                                if (res.error) {
+                                                    const reject = res.error
+                                                    if (reject.data.maintenanceInfo) {
+                                                        let dumyMaintenanceData:TMaintenanceData = {
+                                                            alertTitle: 'System Maintenance Notice',
+                                                            data: reject.data.maintenanceInfo,
+                                                            open: false,
+                                                            type: ''
+                                                        };
+                                                        setMaintenanceData(dumyMaintenanceData)
+                                                        navigate('/');
+                                                    }
+                                                }
+                                            } else {
+                                                return res.data
+                                            }
+                                        });
+                                        const overallDataAPI = await getReportOverallDatabyStu({level_name:searchData.level_name, student_code: searchData.student_code}).then((res) => {
+                                            if (res.data===null) {
+                                                if (res.error) {
+                                                    const reject = res.error
+                                                    if (reject.data.maintenanceInfo) {
+                                                        let dumyMaintenanceData:TMaintenanceData = {
+                                                            alertTitle: 'System Maintenance Notice',
+                                                            data: reject.data.maintenanceInfo,
+                                                            open: false,
+                                                            type: ''
+                                                        };
+                                                        setMaintenanceData(dumyMaintenanceData)
+                                                        navigate('/');
+                                                    }
+                                                }
+                                            } else {
+                                                return res.data
+                                            }
+                                        });
                                         if (rsp1st && rsp2nd && reportDataAPI && overallDataAPI) {
                                             let dumyData:TFeedbackStates = JSON.parse(JSON.stringify(feedbackDataInStudent));
                                             dumyData.draft_data=rsp1st;

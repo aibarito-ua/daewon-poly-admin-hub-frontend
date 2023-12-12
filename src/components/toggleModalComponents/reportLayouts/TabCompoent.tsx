@@ -14,6 +14,8 @@ import { getDraftInfoByDraftId, getReportOneDataByStu, getReportOverallDatabyStu
 import PrintReportExportButton from '../../commonComponents/customComponents/exportButtons/report/PrintReportExportButton';
 import RubricTypeModalComponent from '../RubricTypeModalComponent';
 import useActivityWritingHubStore from '../../../store/useActivityWritingHubStore';
+import { useNavigate } from 'react-router-dom';
+import useLoginStore from '../../../store/useLoginStore';
 interface TabPanelProps {
   children?: React.ReactNode;
   index: number;
@@ -108,6 +110,8 @@ export default function BasicTabs(props: {
     } = useReportStore();
 
     const {feedbackDataInStudent, studentDataInClass, setFeedbackDataInStudent} = useLearningManagementSparkWritingStore();
+    const navigate = useNavigate();
+    const {setMaintenanceData} = useLoginStore();
     const handleChange = (event: React.SyntheticEvent, newValue: number) => {
         setValue(newValue);
     };
@@ -116,6 +120,24 @@ export default function BasicTabs(props: {
         const getOverallDataFromAPI = await getReportOverallDatabyStu({
             level_name: feedbackDataInStudent.defautInfo.level.name,
             student_code: feedbackDataInStudent.defautInfo.student_code
+        }).then((res) => {
+            if (res.data===null) {
+                if (res.error) {
+                    const reject = res.error
+                    if (reject.data.maintenanceInfo) {
+                        let dumyMaintenanceData:TMaintenanceData = {
+                            alertTitle: 'System Maintenance Notice',
+                            data: reject.data.maintenanceInfo,
+                            open: false,
+                            type: ''
+                        };
+                        setMaintenanceData(dumyMaintenanceData)
+                        navigate('/');
+                    }
+                }
+            } else {
+                return res.data
+            }
         });
         if (getOverallDataFromAPI) {
             setOverallReportByStu(getOverallDataFromAPI);
@@ -287,12 +309,56 @@ export default function BasicTabs(props: {
                         const draft_2nd_id = target.draft_2_status.draft_id.toString();
                         const rsp1st = await getDraftInfoByDraftId(draft_1st_id);
                         const rsp2nd = await getDraftInfoByDraftId(draft_2nd_id);
+                        if (rsp1st.error) {
+                            const reject = rsp1st.error;
+                            if (reject.statusCode===555 && reject.data.maintenanceInfo) {
+                                let dumyMaintenanceData:TMaintenanceData = {
+                                    alertTitle: 'System Maintenance Notice',
+                                    data: reject.data.maintenanceInfo,
+                                    open: false,
+                                    type: ''
+                                };
+                                setMaintenanceData(dumyMaintenanceData)
+                                navigate('/');
+                            }
+                        }
+                        if (rsp2nd.error) {
+                            const reject = rsp2nd.error;
+                            if (reject.statusCode===555 && reject.data.maintenanceInfo) {
+                                let dumyMaintenanceData:TMaintenanceData = {
+                                    alertTitle: 'System Maintenance Notice',
+                                    data: reject.data.maintenanceInfo,
+                                    open: false,
+                                    type: ''
+                                };
+                                setMaintenanceData(dumyMaintenanceData)
+                                navigate('/');
+                            }
+                        }
                         const searchData = {
                             level_name: dumyData.defautInfo.level.name,
                             unit_index: target.unit_index,
                             student_code: feedbackDataInStudent.defautInfo.student_code
                         }
-                        const reportData = await getReportOneDataByStu(searchData)
+                        const reportData = await getReportOneDataByStu(searchData).then((res) => {
+                            if (res.data===null) {
+                                if (res.error) {
+                                    const reject = res.error
+                                    if (reject.data.maintenanceInfo) {
+                                        let dumyMaintenanceData:TMaintenanceData = {
+                                            alertTitle: 'System Maintenance Notice',
+                                            data: reject.data.maintenanceInfo,
+                                            open: false,
+                                            type: ''
+                                        };
+                                        setMaintenanceData(dumyMaintenanceData)
+                                        navigate('/');
+                                    }
+                                }
+                            } else {
+                                return res.data
+                            }
+                        })
                         console.log('rsp1st =',rsp1st)
                         console.log('rsp2nd =',rsp2nd)
                         if (rsp1st.draft_index > 0 && rsp2nd.draft_index > 0 && reportData) {
@@ -358,12 +424,56 @@ export default function BasicTabs(props: {
                         const draft_2nd_id = target.draft_2_status.draft_id.toString();
                         const rsp1st = await getDraftInfoByDraftId(draft_1st_id);
                         const rsp2nd = await getDraftInfoByDraftId(draft_2nd_id);
+                        if (rsp1st.error) {
+                            const reject = rsp1st.error;
+                            if (reject.statusCode===555 && reject.data.maintenanceInfo) {
+                                let dumyMaintenanceData:TMaintenanceData = {
+                                    alertTitle: 'System Maintenance Notice',
+                                    data: reject.data.maintenanceInfo,
+                                    open: false,
+                                    type: ''
+                                };
+                                setMaintenanceData(dumyMaintenanceData)
+                                navigate('/');
+                            }
+                        }
+                        if (rsp2nd.error) {
+                            const reject = rsp2nd.error;
+                            if (reject.statusCode===555 && reject.data.maintenanceInfo) {
+                                let dumyMaintenanceData:TMaintenanceData = {
+                                    alertTitle: 'System Maintenance Notice',
+                                    data: reject.data.maintenanceInfo,
+                                    open: false,
+                                    type: ''
+                                };
+                                setMaintenanceData(dumyMaintenanceData)
+                                navigate('/');
+                            }
+                        }
                         const searchData = {
                             level_name: dumyData.defautInfo.level.name,
                             unit_index: target.unit_index,
                             student_code: feedbackDataInStudent.defautInfo.student_code
                         }
-                        const reportData = await getReportOneDataByStu(searchData)
+                        const reportData = await getReportOneDataByStu(searchData).then((res) => {
+                            if (res.data===null) {
+                                if (res.error) {
+                                    const reject = res.error
+                                    if (reject.data.maintenanceInfo) {
+                                        let dumyMaintenanceData:TMaintenanceData = {
+                                            alertTitle: 'System Maintenance Notice',
+                                            data: reject.data.maintenanceInfo,
+                                            open: false,
+                                            type: ''
+                                        };
+                                        setMaintenanceData(dumyMaintenanceData)
+                                        navigate('/');
+                                    }
+                                }
+                            } else {
+                                return res.data
+                            }
+                        })
                         if (rsp1st.draft_index > 0 && rsp2nd.draft_index > 0 && reportData) {
                             dumyData.draft_2nd_data=rsp2nd;
                             dumyData.draft_data=rsp1st;

@@ -15,6 +15,7 @@ export async function getLevelAndTextbookWritingDataAPI(sortRules:{
 }):Promise<{
     loadData:TLoadDataItem[],
     loadDataHeadKor:TLoadDataHeadTrans[],
+    error?:TErrorData
 }> {
     const reqUrl = CONFIG.LEVEL_AND_TEXTBOOK.WRITING.GET.DATA;
     return await axios.get(reqUrl, {
@@ -35,9 +36,11 @@ export async function getLevelAndTextbookWritingDataAPI(sortRules:{
         };
     }).catch((reject) => {
         console.log(reject)
+        const error:TErrorData = reject.response.data;
         return {
             loadData:[],
-            loadDataHeadKor:[]
+            loadDataHeadKor:[],
+            error
         };
     })
 }

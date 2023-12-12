@@ -2419,3 +2419,59 @@ body {
 .report-modal-selected-area {
   box-shadow: 3px 3px 10px 0 rgba(0, 0, 0, 0.08);
 }
+.maintenance-modal-title {
+  font-family: 'Roboto';
+  font-size: 25px;
+  font-weight: bold;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1;
+  letter-spacing: normal;
+  text-align: center;
+  color: #fff;
+  @apply
+  h-full
+  align-middle
+}
+.maintenance-modal-message {
+  font-family: 'Roboto';
+  font-size: 18px;
+  font-weight: 500;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.5;
+  letter-spacing: normal;
+  text-align: center;
+  color: #222;
+}
+.maintenance-modal-time-title {
+  font-family: 'Roboto';
+  font-size: 18px;
+  font-weight: 500;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.5;
+  letter-spacing: normal;
+  text-align: center;
+  color: #192878;
+  @apply
+  flex
+  items-center
+  h-[30px]
+  border-[1px]
+  border-[#192878]
+  bg-white
+  rounded-[60px]
+  px-[16px]
+}
+.maintenance-modal-time-message {
+  font-family: 'Roboto';
+  font-size: 18px;
+  font-weight: bold;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.56;
+  letter-spacing: normal;
+  text-align: center;
+  color: #444;
+}

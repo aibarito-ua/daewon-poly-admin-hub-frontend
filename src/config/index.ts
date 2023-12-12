@@ -36,6 +36,7 @@ const IS_DEV:string = process.env.REACT_APP_IS_DEV ? process.env.REACT_APP_IS_DE
 const IS_DEV_CHECK:string = process.env.REACT_APP_IS_DEV_CHECK ? process.env.REACT_APP_IS_DEV_CHECK:'';
 const IS_HEAD_COMP:string = process.env.REACT_APP_IS_HEAD_COMP ? process.env.REACT_APP_IS_HEAD_COMP:'';
 export const CONFIG = {
+    BASEURL: HOST_URL,
     IS_DEV:IS_DEV,
     IS_DEV_CHECK:IS_DEV_CHECK,
     HEADCHECKVALUE:IS_HEAD_COMP,

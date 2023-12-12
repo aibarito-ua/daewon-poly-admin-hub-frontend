@@ -62,3 +62,14 @@ type TOutlineValues = {
 type TCheckWritingValue = {
     [key:string]: any;
 }
+
+type TErrorData = {
+    statusCode:number,
+    message:string,
+    errors: string[],
+    data: {
+        "timestamp"?: string;
+        "endpoint"?: string;
+        maintenanceInfo?: TMaintenanceInfo;
+    }
+}

@@ -29,10 +29,11 @@ import LRMRolePlayPortfolio from '../pages/LearningResultManagement/LearningResu
 import LearningResultManagementWritingHubMain from '../pages/LearningResultManagement/LearningResultManagementWHSubPages/LearningResultManagementWritingHubMain';
 import LRMSparkWritingReportAndPortfolio from '../pages/LearningResultManagement/LearningResultManagementWHSubPages/sparkWriting/SparkWriting';
 import StandbyScreen from '../components/toggleModalComponents/StandbyScreen';
-import {Cookies} from 'react-cookie'
+import {Cookies, } from 'react-cookie'
 import { NotAuth } from '../pages/NotAuth';
 import { CONFIG } from '../config';
 import SimpleSnackbar from '../components/toastMessageComponents/SimpleSnackbar';
+import MaintenanceAlertModalComponent from '../components/toggleModalComponents/MaintenanceAlertModalComponent';
 
 interface IPrivateRouteProps {
     children?: React.ReactElement;
@@ -43,8 +44,9 @@ interface IPrivateRouteProps {
     pageAuth?: TRole
 }
 export default function Router() {
+    const cookies = new Cookies();
     // const routeRef = React.useRef<HTMLDivElement|null>(null);
-    const { role, isOpen, setUserInfo } = useLoginStore();
+    const { role, isOpen, setUserInfo, maintenanceData, setMaintenanceData } = useLoginStore();
     const [open, setOpen] = React.useState(false);
     const [isAuth, setIsAuth ] = React.useState<boolean>(false);
     const [userData, setUserData] = React.useState<{
@@ -64,36 +66,77 @@ export default function Router() {
                 mcYn: string;
                 memberCode: string;
                 pageAuth: string;
+                maintenanceInfo: TMaintenanceInfo
             } = {
                 accessToken: '',
                 clientCode: ['0508003','1301003'],
                 // ,'1301003'
-                mcYn: 'N',
+                mcYn: 'Y',
                 memberCode: '23100091',
-                pageAuth: "N"
+                pageAuth: "Y",
+                maintenanceInfo: {
+                    start_date: '',
+                    // end_date: '2123-12-11T16:00:00.510Z',
+                    end_date: '',
+                    maintenance_description_en:[ 'To improve our services, a system inspection',
+                    'will be conducted at the times indicated below,', 
+                    'during which our services will be',
+                    'temporarily unavailable.',
+                    'Thank you for your understanding.'],
+                    maintenance_description_kr:[ ],
+                    time_description_en:'Monthly on the 14   and 28   00:30-01:00 AM',
+                    time_description_kr:'매월 14일, 28일 새벽 00:30~01:00'
+                }
+            }
+            const dumpMaintenanceData:TMaintenanceData = {
+                alertTitle: 'System Maintenance Notice',
+                data: devTestData.maintenanceInfo,
+                open: false,
+                type: ''
             }
             console.log('dev ==',devTestData)
-            const cookies = new Cookies();
+            // const cookies = new Cookies();
             cookies.set('data', devTestData)
             setUserInfo(devTestData)
             setUserData(devTestData)
+            setMaintenanceData(dumpMaintenanceData)
         } else {
-            const cookies = new Cookies();
+            // const cookies = new Cookies();
             const getCheckDatas = cookies.get('data')
             if (getCheckDatas) {
+                const dumyMaintenanceInfo= {
+                    start_date: '',
+                    end_date: '',
+                    maintenance_description_en:[ 'To improve our services, a system inspection',
+                    'will be conducted at the times indicated below,', 
+                    'during which our services will be',
+                    'temporarily unavailable.',
+                    'Thank you for your understanding.'],
+                    maintenance_description_kr:[ ],
+                    time_description_en:'Monthly on the 14   and 28   00:30-01:00 AM',
+                    time_description_kr:'매월 14일, 28일 새벽 00:30~01:00'
+                }
                 const checkTargetData:{
-                    clientCode:string[], mcYn:string, memberCode:string, accessToken:string, pageAuth:string,
+                    clientCode:string[], mcYn:string, memberCode:string, accessToken:string, pageAuth:string,maintenanceInfo: TMaintenanceInfo
                 } = {
                     accessToken: getCheckDatas.accessToken ? getCheckDatas.accessToken:'',
                     clientCode: getCheckDatas.clientCode ? getCheckDatas.clientCode:[],
                     mcYn: getCheckDatas.mcYn ? getCheckDatas.mcYn:'',
                     memberCode: getCheckDatas.memberCode ? getCheckDatas.memberCode:'',
                     pageAuth: getCheckDatas.mcYn ? getCheckDatas.mcYn:'',
+                    maintenanceInfo: getCheckDatas.TMaintenanceInfo ? getCheckDatas.TMaintenanceInfo:dumyMaintenanceInfo
                 };
                 
                 const isMemberCode = checkTargetData.memberCode.length === 8 && checkTargetData.memberCode!=='';
                 const isEmp = checkTargetData.mcYn !== '';
                 const isClient = checkTargetData.clientCode.length ;
+                const dumpMaintenanceData:TMaintenanceData = {
+                    alertTitle: 'System Maintenance Notice',
+                    data: checkTargetData.maintenanceInfo,
+                    open: false,
+                    type: ''
+                }
+                setMaintenanceData(dumpMaintenanceData)
                 if (isMemberCode && isEmp && isClient) {
                     setIsAuth(true)
                     console.log('test id =',checkTargetData)
@@ -107,10 +150,63 @@ export default function Router() {
             }
         }
     }, [])
-    // React.useEffect(()=>{
-    //     const onUnload = routeRef.current;
+    
+    React.useEffect(()=>{
+        const getCheckDatas = cookies.get('data')
+        if (getCheckDatas) {
+            const stDate = maintenanceData.data.start_date;
+            const edDate = maintenanceData.data.end_date;
+            if (stDate !== '' && edDate !== '' ) {
+                // real time check maintenance start/end
+                let timerId = setInterval(()=>{
+                    const currentTime = new Date();
+                    // start
+                    const startDate = new Date(stDate);
+                    const start_date = startDate.getTime();
+                    const start_current_gap_timeNumber = start_date - currentTime.getTime()
+                    const startCurrentGapTime_min = Math.floor(start_current_gap_timeNumber/ ( 60*1000));
+                    const gap_st = Math.floor(start_current_gap_timeNumber)
+                    // console.log('gap_st= ',gap_st)
+                    
+                    if (start_current_gap_timeNumber <= 0) {
+                        // 시작
+                        let dumpMaintenanceData:TMaintenanceData = JSON.parse(JSON.stringify(maintenanceData));
+                        // end time calculate
+                        const endDate = new Date(edDate)
+                        const end_date = endDate.getTime();
+                        const end_current_gap_timeNumber = end_date - currentTime.getTime();
+                        const gap_end = Math.floor(end_current_gap_timeNumber);
+                        // console.log('gap ed =',gap_end)
+                        if (gap_end >= 0) {
+                            // maintenance 진행중
+                            if (isAuth) {
+                                setIsAuth(false)
+                            }
+                            dumpMaintenanceData.open = true;
+                            setMaintenanceData(dumpMaintenanceData)
+                        } else {
+                            // 종료
+                            dumpMaintenanceData.open = false;
+                            dumpMaintenanceData.alertTitle = '';
+                            dumpMaintenanceData.data.end_date = '';
+                            dumpMaintenanceData.data.start_date = '';
+                            setMaintenanceData(dumpMaintenanceData)
+                        }
+                    } else {
+                        if (startCurrentGapTime_min === 30) {
+                            // 30 분 전
+                        } else if (startCurrentGapTime_min === 10) {
+                            // 10분 전
+                        }
+                    }
+                },1000);
+        
+                return () => clearTimeout(timerId);
+            }
+            
+        }
+    })
 
-    // },[routeRef])
     const publicRoutes = () => {
         const routeValue = routeValues.publicRoutes;
         // 각 권한별 기본 페이지
@@ -195,6 +291,7 @@ export default function Router() {
 
                 </Routes>
             }
+            <MaintenanceAlertModalComponent />
             <CommonAlertModalComponent />
             <StandbyScreen />
             <SimpleSnackbar toastOpen={open} setToastOpen={setOpen}/>

@@ -9,8 +9,11 @@ import { cf } from '../../util/common/commonFunctions';
 import LevelAndTextbookSpeakingTableComponent from '../../components/commonComponents/BasicTable/LevelandTextbookSpeakingTable';
 import { useComponentWillMount } from '../../hooks/useEffectOnce';
 import { getLevelAndTextbookSpeakingDataAPI } from '../../api/LevelAndTextBook/LevelAndTextBookSpeaking.api';
+import { useNavigate } from 'react-router-dom';
+import useLoginStore from '../../store/useLoginStore';
 
 const LevelAndTextBookSpeakingHub = () => {
+    const navigate = useNavigate();
     // page usehook zustand
     const {
         selectNavigationTitles,
@@ -22,6 +25,7 @@ const LevelAndTextBookSpeakingHub = () => {
         setLoadData,
         setLoadDataHead
     } = useLevelAndTextbookSpeakingStore();
+    const {setMaintenanceData} = useLoginStore()
     
     
     // Table Data 
@@ -44,7 +48,22 @@ const LevelAndTextBookSpeakingHub = () => {
     // initialize setting before render screen
     const beforeRendereredFn = async () => {
         const checkDate = cf.basicTable.todayYearString();
-        const loadDataFromAPI = await getLevelAndTextbookSpeakingDataAPI(sortRules);
+        const loadDataFromAPI = await getLevelAndTextbookSpeakingDataAPI(sortRules).then((res) => {
+            if (res.error) {
+                const reject = res.error
+                if (reject.data.maintenanceInfo) {
+                    let dumyMaintenanceData:TMaintenanceData = {
+                        alertTitle: 'System Maintenance Notice',
+                        data: reject.data.maintenanceInfo,
+                        open: false,
+                        type: ''
+                    };
+                    setMaintenanceData(dumyMaintenanceData)
+                    navigate('/');
+                }
+            }
+            return res
+        });
         const yearFilterValues:string[] = cf.basicTable.setFilterProperty(loadDataFromAPI.loadData, 'year');
         const semesterFilterValues:string[] = cf.basicTable.setFilterProperty(loadDataFromAPI.loadData, 'semester');
 

@@ -5,7 +5,8 @@ import { cf } from '../../util/common/commonFunctions';
 
 export async function getActivityManagementSparkWritingDataAPI(sortRules: TActivityWritingSortRules):Promise<{
     body: TActivitySparkWritingBooks[],
-    head: TLoadDataHeadTrans[]
+    head: TLoadDataHeadTrans[],
+    error?:any;
 }> {
     const reqUrl = CONFIG.ACTIVITY_MANAGEMENT.WRITING.SPARK_WRITING.GET.DATA;
     return await axios.get(reqUrl, {
@@ -25,11 +26,13 @@ export async function getActivityManagementSparkWritingDataAPI(sortRules: TActiv
             body: loadData,
             head: sortLoadDataHead
         }
-    }).catch( (reject)=>{
-        console.log('reject =',reject)
+    }).catch( (rej)=>{
+        console.log('reject =',rej)
+        const reject:TErrorData = rej.response.data;
         return {
             body: [],
-            head: []
+            head: [],
+            error: reject
         }
     })
 }
@@ -50,7 +53,12 @@ export async function setActivityManagementSparkWritingOutlineAPI(unit_id:number
         },
     }).then((response) => {
         console.log('response update =',response.data)
-    }).catch((reject) => {
-        console.log('reject update =',reject)
+        return {flag:true};
+    }).catch((rej) => {
+        console.log('reject update =',rej)
+        const reject:TErrorData = rej.response.data;
+        return {
+            flag:false, error:reject
+        }
     })
 }

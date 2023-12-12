@@ -62,6 +62,7 @@ const LearningManagementSparkWritingFeedbackPage = () => {
         commonAlertOpen, commonAlertClose,
         setReturnedFeedbackModalFlag
     } = useControlAlertStore();
+    const {setMaintenanceData} = useLoginStore();
 
     const cookies = new Cookies();
     const cookieData = cookies.get('data');
@@ -348,7 +349,22 @@ const LearningManagementSparkWritingFeedbackPage = () => {
         };
         console.log('return =',responseData)
         const rsp = await draftFeedbackSend(responseData);
-        return rsp;
+        if (!rsp.flag) {
+            if (rsp.error) {
+                const reject = rsp.error
+                if (reject.data.maintenanceInfo) {
+                    let dumyMaintenanceData:TMaintenanceData = {
+                        alertTitle: 'System Maintenance Notice',
+                        data: reject.data.maintenanceInfo,
+                        open: false,
+                        type: ''
+                    };
+                    setMaintenanceData(dumyMaintenanceData)
+                    navigate('/');
+                }
+            }
+        }
+        return rsp.flag;
     }
 
     const makeFinalDraftData = async (flag?:string) => {

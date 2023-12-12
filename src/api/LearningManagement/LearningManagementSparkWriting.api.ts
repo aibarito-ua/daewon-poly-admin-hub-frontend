@@ -16,10 +16,12 @@ export async function getLMSparkWritingFilterDataAPI():Promise<TFilterSparkWriti
         return data
     }).catch((reject)=>{
         console.log(reject)
+        const error:TErrorData = reject.response.data;
         return {
             "year": 0,
             "semester": 0,
-            "campus": []
+            "campus": [],
+            error
         }
     })
 }
@@ -38,10 +40,12 @@ export async function getLMSparkWritingCampusDataAPI():Promise<TFilterSparkWriti
         return data
     }).catch((reject)=>{
         console.log(reject)
+        const error:TErrorData = reject.response.data;
         return {
             "year": 0,
             "semester": 0,
-            "campus": []
+            "campus": [],
+            error
         }
     })
 }
@@ -61,10 +65,12 @@ export async function getLMSparkWritingLevelsOfCampusDataAPI(campusCode: string)
         return data
     }).catch((reject)=>{
         console.log(reject)
+        const error:TErrorData = reject.response.data;
         return {
             code: '',
             name: '',
-            level: []
+            level: [],
+            error
         }
     })
 }
@@ -83,10 +89,12 @@ export async function getLMSpeakingFilterDataAPI():Promise<TFilterSparkWriting> 
         return data
     }).catch((reject)=>{
         console.log(reject)
+        const error:TErrorData = reject.response.data;
         return {
             "year": 0,
             "semester": 0,
-            "campus": []
+            "campus": [],
+            error
         }
     })
 }
@@ -105,8 +113,9 @@ export async function getLMSparkWritingStudents(datas:TFindStudentsReq):Promise<
         return responseData;
     }).catch((reject) => {
         console.log('reject from be =',reject)
-        const rejectData:TLMSparkWritingGetStudentReject = reject;
-        return {book_name:'',students:[]};
+        // const rejectData:TLMSparkWritingGetStudentReject = reject;
+        const error:TErrorData = reject.response.data;
+        return {book_name:'',students:[], error};
     })
 }
 
@@ -125,13 +134,15 @@ export async function getDraftInfoByDraftId(draft_id:string):Promise<TFindDraftI
         return data;
     }).catch((reject) => {
         console.log('reject find draft by draft_id =',reject)
+        const error:TErrorData = reject.response.data;
         return {
             comment: [],
             draft_index:-1,
             draft_outline:[],
             overall_comment:'',
             return_reason:'',
-            return_teacher_comment:''
+            return_teacher_comment:'',
+            error
         }
     })
 }
@@ -150,14 +161,16 @@ export async function getSparkWritingAdvisor(draft_id:string, student_name_en:st
         console.log('response advisor =',data);
         return data;
     }).catch((reject) => {
+        const error:TErrorData = reject.response.data;
         return {
             draft_index:-1,
-            draft_outline: []
+            draft_outline: [],
+            error
         }
     })
 }
 // temporary feedback save
-export async function draftFeedbackTemporarySave(data:TAdminDraft1stCommentData):Promise<any> {
+export async function draftFeedbackTemporarySave(data:TAdminDraft1stCommentData):Promise<{flag:boolean, error?:TErrorData}> {
     const reqUrl = CONFIG.LEARNING_MANAGEMENT.WRITING.SPARK_WRITING.POST.FEEDBACK_TEMPORARY_SAVE;
     return await axios.post(reqUrl, data, {
         headers: {
@@ -168,15 +181,16 @@ export async function draftFeedbackTemporarySave(data:TAdminDraft1stCommentData)
     }).then((response) => {
         console.log('response =',response.data)
         const flag:boolean = response.data.data;
-        return flag;
+        return {flag};
     }).catch((reject) => {
         console.log('reject =',reject)
-        return false;
+        const error:TErrorData = reject.response.data;
+        return {flag:false, error};
     })
 }
 
 // feedback submit send
-export async function draftFeedbackSend(data: TAdminDraft1stCommentData):Promise<any>{
+export async function draftFeedbackSend(data: TAdminDraft1stCommentData):Promise<{flag:boolean, error?:TErrorData}>{
     const reqUrl = CONFIG.LEARNING_MANAGEMENT.WRITING.SPARK_WRITING.POST.FEEDBACK_SUBMIT;
     return await axios.post(reqUrl, data, {
         headers: {
@@ -187,10 +201,11 @@ export async function draftFeedbackSend(data: TAdminDraft1stCommentData):Promise
     }).then((response) => {
         console.log('response =',response.data)
         const flag:boolean = response.data.data;
-        return flag;
+        return {flag};
     }).catch((reject) => {
         console.log('reject =',reject)
-        return false;
+        const error:TErrorData = reject.response.data;
+        return {flag:false, error};
     })
 }
 
@@ -198,7 +213,10 @@ export async function getReportOneDataByStu(data: {
     level_name: string;
     unit_index: number;
     student_code: string;
-}): Promise<TStudentUnitReportRes|null> {
+}): Promise<{
+    data:TStudentUnitReportRes|null,
+    error?:TErrorData
+}> {
     const reqUrl = CONFIG.LEARNING_MANAGEMENT.WRITING.SPARK_WRITING.GET.REPORT_BY_STUDENT
         .replace(/{level_name}/gmi, data.level_name).replace(/{unit_index}/gmi, data.unit_index.toString()).replace(/{student_code}/gmi, data.student_code);
     return await axios.get(reqUrl, {
@@ -209,17 +227,21 @@ export async function getReportOneDataByStu(data: {
         },
     }).then((response) => {
         const data:TStudentUnitReportRes = response.data.data;
-        return data;
+        return {data};
     }).catch((reject) => {
         console.log('reject =',reject);
-        return null;
+        const error:TErrorData = reject.response.data;
+        return {data:null,error};
     })
 }
 
 export async function getReportOverallDatabyStu(data: {
     level_name: string;
     student_code: string;
-}):Promise<TOverallReportAPI|null> {
+}):Promise<{
+    data:TOverallReportAPI|null,
+    error?:TErrorData
+}> {
     const reqUrl = CONFIG.LEARNING_MANAGEMENT.WRITING.SPARK_WRITING.GET.REPORT_OVERALL_BY_STUDENT
         .replace(/{level_name}/gmi, data.level_name).replace(/{student_code}/gmi, data.student_code);
     return await axios.get(reqUrl, {
@@ -230,17 +252,21 @@ export async function getReportOverallDatabyStu(data: {
         },
     }).then((response) => {
         const data:TOverallReportAPI = response.data.data;
-        return data;
+        return {data};
     }).catch((reject) => {
         console.log('reject =',reject);
-        return null;
+        const error:TErrorData = reject.response.data;
+        return {data:null,error};
     })
 }
 export async function getAllReportByCampusLevelClass(data: {
     campus_code: string;
     level_code:string;
     class_code:string;
-}):Promise<TGetAllWritingReport|null> {
+}):Promise<{
+    data: TGetAllWritingReport|null,
+    error?:TErrorData;
+}> {
     const reqUrl = CONFIG.LEARNING_RESULT_MANAGEMENT.WRITING.SPARK_WRITING.GET.ALL_REPORTS.replace(/{campus_code}/gmi,data.campus_code).replace(/{level_code}/gmi, data.level_code).replace(/{class_code}/gmi,data.class_code);
     return await axios.get(reqUrl, {
         headers: {
@@ -250,9 +276,10 @@ export async function getAllReportByCampusLevelClass(data: {
         },
     }).then((response) => {
         const data:TGetAllWritingReport = response.data.data;
-        return data;
+        return {data};
     }).catch((reject) => {
         console.log('reject ===',reject);
-        return null;
+        const error:TErrorData = reject.response.data;
+        return {data:null, error };
     })
 }

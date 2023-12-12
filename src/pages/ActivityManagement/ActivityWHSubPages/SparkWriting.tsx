@@ -11,6 +11,8 @@ import PromptBlockComponent from '../../../components/toggleModalComponents/Prom
 import useControlAlertStore from '../../../store/useControlAlertStore';
 import { useComponentWillMount, useEffectOnce } from '../../../hooks/useEffectOnce';
 import { getActivityManagementSparkWritingDataAPI, setActivityManagementSparkWritingOutlineAPI } from '../../../api/ActivityManagement/ActivityManagementWriting.api';
+import { useNavigate } from 'react-router-dom';
+import useLoginStore from '../../../store/useLoginStore';
 
 export type TTableDataModel = {
     key: string,
@@ -43,6 +45,8 @@ const SparkWriting = () => {
         savedSaveLoadData,
         loadData
     } = useActivityWritingHubStore();
+    const navigate = useNavigate();
+    const {setMaintenanceData, maintenanceData} = useLoginStore();
 
     // page states
     // Table Data 
@@ -92,6 +96,19 @@ const SparkWriting = () => {
     const beforRenderedFn = async () => {
         const checkDate = cf.basicTable.todayYearString();
         const loadDataFromAPI = await getActivityManagementSparkWritingDataAPI(sortRules);
+        if (loadDataFromAPI.error) {
+            const reject = loadDataFromAPI.error
+            if (reject.data.maintenanceInfo) {
+                let dumyMaintenanceData:TMaintenanceData = {
+                    alertTitle: 'System Maintenance Notice',
+                    data: reject.data.maintenanceInfo,
+                    open: false,
+                    type: ''
+                };
+                setMaintenanceData(dumyMaintenanceData)
+                navigate('/');
+            }
+        }
         console.log('response data =',loadDataFromAPI)
         const yearFilterValues:string[] = cf.basicTable.setFilterProperty(loadDataFromAPI.body, 'year')
         const semesterFilterValues:string[] = cf.basicTable.setFilterProperty(loadDataFromAPI.body, 'semester')
@@ -171,7 +188,20 @@ const SparkWriting = () => {
                                         outline_format = targetDataDumy[i].outline_format.outline_format;
                                     }
                                 }
-                                await setActivityManagementSparkWritingOutlineAPI(unitId, outline_format );
+                                const responseData = await setActivityManagementSparkWritingOutlineAPI(unitId, outline_format );
+                                if (!responseData.flag) {
+                                    const reject = responseData.error
+                                    if (reject.data.maintenanceInfo) {
+                                        let dumyMaintenanceData:TMaintenanceData = {
+                                            alertTitle: 'System Maintenance Notice',
+                                            data: reject.data.maintenanceInfo,
+                                            open: false,
+                                            type: ''
+                                        };
+                                        setMaintenanceData(dumyMaintenanceData)
+                                        navigate('/');
+                                    }
+                                }
                                 savedSaveLoadData();
                                 setEnableSaveButtonFlag(false);
                                 setNavigateBlockFlag(false);
@@ -458,8 +488,20 @@ const SparkWriting = () => {
                                 outline_format = targetDataDumy[i].outline_format.outline_format;
                             }
                         }
-                        await setActivityManagementSparkWritingOutlineAPI(unitId, outline_format );
-                        
+                        const responseData = await setActivityManagementSparkWritingOutlineAPI(unitId, outline_format );
+                        if (!responseData.flag) {
+                            const reject = responseData.error
+                            if (reject.data.maintenanceInfo) {
+                                let dumyMaintenanceData:TMaintenanceData = {
+                                    alertTitle: 'System Maintenance Notice',
+                                    data: reject.data.maintenanceInfo,
+                                    open: false,
+                                    type: ''
+                                };
+                                setMaintenanceData(dumyMaintenanceData)
+                                navigate('/');
+                            }
+                        }
                         savedSaveLoadData();
                         setEnableSaveButtonFlag(false);
                         setNavigateBlockFlag(false);

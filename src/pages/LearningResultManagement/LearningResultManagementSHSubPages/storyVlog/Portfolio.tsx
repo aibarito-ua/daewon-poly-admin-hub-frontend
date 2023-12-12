@@ -11,8 +11,11 @@ import useLearningResultManagementSHStore from "../../../../store/useLearningRes
 import { QuestionReportIcon, VideoIcon } from "../LearningResultManagementIcons";
 import useControlAlertStore from "../../../../store/useControlAlertStore";
 import VideoPlayer from "../../../../components/commonComponents/customComponents/VideoPlayer/VideoPlayer";
+import { useNavigate } from "react-router-dom";
+import useLoginStore from "../../../../store/useLoginStore";
 
 const Portfolio = () => {
+    const navigate = useNavigate();
     // page usehook zustand
     const {
         selectNavigationTitles, setSelectNavigationTitles
@@ -30,6 +33,7 @@ const Portfolio = () => {
     const {
         commonStandbyScreen, setCommonStandbyScreen
     } = useControlAlertStore();
+    const {setMaintenanceData} = useLoginStore()
     
     // page states
     const [emptyPageMessage, setEmptyPageMessage] = React.useState<string>('검색 값을 선택 후 조회하세요.');
@@ -129,7 +133,22 @@ const Portfolio = () => {
                     classCode:chosenClass.code
                 }
                 // TODO change the response here
-                const rsp = await getLMRSpeakingHubStudents(reqData);
+                const rsp = await getLMRSpeakingHubStudents(reqData).then((res) => {
+                    if (res.error) {
+                        const reject = res.error
+                        if (reject.data.maintenanceInfo) {
+                            let dumyMaintenanceData:TMaintenanceData = {
+                                alertTitle: 'System Maintenance Notice',
+                                data: reject.data.maintenanceInfo,
+                                open: false,
+                                type: ''
+                            };
+                            setMaintenanceData(dumyMaintenanceData)
+                            navigate('/');
+                        }
+                    }
+                    return res
+                });
                 setCommonStandbyScreen({openFlag: false})
                 console.log('stu rsp ==',rsp)
 

@@ -93,14 +93,16 @@ type TLMSparkWritingNavAsideSubTitleList = {
 }
 
 type TFilterSparkWriting={
-    "year": number,
-    "semester": number,
-    "campus": TFilterCampusSparkWriting[]
+    "year": number;
+    "semester": number;
+    "campus": TFilterCampusSparkWriting[];
+    error?:TErrorData;
 }
 type TFilterCampusSparkWriting={
     "name": string;
     "code": string;
     "level": TFilterLevelSparkWriting[];
+    error?:TErrorData;
 }
 type TFilterLevelSparkWriting={
     "name": string;
@@ -123,6 +125,7 @@ type TFindStudentsReq = {
 type TLMSparkWritingStudentsListInClass = {
     book_name: string;
     students: TLMSparkWritingStudentItemInClass[];
+    error?:TErrorData;
 }
 type TLMSparkWritingStudentItemInClass = {
     student_code:string;
@@ -225,7 +228,8 @@ type TFindDraftInfoByDraftIdResponse = {
     overall_comment: string;
     return_reason:string;
     return_teacher_comment:string;
-    rubric_report?:TRubricReportAll
+    rubric_report?:TRubricReportAll;
+    error?:TErrorData;
 }
 type TFindDraftInfoByDraftIdDraftOutline = {
     grammar_correction_content_teacher: string;
@@ -264,6 +268,7 @@ type TComment = {
 type TWritingAdvisor = {
     draft_index: number;
     draft_outline: TWritingAdvisorDraftOutline[];
+    error?:TErrorData;
 }
 type TWritingAdvisorDraftOutline = {
     name:string;

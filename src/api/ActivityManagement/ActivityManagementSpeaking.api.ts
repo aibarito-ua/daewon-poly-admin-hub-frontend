@@ -3,7 +3,9 @@ import axios from 'axios';
 import { CONFIG } from '../../config';
 import { cf } from '../../util/common/commonFunctions';
 const reqUrl = CONFIG.ACTIVITY_MANAGEMENT.SPEAKING.GET.DATA;
-export async function getActivityManagementSpeakingDataAPI(target: 'idea_exchange'|'story_vlog'|'role_play', sortRules: string[]):Promise<any> {
+export async function getActivityManagementSpeakingDataAPI(target: 'idea_exchange'|'story_vlog'|'role_play', sortRules: string[]):Promise<{
+    body:any, head:any, error?:TErrorData
+}> {
     const uri=target==='idea_exchange'? reqUrl.IDEA_EXCHANGE : (
         target==='story_vlog' ? reqUrl.STORY_VLOG : reqUrl.ROLE_PLAY
     )
@@ -21,8 +23,12 @@ export async function getActivityManagementSpeakingDataAPI(target: 'idea_exchang
             body: loadData,
             head: loadDataHeadKor
         }
-    }).catch( (reject) => {
-        console.log(reject);
-
+    }).catch((rej)=>{
+        console.log('error rej =',rej)
+        const reject:TErrorData = rej.response.data;
+        return {
+            body:null, head:null, error:reject
+        };
     })
+
 }

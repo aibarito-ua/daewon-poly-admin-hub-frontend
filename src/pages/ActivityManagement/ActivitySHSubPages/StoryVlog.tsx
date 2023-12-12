@@ -7,6 +7,8 @@ import { cf } from '../../../util/common/commonFunctions';
 import useActivitySpeakHubStore from '../../../store/useActivitySpeakHubStore';
 import { getActivityManagementSpeakingDataAPI } from '../../../api/ActivityManagement/ActivityManagementSpeaking.api';
 import { useComponentWillMount } from '../../../hooks/useEffectOnce';
+import { useNavigate } from 'react-router-dom';
+import useLoginStore from '../../../store/useLoginStore';
 
 const StoryVlog = () => {
     // page usehook zustand
@@ -14,6 +16,9 @@ const StoryVlog = () => {
         selectNavigationTitles, setSelectNavigationTitles
     } = useNavStore();
     const {loadData, loadDataHeadKor, sortRules} = useActivitySpeakHubStore();
+    const navigate = useNavigate();
+    const {setMaintenanceData, maintenanceData} = useLoginStore();
+    
     // // re-sorting for table
     // const newLoadData = loadData.story_vlog.map((bArr: any)=>{ return cf.basicTable.sortByKeyBodyData(bArr, cf.basicTable.customSort, sortRules.body.story_vlog); })
     // const newDataHeadData = loadDataHeadKor.story_vlog.sort((a: TLoadDataHeadTrans,b: TLoadDataHeadTrans) =>cf.basicTable.sortByKeyHeadData(a,b, sortRules.head.story_vlog));
@@ -42,6 +47,19 @@ const StoryVlog = () => {
     const beforRenderedFn = async () => {
         const checkDate = cf.basicTable.todayYearString();
         const loadDataFromAPI = await getActivityManagementSpeakingDataAPI('story_vlog', sortRules.head.story_vlog);
+        if (loadDataFromAPI.error) {
+            const reject = loadDataFromAPI.error
+            if (reject.data.maintenanceInfo) {
+                let dumyMaintenanceData:TMaintenanceData = {
+                    alertTitle: 'System Maintenance Notice',
+                    data: reject.data.maintenanceInfo,
+                    open: false,
+                    type: ''
+                };
+                setMaintenanceData(dumyMaintenanceData)
+                navigate('/');
+            }
+        }
         const yearFilterValues:string[] = cf.basicTable.setFilterProperty(loadDataFromAPI.body, 'year')
         const semesterFilterValues:string[] = cf.basicTable.setFilterProperty(loadDataFromAPI.body, 'semester')
         const gradeFilterValues:string[] = cf.basicTable.setFilterProperty(loadDataFromAPI.body, 'grade')

@@ -37,6 +37,7 @@ const LMSparkWriting = () => {
     } = useControlAlertStore();
     const {
         // accessToken, mcYn, clientCode, memberCode
+        setMaintenanceData
     } = useLoginStore();
     const navigate = useNavigate();
     const locationInfo = useLocation();
@@ -125,6 +126,21 @@ const LMSparkWriting = () => {
     // initialize setting before render screen
     const beforRenderedFn = async () => {
         const loadFilterData = await getLMSparkWritingCampusDataAPI();
+        if (loadFilterData.error) {
+            const reject = loadFilterData.error
+            if (loadFilterData.error.statusCode===555) {
+                if (reject.data.maintenanceInfo) {
+                    let dumyMaintenanceData:TMaintenanceData = {
+                        alertTitle: 'System Maintenance Notice',
+                        data: reject.data.maintenanceInfo,
+                        open: false,
+                        type: ''
+                    };
+                    setMaintenanceData(dumyMaintenanceData)
+                    navigate('/');
+                }
+            }
+        }
         console.log('laod filter data =',loadFilterData)
         setFilterAllList(loadFilterData);
         const cookies = new Cookies();
@@ -266,6 +282,19 @@ const LMSparkWriting = () => {
                     // setCommonStandbyScreen({openFlag:false})
                     return response;
                 });
+                if (rsp.error) {
+                    const reject = rsp.error;
+                    if (reject.statusCode===555 && reject.data.maintenanceInfo) {
+                        let dumyMaintenanceData:TMaintenanceData = {
+                            alertTitle: 'System Maintenance Notice',
+                            data: reject.data.maintenanceInfo,
+                            open: false,
+                            type: ''
+                        };
+                        setMaintenanceData(dumyMaintenanceData)
+                        navigate('/');
+                    }
+                }
                 console.log('stu rsp ==',rsp)
                 if (rsp.students.length > 0) {
                     
@@ -422,7 +451,21 @@ const LMSparkWriting = () => {
                     if (targetCampus[campusIndex].name === value) {
                         setSelectCampusCode({name: value, code: targetCampus[campusIndex].code})
                         setCurrentSelectCodes({target:'campus', name:targetCampus[campusIndex].name, code: targetCampus[campusIndex].code})
-                        const levelsAtSelectCampus = (await getLMSparkWritingLevelsOfCampusDataAPI(targetCampus[campusIndex].code)).level
+                        const levelsAtSelectCampusAPI = await getLMSparkWritingLevelsOfCampusDataAPI(targetCampus[campusIndex].code)
+                        if (levelsAtSelectCampusAPI.error) {
+                            const reject = levelsAtSelectCampusAPI.error;
+                            if (reject.statusCode===555 && reject.data.maintenanceInfo) {
+                                let dumyMaintenanceData:TMaintenanceData = {
+                                    alertTitle: 'System Maintenance Notice',
+                                    data: reject.data.maintenanceInfo,
+                                    open: false,
+                                    type: ''
+                                };
+                                setMaintenanceData(dumyMaintenanceData)
+                                navigate('/');
+                            }
+                        }
+                        const levelsAtSelectCampus = levelsAtSelectCampusAPI.level
                         targetCampus[campusIndex].level = levelsAtSelectCampus
                         for (let i = 0; i < levelsAtSelectCampus.length; i++) {
                             const levelTarget = levelsAtSelectCampus[i].name;

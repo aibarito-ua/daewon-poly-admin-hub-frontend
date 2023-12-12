@@ -17,10 +17,12 @@ export async function getLMRSpeakingHubFilterDataAPI():Promise<TFilterSparkWriti
         return data
     }).catch((reject)=>{
         console.log(reject)
+        const error:TErrorData = reject.response.data;
         return {
             "year": 0,
             "semester": 0,
-            "campus": []
+            "campus": [],
+            error
         }
     })
 }
@@ -40,10 +42,12 @@ export async function getLMRSpeakingHubAllCampusDataAPI():Promise<TAllClassLRMSp
         return data
     }).catch((reject)=>{
         console.log(reject)
+        const error:TErrorData = reject.response.data;
         return {
             "year": 0,
             "semester": 0,
-            "campus": []
+            "campus": [],
+            error
         }
     })
 }
@@ -63,10 +67,12 @@ export async function getLMRSpeakingHubLevelsOfCampusDataAPI(campusCode: string)
         return data
     }).catch((reject)=>{
         console.log(reject)
+        const error:TErrorData = reject.response.data;
         return {
             code: '',
             name: '',
-            level: []
+            level: [],
+            error
         }
     })
 }
@@ -86,7 +92,8 @@ export async function getLMRSpeakingHubStudents(datas:TFindStudentsReq):Promise<
         return responseData;
     }).catch((reject) => {
         console.log('reject from be =',reject)
-        const rejectData:TLRMSpeakingHubGetStudentReject = reject;
-        return {idea_exchange: null, story_vlog: null, role_play: null};
+        // const rejectData:TLRMSpeakingHubGetStudentReject = reject;
+        const error:TErrorData = reject.response.data;
+        return {idea_exchange: null, story_vlog: null, role_play: null, error};
     })
 }

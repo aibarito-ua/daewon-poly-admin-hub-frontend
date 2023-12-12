@@ -44,6 +44,7 @@ export default function LearningResultManagementSpeakingHubMain (props: TLearnin
     // user data
     const {
         // accessToken, mcYn, clientCode, memberCode
+        setMaintenanceData
     } = useLoginStore();
 
     // side list select
@@ -97,8 +98,24 @@ export default function LearningResultManagementSpeakingHubMain (props: TLearnin
             }
             console.log('Default search values:', defaultCampus)
             const index = loadFilterData.campus.findIndex(item => item.name == defaultCampus[0])
-            if(index != -1)
-                loadFilterData.campus[index].level = (await getLMRSpeakingHubLevelsOfCampusDataAPI(loadFilterData.campus[index].code)).level
+            if(index != -1) {
+                const getCampusDataAPI = await getLMRSpeakingHubLevelsOfCampusDataAPI(loadFilterData.campus[index].code)
+                if (getCampusDataAPI.error) {
+                    const reject = getCampusDataAPI.error
+                    if (reject.data.maintenanceInfo) {
+                        let dumyMaintenanceData:TMaintenanceData = {
+                            alertTitle: 'System Maintenance Notice',
+                            data: reject.data.maintenanceInfo,
+                            open: false,
+                            type: ''
+                        };
+                        setMaintenanceData(dumyMaintenanceData)
+                        navigate('/');
+                    }
+                } else {
+                    loadFilterData.campus[index].level = getCampusDataAPI.level
+                }
+            }
             setFilterData(loadFilterData);
             dropdown.setSelectFilterCampusList(campus_list)
             setSelectFilterValues(defaultCampus)
@@ -212,7 +229,23 @@ export default function LearningResultManagementSpeakingHubMain (props: TLearnin
             for (let campusIndex= 0; campusIndex < filterData.campus.length; campusIndex++) {
                 if (filterData.campus[campusIndex].name === value) {
                     setChosenCampus({name: value, code: filterData.campus[campusIndex].code})
-                    const levelsAtSelectCampus = (await getLMRSpeakingHubLevelsOfCampusDataAPI(filterData.campus[campusIndex].code)).level
+                    const levelsAtSelectCampusAPI = await getLMRSpeakingHubLevelsOfCampusDataAPI(filterData.campus[campusIndex].code).then((res)=>{
+                        if (res.error) {
+                            const reject = res.error
+                            if (reject.data.maintenanceInfo) {
+                                let dumyMaintenanceData:TMaintenanceData = {
+                                    alertTitle: 'System Maintenance Notice',
+                                    data: reject.data.maintenanceInfo,
+                                    open: false,
+                                    type: ''
+                                };
+                                setMaintenanceData(dumyMaintenanceData)
+                                navigate('/');
+                            }
+                        }
+                        return res
+                    })
+                     const levelsAtSelectCampus = levelsAtSelectCampusAPI.level 
                     filterData.campus[campusIndex].level = levelsAtSelectCampus
                     console.log(filterData.campus[campusIndex])
                     for (let i = 0; i < levelsAtSelectCampus.length; i++) {

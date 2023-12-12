@@ -7,6 +7,8 @@ import { cf } from '../../../util/common/commonFunctions';
 import useActivitySpeakHubStore from '../../../store/useActivitySpeakHubStore';
 import { getActivityManagementSpeakingDataAPI } from '../../../api/ActivityManagement/ActivityManagementSpeaking.api';
 import { useComponentWillMount } from '../../../hooks/useEffectOnce';
+import useLoginStore from '../../../store/useLoginStore';
+import { useNavigate } from 'react-router-dom';
 
 const IdeaExchange = () => {
     // page usehook zustand
@@ -18,6 +20,10 @@ const IdeaExchange = () => {
         loadDataHeadKor,
         sortRules
     } = useActivitySpeakHubStore();
+    const navigate = useNavigate();
+    const {setMaintenanceData, maintenanceData} = useLoginStore();
+    // init check
+    
     // Table Data 
     const [data, setData] = React.useState<{body: TIdeaExchangeBooks[], head: TLoadDataHeadTrans[]}>({ body: [], head: [] });
     const [selectedData, setSelectedData] = React.useState<TIdeaExchangeBooks[]>([]);
@@ -42,9 +48,23 @@ const IdeaExchange = () => {
 
     // initialize setting before render screen
     const beforRenderedFn = async () => {
+        
         const checkDate = cf.basicTable.todayYearString();
         console.log('today is =',checkDate)
         const loadDataFromAPI = await getActivityManagementSpeakingDataAPI('idea_exchange', sortRules.head.idea_exchange);
+        if (loadDataFromAPI.error) {
+            const reject = loadDataFromAPI.error
+            if (reject.data.maintenanceInfo) {
+                let dumyMaintenanceData:TMaintenanceData = {
+                    alertTitle: 'System Maintenance Notice',
+                    data: reject.data.maintenanceInfo,
+                    open: false,
+                    type: ''
+                };
+                setMaintenanceData(dumyMaintenanceData)
+                navigate('/');
+            }
+        }
         const yearFilterValues:string[] = cf.basicTable.setFilterProperty(loadDataFromAPI.body, 'year')
         const semesterFilterValues:string[] = cf.basicTable.setFilterProperty(loadDataFromAPI.body, 'semester')
         const gradeFilterValues:string[] = cf.basicTable.setFilterProperty(loadDataFromAPI.body, 'grade')
@@ -64,10 +84,10 @@ const IdeaExchange = () => {
         })
     }
     
-    useComponentWillMount(()=>{
-        console.log('component will mount')
-        beforRenderedFn();
-    })
+    // useComponentWillMount(()=>{
+    //     console.log('component will mount')
+    //     beforRenderedFn();
+    // })
     React.useEffect(()=>{
         console.log('component did mount')
         if (data.body.length===0) {
@@ -164,7 +184,6 @@ const IdeaExchange = () => {
                                 setSelectFilterGradeList(dumyFilterGradeList);
                             } 
                             setSelectFilterValues(dumySelectFilterValues);
-                            
                         }}
                         value={selectFIlterValues[0]}
                         originData={data}

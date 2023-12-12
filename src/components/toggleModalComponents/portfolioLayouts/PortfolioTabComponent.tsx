@@ -12,6 +12,8 @@ import PrintPortfolioExportButton from '../../commonComponents/customComponents/
 import CalculatorPXtoMM from '../CalculatorPXtoMM';
 import { useComponentWillMount } from '../../../hooks/useEffectOnce';
 import useLearningResultManagementWHStore from '../../../store/useLearningResultManagementWHStore';
+import { useNavigate } from 'react-router-dom';
+import useLoginStore from '../../../store/useLoginStore';
 interface TabPanelProps {
   children?: React.ReactNode;
   index: number;
@@ -99,6 +101,9 @@ export default function PortfolioTabComponent() {
     } = useReportStore();
     const {getAllReportData} = useLearningResultManagementWHStore();
     const {feedbackDataInStudent, studentDataInClass, setFeedbackDataInStudent} = useLearningManagementSparkWritingStore();
+    const navigate = useNavigate();
+    const {setMaintenanceData} = useLoginStore()
+
     const handleChange = (event: React.SyntheticEvent, newValue: number) => {
         setValue(newValue);
     };
@@ -210,6 +215,32 @@ export default function PortfolioTabComponent() {
                 const draft_2nd_id = target.draft_2_status.draft_id.toString();
                 const rsp1st = await getDraftInfoByDraftId(draft_1st_id);
                 const rsp2nd = await getDraftInfoByDraftId(draft_2nd_id);
+                if (rsp1st.error) {
+                    const reject = rsp1st.error;
+                    if (reject.statusCode===555 && reject.data.maintenanceInfo) {
+                        let dumyMaintenanceData:TMaintenanceData = {
+                            alertTitle: 'System Maintenance Notice',
+                            data: reject.data.maintenanceInfo,
+                            open: false,
+                            type: ''
+                        };
+                        setMaintenanceData(dumyMaintenanceData)
+                        navigate('/');
+                    }
+                }
+                if (rsp2nd.error) {
+                    const reject = rsp2nd.error;
+                    if (reject.statusCode===555 && reject.data.maintenanceInfo) {
+                        let dumyMaintenanceData:TMaintenanceData = {
+                            alertTitle: 'System Maintenance Notice',
+                            data: reject.data.maintenanceInfo,
+                            open: false,
+                            type: ''
+                        };
+                        setMaintenanceData(dumyMaintenanceData)
+                        navigate('/');
+                    }
+                }
                 const searchData = {
                     campus_code: dumyData.defautInfo.campus.code,
                     level_name: dumyData.defautInfo.level.name,
@@ -218,7 +249,25 @@ export default function PortfolioTabComponent() {
                     student_code: feedbackDataInStudent.defautInfo.student_code
                 }
                 console.log('searche data =',searchData)
-                const reportData = await getReportOneDataByStu(searchData)
+                const reportData = await getReportOneDataByStu(searchData).then((res) => {
+                    if (res.data===null) {
+                        if (res.error) {
+                            const reject = res.error
+                            if (reject.data.maintenanceInfo) {
+                                let dumyMaintenanceData:TMaintenanceData = {
+                                    alertTitle: 'System Maintenance Notice',
+                                    data: reject.data.maintenanceInfo,
+                                    open: false,
+                                    type: ''
+                                };
+                                setMaintenanceData(dumyMaintenanceData)
+                                navigate('/');
+                            }
+                        }
+                    } else {
+                        return res.data
+                    }
+                })
                 if (rsp1st.draft_index > 0 && rsp2nd.draft_index > 0 && reportData) {
                     dumyData.draft_2nd_data=rsp2nd;
                     dumyData.draft_data=rsp1st;
@@ -357,6 +406,32 @@ export default function PortfolioTabComponent() {
                         const draft_2nd_id = target.draft_2_status.draft_id.toString();
                         const rsp1st = await getDraftInfoByDraftId(draft_1st_id);
                         const rsp2nd = await getDraftInfoByDraftId(draft_2nd_id);
+                        if (rsp1st.error) {
+                            const reject = rsp1st.error;
+                            if (reject.statusCode===555 && reject.data.maintenanceInfo) {
+                                let dumyMaintenanceData:TMaintenanceData = {
+                                    alertTitle: 'System Maintenance Notice',
+                                    data: reject.data.maintenanceInfo,
+                                    open: false,
+                                    type: ''
+                                };
+                                setMaintenanceData(dumyMaintenanceData)
+                                navigate('/');
+                            }
+                        }
+                        if (rsp2nd.error) {
+                            const reject = rsp2nd.error;
+                            if (reject.statusCode===555 && reject.data.maintenanceInfo) {
+                                let dumyMaintenanceData:TMaintenanceData = {
+                                    alertTitle: 'System Maintenance Notice',
+                                    data: reject.data.maintenanceInfo,
+                                    open: false,
+                                    type: ''
+                                };
+                                setMaintenanceData(dumyMaintenanceData)
+                                navigate('/');
+                            }
+                        }
                         const searchData = {
                             campus_code: dumyData.defautInfo.campus.code,
                             level_name: dumyData.defautInfo.level.name,
@@ -365,7 +440,25 @@ export default function PortfolioTabComponent() {
                             student_code: feedbackDataInStudent.defautInfo.student_code
                         }
                         console.log('search data =',searchData)
-                        const reportData = await getReportOneDataByStu(searchData)
+                        const reportData = await getReportOneDataByStu(searchData).then((res) => {
+                            if (res.data===null) {
+                                if (res.error) {
+                                    const reject = res.error
+                                    if (reject.data.maintenanceInfo) {
+                                        let dumyMaintenanceData:TMaintenanceData = {
+                                            alertTitle: 'System Maintenance Notice',
+                                            data: reject.data.maintenanceInfo,
+                                            open: false,
+                                            type: ''
+                                        };
+                                        setMaintenanceData(dumyMaintenanceData)
+                                        navigate('/');
+                                    }
+                                }
+                            } else {
+                                return res.data
+                            }
+                        })
                         console.log('rsp1st =',rsp1st)
                         console.log('rsp2nd =',rsp2nd)
                         if (rsp1st.draft_index > 0 && rsp2nd.draft_index > 0 && reportData) {
@@ -431,6 +524,32 @@ export default function PortfolioTabComponent() {
                         const draft_2nd_id = target.draft_2_status.draft_id.toString();
                         const rsp1st = await getDraftInfoByDraftId(draft_1st_id);
                         const rsp2nd = await getDraftInfoByDraftId(draft_2nd_id);
+                        if (rsp1st.error) {
+                            const reject = rsp1st.error;
+                            if (reject.statusCode===555 && reject.data.maintenanceInfo) {
+                                let dumyMaintenanceData:TMaintenanceData = {
+                                    alertTitle: 'System Maintenance Notice',
+                                    data: reject.data.maintenanceInfo,
+                                    open: false,
+                                    type: ''
+                                };
+                                setMaintenanceData(dumyMaintenanceData)
+                                navigate('/');
+                            }
+                        }
+                        if (rsp2nd.error) {
+                            const reject = rsp2nd.error;
+                            if (reject.statusCode===555 && reject.data.maintenanceInfo) {
+                                let dumyMaintenanceData:TMaintenanceData = {
+                                    alertTitle: 'System Maintenance Notice',
+                                    data: reject.data.maintenanceInfo,
+                                    open: false,
+                                    type: ''
+                                };
+                                setMaintenanceData(dumyMaintenanceData)
+                                navigate('/');
+                            }
+                        }
                         const searchData = {
                             campus_code: dumyData.defautInfo.campus.code,
                             level_name: dumyData.defautInfo.level.name,
@@ -438,7 +557,25 @@ export default function PortfolioTabComponent() {
                             unit_index: target.unit_index,
                             student_code: feedbackDataInStudent.defautInfo.student_code
                         }
-                        const reportData = await getReportOneDataByStu(searchData)
+                        const reportData = await getReportOneDataByStu(searchData).then((res) => {
+                            if (res.data===null) {
+                                if (res.error) {
+                                    const reject = res.error
+                                    if (reject.data.maintenanceInfo) {
+                                        let dumyMaintenanceData:TMaintenanceData = {
+                                            alertTitle: 'System Maintenance Notice',
+                                            data: reject.data.maintenanceInfo,
+                                            open: false,
+                                            type: ''
+                                        };
+                                        setMaintenanceData(dumyMaintenanceData)
+                                        navigate('/');
+                                    }
+                                }
+                            } else {
+                                return res.data
+                            }
+                        })
                         if (rsp1st.draft_index > 0 && rsp2nd.draft_index > 0 && reportData) {
                             dumyData.draft_2nd_data=rsp2nd;
                             dumyData.draft_data=rsp1st;

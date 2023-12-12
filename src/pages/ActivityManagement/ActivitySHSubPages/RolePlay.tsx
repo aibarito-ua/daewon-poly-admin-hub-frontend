@@ -7,6 +7,8 @@ import { cf } from '../../../util/common/commonFunctions';
 import useActivitySpeakHubStore from '../../../store/useActivitySpeakHubStore';
 import { useComponentWillMount } from '../../../hooks/useEffectOnce';
 import { getActivityManagementSpeakingDataAPI } from '../../../api/ActivityManagement/ActivityManagementSpeaking.api';
+import { useNavigate } from 'react-router-dom';
+import useLoginStore from '../../../store/useLoginStore';
 
 const RolePlay = () => {
     // page usehook zustand
@@ -19,6 +21,8 @@ const RolePlay = () => {
         loadDataHeadKor,
         sortRules
     } = useActivitySpeakHubStore();
+    const navigate = useNavigate();
+    const {setMaintenanceData, maintenanceData} = useLoginStore();
 
     // Table Data 
     const [data, setData] = React.useState<{body: TRolePlayBooks[], head: TLoadDataHeadTrans[]}>({ body: [], head: [] });
@@ -46,6 +50,19 @@ const RolePlay = () => {
     const beforRenderedFn = async () => {
         const checkDate = cf.basicTable.todayYearString();
         const loadDataFromAPI = await getActivityManagementSpeakingDataAPI('role_play', sortRules.head.role_play);
+        if (loadDataFromAPI.error) {
+            const reject = loadDataFromAPI.error
+            if (reject.data.maintenanceInfo) {
+                let dumyMaintenanceData:TMaintenanceData = {
+                    alertTitle: 'System Maintenance Notice',
+                    data: reject.data.maintenanceInfo,
+                    open: false,
+                    type: ''
+                };
+                setMaintenanceData(dumyMaintenanceData)
+                navigate('/');
+            }
+        }
         // const loadDataFromAPI = loadData.role_play;
         const yearFilterValues:string[] = cf.basicTable.setFilterProperty(loadDataFromAPI.body, 'year')
         const semesterFilterValues:string[] = cf.basicTable.setFilterProperty(loadDataFromAPI.body, 'semester')

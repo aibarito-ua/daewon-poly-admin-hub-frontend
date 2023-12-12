@@ -42,12 +42,14 @@ interface IuseLearningResultManagementSHStore {
 type TAllClassLRMSpeaking={
     year: number,
     semester: number,
-    campus: TCampusData[]
+    campus: TCampusData[],
+    error?:TErrorData
 }
 type TCampusData={
     code: string,
     name: string,
     level: TFilterLevelSpeakingHub[];
+    error?:TErrorData
 }
 type TFilterLevelSpeakingHub={
     name: string;
@@ -81,6 +83,7 @@ type TLRMSpeakingHubData = {
     idea_exchange: TLRMSpeakingHubIdeaExchange | null;
     story_vlog: TLRMSpeakingHubStoryVlog | null;
     role_play: TLRMSpeakingHubRolePlay | null;
+    error?:TErrorData
 }
 
 

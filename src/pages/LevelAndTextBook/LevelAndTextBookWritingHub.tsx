@@ -10,8 +10,11 @@ import LevelAndTextbookWritingTableComponent from '../../components/commonCompon
 import { useComponentWillMount } from '../../hooks/useEffectOnce';
 import { getLevelAndTextbookSpeakingDataAPI } from '../../api/LevelAndTextBook/LevelAndTextBookSpeaking.api';
 import { getLevelAndTextbookWritingDataAPI } from '../../api/LevelAndTextBook/LevelAndTextBookWriting.api';
+import { useNavigate } from 'react-router-dom';
+import useLoginStore from '../../store/useLoginStore';
 
 const LevelAndTextBookWritingHub = () => {
+    const navigate = useNavigate();
     // page usehook zustand
     const {
         selectNavigationTitles,
@@ -23,6 +26,7 @@ const LevelAndTextBookWritingHub = () => {
         setLoadData,
         setLoadDataHead
     } = useLevelAndTextbookSpeakingStore();
+    const { setMaintenanceData} = useLoginStore();
     // Table Data 
     const [data, setData] = React.useState<{body: TLoadDataItem[], head: TLoadDataHeadTrans[]}>({ body: [], head: [] });
     
@@ -43,7 +47,22 @@ const LevelAndTextBookWritingHub = () => {
     // initialize setting before render screen
     const beforeRendereredFn = async () => {
         const checkDate = cf.basicTable.todayYearString();
-        const loadDataFromAPI = await getLevelAndTextbookWritingDataAPI(sortRules);
+        const loadDataFromAPI = await getLevelAndTextbookWritingDataAPI(sortRules).then((res) => {
+            if (res.error) {
+                const reject = res.error
+                if (reject.data.maintenanceInfo) {
+                    let dumyMaintenanceData:TMaintenanceData = {
+                        alertTitle: 'System Maintenance Notice',
+                        data: reject.data.maintenanceInfo,
+                        open: false,
+                        type: ''
+                    };
+                    setMaintenanceData(dumyMaintenanceData)
+                    navigate('/');
+                }
+            }
+            return res
+        });
         const yearFilterValues:string[] = cf.basicTable.setFilterProperty(loadDataFromAPI.loadData, 'year');
         const semesterFilterValues:string[] = cf.basicTable.setFilterProperty(loadDataFromAPI.loadData, 'semester');
 
