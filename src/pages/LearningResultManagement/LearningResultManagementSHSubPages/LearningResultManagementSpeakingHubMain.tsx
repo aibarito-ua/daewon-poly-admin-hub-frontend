@@ -67,59 +67,76 @@ export default function LearningResultManagementSpeakingHubMain (props: TLearnin
     const beforRenderedFn = async () => {
         console.log('progress')
         const loadFilterData = await getLMRSpeakingHubAllCampusDataAPI();
-        console.log('laod filter data =',loadFilterData)
-        if (loadFilterData&&loadFilterData.campus) {
-            const cookies = new Cookies();
-            const userInfo = cookies.get('data');
-            const mcYn = userInfo.mcYn;
-            const clientCode = userInfo.clientCode
-            const defaultCampus = ['', '', '']
-            let defaultChosenCampuse = {code:'', name:''}
-            const campus_list_map = loadFilterData.campus.map((item, index) => {
-                for (let i = 0; i < clientCode.length; i++) {
-                    if (item.code === clientCode[i]) {
-                        if (defaultChosenCampuse.name==='') {
-                            defaultChosenCampuse = {code:item.code, name:item.name}
+        if (loadFilterData.error) {
+            const reject = loadFilterData.error
+            if (loadFilterData.error.statusCode===555) {
+                if (reject.data.maintenanceInfo) {
+                    let dumyMaintenanceData:TMaintenanceData = {
+                        alertTitle: 'System Maintenance Notice',
+                        data: reject.data.maintenanceInfo,
+                        open: false,
+                        type: ''
+                    };
+                    setMaintenanceData(dumyMaintenanceData)
+                    navigate('/');
+                }
+            }
+        } else {
+            console.log('laod filter data =',loadFilterData)
+            if (loadFilterData&&loadFilterData.campus) {
+                const cookies = new Cookies();
+                const userInfo = cookies.get('data');
+                const mcYn = userInfo.mcYn;
+                const clientCode = userInfo.clientCode
+                const defaultCampus = ['', '', '']
+                let defaultChosenCampuse = {code:'', name:''}
+                const campus_list_map = loadFilterData.campus.map((item, index) => {
+                    for (let i = 0; i < clientCode.length; i++) {
+                        if (item.code === clientCode[i]) {
+                            if (defaultChosenCampuse.name==='') {
+                                defaultChosenCampuse = {code:item.code, name:item.name}
+                            }
+                            return item.name;
                         }
-                        return item.name;
+                    }
+                    return '';
+                })
+                let campus_list:string[] =[]; 
+                for (let l = 0; l < campus_list_map.length; l++) {
+                    if (campus_list_map[l] !== '') {
+                        campus_list.push(campus_list_map[l])
                     }
                 }
-                return '';
-            })
-            let campus_list:string[] =[]; 
-            for (let l = 0; l < campus_list_map.length; l++) {
-                if (campus_list_map[l] !== '') {
-                    campus_list.push(campus_list_map[l])
+                if (campus_list.length === 1) {
+                    defaultCampus[0] = campus_list[0]
+                    setChosenCampus(defaultChosenCampuse)
                 }
-            }
-            if (campus_list.length === 1) {
-                defaultCampus[0] = campus_list[0]
-                setChosenCampus(defaultChosenCampuse)
-            }
-            console.log('Default search values:', defaultCampus)
-            const index = loadFilterData.campus.findIndex(item => item.name == defaultCampus[0])
-            if(index != -1) {
-                const getCampusDataAPI = await getLMRSpeakingHubLevelsOfCampusDataAPI(loadFilterData.campus[index].code)
-                if (getCampusDataAPI.error) {
-                    const reject = getCampusDataAPI.error
-                    if (reject.data.maintenanceInfo) {
-                        let dumyMaintenanceData:TMaintenanceData = {
-                            alertTitle: 'System Maintenance Notice',
-                            data: reject.data.maintenanceInfo,
-                            open: false,
-                            type: ''
-                        };
-                        setMaintenanceData(dumyMaintenanceData)
-                        navigate('/');
+                console.log('Default search values:', defaultCampus)
+                const index = loadFilterData.campus.findIndex(item => item.name == defaultCampus[0])
+                if(index != -1) {
+                    const getCampusDataAPI = await getLMRSpeakingHubLevelsOfCampusDataAPI(loadFilterData.campus[index].code)
+                    if (getCampusDataAPI.error) {
+                        const reject = getCampusDataAPI.error
+                        if (reject.data.maintenanceInfo) {
+                            let dumyMaintenanceData:TMaintenanceData = {
+                                alertTitle: 'System Maintenance Notice',
+                                data: reject.data.maintenanceInfo,
+                                open: false,
+                                type: ''
+                            };
+                            setMaintenanceData(dumyMaintenanceData)
+                            navigate('/');
+                        }
+                    } else {
+                        loadFilterData.campus[index].level = getCampusDataAPI.level
                     }
-                } else {
-                    loadFilterData.campus[index].level = getCampusDataAPI.level
                 }
+                setFilterData(loadFilterData);
+                dropdown.setSelectFilterCampusList(campus_list)
+                setSelectFilterValues(defaultCampus)
+                console.log('beforeRenderedFn complete')
             }
-            setFilterData(loadFilterData);
-            dropdown.setSelectFilterCampusList(campus_list)
-            setSelectFilterValues(defaultCampus)
-            console.log('beforeRenderedFn complete')
+
         }
     }
     

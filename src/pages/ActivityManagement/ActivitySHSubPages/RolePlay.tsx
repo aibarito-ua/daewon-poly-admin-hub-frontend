@@ -62,26 +62,27 @@ const RolePlay = () => {
                 setMaintenanceData(dumyMaintenanceData)
                 navigate('/');
             }
+        } else {
+            // const loadDataFromAPI = loadData.role_play;
+            const yearFilterValues:string[] = cf.basicTable.setFilterProperty(loadDataFromAPI.body, 'year')
+            const semesterFilterValues:string[] = cf.basicTable.setFilterProperty(loadDataFromAPI.body, 'semester')
+            const gradeFilterValues:string[] = cf.basicTable.setFilterProperty(loadDataFromAPI.body, 'grade')
+            // const levelFilterValues:string[] = cf.basicTable.setFilterProperty(loadDataFromAPI.body, 'level')
+            const newFilter = cf.basicTable.setFilterPropertyDeps(loadDataFromAPI);
+            console.log('newFilter before render ==',newFilter)
+            setAllFilterListData(newFilter)
+            
+            setSelectFilterYearList(yearFilterValues)
+            setSelectFilterSemesterList(semesterFilterValues)
+            setSelectFilterGradeList(gradeFilterValues)
+            // setSelectFilterLevelList(levelFilterValues)
+            setSelectFilterValues([checkDate.year, checkDate.semester,'',''])
+            console.log('role play data =',loadDataFromAPI)
+            setData({
+                body: loadDataFromAPI.body,
+                head: loadDataFromAPI.head
+            })
         }
-        // const loadDataFromAPI = loadData.role_play;
-        const yearFilterValues:string[] = cf.basicTable.setFilterProperty(loadDataFromAPI.body, 'year')
-        const semesterFilterValues:string[] = cf.basicTable.setFilterProperty(loadDataFromAPI.body, 'semester')
-        const gradeFilterValues:string[] = cf.basicTable.setFilterProperty(loadDataFromAPI.body, 'grade')
-        // const levelFilterValues:string[] = cf.basicTable.setFilterProperty(loadDataFromAPI.body, 'level')
-        const newFilter = cf.basicTable.setFilterPropertyDeps(loadDataFromAPI);
-        console.log('newFilter before render ==',newFilter)
-        setAllFilterListData(newFilter)
-        
-        setSelectFilterYearList(yearFilterValues)
-        setSelectFilterSemesterList(semesterFilterValues)
-        setSelectFilterGradeList(gradeFilterValues)
-        // setSelectFilterLevelList(levelFilterValues)
-        setSelectFilterValues([checkDate.year, checkDate.semester,'',''])
-        console.log('role play data =',loadDataFromAPI)
-        setData({
-            body: loadDataFromAPI.body,
-            head: loadDataFromAPI.head
-        })
     }
     useComponentWillMount(()=>{
         console.log('component will mount')

@@ -34,6 +34,7 @@ import { NotAuth } from '../pages/NotAuth';
 import { CONFIG } from '../config';
 import SimpleSnackbar from '../components/toastMessageComponents/SimpleSnackbar';
 import MaintenanceAlertModalComponent from '../components/toggleModalComponents/MaintenanceAlertModalComponent';
+import { useInterval } from '../hooks/useInterval';
 
 interface IPrivateRouteProps {
     children?: React.ReactElement;
@@ -75,9 +76,9 @@ export default function Router() {
                 memberCode: '23100091',
                 pageAuth: "Y",
                 maintenanceInfo: {
-                    start_date: '',
+                    start_date: '2023-12-14T05:35:00.000Z',
                     // end_date: '2123-12-11T16:00:00.510Z',
-                    end_date: '',
+                    end_date: '2023-12-14T05:35:30.000Z',
                     maintenance_description_en:[ 'To improve our services, a system inspection',
                     'will be conducted at the times indicated below,', 
                     'during which our services will be',
@@ -85,7 +86,7 @@ export default function Router() {
                     'Thank you for your understanding.'],
                     maintenance_description_kr:[ ],
                     time_description_en:'Monthly on the 14   and 28   00:30-01:00 AM',
-                    time_description_kr:'매월 14일, 28일 새벽 00:30~01:00'
+                    time_description_kr:'매월 14일, 28일 새벽 00:30~01:00 test'
                 }
             }
             const dumpMaintenanceData:TMaintenanceData = {
@@ -151,61 +152,59 @@ export default function Router() {
         }
     }, [])
     
-    React.useEffect(()=>{
+    useInterval(()=>{
         const getCheckDatas = cookies.get('data')
         if (getCheckDatas) {
             const stDate = maintenanceData.data.start_date;
             const edDate = maintenanceData.data.end_date;
             if (stDate !== '' && edDate !== '' ) {
                 // real time check maintenance start/end
-                let timerId = setInterval(()=>{
-                    const currentTime = new Date();
-                    // start
-                    const startDate = new Date(stDate);
-                    const start_date = startDate.getTime();
-                    const start_current_gap_timeNumber = start_date - currentTime.getTime()
-                    const startCurrentGapTime_min = Math.floor(start_current_gap_timeNumber/ ( 60*1000));
-                    const gap_st = Math.floor(start_current_gap_timeNumber)
-                    // console.log('gap_st= ',gap_st)
-                    
-                    if (start_current_gap_timeNumber <= 0) {
-                        // 시작
-                        let dumpMaintenanceData:TMaintenanceData = JSON.parse(JSON.stringify(maintenanceData));
-                        // end time calculate
-                        const endDate = new Date(edDate)
-                        const end_date = endDate.getTime();
-                        const end_current_gap_timeNumber = end_date - currentTime.getTime();
-                        const gap_end = Math.floor(end_current_gap_timeNumber);
-                        // console.log('gap ed =',gap_end)
-                        if (gap_end >= 0) {
-                            // maintenance 진행중
-                            if (isAuth) {
-                                setIsAuth(false)
-                            }
-                            dumpMaintenanceData.open = true;
-                            setMaintenanceData(dumpMaintenanceData)
-                        } else {
-                            // 종료
-                            dumpMaintenanceData.open = false;
-                            dumpMaintenanceData.alertTitle = '';
-                            dumpMaintenanceData.data.end_date = '';
-                            dumpMaintenanceData.data.start_date = '';
-                            setMaintenanceData(dumpMaintenanceData)
+                const currentTime = new Date();
+                // console.log('currentTime =',currentTime)
+                // start
+                const startDate = new Date(stDate);
+                // console.log('startDate =',startDate)
+                const start_date = startDate.getTime();
+                const start_current_gap_timeNumber = start_date - currentTime.getTime()
+                const startCurrentGapTime_min = Math.floor(start_current_gap_timeNumber/ ( 60*1000));
+                const gap_st = Math.floor(start_current_gap_timeNumber)
+                // console.log('gap_st= ',start_current_gap_timeNumber)
+                
+                if (start_current_gap_timeNumber <= 0) {
+                    // 시작
+                    let dumpMaintenanceData:TMaintenanceData = JSON.parse(JSON.stringify(maintenanceData));
+                    // end time calculate
+                    const endDate = new Date(edDate)
+                    const end_date = endDate.getTime();
+                    const end_current_gap_timeNumber = end_date - currentTime.getTime();
+                    const gap_end = Math.floor(end_current_gap_timeNumber);
+                    // console.log('gap ed =',gap_end)
+                    if (gap_end >= 0) {
+                        // maintenance 진행중
+                        if (isAuth) {
+                            setIsAuth(false)
                         }
+                        dumpMaintenanceData.open = true;
+                        setMaintenanceData(dumpMaintenanceData)
                     } else {
-                        if (startCurrentGapTime_min === 30) {
-                            // 30 분 전
-                        } else if (startCurrentGapTime_min === 10) {
-                            // 10분 전
-                        }
+                        // 종료
+                        dumpMaintenanceData.open = false;
+                        dumpMaintenanceData.alertTitle = '';
+                        dumpMaintenanceData.data.end_date = '';
+                        dumpMaintenanceData.data.start_date = '';
+                        setMaintenanceData(dumpMaintenanceData)
+                        // document.location.reload();
                     }
-                },1000);
-        
-                return () => clearTimeout(timerId);
+                } else {
+                    if (startCurrentGapTime_min === 30) {
+                        // 30 분 전
+                    } else if (startCurrentGapTime_min === 10) {
+                        // 10분 전
+                    }
+                }
             }
-            
         }
-    })
+    },1000);
 
     const publicRoutes = () => {
         const routeValue = routeValues.publicRoutes;

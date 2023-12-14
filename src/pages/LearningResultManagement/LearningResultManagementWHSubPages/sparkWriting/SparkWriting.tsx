@@ -83,36 +83,37 @@ const ReportAndPortfolio = () => {
                     navigate('/');
                 }
             }
-        }
-        console.log('laod filter data =',loadFilterData)
-        setFilterAllList(loadFilterData);
-        const cookies = new Cookies();
-        const userInfo = cookies.get('data');
-        const mcYn = userInfo.mcYn;
-        const clientCode = userInfo.clientCode;
-        let defaultCampus = ['','','']
-        const campus_list_map = loadFilterData.campus.map((item) => {
-            for (let i = 0; i < clientCode.length; i++) {
-                if (item.code === clientCode[i]) {
-                    return item.name;
+        } else {
+            console.log('laod filter data =',loadFilterData)
+            setFilterAllList(loadFilterData);
+            const cookies = new Cookies();
+            const userInfo = cookies.get('data');
+            const mcYn = userInfo.mcYn;
+            const clientCode = userInfo.clientCode;
+            let defaultCampus = ['','','']
+            const campus_list_map = loadFilterData.campus.map((item) => {
+                for (let i = 0; i < clientCode.length; i++) {
+                    if (item.code === clientCode[i]) {
+                        return item.name;
+                    }
+                }
+                return '';
+            })
+            let campus_list:string[] =[]; 
+            for (let l = 0; l < campus_list_map.length; l++) {
+                if (campus_list_map[l] !== '') {
+                    campus_list.push(campus_list_map[l])
                 }
             }
-            return '';
-        })
-        let campus_list:string[] =[]; 
-        for (let l = 0; l < campus_list_map.length; l++) {
-            if (campus_list_map[l] !== '') {
-                campus_list.push(campus_list_map[l])
+            if (campus_list.length === 1) {
+                defaultCampus[0] = campus_list[0]
             }
+            setSelectFilterValues(defaultCampus);
+            setSelectFilterCampusList(campus_list);
+            setFilterData(loadFilterData);
+            setFilterStates(loadFilterData);
+            console.log('beforeRenderedFn complete')
         }
-        if (campus_list.length === 1) {
-            defaultCampus[0] = campus_list[0]
-        }
-        setSelectFilterValues(defaultCampus);
-        setSelectFilterCampusList(campus_list);
-        setFilterData(loadFilterData);
-        setFilterStates(loadFilterData);
-        console.log('beforeRenderedFn complete')
     }
     
     useComponentWillMount(()=>{
