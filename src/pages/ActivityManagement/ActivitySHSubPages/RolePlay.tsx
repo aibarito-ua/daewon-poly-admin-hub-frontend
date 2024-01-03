@@ -48,7 +48,7 @@ const RolePlay = () => {
 
     // initialize setting before render screen
     const beforRenderedFn = async () => {
-        const checkDate = cf.basicTable.todayYearString();
+        const checkDate = cf.basicTable.defaultTodayYearAndSemesterSelector();
         const loadDataFromAPI = await getActivityManagementSpeakingDataAPI('role_play', sortRules.head.role_play);
         if (loadDataFromAPI.error) {
             const reject = loadDataFromAPI.error
@@ -88,12 +88,12 @@ const RolePlay = () => {
         console.log('component will mount')
         beforRenderedFn();
     })
-    React.useEffect(()=>{
-        console.log('component did mount')
-        if (data.body.length===0) {
-            beforRenderedFn();
-        }
-    },[])
+    // React.useEffect(()=>{
+    //     console.log('component did mount')
+    //     if (data.body.length===0) {
+    //         beforRenderedFn();
+    //     }
+    // },[])
 
     React.useEffect(()=>{
         if (grouping.length === 0) {

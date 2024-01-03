@@ -94,7 +94,7 @@ const SparkWriting = () => {
 
     // initialize setting before render screen
     const beforRenderedFn = async () => {
-        const checkDate = cf.basicTable.todayYearString();
+        const checkDate = cf.basicTable.defaultTodayYearAndSemesterSelector();
         const loadDataFromAPI = await getActivityManagementSparkWritingDataAPI(sortRules);
         if (loadDataFromAPI.error) {
             const reject = loadDataFromAPI.error

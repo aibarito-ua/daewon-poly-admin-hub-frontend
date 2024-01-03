@@ -46,7 +46,7 @@ const LevelAndTextBookWritingHub = () => {
     
     // initialize setting before render screen
     const beforeRendereredFn = async () => {
-        const checkDate = cf.basicTable.todayYearString();
+        const checkDate = cf.basicTable.defaultTodayYearAndSemesterSelector();
         const loadDataFromAPI = await getLevelAndTextbookWritingDataAPI(sortRules).then((res) => {
             if (res.error) {
                 const reject = res.error

@@ -49,7 +49,7 @@ const IdeaExchange = () => {
     // initialize setting before render screen
     const beforRenderedFn = async () => {
         
-        const checkDate = cf.basicTable.todayYearString();
+        const checkDate = cf.basicTable.defaultTodayYearAndSemesterSelector();
         console.log('today is =',checkDate)
         const loadDataFromAPI = await getActivityManagementSpeakingDataAPI('idea_exchange', sortRules.head.idea_exchange);
         if (loadDataFromAPI.error) {
@@ -85,16 +85,16 @@ const IdeaExchange = () => {
         }
     }
     
-    // useComponentWillMount(()=>{
-    //     console.log('component will mount')
-    //     beforRenderedFn();
-    // })
-    React.useEffect(()=>{
-        console.log('component did mount')
-        if (data.body.length===0) {
-            beforRenderedFn();
-        }
-    },[])
+    useComponentWillMount(()=>{
+        console.log('component will mount')
+        beforRenderedFn();
+    })
+    // React.useEffect(()=>{
+    //     console.log('component did mount')
+    //     if (data.body.length===0) {
+    //         beforRenderedFn();
+    //     }
+    // },[])
 
     React.useEffect(()=>{
         if (grouping.length === 0) {

@@ -316,6 +316,24 @@ const basicTable = {
         return {
             year, semester
         }
+    },
+    defaultTodayYearAndSemesterSelector: () => {
+        const date = new Date();
+        const yearNum = date.getFullYear();
+        const bfYear = yearNum - 1;
+        const beforeYear = bfYear.toString();
+        const year = yearNum.toString();
+        const month = date.getMonth()+1;
+
+        const semester = (month > 2 && month < 9) ? '1' : '2';
+        // 3/1 ~ 8/31 : 1학기
+        // 9/1 ~ next year 2/last : 2학기
+        const selectYear = semester === '1' ? year : (
+            month > 2 ? year : beforeYear
+        )
+        return {
+            year:selectYear, semester
+        }
     }
 }
 
