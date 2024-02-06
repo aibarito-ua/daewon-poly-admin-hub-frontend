@@ -162,21 +162,6 @@ const useActivitySpeakHubStore = create<IActivitySHStore>((set) => ({
                 accessor: "topic_lv_2nd",
                 header: '2nd topic lv.'
             },
-            // {
-            //     accessor: //"topic_title_3rd",
-            //     header: '3rd topic title'
-            // },
-            // {
-            //     accessor: //"topic_lv_3rd",
-            //     header: '3rd topic lv.'
-            // },{
-            //     accessor: //"topic_title_4th",
-            //     header: '4th topic title'
-            // },
-            // {
-            //     accessor: //"topic_lv_4th",
-            //     header: '4th topic lv.'
-            // },
         ],
     },
     loadData: {
@@ -236,8 +221,6 @@ const useActivitySpeakHubStore = create<IActivitySHStore>((set) => ({
                 "expression": {
                     "url": "http://",
                     "filename": "text.jpg",
-                    // "url": "",
-                    // "filename": "",
                 },
             },
             {
