@@ -1522,7 +1522,7 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                                     {/* advisor */}
                                     <div className='comment-advisor-contents'>
                                         {/* original sentence */}
-                                        <div className='flex flex-col bg-white'>
+                                        {/* <div className='flex flex-col bg-white'>
                                             <div className='comment-advisor-label-wrap bg-[#588ee1] relative'
                                             onClick={() => {
                                                 let dumyControler = JSON.parse(JSON.stringify(advisorControlDiv));
@@ -1550,7 +1550,7 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                                                     }
                                                 })}
                                             </div>
-                                        </div>
+                                        </div> */}
                                         {/* revised sentence */}
                                         <div className='flex flex-col bg-white'>
                                             <div className='comment-advisor-label-wrap bg-[#f6914d] relative'
