@@ -124,6 +124,15 @@ export default function OutlineFormatModalComponent(props:IOutlineFormatModalCom
             {title==='OL04' && 
               <div className='bg-outline-format-image-ol-04 bg-no-repeat bg-contain w-[810px] h-[1220px] pb-[20px]'></div>
             }
+            {title==='OL05' && 
+              <div className='bg-outline-format-image-ol-05 bg-no-repeat bg-contain w-[810px] h-[1220px] pb-[20px]'></div>
+            }
+            {title==='OL06' && 
+              <div className='bg-outline-format-image-ol-06 bg-no-repeat bg-contain w-[810px] h-[1220px] pb-[20px]'></div>
+            }
+            {title==='OL07' && 
+              <div className='bg-outline-format-image-ol-07 bg-no-repeat bg-contain w-[810px] h-[1220px] pb-[20px]'></div>
+            }
           </div>
 
         </DialogContent>
