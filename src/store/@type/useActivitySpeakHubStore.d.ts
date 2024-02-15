@@ -72,17 +72,23 @@ type TIdeaExchengeBooksExpression = {
     "filename": string
 }
 type TRolePlayBooks = {
-    "year": number,
-    "semester": number,
-    "grade": number,
-    "level": string,
-    "month": string,
-    "topic_title_1st": string,
-    "topic_lv_1st": string,
-    "topic_title_2nd": string,
-    "topic_lv_2nd": string,
-    [key:string]:string|number,
+    "year": number;
+    "semester": number;
+    "grade": number;
+    "level": string;
+    "month": string;
+    // "topic_title_1st": string,
+    // "topic_lv_1st": string,
+    // "topic_title_2nd": string,
+    // "topic_lv_2nd": string,
+    
+    // "topics": TRolePlayBooksTopicItem[];
+    [key:string]:string|number;
 }
+// "topic_title_3rd": string,
+    // "topic_lv_3rd": string,
+    // "topic_title_4th": string,
+    // "topic_lv_4th": string,
 
 // type TLesson = {
 //     "title": string,

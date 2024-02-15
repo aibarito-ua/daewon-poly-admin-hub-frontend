@@ -334,7 +334,60 @@ const basicTable = {
         return {
             year:selectYear, semester
         }
-    }
+    },
+    /**
+     * Activity > Speaking Hub > Role Play
+     * @param headerData 
+     * @returns sortedHeaderData : TLoadDataHeadTrans[]
+     */
+    activityHeaderSorting: (headerData:TLoadDataHeadTrans[] ) => {
+        const accessorList = [
+            'year', 'semester','grade','level','month',
+            'topic_title_1st', 'topic_lv_1st',
+            'topic_title_2nd', 'topic_lv_2nd',
+            'topic_title_3rd', 'topic_lv_3rd',
+            'topic_title_4th', 'topic_lv_4th',
+        ];
+        return headerData.sort((a,b) => {
+            return accessorList.indexOf(a.accessor.toLowerCase()) - accessorList.indexOf(b.accessor.toLowerCase());
+        });
+    },
+    /**
+     * selected data에서 키 동적 추출 후 헤더로 사용
+     * @param targetDataItem 
+     * @returns filtered head list : TLoadDataHeadTrans[]
+     */
+    activityHeaderFilter: (targetDataItem:TRolePlayBooks ) => {
+        // object 빈값 삭제
+        
+        const targetDataKeys = Object.keys(targetDataItem);
+        const headerFullFormatList:TLoadDataHeadTrans[] = [
+            {"accessor":"year","header":"년도"},
+            {"accessor":"semester","header":"학기"},
+            {"accessor":"grade","header":"grade"},
+            {"accessor":"level","header":"level"},
+            {"accessor":"month","header":"월"},
+            {"accessor":"topic_title_1st","header":"1st topic title"},
+            {"accessor":"topic_lv_1st","header":"1st topic lv."},
+            {"accessor":"topic_title_2nd","header":"2nd topic title"},
+            {"accessor":"topic_lv_2nd","header":"2nd topic lv."},
+            {"accessor":"topic_title_3rd","header":"3rd topic title"},
+            {"accessor":"topic_lv_3rd","header":"3rd topic lv."},
+            {"accessor":"topic_title_4th","header":"4th topic title"},
+            {"accessor":"topic_lv_4th","header":"4th topic lv."}
+        ];
+        return headerFullFormatList.filter((headItem) => {
+            const isCurrentDataKey = targetDataKeys.indexOf(headItem.accessor) > 0;
+            if (isCurrentDataKey) return headItem;
+        });
+    },
+    removeNOTValueInObject: (obj: TRolePlayBooks) => {
+        let newObj:any={};
+        Object.keys(obj).forEach(key => {
+            if (obj[key]) newObj[key] = obj[key];
+        });
+        return newObj;
+    } 
 }
 
 export const cf = {

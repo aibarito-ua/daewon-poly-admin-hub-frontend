@@ -50,6 +50,7 @@ const RolePlay = () => {
     const beforRenderedFn = async () => {
         const checkDate = cf.basicTable.defaultTodayYearAndSemesterSelector();
         const loadDataFromAPI = await getActivityManagementSpeakingDataAPI('role_play', sortRules.head.role_play);
+        console.log('===loadDataFromAPI=== ',loadDataFromAPI)
         if (loadDataFromAPI.error) {
             const reject = loadDataFromAPI.error
             if (reject.data.maintenanceInfo) {
@@ -78,9 +79,11 @@ const RolePlay = () => {
             // setSelectFilterLevelList(levelFilterValues)
             setSelectFilterValues([checkDate.year, checkDate.semester,'',''])
             console.log('role play data =',loadDataFromAPI)
+            const head = cf.basicTable.activityHeaderSorting(loadDataFromAPI.head);
+            // console.log('role play header sorted = ',JSON.stringify(head))
             setData({
                 body: loadDataFromAPI.body,
-                head: loadDataFromAPI.head
+                head: head
             })
         }
     }
@@ -149,10 +152,14 @@ const RolePlay = () => {
                     const checkGrade = item.grade.toString()=== selectFIlterValues[2];
                     const checkLevel = item.level === selectFIlterValues[3];
                     if (checkYear&&checkSemester&&checkGrade&&checkLevel) {
-                        selectedTableData.push(item)
+                        const newItem = cf.basicTable.removeNOTValueInObject(item);
+                        // console.log('newItem =',newItem)
+                        selectedTableData.push(newItem)
                     }
                 }
-                console.log('searched data =',selectedTableData)
+                // console.log('searched data =',selectedTableData)
+                let filterHeadData = cf.basicTable.activityHeaderFilter(selectedTableData[0]);
+                setData({ body: data.body, head: filterHeadData })
                 setSelectedData(selectedTableData);
                 setIsSearch(true)
             } else {
@@ -170,78 +177,78 @@ const RolePlay = () => {
             {/* filter row */}
             <div className='scetion-common-filter-row-div py-[11px] pl-[20px] border-b-[1px] border-b-[#111] bg-white'>
                 <div className='section-common-filter-columns-div'>
-                                {/* filter 1 : Year */}
-                                <DebouncedDropdowFilter 
-                                    filterTitleLabel='년도'
-                                    column={selectFilterYearList}
-                                    onChange={value=>{
-                                        let dumySelectFilterValues = JSON.parse(JSON.stringify(selectFIlterValues));
-                                        dumySelectFilterValues[0] = value
-                                        // allFilterListData
-                                        console.log('year dumySelectFilterValues=',dumySelectFilterValues)
-                                        if (selectFilterYearList.length > 1) {
-                                            dumySelectFilterValues[2] = '';
-                                            const dumyFilterSemesterList = cf.basicTable.filterValue(allFilterListData,[],value,'year','semester');
-                                            const dumyFilterGradeList = cf.basicTable.filterValue(allFilterListData,[],value,'year','grade');
-                                            setSelectFilterSemesterList(dumyFilterSemesterList);
-                                            setSelectFilterGradeList(dumyFilterGradeList);
-                                        } 
-                                        setSelectFilterValues(dumySelectFilterValues);
-                                    }}
-                                    value={selectFIlterValues[0]}
-                                    originData={data}
-                                    table={data}
-                                />
-                                {/* filter 2 : Semester */}
-                                <DebouncedDropdowFilter 
-                                    filterTitleLabel='학기'
-                                    column={selectFilterSemesterList}
-                                    onChange={value=>{
-                                        let dumySelectFilterValues = JSON.parse(JSON.stringify(selectFIlterValues));
-                                        dumySelectFilterValues[1] = value
-                                        console.log('semester dumySelectFilterValues =',dumySelectFilterValues)
-                                        if (selectFilterSemesterList.length>1) {
-                                            dumySelectFilterValues[2] = ''
-                                            const dumyFilterGradeList = cf.basicTable.filterValue(allFilterListData, [], value, 'semester', 'grade');
-                                            setSelectFilterGradeList(dumyFilterGradeList)
-                                        }
-                                        setSelectFilterValues(dumySelectFilterValues)
-                                        
-                                    }}
-                                    value={selectFIlterValues[1]}
-                                    originData={data}
-                                    table={data}
-                                />
-                                {/* filter 3 : Grade */}
-                                <DebouncedDropdowFilter 
-                                    filterTitleLabel='Grade'
-                                    column={selectFilterGradeList}
-                                    onChange={value=>{
-                                        let dumySelectFilterValues = JSON.parse(JSON.stringify(selectFIlterValues));
-                                        dumySelectFilterValues[2] = value
-                                        const dumyFilterLevelList = cf.basicTable.filterValue(allFilterListData, dumySelectFilterValues, value, 'grade','level');
-                                        setSelectFilterLevelList(dumyFilterLevelList)
-                                        setSelectFilterValues(dumySelectFilterValues)
-                                        
-                                    }}
-                                    value={selectFIlterValues[2]}
-                                    originData={data}
-                                    table={data}
-                                />
-                                {/* filter 4 : Level */}
-                                <DebouncedDropdowFilter 
-                                    filterTitleLabel='Level'
-                                    column={selectFilterLevelList}
-                                    onChange={value=>{
-                                        let dumySelectFilterValues = JSON.parse(JSON.stringify(selectFIlterValues));
-                                        dumySelectFilterValues[3] = value
-                                        setSelectFilterValues(dumySelectFilterValues)
-                                        
-                                    }}
-                                    value={selectFIlterValues[3]}
-                                    originData={data}
-                                    table={data}
-                                />
+                            {/* filter 1 : Year */}
+                            <DebouncedDropdowFilter 
+                                filterTitleLabel='년도'
+                                column={selectFilterYearList}
+                                onChange={value=>{
+                                    let dumySelectFilterValues = JSON.parse(JSON.stringify(selectFIlterValues));
+                                    dumySelectFilterValues[0] = value
+                                    // allFilterListData
+                                    console.log('year dumySelectFilterValues=',dumySelectFilterValues)
+                                    if (selectFilterYearList.length > 1) {
+                                        dumySelectFilterValues[2] = '';
+                                        const dumyFilterSemesterList = cf.basicTable.filterValue(allFilterListData,[],value,'year','semester');
+                                        const dumyFilterGradeList = cf.basicTable.filterValue(allFilterListData,[],value,'year','grade');
+                                        setSelectFilterSemesterList(dumyFilterSemesterList);
+                                        setSelectFilterGradeList(dumyFilterGradeList);
+                                    } 
+                                    setSelectFilterValues(dumySelectFilterValues);
+                                }}
+                                value={selectFIlterValues[0]}
+                                originData={data}
+                                table={data}
+                            />
+                            {/* filter 2 : Semester */}
+                            <DebouncedDropdowFilter 
+                                filterTitleLabel='학기'
+                                column={selectFilterSemesterList}
+                                onChange={value=>{
+                                    let dumySelectFilterValues = JSON.parse(JSON.stringify(selectFIlterValues));
+                                    dumySelectFilterValues[1] = value
+                                    console.log('semester dumySelectFilterValues =',dumySelectFilterValues)
+                                    if (selectFilterSemesterList.length>1) {
+                                        dumySelectFilterValues[2] = ''
+                                        const dumyFilterGradeList = cf.basicTable.filterValue(allFilterListData, [], value, 'semester', 'grade');
+                                        setSelectFilterGradeList(dumyFilterGradeList)
+                                    }
+                                    setSelectFilterValues(dumySelectFilterValues)
+                                    
+                                }}
+                                value={selectFIlterValues[1]}
+                                originData={data}
+                                table={data}
+                            />
+                            {/* filter 3 : Grade */}
+                            <DebouncedDropdowFilter 
+                                filterTitleLabel='Grade'
+                                column={selectFilterGradeList}
+                                onChange={value=>{
+                                    let dumySelectFilterValues = JSON.parse(JSON.stringify(selectFIlterValues));
+                                    dumySelectFilterValues[2] = value
+                                    const dumyFilterLevelList = cf.basicTable.filterValue(allFilterListData, dumySelectFilterValues, value, 'grade','level');
+                                    setSelectFilterLevelList(dumyFilterLevelList)
+                                    setSelectFilterValues(dumySelectFilterValues)
+                                    
+                                }}
+                                value={selectFIlterValues[2]}
+                                originData={data}
+                                table={data}
+                            />
+                            {/* filter 4 : Level */}
+                            <DebouncedDropdowFilter 
+                                filterTitleLabel='Level'
+                                column={selectFilterLevelList}
+                                onChange={value=>{
+                                    let dumySelectFilterValues = JSON.parse(JSON.stringify(selectFIlterValues));
+                                    dumySelectFilterValues[3] = value
+                                    setSelectFilterValues(dumySelectFilterValues)
+                                    
+                                }}
+                                value={selectFIlterValues[3]}
+                                originData={data}
+                                table={data}
+                            />
                             
                         </div>
                         <button className={`Filter-search-button ${
