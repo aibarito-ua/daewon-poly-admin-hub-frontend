@@ -126,6 +126,8 @@ type TLMSparkWritingStudentsListInClass = {
     book_name: string;
     students: TLMSparkWritingStudentItemInClass[];
     error?:TErrorData;
+    year?:number;
+    semester?:number
 }
 type TLMSparkWritingStudentItemInClass = {
     student_code:string;

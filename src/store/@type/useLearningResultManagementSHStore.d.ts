@@ -84,6 +84,8 @@ type TLRMSpeakingHubData = {
     story_vlog: TLRMSpeakingHubStoryVlog | null;
     role_play: TLRMSpeakingHubRolePlay | null;
     error?:TErrorData
+    year?:numnber;
+    semester?:number;
 }
 
 

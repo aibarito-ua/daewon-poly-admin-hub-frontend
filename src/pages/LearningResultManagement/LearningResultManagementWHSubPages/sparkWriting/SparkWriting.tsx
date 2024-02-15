@@ -223,6 +223,15 @@ const ReportAndPortfolio = () => {
                     dumyFeedbackData.defautInfo.level = selectLevelCode;
                     dumyFeedbackData.defautInfo.class = selectClassCode;
                     dumyFeedbackData.defautInfo.book_name = rsp.book_name;
+
+                    // setting data year&semester
+                    if (rsp.year && rsp.semester) {
+                        let newFilterAllList = {...filterAllList};
+                        newFilterAllList.semester = rsp.semester;
+                        newFilterAllList.year = rsp.year;
+                        setFilterAllList(newFilterAllList);
+                    }
+
                     setFeedbackDataInStudent(dumyFeedbackData);
                     setAllReportData(overallData);
                     // table data setting
@@ -369,7 +378,7 @@ const ReportAndPortfolio = () => {
             const targetCampus=filterStates.campus
             let name = '';
             let code = '';
-            const serviceLevel = ['MAG3','GT4','MGT4','R4','MAG4']
+            const serviceLevel = ['MAG3','S3','GT4','MGT4','R4','MAG4']
             for (let campusIndex= 0; campusIndex < targetCampus.length; campusIndex++) {
                 if (targetCampus[campusIndex].name === value) {
                     setSelectCampusCode({name: value, code: targetCampus[campusIndex].code})

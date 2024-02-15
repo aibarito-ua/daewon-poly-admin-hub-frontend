@@ -319,6 +319,15 @@ const LMSparkWriting = () => {
                         rubric_description:[]
                     }
                     dumyFeedbackData.status_1st=null;
+
+                    // setting data year&semester
+                    if (rsp.year && rsp.semester) {
+                        let newFilterAllList = {...filterAllList};
+                        newFilterAllList.semester = rsp.semester;
+                        newFilterAllList.year = rsp.year;
+                        setFilterAllList(newFilterAllList);
+                    }
+
                     setFeedbackDataInStudent(dumyFeedbackData);
                     // table data setting
                     setStudentDataInClass(rsp)
@@ -443,7 +452,7 @@ const LMSparkWriting = () => {
             const targetCampus=filterStates.campus
             let name = '';
             let code = '';
-            const serviceLevel = ['MAG3','GT4','MGT4','R4','MAG4']
+            const serviceLevel = ['MAG3','S3','GT4','MGT4','R4','MAG4']
             if (isLoadData) {
 
             } else {
@@ -452,6 +461,7 @@ const LMSparkWriting = () => {
                         setSelectCampusCode({name: value, code: targetCampus[campusIndex].code})
                         setCurrentSelectCodes({target:'campus', name:targetCampus[campusIndex].name, code: targetCampus[campusIndex].code})
                         const levelsAtSelectCampusAPI = await getLMSparkWritingLevelsOfCampusDataAPI(targetCampus[campusIndex].code)
+                        console.log('::: levelsAtSelectCampusAPI:::',levelsAtSelectCampusAPI)
                         if (levelsAtSelectCampusAPI.error) {
                             const reject = levelsAtSelectCampusAPI.error;
                             if (reject.statusCode===555 && reject.data.maintenanceInfo) {

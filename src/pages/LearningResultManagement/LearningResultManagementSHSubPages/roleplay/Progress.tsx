@@ -162,6 +162,13 @@ const Progress = () => {
                 }
 
                 if (rsp.role_play.students.length > 0) {
+                    // set current data's year&semester
+                    if (rsp.year && rsp.semester) {
+                        let newFilterAllList = {...filterAllList};
+                        newFilterAllList.semester = rsp.semester;
+                        newFilterAllList.year = rsp.year;
+                        setFilterAllList(newFilterAllList);
+                    }
                     // table data setting
                     makeTableData(rsp.role_play)
                     setStudentDataInClass(rsp)

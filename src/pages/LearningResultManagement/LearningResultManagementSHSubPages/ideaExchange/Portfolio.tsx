@@ -188,6 +188,13 @@ const Portfolio = () => {
                 }
 
                 if (rsp.idea_exchange.students.length > 0) {
+                    // set current data's year&semester
+                    if (rsp.year && rsp.semester) {
+                        let newFilterAllList = {...filterAllList};
+                        newFilterAllList.semester = rsp.semester;
+                        newFilterAllList.year = rsp.year;
+                        setFilterAllList(newFilterAllList);
+                    }
                     // table data setting
                     makeTableData(rsp.idea_exchange)
                     setStudentDataInClass(rsp)
