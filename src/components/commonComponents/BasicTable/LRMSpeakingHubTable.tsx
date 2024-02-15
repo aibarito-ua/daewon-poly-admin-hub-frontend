@@ -33,7 +33,7 @@ const TableHeader = (props: {head:string[], subHeadingsCount: number}) => {
                     const width = cellData==='no'? 70: 140;
                     const data = {accessor, header: cellData, width }
                     headModel[iRow].push(data)
-                } else if ( (jCol-2)%2===0 ) { // TODO: change '2' to number of sub-columns [i.e. number of topics in months] 
+                } else if ( (jCol-2)%props.subHeadingsCount===0 ) { // TODO: change '2' to number of sub-columns [i.e. number of topics in months] 
                     const splitCellData = cellData.split('_');
                     let replaceCellData = `${splitCellData[0]} ${splitCellData[1]}` // lesson i
                     if(splitCellData[0] == 'month') {
@@ -43,7 +43,7 @@ const TableHeader = (props: {head:string[], subHeadingsCount: number}) => {
                         replaceCellData = `${monthNames[Number(splitCellData[1]) - 1]}`
                     }
                     const accessor = `${splitCellData[0]}_${splitCellData[1]}${defaultKeyIdx}`;
-                    const data = {accessor, header: replaceCellData, width: 120}; // 118
+                    const data = {accessor, header: replaceCellData, width: props.subHeadingsCount * 60}; // 118
                     headModel[iRow].push(data)
                 }
             } else {
@@ -72,7 +72,7 @@ const TableHeader = (props: {head:string[], subHeadingsCount: number}) => {
                             >{headerCell.header}</th>
                         } else {
                             return <th
-                                colSpan={2}
+                                colSpan={props.subHeadingsCount}
                                 key={headerCell.accessor}
                                 className='table-thead-tr-th-basic border-r-[1px] border-r-[#aaa]'
                                 style={{borderLeft: 0, minWidth: headerCell.width+'px', fontFamily: 'NotoSansCJKKR'}}
