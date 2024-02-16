@@ -9,7 +9,7 @@ import {createBrowserHistory} from 'history'
 import { useCallbackPrompt } from '../../../hooks/useCallbackPrompt';
 import PromptBlockComponent from '../../../components/toggleModalComponents/PromptBlockComponent';
 import useControlAlertStore from '../../../store/useControlAlertStore';
-import { useComponentWillMount, useEffectOnce } from '../../../hooks/useEffectOnce';
+import { useComponentWillMount } from '../../../hooks/useEffectOnce';
 import { getActivityManagementSparkWritingDataAPI, setActivityManagementSparkWritingOutlineAPI } from '../../../api/ActivityManagement/ActivityManagementWriting.api';
 import { useNavigate } from 'react-router-dom';
 import useLoginStore from '../../../store/useLoginStore';
@@ -109,27 +109,38 @@ const SparkWriting = () => {
                 navigate('/');
             }
         }
-        console.log('response data =',loadDataFromAPI)
+        // console.log('response data =',loadDataFromAPI)
         const yearFilterValues:string[] = cf.basicTable.setFilterProperty(loadDataFromAPI.body, 'year')
         const semesterFilterValues:string[] = cf.basicTable.setFilterProperty(loadDataFromAPI.body, 'semester')
         const levelFilterValues:string[] = cf.basicTable.setFilterProperty(loadDataFromAPI.body, 'level')
-
+        // console.log('yearFilterValues =',yearFilterValues)
+        // console.log('semesterFilterValues =',semesterFilterValues)
+        // console.log('levelFilterValues =',levelFilterValues)
         const newFilter = cf.basicTable.setFilterPropertyDepsWH(loadDataFromAPI);
-        console.log('newFilter =',newFilter)
         
         setSelectFilterYearList(yearFilterValues)
-        setSelectFilterSemesterList(semesterFilterValues)
-
-        // if (yearFilterValues.length>1 || semesterFilterValues.length > 1) {
-            
-        // }
+        
         const initSelectFilterLists = [checkDate.year, checkDate.semester,''];
-        setSelectFilterLevelList(levelFilterValues)
+        if (yearFilterValues.length > 1) {
+            const dumySelectSemesterList = cf.basicTable.filterValueWH(newFilter, initSelectFilterLists, checkDate.year, 'year','semester')
+            setSelectFilterSemesterList(dumySelectSemesterList)
+        } else {
+            setSelectFilterSemesterList(semesterFilterValues)
+        }
+        if (semesterFilterValues.length > 1) {
+            const dumySelectLevelList = cf.basicTable.filterValueWH(newFilter, initSelectFilterLists, checkDate.semester, 'semester','level');
+            setSelectFilterLevelList(dumySelectLevelList)
+        } else {
+            setSelectFilterLevelList(levelFilterValues)
+        }
 
         setSelectFilterValues(initSelectFilterLists)
         setAllFilterListData(newFilter);
+
         setSparkWritingData(loadDataFromAPI.body)
         setSparkWritingHeadData(loadDataFromAPI.head)
+        
+        
 
         setData({
             body: loadDataFromAPI.body,
@@ -143,6 +154,7 @@ const SparkWriting = () => {
     })
     React.useEffect(()=>{
         console.log('component did mount')
+        // beforRenderedFn();
         // if (data.body.length===0) {
         //     beforRenderedFn();
         // }
@@ -152,9 +164,9 @@ const SparkWriting = () => {
     React.useEffect(()=>{
         const saveDump = JSON.stringify(saveLoadData);
         const originDump = JSON.stringify(loadData)
-        console.log('effect saveLoadData =',saveLoadData)
-        console.log('effect loadData =',loadData)
-        console.log('check =',saveDump === originDump)
+        // console.log('effect saveLoadData =',saveLoadData)
+        // console.log('effect loadData =',loadData)
+        // console.log('check =',saveDump === originDump)
         if (navigateBlockFlag) {
             let message:string[] = [];
             console.log('flag =',loadDataUpdateFlag)
@@ -253,8 +265,8 @@ const SparkWriting = () => {
                 // }
             })
             window.history.pushState(null, "", window.location.href)
-            console.log('href ==',window.location.href)
-            console.log('popState =',e)
+            // console.log('href ==',window.location.href)
+            // console.log('popState =',e)
         }
         if (enableSaveButtonFlag) {
             window.addEventListener("beforeunload", beforeUnloadListener, {capture:true})
@@ -313,7 +325,7 @@ const SparkWriting = () => {
         
         let tableDatas:TActivitySparkWritingBooks[]=[];
         tableDatas = saveLoadData.spark_writing;
-        console.log('originData =',saveLoadData)
+        // console.log('originData =',saveLoadData)
 
         let dataModel:TTableDataModel = [];
         
@@ -387,7 +399,7 @@ const SparkWriting = () => {
                     const dataModelIndex = dataModel.length;
                     const pushKey = headItem.accessor;
                     const outlineData = tableDatas[dataIndex].outline_format.outline_format[rowIndex];
-                    console.log('test table data - outline =',outlineData)
+                    // console.log('test table data - outline =',outlineData)
                     let pushValue:any = ''
                     let unitId:number|undefined=undefined;
                     let outlineFormatIndex:number|undefined=undefined;
@@ -431,7 +443,6 @@ const SparkWriting = () => {
             } else {return v;}
         });
         
-        // console.log('filter =',selectFIlterValues)
         // search filter
         dataModel = dataModel.filter((item, idx) => {
             const search1 = item[0].value.toString() === selectFIlterValues[0];
@@ -469,7 +480,6 @@ const SparkWriting = () => {
                 }
             }// for cell
         } // for row
-        
         return dataModel;
     }
 
@@ -520,9 +530,7 @@ const SparkWriting = () => {
 
     const searchEventFunction = (e:React.MouseEvent<HTMLButtonElement, MouseEvent>)=>{
         e.preventDefault();
-        // console.log('is test =',isAllSelected)
         if (isAllSelected) {
-
             let check = true;
             const maxLength = selectFIlterValues.length;
             for (let selectIndex=0; selectIndex < maxLength; selectIndex++) {
@@ -560,7 +568,6 @@ const SparkWriting = () => {
     }, [selectNavigationTitles])
 
     return (
-        
         <div className='section-common-canvas'>
             {/* filter row */}
             <div className='scetion-common-filter-row-div-spark  border-b-[1px] border-b-[#111] bg-white'>
@@ -572,15 +579,17 @@ const SparkWriting = () => {
                             column={selectFilterYearList}
                             onChange={value=>{
                                 let dumySelectFilterValues = JSON.parse(JSON.stringify(selectFIlterValues));
-                                dumySelectFilterValues[0] = value;
-                                if (selectFilterYearList.length > 1) {
-                                    dumySelectFilterValues[2] = '';
-                                    const dumyFilterSemesterList = cf.basicTable.filterValueWH(allFilterListData, [],value,'year','semester');
-                                    const dumyFilterLevelList = cf.basicTable.filterValueWH(allFilterListData,[],value,'year','level');
-                                    setSelectFilterSemesterList(dumyFilterSemesterList);
-                                    setSelectFilterLevelList(dumyFilterLevelList)
+                                if (value !== dumySelectFilterValues[0]) {
+                                    dumySelectFilterValues[0] = value;
+                                    if (selectFilterYearList.length >= 1) {
+                                        dumySelectFilterValues[1] = '';
+                                        dumySelectFilterValues[2] = '';
+                                        const dumyFilterSemesterList = cf.basicTable.filterValueWH(allFilterListData, dumySelectFilterValues,value,'year','semester');
+                                        setSelectFilterSemesterList(dumyFilterSemesterList);
+                                        setSelectFilterLevelList([])
+                                    }
+                                    setSelectFilterValues(dumySelectFilterValues)
                                 }
-                                setSelectFilterValues(dumySelectFilterValues)
                             }}
                             value={selectFIlterValues[0]}
                             originData={data}
@@ -592,14 +601,15 @@ const SparkWriting = () => {
                             column={selectFilterSemesterList}
                             onChange={value=>{
                                 let dumySelectFilterValues = JSON.parse(JSON.stringify(selectFIlterValues));
-                                dumySelectFilterValues[1] = value;
-                                if (selectFilterSemesterList.length > 1) {
-                                    dumySelectFilterValues[2] = '';
-                                    const dumySelectLevelList = cf.basicTable.filterValueWH(allFilterListData, [], value, 'semester','level');
-                                    setSelectFilterLevelList(dumySelectLevelList)
+                                if (value !== dumySelectFilterValues[1]) {
+                                    dumySelectFilterValues[1] = value;
+                                    if (selectFilterSemesterList.length >= 1) {
+                                        dumySelectFilterValues[2] = '';
+                                        const dumySelectLevelList = cf.basicTable.filterValueWH(allFilterListData, dumySelectFilterValues, value, 'semester','level');
+                                        setSelectFilterLevelList(dumySelectLevelList)
+                                    }
+                                    setSelectFilterValues(dumySelectFilterValues)
                                 }
-                                setSelectFilterValues(dumySelectFilterValues)
-                                
                             }}
                             value={selectFIlterValues[1]}
                             originData={data}
@@ -613,7 +623,6 @@ const SparkWriting = () => {
                                 let dumySelectFilterValues = JSON.parse(JSON.stringify(selectFIlterValues));
                                 dumySelectFilterValues[2] = value;
                                 setSelectFilterValues(dumySelectFilterValues)
-                                
                             }}
                             value={selectFIlterValues[2]}
                             originData={data}

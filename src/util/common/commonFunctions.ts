@@ -166,13 +166,13 @@ const basicTable = {
     setFilterPropertyDepsWH: (bodyData:any) => {
         console.log('=== setFilterPropertyDeps ===')
         const allBodyData = bodyData.body;
-        console.log('bodyData =',allBodyData)
+        // console.log('bodyData =',allBodyData)
         let listFilter:TActivityWritingHubFilterList[] = [];
         
         for (let i = 0; i < allBodyData.length; i++) {
             const targetBodyDataRow = allBodyData[i];
             if (i===0) {
-                console.log('i === 0 pushed init value')
+                // console.log('i === 0 pushed init value')
                 const pushListFilterRow:TActivityWritingHubFilterList = {
                     year: targetBodyDataRow.year,
                     semester: targetBodyDataRow.semester,
@@ -194,10 +194,10 @@ const basicTable = {
                     const checkSemester = checkListFilterRowValue.semester === pushListFilterRow.semester;
                     const checkLevel = checkListFilterRowValue.level === pushListFilterRow.level;
                     if (checkYear&&checkSemester&&checkLevel) {
-                        console.log('i ==',i,', j==',j)
-                        console.log('checkYear =',checkYear)
-                        console.log('checkSemester = ',checkSemester)
-                        console.log('checkLevel =',checkLevel)
+                        // console.log('i ==',i,', j==',j)
+                        // console.log('checkYear =',checkYear)
+                        // console.log('checkSemester = ',checkSemester)
+                        // console.log('checkLevel =',checkLevel)
                         isPush=false;
                     }
                 };
