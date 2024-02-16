@@ -67,11 +67,12 @@ const ReportCorrectionSummaryComponent = (
             correctionDiv = grammar.sentences.map((sentenceItem, sentenceIndex) => {
                 return <div className='flex flex-row gap-[0.4rem]'><span>{'•'}</span><span className='grammar-tooltip-custom-content-list-item'>{sentenceItem.map((wordItem , wordIndex) => {
                     // console.log('word ==',wordItem)
+                    const isGrammarCheck = wordItem.correction_reason.indexOf('grammar') !== -1;
                     const key = 'grammar-'+sentenceIndex+'-'+wordIndex+'-'+wordItem.type;
                     if (wordItem.type === 1) {
-                        return <span key={key} className='report-chart-correction-content-add-text'>{wordItem.word}</span>
+                        return <span key={key} className={`report-chart-correction-content-add-text ${isGrammarCheck && '!bg-[#ffea2c]'}`}>{wordItem.word}</span>
                     } else if (wordItem.type === -1 ) {
-                        return <span key={key} className='report-chart-correction-content-delete-text'>{wordItem.word}</span>
+                        return <span key={key} className={`report-chart-correction-content-delete-text ${isGrammarCheck && '!bg-[#ffea2c]'}`}>{wordItem.word}</span>
                     } else {
                         return <span key={key} className='grammar-tooltip-custom-content-normal-text'>{wordItem.word}</span>
                     }
@@ -102,11 +103,12 @@ const ReportCorrectionSummaryComponent = (
             correctionDiv = punctuation.sentences.map((sentenceItem, sentenceIndex) => {
                 return <div className='flex flex-row gap-[0.4rem]'><span>{'•'}</span><span className='grammar-tooltip-custom-content-list-item'>{sentenceItem.map((wordItem , wordIndex) => {
                     // console.log('word ==',wordItem)
+                    const isPunctuation = wordItem.correction_reason.indexOf('punctuation') !== -1;
                     const key = 'punctuation-'+sentenceIndex+'-'+wordIndex+'-'+wordItem.type;
                     if (wordItem.type === 1) {
-                        return <span key={key} className='report-chart-correction-content-add-text'>{wordItem.word}</span>
+                        return <span key={key} className={`report-chart-correction-content-add-text ${isPunctuation && '!bg-[#ffea2c]'}`}>{wordItem.word}</span>
                     } else if (wordItem.type === -1 ) {
-                        return <span key={key} className='report-chart-correction-content-delete-text'>{wordItem.word}</span>
+                        return <span key={key} className={`report-chart-correction-content-delete-text ${isPunctuation && '!bg-[#ffea2c]'}`}>{wordItem.word}</span>
                     } else {
                         return <span key={key} className='grammar-tooltip-custom-content-normal-text'>{wordItem.word}</span>
                     }
@@ -137,12 +139,13 @@ const ReportCorrectionSummaryComponent = (
             correctionDiv = punctuation.sentences.map((sentenceItem, sentenceIndex) => {
                 return <div className='flex flex-row gap-[0.4rem]'><span>{'•'}</span><span className='grammar-tooltip-custom-content-list-item'>{sentenceItem.map((wordItem , wordIndex) => {
                     // console.log('word ==',wordItem)
+                    const isSpelling = wordItem.correction_reason.indexOf('spelling') !== -1;
                     const key = 'spelling-'+sentenceIndex+'-'+wordIndex+'-'+wordItem.type;
                     if (wordItem.type === 1) {
                         // •
-                        return <span key={key} className='report-chart-correction-content-add-text'>{wordItem.word}</span>
+                        return <span key={key} className={`report-chart-correction-content-add-text ${isSpelling && '!bg-[#ffea2c]'}`}>{wordItem.word}</span>
                     } else if (wordItem.type === -1 ) {
-                        return <span key={key} className='report-chart-correction-content-delete-text'>{wordItem.word}</span>
+                        return <span key={key} className={`report-chart-correction-content-delete-text ${isSpelling && '!bg-[#ffea2c]'}`}>{wordItem.word}</span>
                     } else {
                         return <span key={key} className='grammar-tooltip-custom-content-normal-text'>{wordItem.word}</span>
                     }
