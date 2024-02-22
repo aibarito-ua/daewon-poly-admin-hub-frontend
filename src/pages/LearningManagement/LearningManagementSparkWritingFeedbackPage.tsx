@@ -68,11 +68,6 @@ const LearningManagementSparkWritingFeedbackPage = () => {
     const cookieData = cookies.get('data');
     const pageAuth = cookieData.mcYn;
 
-    // Save -> go back flag
-    const [saveComplete, setSaveComplete] = React.useState<boolean>(false);
-
-    // change previewer
-
     // draft status
     const [draftStatus, setDraftStatus] = React.useState<number>(0);
     // draft id
@@ -125,6 +120,9 @@ const LearningManagementSparkWritingFeedbackPage = () => {
     const [finalTemporarySaveFlag, setFinalTemporarySaveFlag] = React.useState<boolean>(false);
     // final 2nd draft submit flag
     const [finalCreateReportFlag, setFinalCreateReportFlag] = React.useState<boolean>(false);
+
+    // send button active flag
+    const [isFirstFeedbackSendButtonActive, setIsFirstFeedbackSendButtonActive ] = React.useState<boolean>(false);
 
     // rubric score state controlers
     const [rubricSelected, setRubricSelected] = React.useState<string[]>(Array.from({length: 6}, ()=>''));
@@ -1080,7 +1078,7 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                 alertType: 'continue',
                 yesEvent: async ()=>{
                     const save = await makeFinalDraftData('send');
-                    if (save) {
+                    if (save.flag) {
                         commonAlertOpen({
                             head: 'Evaluate 2nd Draft',
                             messages: ['Completed.','Return to the main menu.'],
@@ -1319,20 +1317,24 @@ const LearningManagementSparkWritingFeedbackPage = () => {
             if (finalOverallComment.replace(' ','') !=='') {
                 if (rubricReportValue.length === 6) {
                     // save & submit open
+                    // console.log('===save & submit open')
                     setFinalCreateReportFlag(true);
                     setFinalTemporarySaveFlag(true);
                 } else if (rubricReportValue.length < 6) {
                     // save open, submit close
+                    // console.log('===save open, submit close')
                     setFinalCreateReportFlag(false);
                     setFinalTemporarySaveFlag(true);
                 }
             } else {
                 if (rubricReportValue.length > 0) {
                     // save open, submit close
+                    // console.log('===save open, submit close')
                     setFinalCreateReportFlag(false);
                     setFinalTemporarySaveFlag(false);
                 } else {
                     // save&submit close
+                    // console.log('===save&submit close')
                     setFinalCreateReportFlag(false);
                     setFinalTemporarySaveFlag(false);
                 }
@@ -1347,6 +1349,29 @@ const LearningManagementSparkWritingFeedbackPage = () => {
             setFinalTemporarySaveFlag(false);
         }
     }, [rubricReportValue, finalOverallComment, finalCreateReportFlag, finalTemporarySaveFlag])
+    React.useEffect(()=>{
+        const checkOverallComment = overallComment.replace(/\s+/g,'').length>0;
+        // console.log(' === allBodySelectedText ===',allBodySelectedText)
+        const isUseCorrectionComments = allBodySelectedText.length > 0;
+        const checkCorrectionComments = allBodySelectedText.some((p) => p.comment.replace(/\s+/g,'').length === 0)
+        // console.log('=== checkCorrectionComments === ',checkCorrectionComments)
+        // console.log('=== checkOverallComment ===',checkOverallComment)
+        if (checkOverallComment) {
+            if (isUseCorrectionComments) {
+                if (!checkCorrectionComments) {
+                    setIsFirstFeedbackSendButtonActive(true)
+                } else {
+                    setIsFirstFeedbackSendButtonActive(false)
+                }
+            } else {
+                setIsFirstFeedbackSendButtonActive(true)
+            }
+        } else {
+            setIsFirstFeedbackSendButtonActive(false)
+        }
+    }, [
+        overallComment, allBodySelectedText, commentFocusId
+    ])
 
     const divideH10 = <div className='w-[1px] h-[10px] bg-[#aaa]'/>
     const divideH29 = <div className='w-[1px] h-[29px] bg-[#ccc]'/>
@@ -2044,7 +2069,10 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                                     ) : ()=>{} }
                             />
                             <div className={ pageAuth === 'N' 
-                                ? ((overallComment.replace(' ','').length>0)
+                                ? ((
+                                    isFirstFeedbackSendButtonActive
+                                    // overallComment.replace(' ','').length>0 && allBodySelectedText.some((p)=>{ p.comment.replace(' ','').length !==0 }) 
+                                    )
                                     ? ( draftStatus < 4 ? 'comment-button-send': 'comment-button-send-disabled' )
                                     :'comment-button-send-disabled')
                                 : 'comment-button-send-disabled' }
