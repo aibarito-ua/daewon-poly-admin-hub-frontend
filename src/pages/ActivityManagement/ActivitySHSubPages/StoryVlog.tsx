@@ -231,7 +231,7 @@ const StoryVlog = () => {
                     />
                     {/* filter 4 : Level */}
                     <DebouncedDropdowFilter 
-                        filterTitleLabel='Level'
+                        filterTitleLabel='level'
                         column={selectFilterLevelList}
                         onChange={value=>{
                             let dumySelectFilterValues = JSON.parse(JSON.stringify(selectFIlterValues));

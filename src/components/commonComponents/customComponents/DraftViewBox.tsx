@@ -519,7 +519,7 @@ const rubricEvaluation = (
             }}
         >
             {/* description */}
-            <div className='flex flex-row h-[95px]' style={{
+            <div className='flex flex-row min-h-[95px]' style={{
                 borderBottomColor: rubricColor.main,
                 borderBottomStyle: 'solid',
                 borderBottomWidth: '1px'

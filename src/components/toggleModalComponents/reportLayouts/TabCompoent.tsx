@@ -586,12 +586,12 @@ export default function BasicTabs(props: {
             <div className='flex flex-row w-full h-[70px] min-h-[70px] border-t-[1px] border-t-[#e2e3e6] relative pl-[30px] items-center'>
                 <PrintReportExportButton feedbackDataInStudent={feedbackDataInStudent} reportByUnitAPIData={reportByUnitAPIData}/>
 
-                <div className='absolute bottom-[25px] right-[30px] flex flex-row capitalize items-center gap-[5px]'>
+                {/* <div className='absolute bottom-[25px] right-[30px] flex flex-row capitalize items-center gap-[5px]'>
                     <div className='report-by-unit-completion-date-title'>completion date: </div>
                     <div className='report-by-unit-completion-date-content'>{`[1st draft] ${reportByUnitData.completionDate.draft1st}`}</div>
                     <div className='w-[1px] h-[8px] bg-[#aaa]' />
                     <div className='report-by-unit-completion-date-content'>{`[2nd draft] ${reportByUnitData.completionDate.draft2nd}`}</div>
-                </div>
+                </div> */}
             </div>
 
         </div>

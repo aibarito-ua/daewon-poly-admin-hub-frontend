@@ -72,9 +72,9 @@ export default function Router() {
                 accessToken: '',
                 clientCode: ['0508003','1301003'],
                 // ,'1301003'
-                mcYn: 'N',
+                mcYn: 'Y',
                 memberCode: '23100091',
-                pageAuth: "N",
+                pageAuth: "Y",
                 maintenanceInfo: {
                     start_date: '2023-12-14T05:35:00.000Z',
                     // end_date: '2123-12-11T16:00:00.510Z',

@@ -112,7 +112,7 @@ const SparkWriting = () => {
         // console.log('response data =',loadDataFromAPI)
         const yearFilterValues:string[] = cf.basicTable.setFilterProperty(loadDataFromAPI.body, 'year')
         const semesterFilterValues:string[] = cf.basicTable.setFilterProperty(loadDataFromAPI.body, 'semester')
-        const levelFilterValues:string[] = cf.basicTable.setFilterProperty(loadDataFromAPI.body, 'level')
+        const levelFilterValues:string[] = cf.basicTable.setFilterProperty(loadDataFromAPI.body, 'level').sort((a,b) => cf.basicTable.levelSort(a,b));
         // console.log('yearFilterValues =',yearFilterValues)
         // console.log('semesterFilterValues =',semesterFilterValues)
         // console.log('levelFilterValues =',levelFilterValues)
@@ -128,7 +128,9 @@ const SparkWriting = () => {
             setSelectFilterSemesterList(semesterFilterValues)
         }
         if (semesterFilterValues.length > 1) {
-            const dumySelectLevelList = cf.basicTable.filterValueWH(newFilter, initSelectFilterLists, checkDate.semester, 'semester','level');
+            const dumySelectLevelList = cf.basicTable.filterValueWH(newFilter, initSelectFilterLists, checkDate.semester, 'semester','level')
+            .sort((a,b) => cf.basicTable.levelSort(a,b));
+            
             setSelectFilterLevelList(dumySelectLevelList)
         } else {
             setSelectFilterLevelList(levelFilterValues)
@@ -605,7 +607,7 @@ const SparkWriting = () => {
                                     dumySelectFilterValues[1] = value;
                                     if (selectFilterSemesterList.length >= 1) {
                                         dumySelectFilterValues[2] = '';
-                                        const dumySelectLevelList = cf.basicTable.filterValueWH(allFilterListData, dumySelectFilterValues, value, 'semester','level');
+                                        const dumySelectLevelList = cf.basicTable.filterValueWH(allFilterListData, dumySelectFilterValues, value, 'semester','level').sort((a,b) => cf.basicTable.levelSort(a,b));
                                         setSelectFilterLevelList(dumySelectLevelList)
                                     }
                                     setSelectFilterValues(dumySelectFilterValues)
@@ -617,7 +619,7 @@ const SparkWriting = () => {
                         />
                         {/* filter 3 : Level */}
                         <DebouncedDropdowFilter 
-                            filterTitleLabel='Level'
+                            filterTitleLabel='level'
                             column={selectFilterLevelList}
                             onChange={value=>{
                                 let dumySelectFilterValues = JSON.parse(JSON.stringify(selectFIlterValues));
