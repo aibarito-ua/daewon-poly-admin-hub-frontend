@@ -17,6 +17,7 @@ import useLoginStore from '../../store/useLoginStore';
 import { Cookies } from 'react-cookie';
 import ReturnedFeedbackModalComponent from '../../components/toggleModalComponents/ReturnedFeedbackModalComponent';
 import PortfolioModalComponent from '../../components/toggleModalComponents/PortfolioModalComponent';
+import InfinityLoadingComponent from '../../components/layoutComponents/InfinityLoading';
 
 type TDivsControlConfig = {
     advisor: {
@@ -992,6 +993,7 @@ const LearningManagementSparkWritingFeedbackPage = () => {
         })
     }
     const [advisorOpen, setAdvisorOpen] = React.useState<boolean>(false);
+    const [loadingAdvisor, setLoadingAdvisor] = React.useState<boolean>(false);
     // div width
     
     // divide state
@@ -1480,15 +1482,46 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                 <div className='comment-review-contents1'
                     ref={boundaryRef}
                     >
-                            {!advisorOpen && draftStatus!==5 && (
-                                <div className='absolute left-[14px] top-[60%]'>
-                                    <div className='learning-management-advisor-open-button select-none'
-                                        onClick={async () => {
-                                            console.log(draftId)
-                                            const checkAlreadyAdvisorUsed = advisor.draft_index > 0;
+                        {!advisorOpen && draftStatus!==5 && (
+                            <div className='absolute left-[14px] top-[60%]'>
+                                <div className='learning-management-advisor-open-button select-none'
+                                    onClick={async () => {
+                                        console.log(draftId)
+                                        const checkAlreadyAdvisorUsed = advisor.draft_index > 0;
+                                        
+                                        if (checkAlreadyAdvisorUsed) {
+                                            const canvasCurrentRef = canvasRef.current;
+                                            if (canvasCurrentRef) {
+                                                const maxScreenWidth = canvasCurrentRef.clientWidth - 28;
+                                                const defaultLeftAreaWidth = maxScreenWidth/3;
+                                                let dumyStates:TDivsControlConfig = JSON.parse(JSON.stringify(divAResize));
+                                                dumyStates.advisor.w = defaultLeftAreaWidth;
+                                                dumyStates.divideAD.x = defaultLeftAreaWidth;
+                                                dumyStates.draft.w = defaultLeftAreaWidth;
+                                                dumyStates.divideDC.x = defaultLeftAreaWidth;
+                                                setDivAResize(dumyStates)
+                                            }
+                                            setAdvisorOpen(true);
                                             
-                                            if (checkAlreadyAdvisorUsed) {
-                                                const canvasCurrentRef = canvasRef.current;
+                                        } else {
+                                            // start loading
+                                            setAdvisorOpen(true)
+                                            setLoadingAdvisor(true)
+                                            const canvasCurrentRef = canvasRef.current;
+                                            if (canvasCurrentRef) {
+                                                const maxScreenWidth = canvasCurrentRef.clientWidth - 28;
+                                                const defaultLeftAreaWidth = maxScreenWidth/3;
+                                                let dumyStates:TDivsControlConfig = JSON.parse(JSON.stringify(divAResize));
+                                                dumyStates.advisor.w = defaultLeftAreaWidth;
+                                                dumyStates.divideAD.x = defaultLeftAreaWidth;
+                                                dumyStates.draft.w = defaultLeftAreaWidth;
+                                                dumyStates.divideDC.x = defaultLeftAreaWidth;
+                                                setDivAResize(dumyStates)
+                                            }
+                                            const advisorResponse = await getSparkWritingAdvisor(draftId, feedbackDataInStudent.defautInfo.student_name.student_name_en);
+                                            if (advisorResponse.draft_index > 0) {
+                                                // console.log('advisor response =',advisorResponse)
+                                                setAdvisor(advisorResponse);
                                                 if (canvasCurrentRef) {
                                                     const maxScreenWidth = canvasCurrentRef.clientWidth - 28;
                                                     const defaultLeftAreaWidth = maxScreenWidth/3;
@@ -1499,146 +1532,117 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                                                     dumyStates.divideDC.x = defaultLeftAreaWidth;
                                                     setDivAResize(dumyStates)
                                                 }
-                                                setAdvisorOpen(true);
-                                                
+                                                // end loading
+                                                setLoadingAdvisor(false)
                                             } else {
-                                                const advisorResponse = await getSparkWritingAdvisor(draftId, feedbackDataInStudent.defautInfo.student_name.student_name_en);
-                                                if (advisorResponse.draft_index > 0) {
-                                                    console.log('advisor response =',advisorResponse)
-                                                    setAdvisor(advisorResponse);
-                                                    const canvasCurrentRef = canvasRef.current;
-                                                    if (canvasCurrentRef) {
-                                                        const maxScreenWidth = canvasCurrentRef.clientWidth - 28;
-                                                        const defaultLeftAreaWidth = maxScreenWidth/3;
-                                                        let dumyStates:TDivsControlConfig = JSON.parse(JSON.stringify(divAResize));
-                                                        dumyStates.advisor.w = defaultLeftAreaWidth;
-                                                        dumyStates.divideAD.x = defaultLeftAreaWidth;
-                                                        dumyStates.draft.w = defaultLeftAreaWidth;
-                                                        dumyStates.divideDC.x = defaultLeftAreaWidth;
-                                                        setDivAResize(dumyStates)
-                                                    }
-                                                    setAdvisorOpen(true)
+                                                if (canvasCurrentRef) {
+                                                    const maxScreenWidth = canvasCurrentRef.clientWidth - 28;
+                                                    const defaultLeftAreaWidth = maxScreenWidth/3;
+                                                    let dumyStates:TDivsControlConfig = JSON.parse(JSON.stringify(divAResize));
+                                                    dumyStates.advisor.w = 0;
+                                                    dumyStates.divideAD.x = 0;
+                                                    dumyStates.draft.w = 400;
+                                                    dumyStates.divideDC.x = 400;
+                                                    setDivAResize(dumyStates)
+                                                    setAdvisorOpen(false)
+                                                    setLoadingAdvisor(false)
                                                 }
                                             }
-                                        }}
-                                    />
+                                        }
+                                    }}
+                                />
+                            </div>
+                        )}
+                        {(advisorOpen && loadingAdvisor) && (
+                            <div className='comment-advisor-div' style={{width: `${divAResize.advisor.w}px`}}>
+                                <InfinityLoadingComponent />
+                            </div>
+                        )}
+                        {(advisorOpen && !loadingAdvisor) && (
+                            <div className='comment-advisor-div'
+                                // onClick={() => setAdvisorOpen(false)}
+                            style={{width: `${divAResize.advisor.w}px`}}>
+                                {/* advisor header */}
+                                <div className='flex flex-col w-full h-fit relative'>
+                                    <div className='absolute top-[2px] right-[0px] hover:cursor-pointer' onClick={() => {
+                                        let dumyStates:TDivsControlConfig = JSON.parse(JSON.stringify(divAResize));
+                                        dumyStates.advisor.w = 0;
+                                        dumyStates.divideAD.x = 0;
+                                        dumyStates.draft.w = 400;
+                                        dumyStates.divideDC.x = 400;
+                                        setDivAResize(dumyStates)
+                                        setAdvisorOpen(false)
+                                    }} ><CloseButton /></div>
+                                    <div className='comment-div-title-label-wrap'>
+                                        <div className='comment-div-title-label-before-bar'></div>
+                                        <div className='comment-div-title-label-text select-none capitalize'>{`writing advisor`}</div>
+                                    </div>
                                 </div>
-                            )}
-                            {advisorOpen && (
-                                <div className='comment-advisor-div'
-                                    // onClick={() => setAdvisorOpen(false)}
-                                style={{width: `${divAResize.advisor.w}px`}}>
-                                    {/* advisor header */}
-                                    <div className='flex flex-col w-full h-fit relative'>
-                                        <div className='absolute top-[2px] right-[0px] hover:cursor-pointer' onClick={() => {
-                                            let dumyStates:TDivsControlConfig = JSON.parse(JSON.stringify(divAResize));
-                                            dumyStates.advisor.w = 0;
-                                            dumyStates.divideAD.x = 0;
-                                            dumyStates.draft.w = 400;
-                                            dumyStates.divideDC.x = 400;
-                                            setDivAResize(dumyStates)
-                                            setAdvisorOpen(false)
-                                        }} ><CloseButton /></div>
-                                        <div className='comment-div-title-label-wrap'>
-                                            <div className='comment-div-title-label-before-bar'></div>
-                                            <div className='comment-div-title-label-text select-none capitalize'>{`writing advisor`}</div>
+                                {/* advisor */}
+                                <div className='comment-advisor-contents'>
+                                    {/* revised sentence */}
+                                    <div className='flex flex-col bg-white'>
+                                        <div className='comment-advisor-label-wrap bg-[#f6914d] relative'
+                                        onClick={() => {
+                                            let dumyControler = JSON.parse(JSON.stringify(advisorControlDiv));
+                                            dumyControler.revised_sentence=!dumyControler.revised_sentence;
+                                            setAdvisorControlDiv(dumyControler)
+                                        }}>
+                                            <div className='flex select-none'>revised sentence</div>
+                                            <div className='flex absolute right-[19px] items-center select-none w-[14px] h-[14px]'>
+                                                {advisorControlDiv.revised_sentence ? <UnderArrow />:<UpArrow/>}
+                                            </div>
+                                        </div>
+                                        <div className={advisorControlDiv.revised_sentence ? 'comment-advisor-wrap-text border-[#f6914d]':'hidden'}>
+                                            {advisor.draft_outline.map((advisorParagraphItem) => {
+                                                const revisedSentence = advisorParagraphItem.revised_text;
+                                                const revisedSentenceName = advisorParagraphItem.name;
+                                                const key = `revised-${revisedSentenceName}-${advisorParagraphItem.order_index}`
+                                                if (revisedSentenceName==='Title') {
+                                                    return (
+                                                        <div key={key} className='flex h-fit'>{`Title: ${revisedSentence}`}</div>
+                                                    )
+                                                } else {
+                                                    return (
+                                                        <div key={key} className='flow-root h-fit'><span className='pl-[10px]'/>{revisedSentence}</div>
+                                                    )
+                                                }
+                                            })}
                                         </div>
                                     </div>
-                                    {/* advisor */}
-                                    <div className='comment-advisor-contents'>
-                                        {/* original sentence */}
-                                        {/* <div className='flex flex-col bg-white'>
-                                            <div className='comment-advisor-label-wrap bg-[#588ee1] relative'
-                                            onClick={() => {
-                                                let dumyControler = JSON.parse(JSON.stringify(advisorControlDiv));
-                                                dumyControler.original_sentence=!dumyControler.original_sentence;
-                                                setAdvisorControlDiv(dumyControler)
-                                            }}>
-                                                <div className='flex select-none'>original sentence</div>
-                                                <div className='flex absolute right-[19px] items-center select-none w-[14px] h-[14px]'>
-                                                    {advisorControlDiv.original_sentence ? <UnderArrow />:<UpArrow/>}
-                                                </div>
-                                            </div>
-                                            <div className={advisorControlDiv.original_sentence ? 'comment-advisor-wrap-text border-[#588ee1]':'hidden'}>
-                                                {advisor.draft_outline.map((advisorParagraphItem) => {
-                                                    const originalSentence = advisorParagraphItem.original_text;
-                                                    const originalSentenceName = advisorParagraphItem.name;
-                                                    const key = `advisor-${originalSentenceName}-${advisorParagraphItem.order_index}`
-                                                    if (originalSentenceName==='Title') {
-                                                        return (
-                                                            <div key={key} className='flex h-fit'>{`Title: ${originalSentence}`}</div>
-                                                        )
-                                                    } else {
-                                                        return (
-                                                            <div key={key} className='h-fit flow-root'><span className='pl-[10px]'/>{originalSentence}</div>
-                                                        )
-                                                    }
-                                                })}
-                                            </div>
-                                        </div> */}
-                                        {/* revised sentence */}
-                                        <div className='flex flex-col bg-white'>
-                                            <div className='comment-advisor-label-wrap bg-[#f6914d] relative'
-                                            onClick={() => {
-                                                let dumyControler = JSON.parse(JSON.stringify(advisorControlDiv));
-                                                dumyControler.revised_sentence=!dumyControler.revised_sentence;
-                                                setAdvisorControlDiv(dumyControler)
-                                            }}>
-                                                <div className='flex select-none'>revised sentence</div>
-                                                <div className='flex absolute right-[19px] items-center select-none w-[14px] h-[14px]'>
-                                                    {advisorControlDiv.revised_sentence ? <UnderArrow />:<UpArrow/>}
-                                                </div>
-                                            </div>
-                                            <div className={advisorControlDiv.revised_sentence ? 'comment-advisor-wrap-text border-[#f6914d]':'hidden'}>
-                                                {advisor.draft_outline.map((advisorParagraphItem) => {
-                                                    const revisedSentence = advisorParagraphItem.revised_text;
-                                                    const revisedSentenceName = advisorParagraphItem.name;
-                                                    const key = `revised-${revisedSentenceName}-${advisorParagraphItem.order_index}`
-                                                    if (revisedSentenceName==='Title') {
-                                                        return (
-                                                            <div key={key} className='flex h-fit'>{`Title: ${revisedSentence}`}</div>
-                                                        )
-                                                    } else {
-                                                        return (
-                                                            <div key={key} className='flow-root h-fit'><span className='pl-[10px]'/>{revisedSentence}</div>
-                                                        )
-                                                    }
-                                                })}
+                                    {/* similar sentence */}
+                                    <div className='flex flex-col bg-white'>
+                                        <div className='comment-advisor-label-wrap bg-[#30c194] relative'
+                                        onClick={() => {
+                                            let dumyControler = JSON.parse(JSON.stringify(advisorControlDiv));
+                                            dumyControler.similar_sentence=!dumyControler.similar_sentence;
+                                            setAdvisorControlDiv(dumyControler)
+                                        }}>
+                                            <div className='flex select-none'>similar sentence</div>
+                                            <div className='flex absolute right-[19px] items-center select-none w-[14px] h-[14px]'>
+                                                {advisorControlDiv.similar_sentence ? <UnderArrow />:<UpArrow/>}
                                             </div>
                                         </div>
-                                        {/* similar sentence */}
-                                        <div className='flex flex-col bg-white'>
-                                            <div className='comment-advisor-label-wrap bg-[#30c194] relative'
-                                            onClick={() => {
-                                                let dumyControler = JSON.parse(JSON.stringify(advisorControlDiv));
-                                                dumyControler.similar_sentence=!dumyControler.similar_sentence;
-                                                setAdvisorControlDiv(dumyControler)
-                                            }}>
-                                                <div className='flex select-none'>similar sentence</div>
-                                                <div className='flex absolute right-[19px] items-center select-none w-[14px] h-[14px]'>
-                                                    {advisorControlDiv.similar_sentence ? <UnderArrow />:<UpArrow/>}
-                                                </div>
-                                            </div>
-                                            <div className={advisorControlDiv.similar_sentence ? 'comment-advisor-wrap-text border-[#30c194]':'hidden'}>
-                                                {advisor.draft_outline.map((advisorParagraphItem) => {
-                                                    const similarSentence = advisorParagraphItem.similar_text;
-                                                    const similarSentenceName = advisorParagraphItem.name;
-                                                    const key = `similar-${similarSentenceName}-${advisorParagraphItem.order_index}`
-                                                    if (similarSentenceName==='Title') {
-                                                        return (
-                                                            <div key={key} className='flex h-fit'>{`Title: ${similarSentence}`}</div>
-                                                        )
-                                                    } else {
-                                                        return (
-                                                            <div key={key} className='flow-root h-fit'><span className='pl-[10px]'/>{similarSentence}</div>
-                                                        )
-                                                    }
-                                                })}
-                                            </div>
+                                        <div className={advisorControlDiv.similar_sentence ? 'comment-advisor-wrap-text border-[#30c194]':'hidden'}>
+                                            {advisor.draft_outline.map((advisorParagraphItem) => {
+                                                const similarSentence = advisorParagraphItem.similar_text;
+                                                const similarSentenceName = advisorParagraphItem.name;
+                                                const key = `similar-${similarSentenceName}-${advisorParagraphItem.order_index}`
+                                                if (similarSentenceName==='Title') {
+                                                    return (
+                                                        <div key={key} className='flex h-fit'>{`Title: ${similarSentence}`}</div>
+                                                    )
+                                                } else {
+                                                    return (
+                                                        <div key={key} className='flow-root h-fit'><span className='pl-[10px]'/>{similarSentence}</div>
+                                                    )
+                                                }
+                                            })}
                                         </div>
                                     </div>
                                 </div>
-                            )}
+                            </div>
+                        )}
                     {/* advisor & draft divider */}
                     {advisorOpen && (
                         <div className='bg-white w-fit h-full flex flex-col items-center justify-center'

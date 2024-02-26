@@ -198,7 +198,7 @@ export default function RubricTypeModalComponent(props:IRubricTypeModalComponent
         <DialogTitle borderBottom={1}
           sx={{
             backgroundColor: '#333',
-            paddingLeft: '20px',
+            paddingX: '20px',
             paddingY: '13px'
           }}
         >
@@ -214,19 +214,19 @@ export default function RubricTypeModalComponent(props:IRubricTypeModalComponent
           </div>
         </DialogTitle>
         <DialogContent 
-            className='flex flex-1 flex-col w-full h-full'
+          className='flex flex-1 flex-col w-full h-full rubric-modal-table-wrapper'
         >
-        <div className='flex flex-1 h-full w-full bg-[#d9d9d9] mt-8'>
-        <div className='flex flex-grow flex-col w-full overflow-y-auto'>
-          <table className='text-sm text-left w-full border border-[#808080] table-fixed'>
-            <RubricTableHeader 
-              tableHeader={viewRubricHead}
-            />
-            <RubricTableBody 
-              dataModel={viewRubric}
-            />
-          </table>
-        </div>
+        <div className='flex flex-1 h-full w-full bg-[#d9d9d9] mt-8 overflow-auto'>
+          {/* <div className='flex flex-grow flex-col w-full'> */}
+            <table className='text-sm text-left w-fit h-fit border border-[#808080] table-fixed' >
+              <RubricTableHeader 
+                tableHeader={viewRubricHead}
+              />
+              <RubricTableBody 
+                dataModel={viewRubric}
+              />
+            </table>
+          {/* </div> */}
         
         </div>
         </DialogContent>
@@ -234,3 +234,17 @@ export default function RubricTypeModalComponent(props:IRubricTypeModalComponent
     </div>
   );
 }
+
+// *::-webkit-scrollbar {
+//   width: 9px;
+//   height: 0px;
+// };
+// *::-webkit-scrollbar-thumb {
+//   background-color: #cccccc;
+//   background-clip: padding-box;
+//   border-right: 7px solid transparent;
+//   border-bottom: 1px solid transparent;
+// };
+// *::-webkit-scrollbar-corner {
+//   display: none;
+// };

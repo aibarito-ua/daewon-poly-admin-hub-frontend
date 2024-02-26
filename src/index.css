@@ -324,12 +324,12 @@ body {
   *::-webkit-scrollbar-thumb {
     background-color: #cccccc;
     background-clip: padding-box;
-    border-right: 7px solid transparent;
+    border-right: 1px solid transparent;
     border-bottom: 1px solid transparent;
   };
   *::-webkit-scrollbar-corner {
     display: none;
-  }
+  };
 
   @apply
   m-0
@@ -338,7 +338,7 @@ body {
   h-[100vh]
   flex
   items-center
-  justify-center
+  justify-center;
   
 }
 .display-page-screen {
@@ -1506,6 +1506,10 @@ body {
   bg-no-repeat
   bg-svg-bt-info-magnifying-glass-icon
   hover:cursor-pointer
+}
+.rubric-modal-table-wrapper {
+  @apply
+  flex flex-grow flex-col w-full overflow-auto;
 }
 /* evaluate rubric */
 .rubric-evaluation-font-description {

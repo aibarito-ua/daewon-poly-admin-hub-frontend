@@ -44,4 +44,5 @@ type TMaintenanceInfo = {
     maintenance_description_kr: string[];
     time_description_en: string;
     time_description_kr: string;
+    
 }
