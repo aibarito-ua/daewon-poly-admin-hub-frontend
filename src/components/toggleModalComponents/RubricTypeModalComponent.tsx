@@ -189,8 +189,10 @@ export default function RubricTypeModalComponent(props:IRubricTypeModalComponent
         ><img src={btnPreview} className='w-[24px] h-[24px] mr-[6px]'/>{rubric_type}</span>
       )}
       <Dialog className=''
+      
       fullWidth={true}
       maxWidth={'xl'}
+      
       PaperProps={{sx:{
         borderRadius: '0.2rem',
       }}}
@@ -216,9 +218,10 @@ export default function RubricTypeModalComponent(props:IRubricTypeModalComponent
         <DialogContent 
           className='flex flex-1 flex-col w-full h-full rubric-modal-table-wrapper'
         >
-        <div className='flex flex-1 h-full w-full bg-[#d9d9d9] mt-8 overflow-auto'>
+        <div className='flex flex-1 h-full w-full bg-[#d9d9d9] mt-8 overflow-auto' >
           {/* <div className='flex flex-grow flex-col w-full'> */}
-            <table className='text-sm text-left w-fit h-fit border border-[#808080] table-fixed' >
+            <table className='text-sm text-left w-full h-fit border border-[#808080]' >
+              {/* table-fixed 제거 */}
               <RubricTableHeader 
                 tableHeader={viewRubricHead}
               />

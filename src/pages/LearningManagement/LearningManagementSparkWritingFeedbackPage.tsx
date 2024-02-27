@@ -920,6 +920,8 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                 }
                 console.log('create comment =',commentData)
                 dumyComment.push(commentData)
+                // correction comment 추가할 경우 send 비활성화
+                setIsFirstFeedbackSendButtonActive(false);
                 // span.=styles;
                 setAllBodySelectedText(dumyComment);
 
@@ -2041,6 +2043,7 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                         </div>
                         {/* buttons */}
                         <div className='comment-button-wrap-div'>
+                            {/* close button */}
                             <div className='comment-button-close'
                                 style={ draftStatus === 5 ? {
                                     zIndex: 2300000000
@@ -2060,6 +2063,7 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                                     })
                                 }}
                             />
+                            {/* save button */}
                             <div className={ pageAuth === 'N' 
                                 ? ((allBodySelectedText.length > 0 || overallComment.replace(' ','').length > 0) 
                                     ? ( draftStatus < 4 ? 'comment-button-save': 'comment-button-save-disabled' )
@@ -2072,6 +2076,7 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                                         ):()=>{}
                                     ) : ()=>{} }
                             />
+                            {/* send button */}
                             <div className={ pageAuth === 'N' 
                                 ? ((
                                     isFirstFeedbackSendButtonActive
@@ -2080,7 +2085,11 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                                     ? ( draftStatus < 4 ? 'comment-button-send': 'comment-button-send-disabled' )
                                     :'comment-button-send-disabled')
                                 : 'comment-button-send-disabled' }
-                                onClick={ ()=> sendButtonEvent() }
+                                onClick={ ()=> {
+                                    if (isFirstFeedbackSendButtonActive && draftStatus < 4) {
+                                        sendButtonEvent();
+                                    }
+                                } }
                             />
                         </div>
                     </div>

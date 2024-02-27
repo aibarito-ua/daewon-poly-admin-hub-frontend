@@ -341,6 +341,7 @@ body {
   justify-center;
   
 }
+
 .display-page-screen {
   @apply
   w-full
@@ -1508,8 +1509,9 @@ body {
   hover:cursor-pointer
 }
 .rubric-modal-table-wrapper {
-  @apply
-  flex flex-grow flex-col w-full overflow-auto;
+  ::-webkit-scrollbar {
+    height: 9px;
+  };
 }
 /* evaluate rubric */
 .rubric-evaluation-font-description {

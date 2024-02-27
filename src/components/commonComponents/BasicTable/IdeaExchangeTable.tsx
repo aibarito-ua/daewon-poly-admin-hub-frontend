@@ -119,7 +119,7 @@ const TableBody = (props:{dataModel:{key:string, value:any, rowspan:number, prin
                         const borderTrans = questionViewIndex ? 'border-b-transparent':'border-t-transparent'
                         const pathExp:string = row[7].value.url.split('/').splice(-1,1);
                         const buttonLabel = pathExp;
-                        
+                        // console.log('question row =',row)
                         return (
                             <tr key={rowKey} className={`table-tbody-tr-basic ${rowBgSprite}`}>
                                 
@@ -133,7 +133,7 @@ const TableBody = (props:{dataModel:{key:string, value:any, rowspan:number, prin
                                 <td
                                     className={`h-fit table-tbody-tr-td-basic pl-[20px] ${borderTrans}`}
                                     colSpan={1}
-                                >{row[5].value.title}</td>
+                                >{row[6].value.text}</td>
                                 <td
                                     className={`h-fit table-tbody-tr-td-basic capitalize pl-[20px] w-[107px] ${borderTrans}`}
                                     colSpan={1}
@@ -163,7 +163,7 @@ export default function IdeaExchangeTableComponent (props:{table:{
     let tableDatas = props.table.body.sort((a,b) => b.year-a.year || b.semester - a.semester || a.grade - b.grade || cf.basicTable.levelSort(a.level, b.level))
     const rowMergeKey = props.options ? (props.options.mergeRowSpanKeys ? props.options.mergeRowSpanKeys: []) : ['year','semester','grade','level','book'];
     const headerData = props.table.head;
-
+    // console.log('=== idea exchange === tableDatas',tableDatas)
     let dataModel:{key:string, value:any, rowspan:number, print:boolean}[][] = [];
     for (let dataIndex = 0; dataIndex < tableDatas.length; dataIndex++) {
         const rowD = tableDatas[dataIndex];
@@ -197,6 +197,7 @@ export default function IdeaExchangeTableComponent (props:{table:{
                 }
                 pushFirstRowData.push(pushCellData)
             }
+            // console.log('dataIndex[',dataIndex,'] =',pushFirstRowData)
             dataModel.push(pushFirstRowData);
         }
 
@@ -225,6 +226,7 @@ export default function IdeaExchangeTableComponent (props:{table:{
                 }
                 pushLessonRowData.push(pushCellData)
             }
+            // console.log('dataIndex[',rowD.question.viewIndex,'] =',pushLessonRowData)
             dataModel.push(pushLessonRowData);
         }
 
@@ -241,6 +243,7 @@ export default function IdeaExchangeTableComponent (props:{table:{
             }
             pushRowData.push(pushCellData)
         }
+        // console.log('push row data =',pushRowData)
         dataModel.push(pushRowData);
     }
     dataModel = dataModel.filter((v,i) => {
@@ -277,7 +280,7 @@ export default function IdeaExchangeTableComponent (props:{table:{
         }// for cell
     } // for row
 
-    console.log('table data =',dataModel)
+    // console.log('table data =',dataModel)
 
     if (dataModel.length > 0 ) {
         return (
