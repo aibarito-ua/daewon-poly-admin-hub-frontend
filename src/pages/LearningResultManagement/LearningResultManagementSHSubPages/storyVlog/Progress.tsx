@@ -257,7 +257,7 @@ const Progress = () => {
                         key: rowKeys[col],
                         width: 60,
                         title: 'Story Vlog AI Analysis',
-                        student: {...studentNameSet, class: selectClassCode.name},
+                        student: {...studentNameSet, class: chosenClass?.name || ''},
                         value:{
                             num:0,
                             nameset: null,

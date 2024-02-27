@@ -293,7 +293,7 @@ const Portfolio = () => {
                         key: rowKeys[col],
                         width: 60,
                         title: 'Role-play Portfolio',
-                        student: {...studentNameSet, class: selectClassCode.name},
+                        student: {...studentNameSet, class: chosenClass?.name || ''},
                         value:{
                             num:0,
                             nameset: null,
