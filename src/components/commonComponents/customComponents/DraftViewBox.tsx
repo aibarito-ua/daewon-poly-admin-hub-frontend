@@ -104,6 +104,9 @@ const draftBody = (props:{feedbackDataInStudent:TFeedbackStates}) => {
     // }
     // console.log('body Data ==',bodyData)
     return originOutlineData.map((bodyItem) => {
+        // Outline Type이 WO인 경우 input_content는 공백, grammar_correction_content_teacher 빈 값으로 전달되며 표시하지 않도록 예외처리
+        if (bodyItem.input_content.trim().length === 0 && bodyItem.grammar_correction_content_teacher.length === 0) return <></>;
+        
         const data:TGrammarCorrectionContentData[][][][] = JSON.parse(bodyItem.grammar_correction_content_teacher);
         const name = bodyItem.name;
         const order_index = bodyItem.order_index;

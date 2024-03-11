@@ -1596,7 +1596,7 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                                             </div>
                                         </div>
                                         <div className={advisorControlDiv.revised_sentence ? 'comment-advisor-wrap-text border-[#f6914d]':'hidden'}>
-                                            {advisor.draft_outline.map((advisorParagraphItem) => {
+                                            {advisor.draft_outline.filter((item) => item.original_text.trim().length !== 0).map((advisorParagraphItem) => {
                                                 const revisedSentence = advisorParagraphItem.revised_text;
                                                 const revisedSentenceName = advisorParagraphItem.name;
                                                 const key = `revised-${revisedSentenceName}-${advisorParagraphItem.order_index}`
@@ -1626,7 +1626,7 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                                             </div>
                                         </div>
                                         <div className={advisorControlDiv.similar_sentence ? 'comment-advisor-wrap-text border-[#30c194]':'hidden'}>
-                                            {advisor.draft_outline.map((advisorParagraphItem) => {
+                                            {advisor.draft_outline.filter((item) => item.original_text.trim().length !== 0).map((advisorParagraphItem) => {
                                                 const similarSentence = advisorParagraphItem.similar_text;
                                                 const similarSentenceName = advisorParagraphItem.name;
                                                 const key = `similar-${similarSentenceName}-${advisorParagraphItem.order_index}`
