@@ -1606,7 +1606,7 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                                                     )
                                                 } else {
                                                     return (
-                                                        <div key={key} className='flow-root h-fit'><span className='pl-[10px]'/>{revisedSentence}</div>
+                                                        <div key={key} className='flow-root h-fit'>{revisedSentence}</div>
                                                     )
                                                 }
                                             })}
@@ -1636,7 +1636,7 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                                                     )
                                                 } else {
                                                     return (
-                                                        <div key={key} className='flow-root h-fit'><span className='pl-[10px]'/>{similarSentence}</div>
+                                                        <div key={key} className='flow-root h-fit'>{similarSentence}</div>
                                                     )
                                                 }
                                             })}

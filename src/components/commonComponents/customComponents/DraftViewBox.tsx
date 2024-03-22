@@ -115,7 +115,7 @@ const draftBody = (props:{feedbackDataInStudent:TFeedbackStates}) => {
                 const paragraghKey = bodyItem.name+bodyItem.order_index+paragraghIndex;
                 // console.log('paragraghItem =',bodyItem)
     
-                return <div className='flow-root justify-start draft-1-body-paragragh' id={bodyItem.name} key={paragraghKey}><span className='pl-[10px]'/>
+                return <div className='flow-root justify-start draft-1-body-paragragh' id={bodyItem.name} key={paragraghKey}>
                 {paragraghItem.map((sentenceItem, sentenceIndex) => {
                     const sentenceKey = paragraghKey+'-'+sentenceIndex
                     // console.log('sentence item =',sentenceItem)
@@ -289,7 +289,7 @@ const loadTemporaryDraftTitle = (
 
             return <div className='draft-title-paragragh-wrap'
             id={'Title'} key={paragraphKey}
-            ><span className='pl-[10px]'/>
+            >
             {jsxElements}
             </div>
         }
@@ -394,7 +394,7 @@ const loadTemporaryDraftBody = (
             })
             return <div className='flow-root justify-start draft-1-body-paragragh whitespace-pre-wrap'
             id={paragraphItem.name} key={paragraphKey}
-            ><span className='pl-[10px]'/>
+            >
             {jsxElements}
             </div>
         }
@@ -452,7 +452,7 @@ const loadFinalDraftBody = (
                     const mainTagKey = 'final-body-'+draft+'-'+paragraphIndex+sentenceIndex+'-normal';
                     const makeValue = <span key={mainTagKey} className='h-fit'>{sentenceItem}</span>;
                     const wraper = <div className='flow-root'
-                    ><span className='pl-[10px] whitespace-pre-wrap'>{makeValue}</span></div>
+                    ><span className='whitespace-pre-wrap'>{makeValue}</span></div>
                     jsxElements.push(wraper)
                 })
                 return <div className='flex flex-col max-h-fit whitespace-pre-wrap gap-[13px]' key={paragraphKey}>{jsxElements}</div>
@@ -470,7 +470,7 @@ const loadFinalDraftBody = (
                     const mainTagKey = 'final-body-'+draft+'-'+paragraphIndex+sentenceIndex+'-normal';
                     const makeValue = <span key={mainTagKey} className='h-fit'>{sentenceItem}</span>;
                     const wraper = <div className='flow-root'
-                    ><span className='pl-[10px] whitespace-pre-wrap'>{makeValue}</span></div>
+                    ><span className='whitespace-pre-wrap'>{makeValue}</span></div>
                     jsxElements.push(wraper)
                 })
                 return <div className='flex flex-col gap-[13px] max-h-fit whitespace-pre-wrap' key={paragraphKey}>{jsxElements}</div>

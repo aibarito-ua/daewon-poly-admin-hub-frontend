@@ -59,7 +59,8 @@ const PrintExportButton = (props: {
             const spanHeight = childSpanRef[j].clientHeight;
             newHeight += spanHeight;
             const newTagsLength = newTags.length;
-            const jsxChildSpan = <span className='flow-root indent-[2.64583mm]'>{childSpanText}<br /><br /></span>;
+            const jsxChildSpan = <span className='flow-root'>{childSpanText}<br /><br /></span>;
+            // indent-[2.64583mm] delete
             
             if (newTagsLength === 0) {
                 if (clientHeight >= newHeight) {
@@ -129,7 +130,8 @@ const PrintExportButton = (props: {
                 title = outlines[i].input_content
             } else {
                 if (draft === 1) {
-                    let jsxBody = <span className='flow-root indent-[2.64583mm]'>{outlines[i].input_content}<br /><br /></span>;
+                    let jsxBody = <span className='flow-root'>{outlines[i].input_content}<br /><br /></span>;
+                    // indent-[2.64583mm] delte
                     // jsxBody
                     // console.log('jsxBody =',jsxBody.props)
                     body.push(jsxBody);
@@ -137,7 +139,8 @@ const PrintExportButton = (props: {
                     const bodyText = outlines[i].input_content.split('\n\n');
                     
                     body=bodyText.map((item,itemIdx ) => {
-                        return <span key={'print-component-'+draft+'-'+itemIdx}><span className='pl-[1.05833mm]'></span>{item}<br /><br /></span>
+                        return <span key={'print-component-'+draft+'-'+itemIdx}>{item}<br /><br /></span>
+                        // <span className='pl-[1.05833mm]'></span> delete
                     })
                     
                 }

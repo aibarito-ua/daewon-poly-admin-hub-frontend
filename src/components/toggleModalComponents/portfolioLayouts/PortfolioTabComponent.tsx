@@ -642,7 +642,8 @@ export default function PortfolioTabComponent() {
                 return splitText.map((bodyText, bodyTextIdx) => {
                     const bodyKey = key+bodyTextIdx;
                     return <div key={bodyKey} className='flex flex-row w-full justify-start px-[41px]'>
-                        <div className='flow-root indent-[10px] portfolio-modal-contents-font'>{bodyText}<br /></div>
+                        <div className='flow-root portfolio-modal-contents-font'>{bodyText}<br /></div>
+                        {/* indent-[10px] delete */}
                     </div>
                 })
             }
