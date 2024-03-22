@@ -1,11 +1,7 @@
 import React from 'react';
 import { useReactToPrint } from 'react-to-print';
 import ComponentToPrint from './PrintComponent';
-// import html2canvas from 'html2canvas';
-// import jsPDF from 'jspdf';
-// import ReactPDF from '@react-pdf/renderer';
 import Html2Pdf from 'html2pdf.js';
-
 
 const PrintExportButton = (props: {
     userInfo:TFeedbackStates;

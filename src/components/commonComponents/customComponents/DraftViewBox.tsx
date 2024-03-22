@@ -139,7 +139,11 @@ const draftBody = (props:{feedbackDataInStudent:TFeedbackStates}) => {
                                 >{currentWord}</span>
                             } else {
                                 // type 0
-                                returnValue = <span className='h-fit draft-body-select-area-check-span text-[#222]' key={mainTagKey}>{currentWord}</span>
+                                if (currentWord === '\n') {
+                                    returnValue = <span className='h-fit draft-body-select-area-check-span text-[#222] whitespace-pre-wrap' key={mainTagKey}>{'\n'}</span>
+                                } else {
+                                    returnValue = <span className='h-fit draft-body-select-area-check-span text-[#222]' key={mainTagKey}>{currentWord}</span>
+                                }
                             }
                         } else {
                             // delete and add word set
@@ -341,6 +345,9 @@ const loadTemporaryDraftBody = (
                 const af_item = wordIndex<screenData.length? screenData[wordIndex+1]:null;
                 // make value => cover span tag
                 // make word value
+                // check new line 
+                // const isHaveNewline = wordItem.text.match(/\n{1,}/gm).length > 0 ? 'whitespace-pre-wrap':'';
+                // console.log('isHaveNewline =',isHaveNewline)
                 // type check
                 if (currentType === -1) {
                     const jsxTag = <span key={mainTagKey} className='text-[#eb3a3a] line-through draft-body-select-area-check-span'>{wordItem.text}</span>;
@@ -385,7 +392,7 @@ const loadTemporaryDraftBody = (
                     }
                 } else {}// else 경우는 다음 턴에서 푸쉬
             })
-            return <div className='flow-root justify-start draft-1-body-paragragh'
+            return <div className='flow-root justify-start draft-1-body-paragragh whitespace-pre-wrap'
             id={paragraphItem.name} key={paragraphKey}
             ><span className='pl-[10px]'/>
             {jsxElements}
@@ -445,10 +452,10 @@ const loadFinalDraftBody = (
                     const mainTagKey = 'final-body-'+draft+'-'+paragraphIndex+sentenceIndex+'-normal';
                     const makeValue = <span key={mainTagKey} className='h-fit'>{sentenceItem}</span>;
                     const wraper = <div className='flow-root'
-                    ><span className='pl-[10px]'>{makeValue}</span></div>
+                    ><span className='pl-[10px] whitespace-pre-wrap'>{makeValue}</span></div>
                     jsxElements.push(wraper)
                 })
-                return <div className='max-h-fit' key={paragraphKey}>{jsxElements}</div>
+                return <div className='flex flex-col max-h-fit whitespace-pre-wrap gap-[13px]' key={paragraphKey}>{jsxElements}</div>
             }
         })
     } else if (draft==='2') {
@@ -463,10 +470,10 @@ const loadFinalDraftBody = (
                     const mainTagKey = 'final-body-'+draft+'-'+paragraphIndex+sentenceIndex+'-normal';
                     const makeValue = <span key={mainTagKey} className='h-fit'>{sentenceItem}</span>;
                     const wraper = <div className='flow-root'
-                    ><span className='pl-[10px]'>{makeValue}</span></div>
+                    ><span className='pl-[10px] whitespace-pre-wrap'>{makeValue}</span></div>
                     jsxElements.push(wraper)
                 })
-                return <div className='flex flex-col gap-[13px] max-h-fit' key={paragraphKey}>{jsxElements}</div>
+                return <div className='flex flex-col gap-[13px] max-h-fit whitespace-pre-wrap' key={paragraphKey}>{jsxElements}</div>
             }
         })
     }

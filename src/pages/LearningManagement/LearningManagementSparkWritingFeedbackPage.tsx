@@ -2129,7 +2129,7 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                                 </div>
                             </div>
                             <div id='draft-body-wrap-div' ref={container1stDraftBody} className='draft-viewer-container-body-wrap'>
-                                <div className='draft-viewer-container-body gap-[13px] font-notoSansCJKKR text-[13px] text-[#222] leading-[1.38]'>
+                                <div className='draft-viewer-container-body font-notoSansCJKKR text-[13px] text-[#222] leading-[1.38]'>
                                     {feedbackDataInStudent.draft_data && draftViewBox.loadFinalDraftBody({feedbackDataInStudent:feedbackDataInStudent.draft_data.draft_outline, draft: '1' })}
                                 </div>
                             </div>

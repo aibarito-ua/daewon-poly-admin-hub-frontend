@@ -1102,7 +1102,7 @@ body {
 .draft-viewer-container-title {
   @apply
   flex w-full min-h-[42px] h-fit bg-[#f9f9f9] px-[15px] py-[12px]
-  rounded-[2px]
+  rounded-[2px] gap-[13px]
 }
 .draft-viewer-container-body-wrap {
   @apply
@@ -1113,6 +1113,7 @@ body {
   overflow-auto
   bg-[#f9f9f9]
   justify-start
+  gap-[13px]
 }
 .draft-viewer-container-wrap {
   @apply
@@ -1130,6 +1131,7 @@ body {
   overflow-auto
   bg-[#f9f9f9]
   justify-start
+  gap-[13px]
 }
 .final-draft-viewer-2nd-preview {
   @apply
@@ -1219,6 +1221,8 @@ body {
   line-height: 1.92;
   letter-spacing: normal;
   text-align: left;
+  @apply
+  whitespace-pre-wrap
 }
 .learning-management-title-label {
   font-family: NotoSansCJKKR;
@@ -1807,6 +1811,7 @@ body {
   flex flex-col
   w-[160.588mm]
   h-[195.662mm]
+  whitespace-pre-wrap
 }
 .export-lm-wh-content-pre-body {
   font-family: 'NotoSansCJKKR';
