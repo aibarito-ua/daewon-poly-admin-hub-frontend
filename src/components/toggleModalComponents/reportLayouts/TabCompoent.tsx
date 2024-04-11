@@ -100,6 +100,11 @@ export default function BasicTabs(props: {
     const [isLeftAvailable, setIsLeftAvailable] = React.useState<boolean>(false);
     const [isRightAvailable, setIsRightAvailable] = React.useState<boolean>(false);
 
+    // for export button, value reset
+    const [exportFeedbackData, setExportFeedbackData] = React.useState<TFeedbackStates|null>(null);
+    const [exportReportByUnitAPIData, setExportReportByUnitAPIData] = React.useState<TStudentUnitReportRes|null>(null);
+    const [isReplaceExport, setIsReplaceExport] = React.useState<boolean>(false);
+
     const {
         rubricDataHead
     } = useActivityWritingHubStore();
@@ -109,7 +114,10 @@ export default function BasicTabs(props: {
         isModalOpen, setIsModalOpen
     } = useReportStore();
 
-    const {feedbackDataInStudent, studentDataInClass, setFeedbackDataInStudent} = useLearningManagementSparkWritingStore();
+    const {
+        feedbackDataInStudent, studentDataInClass,
+        setFeedbackDataInStudent
+    } = useLearningManagementSparkWritingStore();
     const navigate = useNavigate();
     const {setMaintenanceData} = useLoginStore();
     const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -228,6 +236,12 @@ export default function BasicTabs(props: {
         const isReportArr = checkIsReport(data);
         
         setAvailableReports(isReportArr);
+        if (exportReportByUnitAPIData===null) {
+            setExportReportByUnitAPIData(reportByUnitAPIData)
+        }
+        if (exportFeedbackData===null) {
+            setExportFeedbackData(feedbackDataInStudent)
+        }
         
         // checkMoveFlag(selectUnit);
     },[])
@@ -242,6 +256,21 @@ export default function BasicTabs(props: {
         isLeftAvailable,
         isRightAvailable
     ])
+    React.useEffect(()=>{
+        let flag = false;
+        if (exportFeedbackData!==null && feedbackDataInStudent !== exportFeedbackData) {
+            setExportFeedbackData(feedbackDataInStudent)
+            flag=true;
+        }
+        
+        if (exportReportByUnitAPIData!==null && reportByUnitAPIData !== exportReportByUnitAPIData) {
+            setExportReportByUnitAPIData(reportByUnitAPIData)
+            flag=true;
+        }
+        if (flag) {
+            setIsReplaceExport(false)
+        }
+    }, [reportByUnitAPIData, feedbackDataInStudent])
 
     const selectDate = (data:TLMSparkWritingStudentUnitDraft1StatusItemInClass,isDraft:boolean):string => {
         const {status} = data;
@@ -390,6 +419,7 @@ export default function BasicTabs(props: {
                             setFeedbackDataInStudent(dumyData);
                             checkMoveFlag(target.unit_index);
                             set.initCurrentDisplay(target.unit_index, target.topic);
+                            
                             break;
                         }
                     }
@@ -584,7 +614,14 @@ export default function BasicTabs(props: {
             </div>
             {/* foot: print, complete date */}
             <div className='flex flex-row w-full h-[70px] min-h-[70px] border-t-[1px] border-t-[#e2e3e6] relative pl-[30px] items-center'>
-                <PrintReportExportButton feedbackDataInStudent={feedbackDataInStudent} reportByUnitAPIData={reportByUnitAPIData}/>
+                {/* <PrintReportExportButton feedbackDataInStudent={feedbackDataInStudent} reportByUnitAPIData={reportByUnitAPIData}/> */}
+                {(exportFeedbackData!==null && exportReportByUnitAPIData!==null) && 
+                    <PrintReportExportButton 
+                        feedbackDataInStudent={exportFeedbackData} reportByUnitAPIData={exportReportByUnitAPIData}
+                        isReplace={isReplaceExport}
+                        setReplace={setIsReplaceExport}
+                    />
+                }
 
                 {/* <div className='absolute bottom-[25px] right-[30px] flex flex-row capitalize items-center gap-[5px]'>
                     <div className='report-by-unit-completion-date-title'>completion date: </div>

@@ -224,9 +224,9 @@ export default function ReturnedFeedbackModalComponent (props: IReturnFeedbackPr
         }}>
             <div className='flex flex-1 flex-row justify-center w-full items-center gap-[10px]'>
                 <div className='return-feedback-modal-disabled-buttons'
-                >{'send'}</div>
+                >{'Send'}</div>
                 <div className='return-feedback-modal-disabled-buttons'
-                >{'cancel'}</div>
+                >{'Cancel'}</div>
             </div>
         </DialogActions>
       </Dialog>

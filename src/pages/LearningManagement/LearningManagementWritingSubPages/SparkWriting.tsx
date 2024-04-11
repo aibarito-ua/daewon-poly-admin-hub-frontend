@@ -79,6 +79,7 @@ const LMSparkWriting = () => {
 
     // maintain load and save
     const maintainStates = (startCharacter: 'save'|'load'|'delete',options?: TMaintainStatesOptions) => {
+        console.log('=== maintainStates ===::',startCharacter)
         if (startCharacter==='save') {
             let saveMaintainStates:TMaintainStates = {
                 data: options?.data ? options.data: data,
@@ -277,7 +278,9 @@ const LMSparkWriting = () => {
                     classCode:selectClassCode.code
                 }
                 
-                
+                // 데이터 호출 전 대기 화면을 위한 테이블 데이터 초기화
+                setClassCurrentData([]);
+                setIsLoadData(true);
                 const rsp = await getLMSparkWritingStudents(reqData).then((response) => {
                     // setCommonStandbyScreen({openFlag:false})
                     return response;
@@ -331,13 +334,15 @@ const LMSparkWriting = () => {
                     setFeedbackDataInStudent(dumyFeedbackData);
                     // table data setting
                     setStudentDataInClass(rsp)
-                    makeTableData(rsp)
-                    setIsSearch(true)
-                    maintainStates('save', {
-                        isSearch: true, isAllSelected:true,
-                    });
-                    setIsLoadData(false);
-                    setCommonStandbyScreen({openFlag:false})
+                    const isLoadTableComplete = makeTableData(rsp);
+                    if (isLoadTableComplete) {
+                        setIsSearch(true)
+                        maintainStates('save', {
+                            isSearch: true, isAllSelected:true,
+                        });
+                        setIsLoadData(false);
+                        setCommonStandbyScreen({openFlag:false})
+                    }
                 } else {
                     setStudentDataInClass({book_name:'',students:[]})
                     setEmptyPageMessage('No data to display!')
@@ -359,6 +364,7 @@ const LMSparkWriting = () => {
         };
     }
     const makeTableData = (rsp: TLMSparkWritingStudentsListInClass) =>{
+        
         const unitIdxs = Array.from({length:5},(_, valueKIdx) => {return valueKIdx+1});
         const draftIdxs = Array.from({length:3}, (_,valueKIdx) => {return valueKIdx+1});
         const headLabels = [
@@ -390,7 +396,7 @@ const LMSparkWriting = () => {
                 const unit = parseInt(rowKeys[col].split('_')[1]);
                 const draftString = rowKeys[col].split('_')[2];
                 const draftNum = draftString==='1st'?1: (draftString==='2nd'?2:0)
-                console.log(`unit = ${unit}`,targetStudent.units[unit-1])
+                // console.log(`unit = ${unit}`,targetStudent.units[unit-1])
                 
                 // const targetUnitData = col===0 ? row+1: (col===1 ? studentNameSet : targetStudent.units[unit]);
                 if (col===0) {
@@ -443,7 +449,8 @@ const LMSparkWriting = () => {
         console.log('bodyData =',bodyData)
         if (bodyData.length>0) {
             setClassCurrentData(bodyData)
-        }
+            return true;
+        } else return false;
     }
 
     const filterButtonEventCampus= async (value:string) => {
@@ -571,7 +578,6 @@ const LMSparkWriting = () => {
                 // draft에서 넘어온 후
                 console.log('1')
                 maintainStates('load');
-                // await searchEventFunction()
             } else {
                 // 다른 곳에서 넘어온 후
                 console.log('2')
@@ -583,10 +589,6 @@ const LMSparkWriting = () => {
             // 검색한 적이 없는 경우
             beforRenderedFn();
         }
-        
-        // console.log('before url path =',beforeUrl);
-        // console.log('test =',document.referrer)
-        // beforRenderedFn();
     })
 
     return (

@@ -196,14 +196,14 @@ export default function ReturnFeedbackModalComponent (props: IReturnFeedbackProp
                 {((reasonStr === 'Other' && otherReason != '') || (reasonStr !== 'Other' && reasonStr !== '')) && returnFeedbackValue.teacher_comment != '' ? 
                     <div className='return-feedback-modal-buttons bg-[#0fa9cb] text-[#ffffff]'
                     onClick={send}
-                    >{'send'}</div>
+                    >{'Send'}</div>
                     :
                     <div className='return-feedback-modal-disabled-buttons'
-                    >{'send'}</div>
+                    >{'Send'}</div>
                 }
                 <div className='return-feedback-modal-buttons bg-[#e5e5e5] text-[#222222]'
                 onClick={cancel}
-                >{'cancel'}</div>
+                >{'Cancel'}</div>
             </div>
         </DialogActions>
       </Dialog>

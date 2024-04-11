@@ -6,21 +6,26 @@ import ReportComponentToPrint from './PrintReportComponent';
 const PrintReportExportButton = (props: {
     feedbackDataInStudent: TFeedbackStates;
     reportByUnitAPIData:TStudentUnitReportRes;
+    isReplace: boolean;
+    setReplace: Function;
 }) => {
     const {
-        feedbackDataInStudent, reportByUnitAPIData
+        feedbackDataInStudent, reportByUnitAPIData, isReplace, setReplace
     } = props;
     const componentRef = React.useRef(null);
 
     const divRef = React.useRef<HTMLDivElement>(null);
     const [replaceBody, setReplaceBody] = React.useState<JSX.Element[][]>([]);
-    const [isReplace, setIsReplace] = React.useState<boolean>(false);
+    // const [isReplace, setIsReplace] = React.useState<boolean>(false);
     const [isMulti, setisMulti] = React.useState<boolean>(false);
 
 
     React.useEffect(() => {
         if (!isReplace) {
             if (divRef.current) {
+                console.log(' === Print Report Export Button Did mount ===')
+                console.log('feedbackDataInStudent =',feedbackDataInStudent)
+                console.log('reportByUnitAPIData=',reportByUnitAPIData)
                 const checkRef = divRef.current;
                 checkRef.style.display='block';
                 const oneRowHeight = checkRef.children[0].children[0].clientHeight; 
@@ -34,6 +39,7 @@ const PrintReportExportButton = (props: {
                 
                 let newHeight = oneRowHeight;
                 let newTags:JSX.Element[][]=[];
+                const minimumPrintTextCountNumber = 490;
                 const childRef = checkRef.children;
                 for (let i = 0; i < childRef.length; i++) {
                     const childRow = childRef[i].children;
@@ -45,9 +51,24 @@ const PrintReportExportButton = (props: {
                         const newtagsLength = newTags.length;
                         const jsxChildSpan = <span className='export-report-wr-oc-input'>{childSpanText}</span>;
                         if (newtagsLength === 0) {
+                            // 1줄이지만 나눠지지 않는 경우 체크
                             if (clientHeight > newHeight) {
                                 newTags.push([])
                                 newTags[0].push(jsxChildSpan);
+                            } else {
+                                newTags.push([])
+                                const remainingText = childSpanText?.slice(0, minimumPrintTextCountNumber);
+                                const remainingSpan = <span key={remainingText+'-export-print-'+i+j} className='export-report-wr-oc-input'>{remainingText}</span>;
+                                newTags[0].push(remainingSpan);
+                                const overflowText = childSpanText?.slice(minimumPrintTextCountNumber);
+                                if (overflowText) {
+                                    newHeight = 0;
+                                    const overflowSpan = <span key={overflowText+'-export-print-'+i+j} className='export-report-wr-oc-input'>{overflowText}</span>;
+                                    newTags.push([]);
+                                    newTags[1].push(overflowSpan)
+                                } else {
+                                    newHeight += spanHeight;
+                                }
                             }
                         } else if (newtagsLength===1) {
                             const lastIdx = newtagsLength-1;
@@ -77,11 +98,9 @@ const PrintReportExportButton = (props: {
                 } else {
                     setisMulti(false);
                 }
-                setIsReplace(true);
+                setReplace(true);
                 setReplaceBody(newTags);
             }
-
-
         }
     })
 

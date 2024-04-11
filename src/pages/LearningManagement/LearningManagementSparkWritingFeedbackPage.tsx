@@ -3,7 +3,7 @@ import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import useNavStore from '../../store/useNavStore';
 import useLearningManagementSparkWritingStore from '../../store/useLearningManagementSparkWritingStore';
-import { SizeDragButtonSVG, CommentPlusIconSVG } from '../../util/svgs/heroIcons/SizeDragButtonSVG';
+import { SizeDragButtonSVG } from '../../util/svgs/heroIcons/SizeDragButtonSVG';
 import draftViewBox from '../../components/commonComponents/customComponents/DraftViewBox';
 import useControlAlertStore from '../../store/useControlAlertStore';
 import { commonSvgIcons } from '../../util/svgs/commonSvgIcons';
@@ -12,11 +12,9 @@ import ReturnFeedbackModalComponent from '../../components/toggleModalComponents
 import RubricTypeModalComponent from '../../components/toggleModalComponents/RubricTypeModalComponent';
 import useActivityWritingHubStore from '../../store/useActivityWritingHubStore';
 import PrintExportButton from '../../components/commonComponents/customComponents/exportButtons/PrintExportButton';
-import ReportModalComponent from '../../components/toggleModalComponents/ReportModalComponent';
 import useLoginStore from '../../store/useLoginStore';
 import { Cookies } from 'react-cookie';
 import ReturnedFeedbackModalComponent from '../../components/toggleModalComponents/ReturnedFeedbackModalComponent';
-import PortfolioModalComponent from '../../components/toggleModalComponents/PortfolioModalComponent';
 import InfinityLoadingComponent from '../../components/layoutComponents/InfinityLoading';
 
 type TDivsControlConfig = {
