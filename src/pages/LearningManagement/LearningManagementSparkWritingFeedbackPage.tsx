@@ -16,7 +16,7 @@ import useLoginStore from '../../store/useLoginStore';
 import { Cookies } from 'react-cookie';
 import ReturnedFeedbackModalComponent from '../../components/toggleModalComponents/ReturnedFeedbackModalComponent';
 import InfinityLoadingComponent from '../../components/layoutComponents/InfinityLoading';
-
+import history from '../../util/common/history';
 type TDivsControlConfig = {
     advisor: {
         x: number;
@@ -98,6 +98,7 @@ const LearningManagementSparkWritingFeedbackPage = () => {
     const [commentBodyBoxPosition, setCommentBodyBoxPosition] = React.useState({top:0, left:0});
 
     // comment focus flag -> target border
+    // click focus
     const [commentFocusId, setCommentFocusId] = React.useState<string>('');
 
     // overall comment textarea value
@@ -112,8 +113,6 @@ const LearningManagementSparkWritingFeedbackPage = () => {
         teacher_comment: '',
         is_return: false
     });
-    // 1st draft default data -> temporary save & send data form
-    const [draftResultSendData, setDraftResultSendData] = React.useState<TAdminDraft1stCommentData>();
 
     // final 2nd draft save flag
     const [finalTemporarySaveFlag, setFinalTemporarySaveFlag] = React.useState<boolean>(false);
@@ -145,8 +144,6 @@ const LearningManagementSparkWritingFeedbackPage = () => {
         draft_outline:[]
     });
 
-    // printRef
-    const contentPrintRef = React.useRef(null);
     const container1stDraftBody = React.useRef<HTMLDivElement|null>(null);
     const [printBodyText, setPrintBodyText] = React.useState<string>('');
 
@@ -157,7 +154,6 @@ const LearningManagementSparkWritingFeedbackPage = () => {
         const overall_comment = overallComment;
         const feedback_return = returnFeedback;
         const comment:TCommentDataList = allBodySelectedText.map((commentItem) => {
-            // console.log('all text =',document.getElementById(commentItem.paraghragh_name)?.textContent?.length)
             return {
                 comment: commentItem.comment,
                 comment_className: commentItem.comment_className,
@@ -213,10 +209,7 @@ const LearningManagementSparkWritingFeedbackPage = () => {
             fullTextByScreenData.push(currentFullTextInScreenData);
             return returnScreenDataByCharSplit;
         });
-
-        console.log('all char =',allCharScreenDataFirstStep,fullTextByScreenData);
-        // console.log('fullTextByScreenData =\n1 > ',fullTextByScreenData[0].length,
-        //     '2 >',fullTextByScreenData[1].length, '3 >', fullTextByScreenData[2].length, '4 >',fullTextByScreenData[3].length,'5 >',fullTextByScreenData[4].length)
+        // '2 >',fullTextByScreenData[1].length, '3 >', fullTextByScreenData[2].length, '4 >',fullTextByScreenData[3].length,'5 >',fullTextByScreenData[4].length)
 
         let allCharScreenData:TParagraphScreenData[][] = []
         // screen char data replace comment index
@@ -224,7 +217,6 @@ const LearningManagementSparkWritingFeedbackPage = () => {
         for (let outline_index = 0; outline_index < outlines.length; outline_index++) {
             const allCharDataInOutline = allCharScreenDataFirstStep[outline_index];
             const currentOutlineName = outlines[outline_index].name;
-            const currentParentText = fullTextByScreenData[outline_index];
             allCharScreenData.push([]);
 
             // char data for loop start
@@ -239,9 +231,6 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                         const currentCommentData = comment[comment_idx];
                         const currentCommentStartIndex = currentCommentData.start_index;
                         const currentCommentEndIndex = currentCommentData.end_index;
-                        const findTargetText = currentParentText.substring(currentCommentStartIndex, currentCommentEndIndex);
-                        // console.log('')
-                        // console.log('findTargetText =',findTargetText)
                         if (char_index >= currentCommentStartIndex && char_index < currentCommentEndIndex+2) {
                             charItem.comment_index = currentCommentData.comment_index;
                             break;
@@ -251,7 +240,6 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                 allCharScreenData[outline_index].push(charItem);
             };
         };
-        console.log('allCharScreenData==',allCharScreenData);
         // 정리된 char 데이터를 전체 순회하면서 merge하기
         let replaceAllScreenDataChartoString:TCommentAllParagraphData=[];
         for (let pIdx = 0; pIdx < allCharScreenData.length; pIdx++) {
@@ -307,7 +295,6 @@ const LearningManagementSparkWritingFeedbackPage = () => {
             }
             replaceAllScreenDataChartoString.push(replaceOLData);
         }//for loop ended
-        console.log('ended===',replaceAllScreenDataChartoString)
         const responseData:TAdminDraft1stCommentData = {
             comment,
             data:replaceAllScreenDataChartoString,
@@ -331,11 +318,6 @@ const LearningManagementSparkWritingFeedbackPage = () => {
         const data:TCommentAllParagraphData=[];
         const overall_comment = '';
         const draft_id = parseInt(draftId);
-        // const feedback_return:TReturnFeedback = {
-        //     reason: returnFeedback.reason,
-        //     teacher_comment: returnFeedback.teacher_comment,
-        //     is_return: true,
-        // }
         const responseData:TAdminDraft1stCommentData = {
             comment,
             data,
@@ -344,7 +326,6 @@ const LearningManagementSparkWritingFeedbackPage = () => {
             feedback_return,
             rubric_report:[]
         };
-        console.log('return =',responseData)
         const rsp = await draftFeedbackSend(responseData);
         if (!rsp.flag) {
             if (rsp.error) {
@@ -372,18 +353,17 @@ const LearningManagementSparkWritingFeedbackPage = () => {
             is_return: false,
         }
         const rubric_report = rubricReportValue;
-        console.log(' rubricReportValue in send =',rubricReportValue)
         if (flag==='send') {
             console.log('send!')
             const overall_comment=finalOverallComment;
-        const responseData:TAdminDraft1stCommentData = {
-            draft_id,
-            data:[],
-            comment:[],
-            feedback_return,
-            overall_comment,
-            rubric_report,
-        }
+            const responseData:TAdminDraft1stCommentData = {
+                draft_id,
+                data:[],
+                comment:[],
+                feedback_return,
+                overall_comment,
+                rubric_report,
+            }
             return await draftFeedbackSend(responseData);
         } else {
             // temporary save data 
@@ -404,19 +384,19 @@ const LearningManagementSparkWritingFeedbackPage = () => {
     // title select text
     const titleDragHandlerSelection = (e:React.MouseEvent<HTMLDivElement, MouseEvent>) => {
         e.preventDefault();
-        console.log('e', e.currentTarget.getBoundingClientRect())
+        // console.log('e', e.currentTarget.getBoundingClientRect())
         if (containerTitleRef.current) {
             const boundary = containerTitleRef.current.getBoundingClientRect();
             if (boundary) {
                 const selection = window.getSelection();
                 if (selection) {
-                    console.log('===selection===',selection)
+                    // console.log('===selection===',selection)
                     const text = selection?.toString();
                     if (text && text.trim()!=='') {
                         const range = selection.getRangeAt(0);
                         if (range) {
                             const checkTextData = selection.anchorNode?.parentElement?.className;
-                            console.log('===checkTextData ===',checkTextData)
+                            // console.log('===checkTextData ===',checkTextData)
                             const containerNode = containerTitleRef.current; // Assuming this is the container div element
                             let startIndex = 0;
                             let endIndex = 0;
@@ -541,7 +521,7 @@ const LearningManagementSparkWritingFeedbackPage = () => {
         if (containerBodyRef.current) {
             const selection = window.getSelection();
             const checkTextData = selection?.anchorNode?.parentElement?.className.includes('draft-body-select-area-check-span');
-            console.log('checkTextData =',checkTextData)
+            // console.log('checkTextData =',checkTextData)
             const text = selection?.toString();
             if (text && text.trim()!=='') {
                 const range = selection?.getRangeAt(0);
@@ -697,6 +677,7 @@ const LearningManagementSparkWritingFeedbackPage = () => {
         const selection = window.getSelection();
         if (selection) {
             const containerNode = containerBodyRef.current; // Assuming this is the container div element
+
             let dumyAllComment:TComment[] = JSON.parse(JSON.stringify(allBodySelectedText));
             
             // comment indexing event
@@ -715,27 +696,26 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                 }
             };
             const currentCommentIndex = indexingComment(dumyAllComment)
-            console.log('drag index = ',currentCommentIndex)
+            // console.log('drag index = ',currentCommentIndex)
             const range = selection.getRangeAt(0),
                 span = document.createElement('span'),
                 text = selection.toString(),
                 classNameValue = 'highlight-title-'+currentCommentIndex;
             
-            console.log('range =',range)
+            // console.log('range =',range)
             
             span.className=classNameValue;
             span.id=classNameValue;
-            span.onmouseover = () => {
-                span.style.cursor = 'pointer'; // Change cursor style on mouseover
+            // issue # 17102 : hover event -> click으로 대체
+            // onMouseOver, onMouseOut Event 삭제
+
+            span.addEventListener('click', (e) => {
+                console.log('=== 711 :: click ====')
+                span.style.cursor = 'pointer'; 
                 span.style.border = '2px solid #f1b02e'
                 setCommentFocusId(classNameValue);
-            };
-              
-            span.onmouseout = () => {
-                // span.style.cursor = 'pointer'; // Restore cursor style on mouseout
-                span.style.border = ''
-                setCommentFocusId('');
-            };
+            })
+
             const checkElement = (target:HTMLElement|null) => {
                 let targetElement:HTMLElement|null = target;
                 while(targetElement && targetElement.id==='') {
@@ -758,9 +738,6 @@ const LearningManagementSparkWritingFeedbackPage = () => {
             // console.log('newTarget =',newTarget)
 
             if (containerNode && divName && newTarget) {
-                
-                const newText = newTarget.textContent;
-                // console.log('test ===',newText)
                 let startIndex = 0;
                 let endIndex = 0;
                 // Calculate start index
@@ -773,7 +750,6 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                 endIndex = startIndex + text.length;
     
                 let dumyComment:TComment[] = allBodySelectedText;
-                // const currentCommentIndex = dumyComment.length;
                 const styles:React.CSSProperties = {
                     backgroundColor: 'yellow',
                     userSelect:'none',
@@ -792,7 +768,6 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                     parent_text: containerNode.textContent ? containerNode.textContent : '',
                     targetStyles: styles
                 }
-                // console.log('create comment =',commentData)
                 dumyComment.push(commentData)
                 // span.=styles;
                 setAllBodySelectedText(dumyComment);
@@ -802,12 +777,9 @@ const LearningManagementSparkWritingFeedbackPage = () => {
             span.style.height = 'fit-content'
             span.style.cursor = 'pointer'
             
-
             span.appendChild(range.extractContents());
             range.insertNode(span);
 
-
-            console.log('all body comment =',allBodySelectedText)
             setTitleCommentBoxVisible(false);
             setBodySelectedText('')
         }
@@ -837,27 +809,22 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                 }
             };
             const currentCommentIndex = indexingComment(dumyAllComment)
-            console.log('drag index = ',currentCommentIndex)
             const range = selection.getRangeAt(0),
                 span = document.createElement('span'),
                 text = selection.toString(),
                 classNameValue = 'highlight-body-'+currentCommentIndex;
             
-            console.log('range =',range)
-            
             span.className=classNameValue;
             span.id=classNameValue;
-            span.onmouseover = () => {
-                span.style.cursor = 'pointer'; // Change cursor style on mouseover
+            // issue # 17102 : hover event -> click으로 대체
+            // onMouseOver, onMouseOut Event 삭제
+            span.onclick = (e) => {
+                console.log('=== 831 :: click ====')
+                span.style.cursor = 'pointer'; 
                 span.style.border = '2px solid #f1b02e'
                 setCommentFocusId(classNameValue);
-            };
-              
-            span.onmouseout = () => {
-                // span.style.cursor = 'pointer'; // Restore cursor style on mouseout
-                span.style.border = ''
-                setCommentFocusId('');
-            };
+                
+            }
             const checkElement = (target:HTMLElement|null) => {
                 let targetElement:HTMLElement|null = target;
                 while(targetElement && targetElement.id==='') {
@@ -1149,6 +1116,15 @@ const LearningManagementSparkWritingFeedbackPage = () => {
 
         // comment-highlight-body-0-0
     }, [divAResize])
+    // Issue #17105 : 뒤로가기 이벤트에 close이벤트 사용
+    React.useEffect(()=>{
+        const historyEvent = history.listen(({action}) => {
+            if (action === 'POP') {
+                outPage();
+            }
+        })
+        return historyEvent
+    }, [])
     React.useEffect(()=>{
         // console.log('useEffect [] 실행.')
         if (feedbackDataInStudent.draft_data.draft_index === 0) {
@@ -1374,6 +1350,19 @@ const LearningManagementSparkWritingFeedbackPage = () => {
     }, [
         overallComment, allBodySelectedText, commentFocusId
     ])
+
+    React.useEffect(()=>{
+        for (let i = 0; i < allBodySelectedText.length; i++) {
+            const removeFocusTargetClass = allBodySelectedText[i].comment_className;
+            if ( removeFocusTargetClass !== commentFocusId) {
+                const removeFocusTargetElement = document.getElementById(removeFocusTargetClass);
+                removeFocusTargetElement?.setAttribute(
+                    'style',
+                    'background-color:yellow; height:fit-content; cursor:pointer; border:none;'
+                )
+            }
+        }
+    }, [allBodySelectedText, commentFocusId])
 
     const divideH10 = <div className='w-[1px] h-[10px] bg-[#aaa]'/>
     const divideH29 = <div className='w-[1px] h-[29px] bg-[#ccc]'/>
@@ -1720,7 +1709,7 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                                     onContextMenu={(e)=>draftStatus>3 ? ()=>{}:titleDragHandlerSelection(e)}
                                 >
                                     {feedbackDataInStudent && (draftStatus===2||draftStatus===5) && draftViewBox.draftTitle({feedbackDataInStudent})}
-                                    { feedbackDataInStudent && (draftStatus>2&&draftStatus!==5) && draftViewBox.loadTemporaryDraftTitle({feedbackDataInStudent, setCommentFocusId})}
+                                    { feedbackDataInStudent && (draftStatus>2&&draftStatus!==5) && draftViewBox.loadTemporaryDraftTitle({feedbackDataInStudent, commentFocusId, setCommentFocusId})}
 
                                     {titleCommentBoxVisible && (
                                         <div style={commentBoxStyle}
@@ -1741,7 +1730,7 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                                     {/* 화면 처음 초기화면 사용 */}
                                     {feedbackDataInStudent && (draftStatus===2||draftStatus===5) && draftViewBox.draftBody({feedbackDataInStudent})}
                                     {/* 임시 저장 후 사용 */}
-                                    { feedbackDataInStudent && (draftStatus>2&&draftStatus!==5) && draftViewBox.loadTemporaryDraftBody({feedbackDataInStudent,setCommentFocusId})}
+                                    { feedbackDataInStudent && (draftStatus>2&&draftStatus!==5) && draftViewBox.loadTemporaryDraftBody({feedbackDataInStudent,commentFocusId,setCommentFocusId})}
                                     {/* feedback 완료 후 사용 */}
 
                                     {bodyCommentBoxVisible && (
@@ -1767,7 +1756,6 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                                     const canvasCurrentRef = canvasRef.current;
                                     if (canvasCurrentRef) {
                                         const maxWidth = canvasCurrentRef.clientWidth>1200 ? canvasCurrentRef.clientWidth : 1200;
-                                        
                                         const boundary = boundaryRef.current?.getBoundingClientRect();
                                         if (boundary) {
                                             // 2️⃣
@@ -1812,7 +1800,6 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                                                 }
                                             } else {
                                                 // depth 2
-                                                console.log('depth 2')
                                                 const maxResizeWidth = maxWidth - 28 - 400;
                                                 const resizeX = inrange(
                                                     divAResize.divideAD.x + deltaX,
@@ -1821,12 +1808,7 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                                                     maxResizeWidth,
                                                 );
                                                 // draft 최대 1472
-                                                console.log('resize x =',resizeX)
-                                                console.log('maxResizeWidth =',maxResizeWidth)
                                                 const moveW = dumyStates.draft.w + divAResize.divideAD.x + deltaX;
-                                                
-                                                console.log('moveW =',moveW)
-                                                
                                                 if (moveW >= 400 && moveW <= maxResizeWidth) {
                                                     dumyStates.draft.w = moveW;
                                                     dumyStates.divideDC.x = moveW;
@@ -1841,15 +1823,9 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                                                     setDivAResize(dumyStates);
                                                 }
                                             }
-                                            
-                                            // 3️⃣
-                                            // setDivAResize(dumyStates);
-    
                                         }
-
                                     }
                                 };
-
                                 const mouseUpHandler = () => {
                                 document.removeEventListener('mousemove', mouseMoveHandler);
                                 };
@@ -1874,84 +1850,128 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                                     </div>
                                 }
                                 {allBodySelectedText.length > 0 && allBodySelectedText.map((commentItem, commentIndex) => {
-                                    // console.log('claa =',commentItem.comment_className)
-                                    console.log('allBodySelectedText ==',allBodySelectedText)
-                                    const commentKey = 'comment-'+commentItem.comment_className+'-'+commentItem.comment_index
-                                    return (
-                                        <div className='comment-wrapper'
-                                        key={commentKey}
-                                        style={{
-                                            border: commentFocusId === commentItem.comment_className ? '2px solid #f1b02e':''
-                                        }}
-                                        onMouseOver={()=>{
+                                    const commentKey = 'comment-'+commentItem.comment_className+'-'+commentItem.comment_index;
+                                    const clickEvent = () => {
+                                        if (commentFocusId !== commentItem.comment_className) {
+                                            const removeOtherTarget = document.getElementById(commentFocusId);
+                                            removeOtherTarget?.setAttribute(
+                                                'style',
+                                                'background-color:yellow; height:fit-content; cursor:pointer; border:none;'
+                                            )
                                             const target = document.getElementById(commentItem.comment_className);
                                             target?.setAttribute(
                                                 'style',
                                                 'background-color:yellow; height:fit-content; cursor:pointer; border:2px solid #f1b02e;'
                                             )
                                             setCommentFocusId(commentItem.comment_className);
-                                        }} onMouseOut={()=>{
+                                        } else {
                                             const target = document.getElementById(commentItem.comment_className);
                                             target?.setAttribute(
                                                 'style',
                                                 'background-color:yellow; height:fit-content; cursor:pointer; border:none;'
                                             )
                                             setCommentFocusId('');
-                                        }}>
-                                            <textarea className='comment-input disabled:bg-white'
-                                                disabled={draftStatus < 4 ? false:true}
-                                                // rows={1}
-                                                id={commentKey}
-                                                maxLength={500}
-                                                onInput={(e)=>{
-                                                    console.log('on input e =',e)
-                                                }}
-                                                onChange={(e)=>{
-                                                    
-                                                    const value = e.currentTarget.value;
-                                                    const checkLength = value.length >= 500;
-                                                    if (checkLength) {
-                                                        const cuttingValue = value.substring(0, 500);
-                                                        let dumyAllValues:TComment[] = JSON.parse(JSON.stringify(allBodySelectedText));
-                                                        for (let i = 0; i < dumyAllValues.length; i++) {
-                                                            if (dumyAllValues[i].comment_index === commentItem.comment_index) {
-                                                                dumyAllValues[i].comment = value;
-                                                                break;
-                                                            }
-                                                        };
-                                                        setAllBodySelectedText(dumyAllValues);
+                                        }
+                                    }
+                                    return (
+                                        <div className='comment-wrapper'
+                                        key={commentKey}
+                                        style={{
+                                            border: commentFocusId === commentItem.comment_className ? '2px solid #f1b02e':''
+                                        }}
+                                        // issue # 17102 : hover event -> click으로 대체
+                                        // onMouseOver={()=>{
+                                        //     const target = document.getElementById(commentItem.comment_className);
+                                        //     target?.setAttribute(
+                                        //         'style',
+                                        //         'background-color:yellow; height:fit-content; cursor:pointer; border:2px solid #f1b02e;'
+                                        //     )
+                                        //     setCommentFocusId(commentItem.comment_className);
+                                        // }} onMouseOut={()=>{
+                                        //     const target = document.getElementById(commentItem.comment_className);
+                                        //     target?.setAttribute(
+                                        //         'style',
+                                        //         'background-color:yellow; height:fit-content; cursor:pointer; border:none;'
+                                        //     )
+                                        //     setCommentFocusId('');
+                                        // }}
+                                        onClick={() => draftStatus >= 4 ? clickEvent():{}}
+                                        >
+                                            {draftStatus < 4 && (
+                                                <textarea className='comment-input disabled:bg-white'
+                                                    id={commentKey}
+                                                    maxLength={500}
+                                                    onInput={(e)=>{
+                                                        console.log('on input e =',e)
+                                                    }}
+                                                    onFocus={()=>{
+                                                        const target = document.getElementById(commentItem.comment_className);
+                                                        target?.setAttribute(
+                                                            'style',
+                                                            'background-color:yellow; height:fit-content; cursor:pointer; border:2px solid #f1b02e;'
+                                                        )
+                                                        setCommentFocusId(commentItem.comment_className);
+                                                    }}
+                                                    onBlur={()=>{
+                                                        const target = document.getElementById(commentItem.comment_className);
+                                                        target?.setAttribute(
+                                                            'style',
+                                                            'background-color:yellow; height:fit-content; cursor:pointer; border:none;'
+                                                        )
+                                                        setCommentFocusId('');
+                                                    }}
+                                                    onChange={(e)=>{
                                                         
-                                                        commonAlertOpen({
-                                                            messages: [
-                                                                'The comment cannot exceed 500 characters.'
-                                                            ],
-                                                            useOneButton: true,
-                                                            yesButtonLabel: 'OK'
-                                                        })
-                                                    } else {
-                                                        let dumyAllValues:TComment[] = JSON.parse(JSON.stringify(allBodySelectedText));
-                                                        for (let i = 0; i < dumyAllValues.length; i++) {
-                                                            if (dumyAllValues[i].comment_index === commentItem.comment_index) {
-                                                                dumyAllValues[i].comment = value;
-                                                                break;
-                                                            }
-                                                        };
-                                                        e.currentTarget.style.height = 'auto';
-                                                        e.currentTarget.style.height = e.currentTarget.scrollHeight + 'px';
-                                                        setAllBodySelectedText(dumyAllValues);
-                                                    }
-
-                                                }}
-                                                value={commentItem.comment}
-                                            />
+                                                        const value = e.currentTarget.value;
+                                                        const checkLength = value.length >= 500;
+                                                        if (checkLength) {
+                                                            const cuttingValue = value.substring(0, 500);
+                                                            let dumyAllValues:TComment[] = JSON.parse(JSON.stringify(allBodySelectedText));
+                                                            for (let i = 0; i < dumyAllValues.length; i++) {
+                                                                if (dumyAllValues[i].comment_index === commentItem.comment_index) {
+                                                                    dumyAllValues[i].comment = value;
+                                                                    break;
+                                                                }
+                                                            };
+                                                            setAllBodySelectedText(dumyAllValues);
+                                                            
+                                                            commonAlertOpen({
+                                                                messages: [
+                                                                    'The comment cannot exceed 500 characters.'
+                                                                ],
+                                                                useOneButton: true,
+                                                                yesButtonLabel: 'OK'
+                                                            })
+                                                        } else {
+                                                            let dumyAllValues:TComment[] = JSON.parse(JSON.stringify(allBodySelectedText));
+                                                            for (let i = 0; i < dumyAllValues.length; i++) {
+                                                                if (dumyAllValues[i].comment_index === commentItem.comment_index) {
+                                                                    dumyAllValues[i].comment = value;
+                                                                    break;
+                                                                }
+                                                            };
+                                                            e.currentTarget.style.height = 'auto';
+                                                            e.currentTarget.style.height = e.currentTarget.scrollHeight + 'px';
+                                                            setAllBodySelectedText(dumyAllValues);
+                                                        }
+                                                    }}
+                                                    value={commentItem.comment}
+                                                />
+                                            )}
+                                            {draftStatus >= 4 && (
+                                                <div className='comment-input disabled:bg-white !h-[39px] !w-full px-[12px] py-[8px] select-none hover:cursor-pointer'
+                                                    id={commentKey}
+                                                    onClick={() => clickEvent()}
+                                                >{commentItem.comment}</div>
+                                            )}
                                             
                                             {draftStatus<4 && 
                                             <commonSvgIcons.CloseImageSVGIcon className='comment-close' onClick={(e)=>{
                                                 // comment 삭제
                                                 // background color redo before
                                                 e.preventDefault();
+                                                
                                                 const targetElement = document.getElementById(commentItem.comment_className) as HTMLElement;
-                                                // const clickedElement = e.target as HTMLElement;
                                                 console.log('click =',targetElement.parentElement)
                                                 // find parent element className by target
                                                 const checkParent = (target:HTMLElement) => {
@@ -1975,7 +1995,6 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                                                     const divName = checkElement(parent.parentElement)
                                                     console.log('div name =',divName)
                                                     const parentContent = Array.from(parent.childNodes);
-                                                    // const newParent = document.createElement('<>');
                                                     const newParent = document.createDocumentFragment();
                                                     parentContent.forEach(content => {
                                                         console.log('===parentContent.forEach===', targetElement)
@@ -1983,7 +2002,6 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                                                         console.log('content === targetElement =',content === targetElement)
                                                         if (content === targetElement) {
                                                             const originalContent = Array.from(content.childNodes);
-                                                            console.log('originalContent =',originalContent)
                                                             originalContent.forEach(original => {
                                                                 newParent.appendChild(original.cloneNode(true));
                                                             });
@@ -1994,28 +2012,16 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                                                     console.log('newParent ==',newParent)
                                                     parent.replaceWith(newParent);
 
-                                                    let dumyComment:TComment[] = allBodySelectedText;
-                                                    console.log('before ==',dumyComment)
-                                                    console.log('commentItem = ',commentItem)
-                                                    let flag = false;
-                                                    // classNameValue currentCommentIndex divName
-                                                    for (let i =0; i< dumyComment.length; i++) {
-                                                        // console.log('dumyComment[i] =',dumyComment[i])
-                                                        // console.log('divName =',divName)
-                                                        // const checkName = dumyComment[i].paraghragh_name===divName;
-                                                        const checkClassName = dumyComment[i].comment_className === commentItem.comment_className;
-                                                        const checkIndex = dumyComment[i].comment_index === commentItem.comment_index;
-                                                        // console.log('checkName =',checkName)
-                                                        console.log('checkClassName =',checkClassName)
-                                                        console.log('checkIndex =',checkIndex)
-                                                        if ( checkClassName && checkIndex) {
-                                                            console.log('delete', dumyComment[i])
-                                                            flag=true;
-                                                            dumyComment.splice(i, 1);
+                                                    // remove correction comment item
+                                                    const dumyComment = allBodySelectedText.filter((item) => {
+                                                        if (item.comment_className !== commentItem.comment_className) {
+                                                            return item;
                                                         }
-                                                    }
+                                                    })
                                                     setAllBodySelectedText(dumyComment);
-                                                    setCommentFocusId('');
+                                                    if (commentItem.comment_className === commentFocusId) {
+                                                        setCommentFocusId('');
+                                                    }
                                                 } else {
                                                     console.log('parent is not.')
                                                 }

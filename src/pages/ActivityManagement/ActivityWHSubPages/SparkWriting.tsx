@@ -5,7 +5,7 @@ import { SvgSearchIcon } from '../../../components/commonComponents/BasicTable/s
 import useNavStore from '../../../store/useNavStore';
 import { cf } from '../../../util/common/commonFunctions';
 import useActivityWritingHubStore from '../../../store/useActivityWritingHubStore';
-import {createBrowserHistory} from 'history'
+import history from '../../../util/common/history';
 import { useCallbackPrompt } from '../../../hooks/useCallbackPrompt';
 import PromptBlockComponent from '../../../components/toggleModalComponents/PromptBlockComponent';
 import useControlAlertStore from '../../../store/useControlAlertStore';
@@ -23,7 +23,6 @@ export type TTableDataModel = {
     unitId?:number,
     outlineFormatIndex?:number
 }[][]
-export const history = createBrowserHistory();
 const SparkWriting = () => {
     // page usehook zustand
     const {

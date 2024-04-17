@@ -15,20 +15,15 @@ const draftTitle = (props:{feedbackDataInStudent:TFeedbackStates}) => {
     if (titleData.length > 0) {
         const grammarJSONData = titleData[0].grammar_correction_content_teacher;
         const grammarData:TGrammarCorrectionContentData[][][][] = JSON.parse(grammarJSONData);
-        // console.log('grammarData =',JSON.parse(feedbackDataInStudent.draft_data.draft_outline[1].grammar_correction_content_teacher))
         return grammarData.map(( paragraghItem, paragraghIndex) => {
-            // console.log('paragraghItem = ',paragraghItem)
             return <div className='draft-title-paragragh-wrap' id={'Title'}>{paragraghItem.map((sentenceItem, sentenceIndex) => {
-                // console.log('sentenceItem = ',sentenceItem)
                 return sentenceItem.map((wordItem, wordIndex) => {
                     let returnValue:JSX.Element;
-                    // console.log('wordItem = ',wordItem)
                     const wordItemLength = wordItem.length;
                     if (wordItemLength === 1) {
                         const compareWordFlag = wordItem[0].type;
                         const mainTagKey = 'title-'+wordItem[0].key;
                         const currentWord = wordItem[0].word;
-                        const reasons = wordItem[0].correction_reason;
                         if (compareWordFlag === 1) {
                             returnValue = <span key={mainTagKey} className='update-words'><span 
                                 className='text-[#00be91]'
@@ -87,48 +82,26 @@ const draftTitle = (props:{feedbackDataInStudent:TFeedbackStates}) => {
 // status 2 body
 const draftBody = (props:{feedbackDataInStudent:TFeedbackStates}) => {
     const {feedbackDataInStudent} = props;
-    console.log('props ==',feedbackDataInStudent)
     // target data set
-    const originOutlineData = feedbackDataInStudent.draft_data.draft_outline
-    // let bodyData:TBodyGrammarCorrectionJSONData[] = []
-    // for (let orderIndex = 0; orderIndex < originOutlineData.length; orderIndex++) {
-    //     const outlineData = originOutlineData[orderIndex];
-    //     if (outlineData.name !== 'Title') {
-    //         const targetJSONString:TBodyGrammarCorrectionJSONData = {
-    //             data: JSON.parse(outlineData.grammar_correction_content_teacher),
-    //             name: outlineData.name,
-    //             order_index: outlineData.order_index
-    //         };
-    //         bodyData.push(targetJSONString)
-    //     }
-    // }
-    // console.log('body Data ==',bodyData)
+    const originOutlineData = feedbackDataInStudent.draft_data.draft_outline;
     return originOutlineData.map((bodyItem) => {
         // Outline Type이 WO인 경우 input_content는 공백, grammar_correction_content_teacher 빈 값으로 전달되며 표시하지 않도록 예외처리
         if (bodyItem.input_content.trim().length === 0 && bodyItem.grammar_correction_content_teacher.length === 0) return <></>;
         
         const data:TGrammarCorrectionContentData[][][][] = JSON.parse(bodyItem.grammar_correction_content_teacher);
         const name = bodyItem.name;
-        const order_index = bodyItem.order_index;
         if (name !== 'Title') {
             return data.map((paragraghItem, paragraghIndex) => {
                 const paragraghKey = bodyItem.name+bodyItem.order_index+paragraghIndex;
-                // console.log('paragraghItem =',bodyItem)
-    
                 return <div className='flow-root justify-start draft-1-body-paragragh' id={bodyItem.name} key={paragraghKey}>
                 {paragraghItem.map((sentenceItem, sentenceIndex) => {
-                    const sentenceKey = paragraghKey+'-'+sentenceIndex
-                    // console.log('sentence item =',sentenceItem)
                     return sentenceItem.map((wordItem, wordIndex) => {
                         let returnValue:JSX.Element;
-                        // console.log('wordItem = ',wordItem)
                         const wordItemLength = wordItem.length;
                         if (wordItemLength === 1) {
                             const compareWordFlag = wordItem[0].type;
                             const mainTagKey = 'body-'+paragraghIndex+wordItem[0].key;
                             const currentWord = wordItem[0].word;
-                            // console.log('currentWord =',wordItem[0])
-                            const reasons = wordItem[0].correction_reason;
                             if (compareWordFlag === 1) {
                                 returnValue = <span key={mainTagKey} 
                                     className='text-[#00be91] draft-body-select-area-check-span'
@@ -175,8 +148,6 @@ const draftBody = (props:{feedbackDataInStudent:TFeedbackStates}) => {
                                 }
                                 if (innerWordIndex === (wordItemLength-1)) break;
                             } // end for word item
-                            // console.log('add word =',addWord)
-                            // console.log('delete word =',deleteWord)
                             returnValue = <span key={mainTagKey} >
                                 <span className='text-[#eb3a3a] line-through draft-body-select-area-check-span'>{deleteWord}</span>
                                 {' '}
@@ -186,9 +157,7 @@ const draftBody = (props:{feedbackDataInStudent:TFeedbackStates}) => {
                         return returnValue;
                     })
                 })}</div>
-    
             })
-
         } else {
             return <></>
         }
@@ -199,13 +168,13 @@ const draftBody = (props:{feedbackDataInStudent:TFeedbackStates}) => {
 const loadTemporaryDraftTitle = (
     props: {
         feedbackDataInStudent:TFeedbackStates,
+        commentFocusId: string,
         setCommentFocusId:(value: React.SetStateAction<string>) => void
     }
 ) => {
-    const {feedbackDataInStudent, setCommentFocusId} = props;
+    const {feedbackDataInStudent, commentFocusId, setCommentFocusId} = props;
     const draftOutline = feedbackDataInStudent.draft_data.draft_outline;
     const comments = feedbackDataInStudent.draft_data.comment;
-    console.log('title comments =',comments);
     const findCommentByCommentIndex = (comment_index:number) => {
         for (let i =0; i<comments.length; i++) {
             if (comments[i].comment_index === comment_index) {
@@ -271,14 +240,24 @@ const loadTemporaryDraftTitle = (
                             height: 'fit-content',
                             cursor: 'pointer'
                         }}
-                        onMouseOver={(e)=>{
+                        // issue # 17102 : hover event -> click으로 대체
+                        // onMouseOver, onMouseOut Event 삭제
+                        onClick={(e) => {
                             e.currentTarget.style.cursor='pointer';
-                            e.currentTarget.style.border = '2px solid #f1b02e';
-                            setCommentFocusId(currentCommentItem.comment_className);
-                        }}
-                        onMouseOut={(e)=>{
-                            e.currentTarget.style.border = '';
-                            setCommentFocusId('');
+                            if (commentFocusId !== currentCommentItem.comment_className) {
+                                // remove other focus style
+                                const target = document.getElementById(commentFocusId);
+                                target?.setAttribute(
+                                    'style',
+                                    'background-color:yellow; height:fit-content; cursor:pointer; border:none;'
+                                )
+                                // focus set style
+                                e.currentTarget.style.border = '2px solid #f1b02e';
+                                setCommentFocusId(currentCommentItem.comment_className);
+                            } else {
+                                e.currentTarget.style.border = '';
+                                setCommentFocusId('');
+                            }
                         }}
                         >{returnValue}</span>;
                         jsxElements.push(createSpan);
@@ -300,13 +279,14 @@ const loadTemporaryDraftTitle = (
 const loadTemporaryDraftBody = (
     props: {
         feedbackDataInStudent:TFeedbackStates,
+        commentFocusId: string,
         setCommentFocusId:(value: React.SetStateAction<string>) => void
     }
 ) => {
-    const {feedbackDataInStudent, setCommentFocusId} = props;
+    const {feedbackDataInStudent, commentFocusId, setCommentFocusId} = props;
     const draftOutline = feedbackDataInStudent.draft_data.draft_outline;
     const comments = feedbackDataInStudent.draft_data.comment;
-    console.log('comments =',comments)
+    // console.log('comments =',comments)
     const findCommentByCommentIndex = (comment_index:number) => {
         for (let i =0; i<comments.length; i++) {
             if (comments[i].comment_index === comment_index) {
@@ -325,11 +305,10 @@ const loadTemporaryDraftBody = (
         }
         return emptyReturn;
     }
-    console.log(draftOutline)
+    // console.log(draftOutline)
     return draftOutline.map((paragraphItem, paragraphIndex) => {
         const paragraphKey = paragraphItem.name+paragraphItem.order_index+paragraphIndex;
         const screenData = paragraphItem.screen_data;
-        let commentIdx = -1;
         if (paragraphIndex===0) {
             return null;
         } else {
@@ -377,14 +356,24 @@ const loadTemporaryDraftBody = (
                             height: 'fit-content',
                             cursor: 'pointer'
                         }}
-                        onMouseOver={(e)=>{
+                        // issue # 17102 : hover event -> click으로 대체
+                        // onMouseOver, onMouseOut Event 삭제
+                        onClick={(e) => {
                             e.currentTarget.style.cursor='pointer';
-                            e.currentTarget.style.border = '2px solid #f1b02e';
-                            setCommentFocusId(currentCommentItem.comment_className);
-                        }}
-                        onMouseOut={(e)=>{
-                            e.currentTarget.style.border = '';
-                            setCommentFocusId('');
+                            if (commentFocusId !== currentCommentItem.comment_className) {
+                                // remove other focus style
+                                const target = document.getElementById(commentFocusId);
+                                target?.setAttribute(
+                                    'style',
+                                    'background-color:yellow; height:fit-content; cursor:pointer; border:none;'
+                                )
+                                // focus set style
+                                e.currentTarget.style.border = '2px solid #f1b02e';
+                                setCommentFocusId(currentCommentItem.comment_className);
+                            } else {
+                                e.currentTarget.style.border = '';
+                                setCommentFocusId('');
+                            }
                         }}
                         >{returnValue}</span>;
                         jsxElements.push(createSpan);
@@ -414,7 +403,6 @@ const loadFinalDraftTitle = (
     
     return feedbackDataInStudent.map((paragraphItem, paragraphIndex) => {
         const paragraphKey = 'final-title-'+draftKey+'-'+paragraphItem.order_index+paragraphIndex;
-        const screenData = paragraphItem.screen_data;
         if (paragraphIndex!==0) {
             return null;
         } else {
@@ -442,7 +430,6 @@ const loadFinalDraftBody = (
     if (draft==='1') {
         return feedbackDataInStudent.map((paragraphItem, paragraphIndex) => {
             const paragraphKey = 'final-body-d'+draft+'-'+paragraphItem.name+'-'+paragraphItem.order_index+'-'+paragraphIndex;
-            const screenData = paragraphItem.screen_data;
             if (paragraphIndex===0) {
                 return null;
             } else {
