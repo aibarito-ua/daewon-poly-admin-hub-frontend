@@ -1959,7 +1959,7 @@ const LearningManagementSparkWritingFeedbackPage = () => {
                                                 />
                                             )}
                                             {draftStatus >= 4 && (
-                                                <div className='comment-input disabled:bg-white !h-[39px] !w-full px-[12px] py-[8px] select-none hover:cursor-pointer'
+                                                <div className='comment-input disabled:bg-white !min-h-[39px] !h-fit !w-full px-[12px] py-[8px] select-none hover:cursor-pointer'
                                                     id={commentKey}
                                                     onClick={() => clickEvent()}
                                                 >{commentItem.comment}</div>
