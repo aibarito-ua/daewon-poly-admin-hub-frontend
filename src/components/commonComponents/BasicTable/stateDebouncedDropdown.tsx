@@ -120,7 +120,7 @@ export default function DebouncedDropdowFilter({
                                     : "Filter-CSS-dropdown-munu-item-a-default" 
                                 }
                                 onClick={()=>{
-                                    console.log('onClick : selectActive=',i)
+                                    console.log('onClick ',nameItem,': selectActive=',i)
                                     onChange(nameItem, i-1)
                                     setSelectActive(i)
                                     setClickButtonFlag(false)

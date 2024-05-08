@@ -115,8 +115,13 @@ export async function getLMSparkWritingStudents(datas:TFindStudentsReq):Promise<
         console.log('reject from be =',reject)
         // const rejectData:TLMSparkWritingGetStudentReject = reject;
         const error:TErrorData = reject.response.data;
-        return {book_name:'',students:[], error};
-    })
+        const failReturnData:TLMSparkWritingStudentsListInClass = {
+            book_name: '',
+            students: [],
+            error:error,
+        }
+        return failReturnData;
+    });
 }
 
 export async function getDraftInfoByDraftId(draft_id:string):Promise<TFindDraftInfoByDraftIdResponse> {

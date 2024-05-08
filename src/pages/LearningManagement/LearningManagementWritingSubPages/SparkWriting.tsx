@@ -297,6 +297,7 @@ const LMSparkWriting = () => {
                         }
                     } else return res;
                 });
+                setCommonStandbyScreen({openFlag:false})
                 if (rsp) {
                     console.log('stu rsp ==',rsp)
                     if ( rsp.students.length > 0) {
@@ -340,35 +341,39 @@ const LMSparkWriting = () => {
                                 isSearch: true, isAllSelected:true,
                             });
                             setIsLoadData(false);
-                            setCommonStandbyScreen({openFlag:false})
+                            // setCommonStandbyScreen({openFlag:false})
                         }
                     } else {
                         console.log('::: No data to display ::: 11')
-                        setCommonStandbyScreen({openFlag:false})
-                        setIsSearch(false)
+                        // setCommonStandbyScreen({openFlag:false})
                         setStudentDataInClass({book_name:'',students:[]})
                         setEmptyPageMessage('No data to display!')
+                        setIsLoadData(false);
+                        setIsSearch(false)
                     }
 
                 } else {
                     console.log('::: No data to display ::: 222')
-                    setCommonStandbyScreen({openFlag:false})
-                    setIsSearch(false)
+                    // setCommonStandbyScreen({openFlag:false})
                     setStudentDataInClass({book_name:'',students:[]})
                     setEmptyPageMessage('No data to display!')
+                    setIsLoadData(false);
+                    setIsSearch(false)
                 }
             } else {
-                setIsSearch(false)
+                console.log('search is not all selected')
                 setStudentDataInClass({book_name:'',students:[]})
                 setEmptyPageMessage('검색 값을 선택 후 조회하세요.')
-                setCommonStandbyScreen({openFlag:false})
-                console.log('search is not all selected')
+                setIsLoadData(false);
+                setIsSearch(false)
+                // setCommonStandbyScreen({openFlag:false})
             }
         } else {
-            setIsSearch(false)
             setStudentDataInClass({book_name:'',students:[]})
             setEmptyPageMessage('검색 값을 선택 후 조회하세요.')
-            setCommonStandbyScreen({openFlag:false})
+            setIsLoadData(false);
+            setIsSearch(false)
+            // setCommonStandbyScreen({openFlag:false})
         };
     }
     const makeTableData = (rsp: TLMSparkWritingStudentsListInClass) =>{
