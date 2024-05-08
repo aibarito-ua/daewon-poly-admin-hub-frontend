@@ -183,7 +183,7 @@ const useLearningManagementSparkWritingStore = create<ILearningManagementSparkWr
             set(()=>({
                 studentDataInClass: data
             }))
-        }
+        } else set(()=>({studentDataInClass:{book_name: '', students: []}}))
     },
     // student table in class
     studentInClassList: {

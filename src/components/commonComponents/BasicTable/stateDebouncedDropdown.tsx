@@ -46,7 +46,10 @@ export default function DebouncedDropdowFilter({
                 const levels = Array.from(column).sort((a,b) => gradersLevel.indexOf(a) - gradersLevel.indexOf(b))
                 setStateDropNameList(['', ...levels]);
             } else {
-                setStateDropNameList(['', ...Array.from(column).sort()]);
+                const restate = ['', ...Array.from(column).sort((a,b)=>a.localeCompare(b))];
+                console.log('filterTitleLabel =',filterTitleLabel)
+                console.log('restate =',restate)
+                setStateDropNameList(restate);
             }
         }
         

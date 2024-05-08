@@ -446,7 +446,7 @@ const ReportAndPortfolio = () => {
                     const targetLevel = targetCampus[campusIndex].level;
                     for (let levelIndex=0; levelIndex<targetLevel.length; levelIndex++) {
                         if (targetLevel[levelIndex].name === selectFIlterValues[1]) {
-                            const targetClass=targetLevel[levelIndex].class
+                            const targetClass=targetLevel[levelIndex].class.sort((a,b) => a.name.localeCompare(b.name))
                             for(let classIndex=0; classIndex<targetClass.length; classIndex++) {
                                 if (targetClass[classIndex].name === value && index === classIndex) {
                                     let dumySelectFilterValues = JSON.parse(JSON.stringify(selectFIlterValues));

@@ -281,73 +281,81 @@ const LMSparkWriting = () => {
                 // 데이터 호출 전 대기 화면을 위한 테이블 데이터 초기화
                 setClassCurrentData([]);
                 setIsLoadData(true);
-                const rsp = await getLMSparkWritingStudents(reqData).then((response) => {
-                    // setCommonStandbyScreen({openFlag:false})
-                    return response;
+                const rsp = await getLMSparkWritingStudents(reqData).then(res => {
+                    if (res.error) {
+                        const reject = res.error;
+                        console.log('reject =',reject)
+                        if (reject.statusCode===555 && reject.data.maintenanceInfo) {
+                            let dumyMaintenanceData:TMaintenanceData = {
+                                alertTitle: 'System Maintenance Notice',
+                                data: reject.data.maintenanceInfo,
+                                open: false,
+                                type: ''
+                            };
+                            setMaintenanceData(dumyMaintenanceData)
+                            navigate('/');
+                        }
+                    } else return res;
                 });
-                if (rsp.error) {
-                    const reject = rsp.error;
-                    if (reject.statusCode===555 && reject.data.maintenanceInfo) {
-                        let dumyMaintenanceData:TMaintenanceData = {
-                            alertTitle: 'System Maintenance Notice',
-                            data: reject.data.maintenanceInfo,
-                            open: false,
-                            type: ''
-                        };
-                        setMaintenanceData(dumyMaintenanceData)
-                        navigate('/');
-                    }
-                }
-                console.log('stu rsp ==',rsp)
-                if (rsp.students.length > 0) {
-                    
-                    // feedback value setting
-                    const dumyFeedbackData:TFeedbackStates = JSON.parse(JSON.stringify(feedbackDataInStudent));
-                    dumyFeedbackData.defautInfo.campus= selectCampusCode;
-                    dumyFeedbackData.defautInfo.level = selectLevelCode;
-                    dumyFeedbackData.defautInfo.class = selectClassCode;
-                    dumyFeedbackData.defautInfo.book_name = rsp.book_name;
-                    dumyFeedbackData.draft_2nd_data=undefined;
-                    dumyFeedbackData.defautInfo.student_code='';
-                    dumyFeedbackData.defautInfo.student_name={student_name_en:'',student_name_kr:''};
-                    dumyFeedbackData.defautInfo.submit_date='';
-                    dumyFeedbackData.defautInfo.unit_index=-1;
-                    dumyFeedbackData.defautInfo.unit_topic='';
-                    dumyFeedbackData.defautInfo.select_draft_id='';
-                    dumyFeedbackData.defautInfo.step_label='';
-                    dumyFeedbackData.status=null;
-                    dumyFeedbackData.overall_comment='';
-                    dumyFeedbackData.rubric={
-                        name: '',
-                        rubric_description:[]
-                    }
-                    dumyFeedbackData.status_1st=null;
-
-                    // setting data year&semester
-                    if (rsp.year && rsp.semester) {
-                        let newFilterAllList = {...filterAllList};
-                        newFilterAllList.semester = rsp.semester;
-                        newFilterAllList.year = rsp.year;
-                        setFilterAllList(newFilterAllList);
-                    }
-
-                    setFeedbackDataInStudent(dumyFeedbackData);
-                    // table data setting
-                    setStudentDataInClass(rsp)
-                    const isLoadTableComplete = makeTableData(rsp);
-                    if (isLoadTableComplete) {
-                        setIsSearch(true)
-                        maintainStates('save', {
-                            isSearch: true, isAllSelected:true,
-                        });
-                        setIsLoadData(false);
+                if (rsp) {
+                    console.log('stu rsp ==',rsp)
+                    if ( rsp.students.length > 0) {
+                        // feedback value setting
+                        const dumyFeedbackData:TFeedbackStates = JSON.parse(JSON.stringify(feedbackDataInStudent));
+                        dumyFeedbackData.defautInfo.campus= selectCampusCode;
+                        dumyFeedbackData.defautInfo.level = selectLevelCode;
+                        dumyFeedbackData.defautInfo.class = selectClassCode;
+                        dumyFeedbackData.defautInfo.book_name = rsp.book_name;
+                        dumyFeedbackData.draft_2nd_data=undefined;
+                        dumyFeedbackData.defautInfo.student_code='';
+                        dumyFeedbackData.defautInfo.student_name={student_name_en:'',student_name_kr:''};
+                        dumyFeedbackData.defautInfo.submit_date='';
+                        dumyFeedbackData.defautInfo.unit_index=-1;
+                        dumyFeedbackData.defautInfo.unit_topic='';
+                        dumyFeedbackData.defautInfo.select_draft_id='';
+                        dumyFeedbackData.defautInfo.step_label='';
+                        dumyFeedbackData.status=null;
+                        dumyFeedbackData.overall_comment='';
+                        dumyFeedbackData.rubric={
+                            name: '',
+                            rubric_description:[]
+                        }
+                        dumyFeedbackData.status_1st=null;
+    
+                        // setting data year&semester
+                        if (rsp.year && rsp.semester) {
+                            let newFilterAllList = {...filterAllList};
+                            newFilterAllList.semester = rsp.semester;
+                            newFilterAllList.year = rsp.year;
+                            setFilterAllList(newFilterAllList);
+                        }
+    
+                        setFeedbackDataInStudent(dumyFeedbackData);
+                        // table data setting
+                        setStudentDataInClass(rsp)
+                        const isLoadTableComplete = makeTableData(rsp);
+                        if (isLoadTableComplete) {
+                            setIsSearch(true)
+                            maintainStates('save', {
+                                isSearch: true, isAllSelected:true,
+                            });
+                            setIsLoadData(false);
+                            setCommonStandbyScreen({openFlag:false})
+                        }
+                    } else {
+                        console.log('::: No data to display ::: 11')
                         setCommonStandbyScreen({openFlag:false})
+                        setIsSearch(false)
+                        setStudentDataInClass({book_name:'',students:[]})
+                        setEmptyPageMessage('No data to display!')
                     }
+
                 } else {
+                    console.log('::: No data to display ::: 222')
+                    setCommonStandbyScreen({openFlag:false})
+                    setIsSearch(false)
                     setStudentDataInClass({book_name:'',students:[]})
                     setEmptyPageMessage('No data to display!')
-                    setIsSearch(false)
-                    setCommonStandbyScreen({openFlag:false})
                 }
             } else {
                 setIsSearch(false)
@@ -546,12 +554,13 @@ const LMSparkWriting = () => {
                         if (targetLevel) {
                             for (let levelIndex=0; levelIndex<targetLevel.length; levelIndex++) {
                                 if (targetLevel[levelIndex].name === selectFIlterValues[1]) {
-                                    const targetClass=targetLevel[levelIndex].class
+                                    const targetClass=targetLevel[levelIndex].class.sort((a,b)=>a.name.localeCompare(b.name));
                                     console.log('targetClass =',targetClass)
+                                    console.log('index =',index)
                                     for(let classIndex=0; classIndex<targetClass.length; classIndex++) {
+                                        console.log('classIndex =',classIndex)
                                         if (targetClass[classIndex].name === value && index === classIndex) {
                                             let dumySelectFilterValues = JSON.parse(JSON.stringify(selectFIlterValues));
-                                            console.log('classIndex =',classIndex)
                                             console.log('dumySelectFilterValues =',dumySelectFilterValues)
                                             console.log('targetClass =',targetClass[classIndex])
                                             dumySelectFilterValues[2] = value
