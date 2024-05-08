@@ -70,7 +70,7 @@ export default function Router() {
                 maintenanceInfo: TMaintenanceInfo
             } = {
                 accessToken: '',
-                clientCode: ['0508003','1301003'],
+                clientCode: ['0508003','1301003','0601007'],
                 // ,'1301003'
                 mcYn: 'N',
                 memberCode: '23100091',

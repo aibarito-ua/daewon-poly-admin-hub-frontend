@@ -14,7 +14,7 @@ export default function DebouncedDropdowFilter({
 }: {
     filterTitleLabel: string
     value: string
-    onChange: (value:string) => void
+    onChange: (value:string, index?:number) => void
     // column: Column<any, unknown>|undefined
     column: string[]
     table: {
@@ -56,7 +56,12 @@ export default function DebouncedDropdowFilter({
     },[initialValue])
     React.useEffect(()=>{
         const timeout = setTimeout(()=>{
-            onChange(value)
+            console.log('debounced, selectActive=',selectActive)
+            if (selectActive) {
+                onChange(value, selectActive-1)
+            } else {
+                onChange(value)
+            }
             setClickButtonFlag(false)
         }, debounce)
         return () => clearTimeout(timeout)
@@ -112,7 +117,8 @@ export default function DebouncedDropdowFilter({
                                     : "Filter-CSS-dropdown-munu-item-a-default" 
                                 }
                                 onClick={()=>{
-                                    onChange(nameItem)
+                                    console.log('onClick : selectActive=',i)
+                                    onChange(nameItem, i-1)
                                     setSelectActive(i)
                                     setClickButtonFlag(false)
                                 }}

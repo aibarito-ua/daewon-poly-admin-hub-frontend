@@ -534,7 +534,7 @@ const LMSparkWriting = () => {
             }
         }
     }
-    const filterButtonEventClass=(value:string)=>{
+    const filterButtonEventClass=(value:string, index?:number)=>{
         if (filterStates!==undefined) {
             const targetCampus=filterStates.campus
             if (isLoadData) {
@@ -547,9 +547,13 @@ const LMSparkWriting = () => {
                             for (let levelIndex=0; levelIndex<targetLevel.length; levelIndex++) {
                                 if (targetLevel[levelIndex].name === selectFIlterValues[1]) {
                                     const targetClass=targetLevel[levelIndex].class
+                                    console.log('targetClass =',targetClass)
                                     for(let classIndex=0; classIndex<targetClass.length; classIndex++) {
-                                        if (targetClass[classIndex].name === value) {
+                                        if (targetClass[classIndex].name === value && index === classIndex) {
                                             let dumySelectFilterValues = JSON.parse(JSON.stringify(selectFIlterValues));
+                                            console.log('classIndex =',classIndex)
+                                            console.log('dumySelectFilterValues =',dumySelectFilterValues)
+                                            console.log('targetClass =',targetClass[classIndex])
                                             dumySelectFilterValues[2] = value
                                             setSelectFilterValues(dumySelectFilterValues)
                                             setMaintainFilterValues(dumySelectFilterValues)
@@ -620,7 +624,7 @@ const LMSparkWriting = () => {
                             <DebouncedDropdowFilter 
                                 filterTitleLabel='class'
                                 column={selectFilterClassList}
-                                onChange={value=>filterButtonEventClass(value)}
+                                onChange={(value, index)=>filterButtonEventClass(value, index)}
                                 value={selectFIlterValues[2]}
                                 originData={data}
                                 table={data}
